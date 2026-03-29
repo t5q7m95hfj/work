@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -7,548 +8,1020 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#080c14">
 <title>Mission Control</title>
-<link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .3s,color .3s}
 body.dark{background:#080c14;color:#ddd8ce}
-body.light{background:#f5f3ef;color:#1a1a1a}
+body.light{background:#f0ede6;color:#1a1814}
 a{text-decoration:none}
-button{font-family:inherit}
+button{font-family:inherit;cursor:pointer}
+input,textarea{font-family:inherit}
 #root{max-width:480px;margin:0 auto;min-height:100vh}
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:8px}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:10px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.spinner{width:24px;height:24px;border:2px solid #1a2a3a;border-top:2px solid #4fc3f7;border-radius:50%;animation:spin .8s linear infinite}
-.light .spinner{border-color:#ddd;border-top-color:#1565c0}
+.spinner{width:22px;height:22px;border:2px solid transparent;border-top:2px solid #4fc3f7;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .25s ease forwards}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+.pulse{animation:pulse 2s ease infinite}
 </style>
 </head>
 <body class="dark">
-<div id="root"><div class="loading"><div class="spinner"></div><span style="font-size:12px;opacity:.5">Chargement...</span></div></div>
+<div id="root"><div class="loading"><div class="spinner"></div><span style="font-size:11px;opacity:.4;letter-spacing:1px">CHARGEMENT</span></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.10/babel.min.js"></script>
 
 <script type="text/babel">
-// ============================================================
+// ─────────────────────────────────────────────
 // CONFIG
-// ============================================================
-const GAS_URL="https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
+// ─────────────────────────────────────────────
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
 
-// ============================================================
-// THEME
-// ============================================================
-const DARK={
-  bg:"#080c14",card:"#0f1520",border:"#151d2a",
-  text:"#ddd8ce",textMuted:"#5a6a7a",textFaint:"#3a4858",textBright:"#eae7e0",
-  accent:"#4fc3f7",green:"#81c784",orange:"#ffb74d",red:"#ef9a9a",purple:"#ce93d8",
-  cardHover:"#141e2c",timeBox:"rgba(79,195,247,0.08)",timeBorder:"rgba(79,195,247,0.15)",
+// ─────────────────────────────────────────────
+// THEMES
+// ─────────────────────────────────────────────
+const DARK = {
+  bg:"#080c14", card:"#0e1420", card2:"#111928", border:"#151d2c",
+  text:"#ddd8ce", textMuted:"#6a7a8a", textFaint:"#3a4858", textBright:"#eae7e0",
+  accent:"#4fc3f7", green:"#81c784", orange:"#ffb74d", red:"#ef9a9a", purple:"#ce93d8", yellow:"#fff176",
+  cardHover:"#131e2e", timeBox:"rgba(79,195,247,0.07)", timeBorder:"rgba(79,195,247,0.18)",
+  inputBg:"#080c14", tag:"rgba(79,195,247,0.12)",
 };
-const LIGHT={
-  bg:"#f5f3ef",card:"#ffffff",border:"#e0dcd4",
-  text:"#1a1a1a",textMuted:"#5a5a5a",textFaint:"#8a8a8a",textBright:"#000000",
-  accent:"#1565c0",green:"#2e7d32",orange:"#e65100",red:"#c62828",purple:"#6a1b9a",
-  cardHover:"#f0ede8",timeBox:"rgba(21,101,192,0.06)",timeBorder:"rgba(21,101,192,0.15)",
+const LIGHT = {
+  bg:"#f0ede6", card:"#faf8f4", card2:"#f4f1eb", border:"#ddd8cf",
+  text:"#1a1814", textMuted:"#4a4540", textFaint:"#8a8278", textBright:"#0a0806",
+  accent:"#1565c0", green:"#2e7d32", orange:"#bf360c", red:"#b71c1c", purple:"#4a148c", yellow:"#f57f17",
+  cardHover:"#f5f2ec", timeBox:"rgba(21,101,192,0.05)", timeBorder:"rgba(21,101,192,0.18)",
+  inputBg:"#faf8f4", tag:"rgba(21,101,192,0.1)",
 };
 
-// ============================================================
-// CLIENT META
-// ============================================================
-const CMETA={
-  "Philibert Tourisme":{tag:"PHIL",color:"#43a047",lc:"#2e7d32",contact:"Mélissa Hassaïm",email:"rhone-ops@philibert.fr",cohost:"Véronique Olivier · 06 41 60 42 88",emergency:"+33 4 78 98 56 49"},
-  "Go Côte Saône":{tag:"GCS",color:"#42a5f5",lc:"#1565c0",contact:"Marion",phone:"06.20.08.10.92",email:"gcs@gocotesaone.com"},
-  "Feel the French Way":{tag:"FTFW",color:"#ab47bc",lc:"#6a1b9a",contact:"Caroline",email:"contact@feelthefrenchway.fr",cohost:"caroline.meet.and.greet@gmail.com"},
-  "Un Monde Bleu":{tag:"UMB",color:"#ff7043",lc:"#e65100",contact:"Audrey Foret",phone:"+33 7 43 36 05 69",email:"OpsRiviera@umb-dmc.fr",notes:"Répondre au thread · autocariste: rhonecroisieres@galeo.mobi"},
+// ─────────────────────────────────────────────
+// CLIENT METADATA
+// ─────────────────────────────────────────────
+const CMETA = {
+  "Philibert Tourisme": {
+    tag:"PHIL", color:"#43a047",
+    contact:"Mélissa Hassaïm", email:"rhone-ops@philibert.fr",
+    cohost:"Véronique Olivier · 06 41 60 42 88",
+    emergency:"+33 4 78 98 56 49",
+    rates:"2H=73€ · 4H=146€ · 5H=172.50€ · 10H=295€\nBellecour: 36.50€/h\nFrais: gare 21.50€ · airport 47€ · Vienne 10.80€×2",
+  },
+  "Go Côte Saône": {
+    tag:"GCS", color:"#42a5f5",
+    contact:"Marion", phone:"06.20.08.10.92", email:"gcs@gocotesaone.com",
+    rates:"Forfait 450€ + 20€ repas débours\nCode facture: VK09-SUP02",
+  },
+  "Feel the French Way": {
+    tag:"FTFW", color:"#ab47bc",
+    contact:"Caroline", email:"contact@feelthefrenchway.fr",
+    cohost:"caroline.meet.and.greet@gmail.com",
+    rates:"Gare: 2H=100€ · 5H=220€\nAéroport: 2H=100€ · 5H=195€ · 10H=340€\nFrais: gare 25€ · airport 50€ (1/jour max)",
+  },
+  "Un Monde Bleu": {
+    tag:"UMB", color:"#ff7043",
+    contact:"Audrey Foret", phone:"+33 7 43 36 05 69", email:"OpsRiviera@umb-dmc.fr",
+    notes:"⚠️ Toujours répondre au thread · autocariste: rhonecroisieres@galeo.mobi",
+    rates:"Gare: 2H=92€→8H=282€\nAéroport: 2H=108€→8H=293€\nTransport: 31€ forfait · 18€ one-way (airport, 1/jour)",
+  },
 };
-const TRANSPORT=[{d:"Perrache",t:45},{d:"Part-Dieu",t:45},{d:"LYS Aéroport",t:52},{d:"Quai Claude Bernard",t:45},{d:"Vienne",t:105},{d:"Genève",t:180}];
 
-// ============================================================
+const TRANSPORT = [
+  {d:"Perrache",t:45},{d:"Part-Dieu",t:45},{d:"LYS Aéroport",t:52},
+  {d:"Quai Claude Bernard",t:45},{d:"Vienne",t:105},{d:"Genève",t:180},
+  {d:"Montpellier",t:180},{d:"Bâle",t:150},{d:"Chalon",t:90},
+];
+
+// ─────────────────────────────────────────────
 // UTILS
-// ============================================================
-const DF=["dim","lun","mar","mer","jeu","ven","sam"];
-const MF=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-const MS=["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
-function fd(d){if(!d)return"";const s=String(d).trim();if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m)return`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;return s;}
-function nice(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DF[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]}`;}
-function niceLong(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DF[d.getDay()]} ${d.getDate()} ${MF[d.getMonth()]}`;}
-function today(){return new Date().toISOString().slice(0,10);}
-function tmrw(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);}
-function cMonth(){return String(new Date().getMonth()+1).padStart(2,"0");}
-function gm(c){if(!c)return{tag:"?",color:"#666",lc:"#444"};for(const[k,v]of Object.entries(CMETA))if(c.toLowerCase().includes(k.split(" ")[0].toLowerCase()))return v;return{tag:"?",color:"#666",lc:"#444"};}
-function trv(e){if(!e)return null;const u=e.toUpperCase();for(const t of TRANSPORT)if(u.includes(t.d.toUpperCase()))return t.t;if(u.includes("AIRPORT")||u.includes("LYS"))return 52;return 45;}
+// ─────────────────────────────────────────────
+const DF = ["dim","lun","mar","mer","jeu","ven","sam"];
+const MF = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const MS = ["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
 
-// Robust time formatter to strip Sheet artifact junk
-function formatTime(val) {
-  if (!val) return "TBD";
-  const s = String(val).trim();
-  // Handle ISO strings from sheets e.g., 1899-12-30T14:00:00.000Z
-  if (s.includes("T")) {
-    try {
-      const d = new Date(s);
-      // Account for potential UTC drift by using UTC hours from standard sheet epochs
-      return `${String(d.getUTCHours()).padStart(2,"0")}:${String(d.getUTCMinutes()).padStart(2,"0")}`;
-    } catch(e) {}
+function fd(d) {
+  if (!d) return "";
+  const s = String(d).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+  return s;
+}
+function nice(iso) { if (!iso) return ""; const d = new Date(iso+"T12:00:00"); return `${DF[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]}`; }
+function niceLong(iso) { if (!iso) return ""; const d = new Date(iso+"T12:00:00"); return `${DF[d.getDay()]} ${d.getDate()} ${MF[d.getMonth()]}`; }
+function today() { return new Date().toISOString().slice(0,10); }
+function tmrw() { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().slice(0,10); }
+function cMonth() { return String(new Date().getMonth()+1).padStart(2,"0"); }
+function nowHHMM() { const d = new Date(); return `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; }
+
+function gm(c) {
+  if (!c) return {tag:"?",color:"#666"};
+  for (const [k,v] of Object.entries(CMETA)) {
+    if (c.toLowerCase().includes(k.split(" ")[0].toLowerCase())) return v;
   }
-  // Handle standard "14:00" or "14:00:00"
-  const m = s.match(/(\d{1,2}):(\d{2})/);
-  if (m) return `${m[1].padStart(2,"0")}:${m[2]}`;
-  return s; // Fallback
+  return {tag:"?",color:"#666"};
+}
+function trv(e) {
+  if (!e) return null;
+  const u = e.toUpperCase();
+  for (const t of TRANSPORT) if (u.includes(t.d.toUpperCase())) return t.t;
+  if (u.includes("AIRPORT")||u.includes("LYS")) return 52;
+  return 45;
+}
+function depTime(debut, travel) {
+  if (!debut||!travel) return null;
+  const p = debut.split(":");
+  if (p.length < 2) return null;
+  const m = parseInt(p[0])*60 + parseInt(p[1]) - travel - 15;
+  if (m < 0) return null;
+  return `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;
 }
 
-function depTime(debut,travel){if(!debut||!travel||debut==="TBD")return null;const p=debut.split(":");if(p.length<2)return null;const m=parseInt(p[0])*60+parseInt(p[1])-travel-15;if(isNaN(m))return null;return`${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;}
+// ─────────────────────────────────────────────
+// FIELD ACCESSORS
+// ─────────────────────────────────────────────
+function F(m,k) { return m[k]||m[k.replace("é","e")]||m[k.replace("è","e")]||m[k.replace("û","u")]||""; }
+function mDate(m)   { return fd(F(m,"Date mission")); }
+function mDebut(m)  { return F(m,"Début")||F(m,"Debut")||""; }
+function mClient(m) { return F(m,"Client"); }
+function mType(m)   { return F(m,"Type"); }
+function mDesc(m)   { return F(m,"Description"); }
+function mHeures(m) { return F(m,"Heures"); }
+function mBase(m)   { return F(m,"Base (HT)")||F(m,"Base")|| ""; }
+function mDeb(m)    { return F(m,"Débours")||F(m,"Debours")||""; }
+function mStatut(m) { return F(m,"Statut"); }
+function mNotes(m)  { return F(m,"Notes"); }
+function mEndroit(m){ return F(m,"Endroit"); }
+function mMid(m)    { return F(m,"Mission ID"); }
+function mVoyage(m) { return F(m,"Voyage(min)")||F(m,"Voyage"); }
+function isDone(m)  { const s=(mStatut(m)).toLowerCase(); return s.includes("envoyé")||s.includes("terminé")||s.includes("confirme")||s.includes("heures"); }
+function typeShort(m){ return mType(m).replace("ASSISTANCE ","").split(" - ").pop().split(" - ")[0]; }
 
-// Extract operations pseudo-data from description
-function parseOps(desc) {
-  const d = (desc||"").toLowerCase();
-  const ops = [];
-  const pax = d.match(/(\d+)\s*pax/i);
-  if(pax) ops.push({i:"👥", t:pax[0].toUpperCase()});
-  const tgv = d.match(/tgv\s*\d+/i);
-  if(tgv) ops.push({i:"🚆", t:tgv[0].toUpperCase()});
-  const vol = d.match(/(af|u2|ba|lh)\s*\d+/i);
-  if(vol) ops.push({i:"✈️", t:vol[0].toUpperCase()});
-  return ops;
+// ─────────────────────────────────────────────
+// LOCAL STORAGE — OPS OVERLAY
+// ─────────────────────────────────────────────
+function opsKey(mid)    { return `ops_${mid}`; }
+function logKey(mid)    { return `log_${mid}`; }
+function getOps(mid)    { try { return JSON.parse(localStorage.getItem(opsKey(mid))||"{}"); } catch(e) { return {}; } }
+function setOps(mid,d)  { localStorage.setItem(opsKey(mid), JSON.stringify(d)); }
+function getLog(mid)    { try { return JSON.parse(localStorage.getItem(logKey(mid))||"null"); } catch(e) { return null; } }
+function setLog(mid,d)  { localStorage.setItem(logKey(mid), JSON.stringify(d)); }
+
+// ─────────────────────────────────────────────
+// API CALLS
+// ─────────────────────────────────────────────
+async function fetchMissions(month) {
+  try {
+    const r = await fetch(`${GAS_URL}?action=missions&month=${encodeURIComponent(month||"current")}`);
+    const d = await r.json();
+    return d.missions || [];
+  } catch(e) { console.error(e); return null; }
+}
+async function fetchWeather() {
+  try {
+    const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weather_code&daily=precipitation_probability_max&timezone=Europe/Paris&forecast_days=1");
+    const d = await r.json();
+    const code = d.current?.weather_code || 0;
+    const temp = Math.round(d.current?.temperature_2m || 0);
+    const rain = d.daily?.precipitation_probability_max?.[0] || 0;
+    const icons = {0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",51:"🌦️",53:"🌧️",61:"🌧️",63:"🌧️",71:"🌨️",80:"🌦️",95:"⛈️"};
+    return { temp, icon: icons[code]||"🌤️", rain };
+  } catch(e) { return { temp:"?", icon:"🌤️", rain:0 }; }
+}
+async function updateField(id, field, value) {
+  try {
+    const r = await fetch(`${GAS_URL}?action=update&id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`);
+    return await r.json();
+  } catch(e) { return { error: e.message }; }
 }
 
-// ============================================================
-// DATA
-// ============================================================
-async function fetchM(month){
-  try{const r=await fetch(`${GAS_URL}?action=missions&month=${encodeURIComponent(month||"current")}`);const d=await r.json();return d.missions||[];}
-  catch(e){console.error(e);return null;}
-}
-async function fetchW(){
-  try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weather_code&daily=precipitation_probability_max&timezone=Europe/Paris&forecast_days=1");
-  const d=await r.json();const code=d.current?.weather_code||0;const temp=Math.round(d.current?.temperature_2m||0);const rain=d.daily?.precipitation_probability_max?.[0]||0;
-  const icons={0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",51:"🌦️",53:"🌧️",61:"🌧️",63:"🌧️",71:"🌨️",80:"🌦️",95:"⛈️"};
-  return{temp,icon:icons[code]||"🌤️",rain};}catch(e){return{temp:"?",icon:"🌤️",rain:0};}
-}
-async function updateField(id,field,value){
-  try{const r=await fetch(`${GAS_URL}?action=update&id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`);return await r.json();}
-  catch(e){return{error:e.message};}
-}
+// ─────────────────────────────────────────────
+// APP ROOT
+// ─────────────────────────────────────────────
+function App() {
+  const [theme, setTheme]       = React.useState(() => localStorage.getItem("mc_theme")||"dark");
+  const [tab, setTab]           = React.useState("today");
+  const [detail, setDetail]     = React.useState(null);
+  const [missions, setMissions] = React.useState([]);
+  const [loading, setLoading]   = React.useState(true);
+  const [weather, setWeather]   = React.useState({temp:"·",icon:"🌤️",rain:0});
+  const [postMission, setPostMission] = React.useState(null);
+  const [refreshKey, setRefreshKey]   = React.useState(0);
 
-// ============================================================
-// FIELD GETTERS (handles accent variations)
-// ============================================================
-function F(m,k){return m[k]||m[k.replace("é","e")]||m[k.replace("è","e")]||m[k.replace("û","u")]||"";}
-function mDate(m){return fd(F(m,"Date mission"));}
-function mDebutRaw(m){return F(m,"Début")||F(m,"Debut")||"";}
-function mDebut(m){return formatTime(mDebutRaw(m));}
-function mClient(m){return F(m,"Client");}
-function mType(m){return F(m,"Type");}
-function mDesc(m){return F(m,"Description");}
-function mHeures(m){return F(m,"Heures");}
-function mBase(m){return F(m,"Base (HT)");}
-function mDeb(m){return F(m,"Débours")||F(m,"Debours");}
-function mStatut(m){return F(m,"Statut");}
-function mNotes(m){return F(m,"Notes");}
-function mEndroit(m){return F(m,"Endroit");}
-function mMid(m){return F(m,"Mission ID");}
-function isDone(m){const s=(mStatut(m)).toLowerCase();return s.includes("envoyé")||s.includes("terminé")||s.includes("confirme");}
+  const T = theme === "dark" ? DARK : LIGHT;
 
-// ============================================================
-// APP
-// ============================================================
-function App(){
-  const[theme,setTheme]=React.useState(()=>localStorage.getItem("mc_theme")||"dark");
-  const[tab,setTab]=React.useState("today");
-  const[detail,setDetail]=React.useState(null);
-  const[missions,setMissions]=React.useState([]);
-  const[loading,setLoading]=React.useState(true);
-  const[weather,setWeather]=React.useState({temp:"·",icon:"🌤️",rain:0});
-  const[breatheOn,setBreatheOn]=React.useState(false);
-  const[postMission,setPostMission]=React.useState(null);
+  React.useEffect(() => {
+    document.body.className = theme;
+    document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#080c14" : "#f0ede6";
+    localStorage.setItem("mc_theme", theme);
+  }, [theme]);
 
-  const T=theme==="dark"?DARK:LIGHT;
-  React.useEffect(()=>{document.body.className=theme;localStorage.setItem("mc_theme",theme);},[theme]);
-
-  const load=React.useCallback(async()=>{
+  const load = React.useCallback(async () => {
     setLoading(true);
-    const[m,w]=await Promise.all([fetchM("current"),fetchW()]);
-    if(m!==null)setMissions(m);
-    if(w)setWeather(w);
+    const [m, w] = await Promise.all([fetchMissions("current"), fetchWeather()]);
+    if (m !== null) setMissions(m);
+    if (w) setWeather(w);
     setLoading(false);
-  },[]);
-  React.useEffect(()=>{load();},[load]);
+  }, []);
 
-  const t0=today(),t1=tmrw(),cm=cMonth(),mn=MF[parseInt(cm)-1]||"?";
-  const todayM=React.useMemo(()=>missions.filter(m=>mDate(m)===t0).sort((a,b)=>(mDebut(a)||"z").localeCompare(mDebut(b)||"z")),[missions,t0]);
-  const tmrwM=React.useMemo(()=>missions.filter(m=>mDate(m)===t1).sort((a,b)=>(mDebut(a)||"z").localeCompare(mDebut(b)||"z")),[missions,t1]);
-  const upcoming=React.useMemo(()=>missions.filter(m=>mDate(m)>t0).sort((a,b)=>mDate(a).localeCompare(mDate(b))),[missions,t0]);
-  const done=missions.filter(isDone).length;
-  const mBase_=missions.reduce((s,m)=>s+(parseFloat(mBase(m))||0),0);
-  const mDeb_=missions.reduce((s,m)=>s+(parseFloat(mDeb(m))||0),0);
-  const byDate=React.useMemo(()=>{const g={};missions.forEach(m=>{const d=mDate(m);if(d)(g[d]=g[d]||[]).push(m);});return g;},[missions]);
+  React.useEffect(() => { load(); }, [load]);
 
-  if(loading)return<div className="loading"><div className="spinner"></div><span style={{fontSize:12,color:T.textFaint}}>Chargement...</span></div>;
+  const t0 = today(), t1 = tmrw(), cm = cMonth();
+  const mnLabel = MF[parseInt(cm)-1] || "?";
 
-  // Post-mission flow
-  if(postMission)return<PostMissionFlow m={postMission} T={T} onDone={async(data)=>{
-    if(data.heures)await updateField(mMid(postMission),"heures",data.heures);
-    if(data.notes)await updateField(mMid(postMission),"notes",data.notes);
-    if(data.statut)await updateField(mMid(postMission),"statut",data.statut);
-    setPostMission(null);load();
-  }} onCancel={()=>setPostMission(null)}/>;
+  const todayM   = React.useMemo(() => missions.filter(m => mDate(m) === t0).sort((a,b) => (mDebut(a)||"z").localeCompare(mDebut(b)||"z")), [missions, t0]);
+  const tmrwM    = React.useMemo(() => missions.filter(m => mDate(m) === t1).sort((a,b) => (mDebut(a)||"z").localeCompare(mDebut(b)||"z")), [missions, t1]);
+  const upcoming = React.useMemo(() => missions.filter(m => mDate(m) > t0).sort((a,b) => mDate(a).localeCompare(mDate(b))), [missions, t0]);
 
-  return(
-    <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:T.bg}}>
-      {/* HEADER */}
-      <div style={{padding:"16px 18px 12px",background:theme==="dark"?"linear-gradient(180deg,#0e1320,#0a0f1a)":"linear-gradient(180deg,#fff,#f8f6f2)",borderBottom:`1px solid ${T.border}`}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-          <div>
-            <div style={{display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontSize:9,letterSpacing:3,color:T.textFaint,textTransform:"uppercase"}}>Mission Control</span>
-              <button onClick={()=>setTheme(theme==="dark"?"light":"dark")} style={{background:"none",border:"none",cursor:"pointer",fontSize:12,padding:2,color:T.textFaint}}>{theme==="dark"?"☀️":"🌙"}</button>
-            </div>
-            <div style={{fontSize:18,fontWeight:700,color:T.textBright,marginTop:1}}>{new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}</div>
-          </div>
-          <div style={{textAlign:"right",fontSize:12,color:T.textMuted}}>
-            <div style={{fontSize:18}}>{weather.icon}</div>
-            <div>{weather.temp}°C</div>
-            {weather.rain>15&&<div style={{fontSize:10,color:T.accent}}>🌧 {weather.rain}%</div>}
-          </div>
-        </div>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:4}}>
-          <div style={{fontSize:11,color:T.textFaint}}>{mn} · {missions.length} missions · {done} terminées</div>
-          <button onClick={load} style={{background:"none",border:"none",color:T.textFaint,fontSize:10,cursor:"pointer",padding:4}}>↻</button>
-        </div>
-      </div>
+  const done    = missions.filter(isDone).length;
+  const totalHT = missions.reduce((s,m) => s+(parseFloat(mBase(m))||0), 0);
+  const totalDeb = missions.reduce((s,m) => s+(parseFloat(mDeb(m))||0), 0);
 
-      {/* NAV */}
-      <div style={{display:"flex",borderBottom:`1px solid ${T.border}`,background:T.bg,position:"sticky",top:0,zIndex:10}}>
-        {[{id:"today",icon:"☀️",label:"Aujourd'hui"},{id:"month",icon:"📅",label:MS[parseInt(cm)-1]},{id:"finance",icon:"💶",label:"Finances"},{id:"breathe",icon:"🌿",label:"Pause"}].map(n=>(
-          <button key={n.id} onClick={()=>{setTab(n.id);setDetail(null);setBreatheOn(false);}} style={{
-            flex:1,padding:"9px 0 7px",background:"none",border:"none",cursor:"pointer",
-            color:tab===n.id?T.textBright:T.textFaint,fontSize:9,fontWeight:tab===n.id?700:400,
-            borderBottom:tab===n.id?`2px solid ${T.accent}`:"2px solid transparent",letterSpacing:.5,
-          }}><div style={{fontSize:14,marginBottom:1}}>{n.icon}</div>{n.label}</button>
-        ))}
-      </div>
+  const byDate = React.useMemo(() => {
+    const g = {};
+    missions.forEach(m => { const d = mDate(m); if (d) (g[d]=g[d]||[]).push(m); });
+    return g;
+  }, [missions]);
 
-      <div style={{padding:"14px 16px 40px",minHeight:"65vh"}}>
+  if (loading) return (
+    <div className="loading">
+      <div className="spinner"></div>
+      <span style={{fontSize:10,color:T.textFaint,letterSpacing:2}}>CHARGEMENT</span>
+    </div>
+  );
 
-        {/* TODAY */}
-        {tab==="today"&&!detail&&(
-          <div>
-            {todayM.length===0?(
-              <div style={{textAlign:"center",padding:"28px 0"}}>
-                <div style={{fontSize:32,marginBottom:4}}>☀️</div>
-                <div style={{fontSize:14,color:T.textMuted}}>Pas de mission aujourd'hui</div>
-              </div>
-            ):(
-              <>{Lbl("AUJOURD'HUI",T)}{todayM.map(m=><Card key={mMid(m)} m={m} T={T} onTap={()=>setDetail(m)}/>)}</>
-            )}
-            {tmrwM.length>0&&<>{Lbl("DEMAIN · "+nice(t1),T)}{tmrwM.map(m=><Card key={mMid(m)} m={m} T={T} compact onTap={()=>setDetail(m)}/>)}</>}
-            {todayM.length===0&&tmrwM.length===0&&upcoming.length>0&&(
-              <>{Lbl("PROCHAINE · "+nice(mDate(upcoming[0])),T)}<Card m={upcoming[0]} T={T} onTap={()=>setDetail(upcoming[0])}/></>
-            )}
-          </div>
+  // POST-MISSION FLOW
+  if (postMission) return (
+    <PostMissionFlow
+      m={postMission} T={T}
+      onDone={async (data) => {
+        if (data.heures) await updateField(mMid(postMission), "heures", data.heures);
+        if (data.notes)  await updateField(mMid(postMission), "notes", data.notes);
+        if (data.statut) await updateField(mMid(postMission), "statut", data.statut);
+        setLog(mMid(postMission), data);
+        setPostMission(null);
+        setRefreshKey(k => k+1);
+        load();
+      }}
+      onCancel={() => setPostMission(null)}
+    />
+  );
+
+  return (
+    <div key={refreshKey} style={{maxWidth:480, margin:"0 auto", minHeight:"100vh", background:T.bg}}>
+
+      {/* ── HEADER ── */}
+      <Header T={T} theme={theme} onToggleTheme={() => setTheme(theme==="dark"?"light":"dark")}
+        weather={weather} missions={missions} done={done} mnLabel={mnLabel} onRefresh={load} />
+
+      {/* ── NAV ── */}
+      <Nav tab={tab} setTab={(t) => { setTab(t); setDetail(null); }} T={T} cm={cm} />
+
+      <div style={{padding:"14px 15px 60px", minHeight:"65vh"}}>
+
+        {/* TODAY TAB */}
+        {tab === "today" && !detail && (
+          <TodayTab T={T} todayM={todayM} tmrwM={tmrwM} upcoming={upcoming} t0={t0} t1={t1}
+            onDetail={setDetail} />
         )}
 
-        {/* DETAIL */}
-        {detail&&<Detail m={detail} T={T} theme={theme} onBack={()=>setDetail(null)} onPostMission={()=>{setPostMission(detail);setDetail(null);}}/>}
-
-        {/* ... (Month, Finance, Breathe tabs remain identical to your previous code) ... */}
-        
-        {/* MONTH */}
-        {tab==="month"&&!detail&&(
-          <div>
-            {Lbl(`${mn.toUpperCase()} · ${missions.length} MISSIONS`,T)}
-            {Object.entries(byDate).sort(([a],[b])=>a.localeCompare(b)).map(([date,ms])=>(
-              <div key={date} style={{marginBottom:12}}>
-                <div style={{fontSize:11,fontWeight:700,color:date===t0?T.accent:date===t1?T.green:T.textFaint,letterSpacing:1,marginBottom:4}}>
-                  {niceLong(date).toUpperCase()}{date===t0?" · AUJOURD'HUI":""}{date===t1?" · DEMAIN":""}
-                </div>
-                {ms.map(m=><Card key={mMid(m)||Math.random()} m={m} T={T} compact onTap={()=>setDetail(m)}/>)}
-              </div>
-            ))}
-          </div>
+        {/* DETAIL VIEW */}
+        {detail && (
+          <DetailView m={detail} T={T} theme={theme}
+            onBack={() => setDetail(null)}
+            onPostMission={() => { setPostMission(detail); setDetail(null); }}
+          />
         )}
 
-        {/* FINANCE */}
-        {tab==="finance"&&(
-          <div>
-            {Lbl(`${mn.toUpperCase()} · FINANCES`,T)}
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
-              <StatBox l="Base HT" v={`${mBase_.toLocaleString("fr-FR")}€`} c={T.accent} T={T}/>
-              <StatBox l="Débours" v={`${mDeb_.toLocaleString("fr-FR")}€`} c={T.green} T={T}/>
-              <StatBox l="Net" v={`${Math.round(mBase_*.74+mDeb_).toLocaleString("fr-FR")}€`} c={T.orange} T={T}/>
-              <StatBox l="Missions" v={`${done}/${missions.length}`} c={T.purple} T={T}/>
-            </div>
-          </div>
+        {/* MONTH TAB */}
+        {tab === "month" && !detail && (
+          <MonthTab T={T} byDate={byDate} t0={t0} t1={t1} mnLabel={mnLabel}
+            missions={missions} onDetail={setDetail} />
         )}
 
-        {/* BREATHE */}
-        {tab==="breathe"&&<Breathe active={breatheOn} toggle={()=>setBreatheOn(!breatheOn)} T={T}/>}
+        {/* FINANCE TAB */}
+        {tab === "finance" && (
+          <FinanceTab T={T} missions={missions} done={done} totalHT={totalHT} totalDeb={totalDeb} mnLabel={mnLabel} />
+        )}
+
+        {/* BREATHE TAB */}
+        {tab === "breathe" && <BreatheTab T={T} />}
+
       </div>
     </div>
   );
 }
 
-// ============================================================
-// COMPONENTS
-// ============================================================
-function Lbl(t,T){return<div style={{fontSize:10,color:T.textFaint,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:6,marginTop:4}}>{t}</div>;}
-function StatBox({l,v,c,T}){return<div style={{background:T.card,borderRadius:10,padding:"10px 12px",textAlign:"center"}}><div style={{fontSize:9,color:T.textFaint,marginBottom:2}}>{l}</div><div style={{fontSize:16,fontWeight:700,color:c}}>{v}</div></div>;}
+// ─────────────────────────────────────────────
+// HEADER
+// ─────────────────────────────────────────────
+function Header({T, theme, onToggleTheme, weather, missions, done, mnLabel, onRefresh}) {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("fr-FR", {weekday:"long",day:"numeric",month:"long"});
 
-function Card({m,compact,onTap,T}){
-  const meta=gm(mClient(m));
-  const dn=isDone(m);
-  const debut=mDebut(m);
-  const type=(mType(m)).replace("ASSISTANCE ","").split(" - ").pop();
-  return(
-    <div onClick={onTap} style={{background:T.card,borderRadius:compact?10:12,padding:compact?"8px 12px":"12px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,cursor:"pointer",opacity:dn?.5:1,transition:"transform .1s"}}
-      onPointerDown={e=>e.currentTarget.style.transform="scale(0.98)"}onPointerUp={e=>e.currentTarget.style.transform=""}onPointerLeave={e=>e.currentTarget.style.transform=""}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-        <div style={{flex:1}}>
-          <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-            <span style={{fontSize:compact?11:13,fontWeight:700,color:meta.color}}>{meta.tag}</span>
-            <span style={{fontSize:compact?10:12,color:T.textMuted}}>{debut}</span>
-            {!compact&&<span style={{fontSize:10,color:T.textFaint}}>{nice(mDate(m))}</span>}
-            {dn&&<span style={{fontSize:8,background:T.green+"22",color:T.green,padding:"1px 4px",borderRadius:3}}>✓</span>}
+  return (
+    <div style={{
+      padding:"14px 16px 10px",
+      background: theme==="dark" ? "linear-gradient(180deg,#0d1420 0%,#080c14 100%)" : "linear-gradient(180deg,#faf8f4 0%,#f0ede6 100%)",
+      borderBottom:`1px solid ${T.border}`,
+    }}>
+      <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
+        <div>
+          <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:2}}>
+            <span style={{fontSize:8, letterSpacing:3, color:T.textFaint, textTransform:"uppercase", fontFamily:"'DM Mono',monospace"}}>Mission Control</span>
+            <button onClick={onToggleTheme} style={{background:"none",border:"none",fontSize:11,padding:"1px 4px",color:T.textFaint,borderRadius:4}}>
+              {theme==="dark"?"☀️":"🌙"}
+            </button>
           </div>
-          <div style={{fontSize:compact?10:12,color:T.textMuted,marginTop:2}}>{type}</div>
+          <div style={{fontSize:17, fontWeight:700, color:T.textBright, lineHeight:1.2}}>{dateStr}</div>
+          <div style={{fontSize:10, color:T.textFaint, marginTop:3, fontFamily:"'DM Mono',monospace"}}>
+            {mnLabel} · {missions.length} missions · {done} terminées
+          </div>
         </div>
-        <div style={{textAlign:"right",fontSize:10,color:T.textFaint}}>
-          {mDesc(m)&&<div style={{fontFamily:"monospace",fontSize:9}}>{mDesc(m)}</div>}
+        <div style={{textAlign:"right", display:"flex", flexDirection:"column", alignItems:"flex-end", gap:2}}>
+          <div style={{fontSize:22, lineHeight:1}}>{weather.icon}</div>
+          <div style={{fontSize:14, fontWeight:600, color:T.textMuted}}>{weather.temp}°C</div>
+          {weather.rain > 15 && <div style={{fontSize:9, color:T.accent}}>🌧 {weather.rain}%</div>}
+          <button onClick={onRefresh} style={{background:"none",border:"none",color:T.textFaint,fontSize:10,padding:2,marginTop:2}}>↻</button>
         </div>
       </div>
     </div>
   );
 }
 
-// ============================================================
-// DETAIL VIEW (V3 COMPREHENSIVE REBUILD)
-// ============================================================
-function Detail({m,T,theme,onBack,onPostMission}){
-  const meta=gm(mClient(m));
-  const base=parseFloat(mBase(m))||0,deb=parseFloat(mDeb(m))||0;
-  const debut=mDebut(m);
-  const endroit=mEndroit(m);
-  const trvl=trv(endroit);
-  const dep=depTime(debut,trvl);
-  const dn=isDone(m);
-  const ops=parseOps(mDesc(m));
+// ─────────────────────────────────────────────
+// NAV
+// ─────────────────────────────────────────────
+function Nav({tab, setTab, T, cm}) {
+  const items = [
+    {id:"today", icon:"☀️", label:"Aujourd'hui"},
+    {id:"month", icon:"📅", label:MS[parseInt(cm)-1]},
+    {id:"finance", icon:"💶", label:"Finances"},
+    {id:"breathe", icon:"🌿", label:"Pause"},
+  ];
+  return (
+    <div style={{display:"flex", borderBottom:`1px solid ${T.border}`, background:T.bg, position:"sticky", top:0, zIndex:20}}>
+      {items.map(n => (
+        <button key={n.id} onClick={() => setTab(n.id)} style={{
+          flex:1, padding:"8px 0 6px", background:"none", border:"none",
+          color: tab===n.id ? T.textBright : T.textFaint,
+          fontSize:8, fontWeight: tab===n.id ? 700 : 400,
+          borderBottom: tab===n.id ? `2px solid ${T.accent}` : "2px solid transparent",
+          letterSpacing:.8, textTransform:"uppercase",
+          transition:"color .15s",
+        }}>
+          <div style={{fontSize:15, marginBottom:2}}>{n.icon}</div>
+          {n.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
-  return(
-    <div>
-      <button onClick={onBack} style={{background:"none",border:"none",color:T.accent,fontSize:11,cursor:"pointer",padding:"0 0 8px"}}>← Retour</button>
-      <div style={{background:T.card,borderRadius:14,overflow:"hidden",borderLeft:`4px solid ${meta.color}`}}>
-        
-        {/* HEADER BLOCK */}
-        <div style={{padding:"16px 16px 12px"}}>
-          <div style={{display:"flex",justifyContent:"space-between"}}>
-            <div>
-              <div style={{fontSize:9,color:meta.color,fontWeight:700,letterSpacing:1.5}}>{meta.tag} · {mClient(m)}</div>
-              <div style={{fontSize:15,fontWeight:700,color:T.textBright,marginTop:2}}>{mType(m)}</div>
+// ─────────────────────────────────────────────
+// TODAY TAB
+// ─────────────────────────────────────────────
+function TodayTab({T, todayM, tmrwM, upcoming, t0, t1, onDetail}) {
+  const hasToday = todayM.length > 0;
+  const hasTmrw  = tmrwM.length > 0;
+
+  return (
+    <div className="fade-up">
+      {!hasToday && !hasTmrw && upcoming.length === 0 && (
+        <div style={{textAlign:"center", padding:"40px 0"}}>
+          <div style={{fontSize:40, marginBottom:8}}>☀️</div>
+          <div style={{fontSize:14, color:T.textMuted}}>Pas de missions</div>
+        </div>
+      )}
+      {hasToday && <>{SectionLabel("AUJOURD'HUI", T)}{todayM.map(m => <MissionCard key={mMid(m)} m={m} T={T} onTap={() => onDetail(m)} />)}</>}
+      {hasTmrw  && <>{SectionLabel("DEMAIN · "+nice(t1), T)}{tmrwM.map(m => <MissionCard key={mMid(m)} m={m} T={T} compact onTap={() => onDetail(m)} />)}</>}
+      {!hasToday && !hasTmrw && upcoming.length > 0 && (
+        <>{SectionLabel("PROCHAINE · "+nice(mDate(upcoming[0])), T)}
+          <MissionCard m={upcoming[0]} T={T} onTap={() => onDetail(upcoming[0])} /></>
+      )}
+      {upcoming.slice(0, 4).length > 0 && hasToday && (
+        <>{SectionLabel("À VENIR", T)}
+          {upcoming.slice(0,3).map(m => <MissionCard key={mMid(m)} m={m} T={T} compact onTap={() => onDetail(m)} />)}</>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// MISSION CARD
+// ─────────────────────────────────────────────
+function MissionCard({m, compact, onTap, T}) {
+  const meta = gm(mClient(m));
+  const done = isDone(m);
+  const debut = mDebut(m) || "TBD";
+  const tShort = typeShort(m);
+  const log = getLog(mMid(m));
+
+  return (
+    <div onClick={onTap} style={{
+      background:T.card, borderRadius:compact?10:12, padding:compact?"8px 12px":"12px 14px",
+      marginBottom:6, borderLeft:`3px solid ${meta.color}`,
+      cursor:"pointer", opacity: done ? .55 : 1,
+      transition:"transform .1s, background .15s",
+    }}
+      onPointerDown={e=>e.currentTarget.style.transform="scale(0.985)"}
+      onPointerUp={e=>e.currentTarget.style.transform=""}
+      onPointerLeave={e=>e.currentTarget.style.transform=""}
+    >
+      <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
+        <div style={{flex:1, minWidth:0}}>
+          <div style={{display:"flex", alignItems:"center", gap:5, flexWrap:"wrap"}}>
+            <span style={{
+              fontSize:9, fontWeight:700, color:meta.color, letterSpacing:.8,
+              background:meta.color+"18", padding:"2px 6px", borderRadius:4,
+              fontFamily:"'DM Mono',monospace",
+            }}>{meta.tag}</span>
+            <span style={{fontSize:compact?12:13, fontWeight:600, color:T.textBright}}>{debut}</span>
+            {!compact && <span style={{fontSize:10, color:T.textFaint}}>{nice(mDate(m))}</span>}
+            {done && <span style={{fontSize:8, color:T.green}}>✓</span>}
+            {log && !done && <span style={{fontSize:8, color:T.orange, fontFamily:"'DM Mono',monospace"}}>LOG</span>}
+          </div>
+          <div style={{fontSize:compact?10:11, color:T.textMuted, marginTop:2, fontWeight:500}}>{tShort}</div>
+        </div>
+        <div style={{textAlign:"right", fontSize:9, color:T.textFaint, fontFamily:"'DM Mono',monospace", marginLeft:8}}>
+          {mDesc(m) && <div>{mDesc(m)}</div>}
+          {mBase(m) && <div style={{color:T.textMuted, marginTop:1}}>{mBase(m)}€</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// DETAIL VIEW
+// ─────────────────────────────────────────────
+function DetailView({m, T, theme, onBack, onPostMission}) {
+  const meta   = gm(mClient(m));
+  const base   = parseFloat(mBase(m)) || 0;
+  const deb    = parseFloat(mDeb(m)) || 0;
+  const debut  = mDebut(m) || "TBD";
+  const endroit = mEndroit(m);
+  const trvl   = trv(endroit);
+  const dep    = depTime(debut, trvl);
+  const done   = isDone(m);
+  const mid    = mMid(m);
+  const log    = getLog(mid);
+  const ops    = getOps(mid);
+
+  const [editingOps, setEditingOps] = React.useState(false);
+  const [opsData, setOpsData]       = React.useState(ops);
+
+  const saveOps = () => { setOps(mid, opsData); setEditingOps(false); };
+
+  return (
+    <div className="fade-up">
+      <button onClick={onBack} style={{background:"none",border:"none",color:T.accent,fontSize:11,cursor:"pointer",padding:"0 0 10px",display:"flex",alignItems:"center",gap:4}}>
+        ← Retour
+      </button>
+
+      <div style={{background:T.card, borderRadius:14, overflow:"hidden", borderLeft:`4px solid ${meta.color}`, marginBottom:10}}>
+
+        {/* ── HEAD ── */}
+        <div style={{padding:"14px 16px 12px"}}>
+          <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
+            <div style={{flex:1}}>
+              <div style={{fontSize:9, color:meta.color, fontWeight:700, letterSpacing:1.5, fontFamily:"'DM Mono',monospace"}}>{meta.tag} · {mClient(m)}</div>
+              <div style={{fontSize:15, fontWeight:700, color:T.textBright, marginTop:2, lineHeight:1.3}}>{mType(m).replace("ASSISTANCE ","")}</div>
             </div>
-            <div style={{fontSize:8,padding:"2px 6px",borderRadius:4,background:dn?T.green+"22":T.accent+"22",color:dn?T.green:T.accent,fontWeight:600}}>{mStatut(m)||"—"}</div>
+            <div style={{
+              fontSize:8, padding:"3px 7px", borderRadius:4, fontWeight:600, whiteSpace:"nowrap", marginLeft:8,
+              background: done ? T.green+"22" : T.accent+"18",
+              color: done ? T.green : T.accent,
+            }}>{mStatut(m)||"—"}</div>
           </div>
 
           {/* DEPARTURE HELPER */}
-          {debut!=="TBD"&&trvl&&(
-            <div style={{marginTop:12,padding:"10px 12px",background:T.timeBox,borderRadius:8,border:`1px solid ${T.timeBorder}`}}>
-              <div style={{fontSize:11,color:T.accent,fontWeight:700,letterSpacing:0.5}}>TON CRÉNEAU : {debut}</div>
-              {dep&&<div style={{fontSize:10,color:T.textBright,marginTop:2}}>Départ maison ~ {dep} <span style={{color:T.textMuted,fontSize:9}}>(Trajet {trvl} min)</span></div>}
+          {debut !== "TBD" && trvl && (
+            <div style={{marginTop:10, padding:"8px 10px", background:T.timeBox, borderRadius:8, border:`1px solid ${T.timeBorder}`}}>
+              <div style={{fontSize:11, color:T.accent, fontWeight:600}}>⏰ Mission à {debut}</div>
+              {dep && <div style={{fontSize:10, color:T.textMuted, marginTop:1}}>Départ maison ~{dep} · trajet ~{trvl} min</div>}
             </div>
           )}
 
-          {/* CORE GRID */}
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:14,fontSize:11}}>
-            <FldBox l="Date" v={niceLong(mDate(m))} T={T}/>
-            <FldBox l="Lieu" v={endroit||"—"} T={T}/>
-            <FldBox l="Heure planifiée" v={debut} T={T}/>
-            <FldBox l="Durée" v={mHeures(m)?mHeures(m)+"h":"TBD"} T={T}/>
-            <FldBox l="Réf" v={mDesc(m)||"—"} T={T} mono/>
-            <FldBox l="ID" v={mMid(m)} T={T} mono small/>
+          {/* INFO GRID */}
+          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:12}}>
+            <FldBox l="Date" v={niceLong(mDate(m))} T={T} />
+            <FldBox l="Heure" v={debut} T={T} />
+            <FldBox l="Lieu" v={endroit||"—"} T={T} />
+            <FldBox l="Durée" v={mHeures(m)?mHeures(m)+"h":"TBD"} T={T} />
+            <FldBox l="Référence" v={mDesc(m)||"—"} T={T} mono />
+            <FldBox l="ID" v={mid} T={T} mono small />
           </div>
         </div>
 
-        {/* OPERATIONS BLOCK (V3 Style) */}
-        <div style={{padding:"12px 16px",borderTop:`1px solid ${T.border}`}}>
-          {Lbl("OPÉRATIONS", T)}
-          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:4}}>
-            {ops.map((o,i)=>(
-              <div key={i} style={{background:T.cardHover,padding:"4px 8px",borderRadius:6,fontSize:11,color:T.textBright,border:`1px solid ${T.border}`}}>
-                {o.i} {o.t}
-              </div>
-            ))}
-            {ops.length===0&&<div style={{fontSize:10,color:T.textFaint}}>Aucune donnée logistique détectée</div>}
+        {/* ── FINANCES ── */}
+        {(base > 0 || deb > 0) && (
+          <div style={{padding:"10px 16px", borderTop:`1px solid ${T.border}`, fontSize:11}}>
+            <Row l="Base HT" v={base?base+"€":"TBD"} T={T} />
+            <Row l="Débours" v={deb?deb+"€":"—"} T={T} />
+            <Row l="Net (après URSSAF)" v={Math.round(base*.74+deb)+"€"} T={T} bold accent={T.orange} />
           </div>
-          {mNotes(m)&&<div style={{marginTop:12,padding:"8px 10px",background:T.bg,borderRadius:6,borderLeft:`2px solid ${T.orange}`,fontSize:10,color:T.textBright,lineHeight:1.5}}>⚠️ {mNotes(m)}</div>}
-        </div>
+        )}
 
-        {/* TEAM & CONTACTS BLOCK */}
-        <div style={{padding:"12px 16px",borderTop:`1px solid ${T.border}`}}>
-          {Lbl("ÉQUIPE & CONTACTS", T)}
-          <div style={{fontSize:11,color:T.textMuted,lineHeight:1.8}}>
-            <div><strong style={{color:T.textBright}}>Coordination</strong> · {meta.contact}</div>
-            {meta.phone&&<div>📞 <a href={`tel:${meta.phone}`} style={{color:T.accent}}>{meta.phone}</a></div>}
-            <div>✉️ <a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a></div>
-            
-            <div style={{marginTop:8,fontSize:10,color:T.textFaint,borderTop:`1px dashed ${T.border}`,paddingTop:8}}>
-              <i>Membres d'équipe (Hosts/Chauffeurs) apparaîtront ici après intégration des manifests.</i>
-            </div>
+        {/* ── OPS OVERLAY ── */}
+        <div style={{padding:"10px 16px", borderTop:`1px solid ${T.border}`}}>
+          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:editingOps?10:6}}>
+            <div style={{fontSize:9, color:T.textFaint, fontWeight:700, letterSpacing:1.5}}>INFOS MISSION</div>
+            <button onClick={() => editingOps ? saveOps() : setEditingOps(true)} style={{
+              background:"none", border:`1px solid ${T.border}`, borderRadius:6,
+              padding:"3px 8px", fontSize:9, color:T.accent, cursor:"pointer",
+            }}>{editingOps ? "💾 Sauver" : "✏️ Éditer"}</button>
           </div>
-        </div>
 
-        {/* EMAIL & DOCS PLACEHOLDER */}
-        <div style={{padding:"12px 16px",borderTop:`1px solid ${T.border}`}}>
-          {Lbl("EMAIL & DOCUMENTS", T)}
-          <div style={{background:T.cardHover,padding:"10px",borderRadius:8,border:`1px solid ${T.border}`}}>
-             <div style={{fontSize:9,color:T.textFaint}}>De: {meta.email}</div>
-             <div style={{fontSize:11,fontWeight:600,color:T.textBright,marginTop:2}}>[{meta.tag}] {mType(m)}</div>
-             <div style={{display:"flex",gap:6,marginTop:8}}>
-               <span style={{fontSize:9,background:T.card,padding:"4px 8px",borderRadius:4,border:`1px solid ${T.border}`,color:T.textMuted}}>📄 Programme.pdf (Bientôt)</span>
-             </div>
-          </div>
-        </div>
-
-        {/* LOGS & ACTIONS */}
-        <div style={{padding:"12px 16px 16px",borderTop:`1px solid ${T.border}`}}>
-          {dn ? (
-             <div>
-               {Lbl("RAPPORT DE MISSION", T)}
-               <div style={{background:T.green+"11",border:`1px solid ${T.green}33`,padding:"12px",borderRadius:10}}>
-                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                    <span style={{fontSize:12,color:T.green,fontWeight:700}}>✅ Heures validées</span>
-                    <button onClick={onPostMission} style={{background:"none",border:"none",fontSize:11,color:T.textMuted,cursor:"pointer",textDecoration:"underline"}}>Modifier</button>
-                 </div>
-                 <div style={{fontSize:12,color:T.textMuted}}>Total reporté : <strong style={{color:T.textBright}}>{mHeures(m)}h</strong></div>
-                 <div style={{fontSize:11,color:T.textMuted,marginTop:6,lineHeight:1.4}}><i>"{mNotes(m) || "RAS"}"</i></div>
-               </div>
-             </div>
+          {editingOps ? (
+            <OpsEditor data={opsData} setData={setOpsData} T={T} />
           ) : (
-            <button onClick={onPostMission} style={{
-              width:"100%",padding:"12px",borderRadius:10,fontSize:13,fontWeight:700,cursor:"pointer",
-              background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,
-              transition:"all .2s",
-            }}>✅ Fin de mission — Logger les heures</button>
+            <OpsDisplay data={opsData} T={T} />
           )}
         </div>
+
+        {/* ── NOTES ── */}
+        {mNotes(m) && (
+          <div style={{padding:"8px 16px", borderTop:`1px solid ${T.border}`, fontSize:10, color:T.textFaint, lineHeight:1.6}}>
+            📝 {mNotes(m)}
+          </div>
+        )}
+
+        {/* ── CONTACT ── */}
+        <div style={{padding:"10px 16px", borderTop:`1px solid ${T.border}`}}>
+          <div style={{fontSize:9, color:T.textFaint, marginBottom:4, letterSpacing:1.5, fontWeight:700}}>CONTACT</div>
+          <div style={{fontSize:11, color:T.textMuted, lineHeight:1.8}}>
+            {meta.contact}
+            {meta.phone && <> · <a href={`tel:${meta.phone}`} style={{color:T.accent}}>{meta.phone}</a></>}
+            {" · "}<a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a>
+          </div>
+          {meta.cohost && <div style={{fontSize:10, color:T.textFaint, marginTop:2}}>🤝 {meta.cohost}</div>}
+          {meta.emergency && <div style={{fontSize:10, marginTop:2}}>🚨 <a href={`tel:${meta.emergency}`} style={{color:T.red}}>{meta.emergency}</a></div>}
+          {meta.notes && <div style={{fontSize:9, color:T.orange, marginTop:4}}>{meta.notes}</div>}
+        </div>
+
+        {/* ── POST-MISSION LOG ── */}
+        {log && (
+          <div style={{padding:"10px 16px", borderTop:`1px solid ${T.border}`, background:T.green+"08"}}>
+            <div style={{fontSize:9, color:T.green, fontWeight:700, letterSpacing:1.5, marginBottom:4}}>✅ MISSION LOGGÉE</div>
+            <div style={{fontSize:11, color:T.textMuted, lineHeight:1.8}}>
+              ⏱ {log.debutR}–{log.finR} = {log.heures}h
+              {log.notes && log.notes !== "RAS" && <><br/>📝 {log.notes}</>}
+              {log.statut && <><br/><span style={{color:T.green}}>{log.statut}</span></>}
+            </div>
+          </div>
+        )}
+
+        {/* ── POST-MISSION BUTTON ── */}
+        {!done && (
+          <div style={{padding:"12px 16px 14px", borderTop:`1px solid ${T.border}`}}>
+            <button onClick={onPostMission} style={{
+              width:"100%", padding:"12px", borderRadius:10, fontSize:13, fontWeight:700,
+              background:T.accent+"15", color:T.accent, border:`1px solid ${T.accent}30`,
+              transition:"all .2s",
+            }}>
+              ✅ Fin de mission — Logger les heures
+            </button>
+          </div>
+        )}
+
+        <div style={{padding:"4px 16px 8px", fontSize:8, color:T.textFaint, fontFamily:"'DM Mono',monospace"}}>{mid}</div>
       </div>
     </div>
   );
 }
 
-function FldBox({l,v,T,mono,small}){
-  return<div><div style={{color:T.textFaint,fontSize:9}}>{l}</div><div style={{color:T.textMuted,fontWeight:600,fontSize:small?10:11,fontFamily:mono?"monospace":"inherit"}}>{v}</div></div>;
+// ─────────────────────────────────────────────
+// OPS DISPLAY & EDITOR
+// ─────────────────────────────────────────────
+const OPS_FIELDS = [
+  {k:"pax",     label:"Pax"},
+  {k:"coaches", label:"Cars"},
+  {k:"tgv",     label:"TGV #"},
+  {k:"trainTime",label:"Heure train"},
+  {k:"pdship",  label:"PD Ship"},
+  {k:"driver",  label:"Chauffeur"},
+  {k:"driverPhone", label:"Tel chauffeur"},
+  {k:"parisHost", label:"Host Paris"},
+  {k:"mise",    label:"Mise en place"},
+  {k:"notes",   label:"Notes terrain"},
+];
+
+function OpsDisplay({data, T}) {
+  const entries = OPS_FIELDS.filter(f => data[f.k]);
+  if (!entries.length) return (
+    <div style={{fontSize:10, color:T.textFaint, fontStyle:"italic", paddingBottom:4}}>
+      Aucune info saisie — appuyer ✏️ pour ajouter
+    </div>
+  );
+  return (
+    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:6}}>
+      {entries.map(f => (
+        <div key={f.k}>
+          <div style={{fontSize:9, color:T.textFaint}}>{f.label}</div>
+          <div style={{fontSize:11, color:T.textMuted, fontWeight:500}}>{data[f.k]}</div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
-// ============================================================
-// POST-MISSION FLOW (Same as before)
-// ============================================================
-function PostMissionFlow({m,T,onDone,onCancel}){
-  const[step,setStep]=React.useState(1);
-  const[heures,setHeures]=React.useState(mHeures(m)||"");
-  const[debutR,setDebutR]=React.useState(mDebut(m)||"");
-  const[finR,setFinR]=React.useState("");
-  const[notes,setNotes]=React.useState(mNotes(m)||"");
-  const[sending,setSending]=React.useState(false);
+function OpsEditor({data, setData, T}) {
+  return (
+    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8}}>
+      {OPS_FIELDS.map(f => (
+        <div key={f.k}>
+          <div style={{fontSize:9, color:T.textFaint, marginBottom:3}}>{f.label}</div>
+          <input
+            value={data[f.k]||""}
+            onChange={e => setData({...data,[f.k]:e.target.value})}
+            placeholder="—"
+            style={{
+              width:"100%", padding:"5px 8px", borderRadius:6, fontSize:11,
+              border:`1px solid ${T.border}`, background:T.inputBg, color:T.textBright,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
 
-  const meta=gm(mClient(m));
+// ─────────────────────────────────────────────
+// MONTH TAB
+// ─────────────────────────────────────────────
+function MonthTab({T, byDate, t0, t1, mnLabel, missions, onDetail}) {
+  const [expanded, setExpanded] = React.useState(null);
 
-  return(
-    <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:T.bg,padding:20}}>
-      <button onClick={onCancel} style={{background:"none",border:"none",color:T.textFaint,fontSize:11,cursor:"pointer",marginBottom:12}}>← Annuler</button>
+  return (
+    <div className="fade-up">
+      {SectionLabel(`${mnLabel.toUpperCase()} · ${missions.length} MISSIONS`, T)}
 
-      <div style={{background:T.card,borderRadius:14,padding:20,borderLeft:`4px solid ${meta.color}`}}>
-        <div style={{fontSize:10,color:meta.color,fontWeight:700,letterSpacing:1}}>{meta.tag} · {mType(m)}</div>
-        <div style={{fontSize:14,fontWeight:700,color:T.textBright,marginTop:2,marginBottom:16}}>{niceLong(mDate(m))}</div>
+      {Object.entries(byDate).sort(([a],[b]) => a.localeCompare(b)).map(([date,ms]) => {
+        const isToday  = date === t0;
+        const isTmrw   = date === t1;
+        const isPast   = date < t0;
+        return (
+          <div key={date} style={{marginBottom:10}}>
+            <div style={{
+              fontSize:10, fontWeight:700, letterSpacing:.8, marginBottom:4,
+              color: isToday ? T.accent : isTmrw ? T.green : isPast ? T.textFaint : T.textMuted,
+            }}>
+              {niceLong(date).toUpperCase()}
+              {isToday ? " · AUJOURD'HUI" : isTmrw ? " · DEMAIN" : ""}
+            </div>
+            {ms.map(m => <MissionCard key={mMid(m)||Math.random()} m={m} T={T} compact onTap={() => onDetail(m)} />)}
+          </div>
+        );
+      })}
 
-        {step===1&&(
+      {SectionLabel("CONTACTS", T)}
+      {Object.entries(CMETA).map(([name, meta]) => (
+        <div key={name} style={{background:T.card, borderRadius:10, marginBottom:6, overflow:"hidden", borderLeft:`3px solid ${meta.color}`}}>
+          <button onClick={() => setExpanded(expanded===name?null:name)} style={{
+            width:"100%", background:"none", border:"none", cursor:"pointer",
+            padding:"10px 12px", display:"flex", justifyContent:"space-between", alignItems:"center",
+          }}>
+            <div style={{display:"flex", alignItems:"center", gap:8}}>
+              <span style={{fontSize:10, fontWeight:700, color:meta.color, fontFamily:"'DM Mono',monospace"}}>{meta.tag}</span>
+              <span style={{fontSize:11, color:T.textMuted}}>{name}</span>
+            </div>
+            <span style={{fontSize:10, color:T.textFaint}}>{expanded===name?"▲":"▼"}</span>
+          </button>
+          {expanded === name && (
+            <div style={{padding:"0 12px 12px", fontSize:11, color:T.textMuted, lineHeight:1.9}}>
+              {meta.contact}
+              {meta.phone && <> · <a href={`tel:${meta.phone}`} style={{color:T.accent}}>{meta.phone}</a></>}
+              <br/><a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a>
+              {meta.cohost && <><br/>🤝 {meta.cohost}</>}
+              {meta.emergency && <><br/>🚨 <a href={`tel:${meta.emergency}`} style={{color:T.red}}>{meta.emergency}</a></>}
+              {meta.notes && <><br/><span style={{fontSize:9,color:T.orange}}>{meta.notes}</span></>}
+              {meta.rates && (
+                <div style={{marginTop:6, padding:"6px 8px", background:T.card2, borderRadius:6, fontSize:9, color:T.textFaint, whiteSpace:"pre-line"}}>
+                  {meta.rates}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      ))}
+
+      {SectionLabel("TRAJETS DEPUIS SAINT-PRIEST", T)}
+      <div style={{background:T.card, borderRadius:10, padding:"10px 14px", fontSize:11, color:T.textFaint, lineHeight:2}}>
+        {TRANSPORT.map((t,i) => (
+          <div key={i} style={{display:"flex", justifyContent:"space-between"}}>
+            <span>🚗 {t.d}</span>
+            <span style={{fontFamily:"'DM Mono',monospace", color:T.textMuted}}>{t.t} min</span>
+          </div>
+        ))}
+        <div style={{fontSize:9, marginTop:4, color:T.textFaint, opacity:.7}}>Avant 06h00 → Bolt VTC</div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// FINANCE TAB
+// ─────────────────────────────────────────────
+function FinanceTab({T, missions, done, totalHT, totalDeb, mnLabel}) {
+  const net = Math.round(totalHT * .74 + totalDeb);
+  const urssaf = Math.round(totalHT * .26);
+
+  return (
+    <div className="fade-up">
+      {SectionLabel(`${mnLabel.toUpperCase()} · FINANCES`, T)}
+
+      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:14}}>
+        <StatBox l="Base HT" v={`${totalHT.toLocaleString("fr-FR")}€`} c={T.accent} T={T} />
+        <StatBox l="Débours" v={`${totalDeb.toLocaleString("fr-FR")}€`} c={T.green} T={T} />
+        <StatBox l="Net estimé" v={`${net.toLocaleString("fr-FR")}€`} c={T.orange} T={T} />
+        <StatBox l="URSSAF ~" v={`${urssaf.toLocaleString("fr-FR")}€`} c={T.red} T={T} />
+      </div>
+      <div style={{background:T.card, borderRadius:10, padding:"8px 12px", marginBottom:14, fontSize:10, color:T.textFaint, lineHeight:1.7}}>
+        Net = Base×0.74 + Débours · URSSAF = Base×0.26 · TVA non applicable art. 293B CGI
+      </div>
+
+      {SectionLabel("PAR CLIENT", T)}
+      {Object.entries(CMETA).map(([name,meta]) => {
+        const cm = missions.filter(m => mClient(m).toLowerCase().includes(name.split(" ")[0].toLowerCase()));
+        if (!cm.length) return null;
+        const cb = cm.reduce((s,m) => s+(parseFloat(mBase(m))||0), 0);
+        const cd = cm.reduce((s,m) => s+(parseFloat(mDeb(m))||0), 0);
+        const cdone = cm.filter(isDone).length;
+        return (
+          <div key={name} style={{background:T.card, borderRadius:10, padding:"10px 14px", marginBottom:6, borderLeft:`3px solid ${meta.color}`, display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+            <div>
+              <div style={{fontWeight:700, fontSize:11, color:meta.color, fontFamily:"'DM Mono',monospace"}}>{meta.tag}</div>
+              <div style={{fontSize:10, color:T.textFaint}}>{cm.length} missions · {cdone} terminées</div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <div style={{fontSize:13, fontWeight:700, color:T.textMuted}}>{cb>0?`${cb}€`:"TBD"}</div>
+              {cd>0 && <div style={{fontSize:10, color:T.textFaint}}>+{cd}€ déb</div>}
+            </div>
+          </div>
+        );
+      })}
+
+      {SectionLabel("STATUTS", T)}
+      {(() => {
+        const statuts = {};
+        missions.forEach(m => { const s = mStatut(m)||"Non défini"; statuts[s] = (statuts[s]||0)+1; });
+        return Object.entries(statuts).sort((a,b)=>b[1]-a[1]).map(([s,n]) => (
+          <div key={s} style={{display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${T.border}`, fontSize:11}}>
+            <span style={{color:T.textMuted}}>{s}</span>
+            <span style={{fontFamily:"'DM Mono',monospace", color:T.textFaint}}>{n}</span>
+          </div>
+        ));
+      })()}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// BREATHE TAB
+// ─────────────────────────────────────────────
+function BreatheTab({T}) {
+  const [active, setActive]     = React.useState(false);
+  const [phase, setPhase]       = React.useState(0);
+  const [cycle, setCycle]       = React.useState(0);
+  const [noteText, setNoteText] = React.useState("");
+  const [noteSaved, setNoteSaved] = React.useState(false);
+
+  const phases = ["Inspire","Retiens","Expire","Retiens"];
+  const durations = [4000, 4000, 4000, 4000];
+
+  React.useEffect(() => {
+    if (!active) { setPhase(0); return; }
+    const t = setTimeout(() => {
+      const next = (phase+1)%4;
+      if (next === 0) setCycle(c => c+1);
+      setPhase(next);
+    }, durations[phase]);
+    return () => clearTimeout(t);
+  }, [active, phase]);
+
+  const size = active ? (phase===0||phase===1 ? 130 : 50) : 50;
+
+  const saveNote = () => {
+    if (!noteText.trim()) return;
+    const notes = JSON.parse(localStorage.getItem("decompress_notes")||"[]");
+    notes.push({ ts: new Date().toISOString(), text: noteText });
+    localStorage.setItem("decompress_notes", JSON.stringify(notes));
+    setNoteText("");
+    setNoteSaved(true);
+    setTimeout(() => setNoteSaved(false), 2000);
+  };
+
+  return (
+    <div className="fade-up" style={{textAlign:"center", paddingTop:10}}>
+      {SectionLabel("RESPIRATION · BOX 4-4-4-4", T)}
+
+      <div style={{
+        width:size, height:size, borderRadius:"50%",
+        margin:"30px auto 20px",
+        background: active
+          ? `radial-gradient(circle, ${T.accent}25, ${T.accent}05)`
+          : T.card,
+        border:`1.5px solid ${active ? T.accent+"55" : T.border}`,
+        transition:"all 4s cubic-bezier(.4,0,.2,1)",
+        display:"flex", alignItems:"center", justifyContent:"center",
+        boxShadow: active ? `0 0 40px ${T.accent}15` : "none",
+      }}>
+        {active && <span style={{fontSize:10, color:T.accent, fontWeight:600, letterSpacing:.5}}>{phases[phase]}</span>}
+      </div>
+
+      {active && <div style={{fontSize:10, color:T.textFaint, marginBottom:16}}>Cycle {cycle+1} · {phases[phase]}</div>}
+
+      <button onClick={() => setActive(!active)} style={{
+        padding:"10px 30px", borderRadius:20, fontSize:12, fontWeight:600,
+        background: active ? T.red+"18" : T.accent+"18",
+        color: active ? T.red : T.accent,
+        border:`1px solid ${active ? T.red+"33" : T.accent+"33"}`,
+      }}>
+        {active ? "Arrêter" : "Commencer"}
+      </button>
+
+      {!active && (
+        <div style={{marginTop:8, fontSize:10, color:T.textFaint, lineHeight:1.7}}>
+          Après une longue mission · 4 cycles = 1 min
+        </div>
+      )}
+
+      {/* QUICK JOURNAL */}
+      <div style={{marginTop:28, textAlign:"left"}}>
+        {SectionLabel("DÉCHARGE RAPIDE", T)}
+        <textarea
+          value={noteText}
+          onChange={e => setNoteText(e.target.value)}
+          placeholder="Ce que tu gardes en toi depuis la mission..."
+          rows={4}
+          style={{
+            width:"100%", padding:"10px 12px", borderRadius:10, fontSize:12,
+            border:`1px solid ${T.border}`, background:T.card, color:T.textBright,
+            resize:"vertical", fontFamily:"'DM Sans',sans-serif", lineHeight:1.6,
+          }}
+        />
+        <button onClick={saveNote} style={{
+          width:"100%", marginTop:8, padding:"10px", borderRadius:8, fontSize:12, fontWeight:600,
+          background: noteSaved ? T.green+"18" : T.card2||T.card,
+          color: noteSaved ? T.green : T.textMuted,
+          border:`1px solid ${noteSaved ? T.green+"33" : T.border}`,
+        }}>
+          {noteSaved ? "✓ Enregistré" : "Enregistrer"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// POST-MISSION FLOW
+// ─────────────────────────────────────────────
+function PostMissionFlow({m, T, onDone, onCancel}) {
+  const [step, setStep]     = React.useState(1);
+  const [debutR, setDebutR] = React.useState(mDebut(m)||"");
+  const [finR, setFinR]     = React.useState("");
+  const [notes, setNotes]   = React.useState("");
+  const [sending, setSending] = React.useState(false);
+
+  const meta = gm(mClient(m));
+
+  let heures = "";
+  if (debutR && finR) {
+    const [sh,sm] = debutR.split(":").map(Number);
+    const [eh,em] = finR.split(":").map(Number);
+    heures = String(((eh*60+em)-(sh*60+sm))/60);
+  }
+
+  return (
+    <div style={{maxWidth:480, margin:"0 auto", minHeight:"100vh", background:T.bg, padding:20}}>
+      <button onClick={onCancel} style={{background:"none",border:"none",color:T.textFaint,fontSize:11,cursor:"pointer",marginBottom:14}}>← Annuler</button>
+
+      {/* Progress dots */}
+      <div style={{display:"flex", gap:6, justifyContent:"center", marginBottom:16}}>
+        {[1,2,3].map(s => (
+          <div key={s} style={{width:6, height:6, borderRadius:"50%", background: s<=step ? T.accent : T.border, transition:"background .2s"}} />
+        ))}
+      </div>
+
+      <div style={{background:T.card, borderRadius:14, padding:20, borderLeft:`4px solid ${meta.color}`}}>
+        <div style={{fontSize:9, color:meta.color, fontWeight:700, letterSpacing:1, fontFamily:"'DM Mono',monospace"}}>{meta.tag} · {mType(m).replace("ASSISTANCE ","")}</div>
+        <div style={{fontSize:14, fontWeight:700, color:T.textBright, marginTop:2, marginBottom:16}}>{niceLong(mDate(m))}</div>
+
+        {step === 1 && (
           <div>
-            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>⏱ Heures réelles</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+            <div style={{fontSize:12, fontWeight:700, color:T.textBright, marginBottom:12}}>⏱ Heures réelles</div>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:12}}>
               <div>
-                <div style={{fontSize:10,color:T.textFaint,marginBottom:4}}>Début</div>
-                <input type="time" value={debutR} onChange={e=>setDebutR(e.target.value)} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:14}}/>
+                <div style={{fontSize:10, color:T.textFaint, marginBottom:4}}>Début</div>
+                <input type="time" value={debutR} onChange={e=>setDebutR(e.target.value)}
+                  style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.inputBg,color:T.textBright,fontSize:14}} />
               </div>
               <div>
-                <div style={{fontSize:10,color:T.textFaint,marginBottom:4}}>Fin</div>
-                <input type="time" value={finR} onChange={e=>setFinR(e.target.value)} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:14}}/>
+                <div style={{fontSize:10, color:T.textFaint, marginBottom:4}}>Fin</div>
+                <input type="time" value={finR} onChange={e=>setFinR(e.target.value)}
+                  style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.inputBg,color:T.textBright,fontSize:14}} />
               </div>
             </div>
-            {debutR&&finR&&(()=>{
-              const[sh,sm]=debutR.split(":").map(Number);
-              const[eh,em]=finR.split(":").map(Number);
-              const h=((eh*60+em)-(sh*60+sm))/60;
-              return<div style={{fontSize:12,color:T.accent,marginBottom:8}}>= {h.toFixed(1)}h</div>;
-            })()}
-            <button onClick={()=>{
-              if(debutR&&finR){
-                const[sh,sm]=debutR.split(":").map(Number);
-                const[eh,em]=finR.split(":").map(Number);
-                setHeures(String(((eh*60+em)-(sh*60+sm))/60));
-              }
-              setStep(2);
-            }} style={{width:"100%",padding:12,borderRadius:10,background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,fontSize:13,fontWeight:600,cursor:"pointer"}}>
-              Suivant →
-            </button>
+            {debutR && finR && <div style={{fontSize:12, color:T.accent, marginBottom:12}}>= {parseFloat(heures).toFixed(1)}h</div>}
+            <button onClick={() => setStep(2)} style={btnStyle(T)}>Suivant →</button>
           </div>
         )}
 
-        {step===2&&(
+        {step === 2 && (
           <div>
-            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>📝 Notes de terrain</div>
-            <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="RAS, incident, remarques..." rows={4} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:13,resize:"vertical",fontFamily:"inherit"}}/>
-            <div style={{display:"flex",gap:8,marginTop:12}}>
-              <button onClick={()=>setStep(1)} style={{flex:1,padding:10,borderRadius:8,background:"none",border:`1px solid ${T.border}`,color:T.textMuted,fontSize:12,cursor:"pointer"}}>← Retour</button>
-              <button onClick={()=>setStep(3)} style={{flex:2,padding:10,borderRadius:8,background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,fontSize:12,fontWeight:600,cursor:"pointer"}}>Suivant →</button>
+            <div style={{fontSize:12, fontWeight:700, color:T.textBright, marginBottom:12}}>📝 Notes de terrain</div>
+            <textarea value={notes} onChange={e=>setNotes(e.target.value)}
+              placeholder="RAS, incident, remarques client..." rows={4}
+              style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.inputBg,color:T.textBright,fontSize:12,resize:"vertical",fontFamily:"inherit",lineHeight:1.6}} />
+            <div style={{display:"flex", gap:8, marginTop:12}}>
+              <button onClick={() => setStep(1)} style={btnStyle(T, true)}>← Retour</button>
+              <button onClick={() => setStep(3)} style={{...btnStyle(T), flex:2}}>Suivant →</button>
             </div>
           </div>
         )}
 
-        {step===3&&(
+        {step === 3 && (
           <div>
-            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>✅ Confirmer</div>
-            <div style={{fontSize:12,color:T.textMuted,lineHeight:1.8,marginBottom:16}}>
-              <div>⏱ Heures: <b style={{color:T.textBright}}>{heures||"—"}h</b> ({debutR}–{finR})</div>
-              <div>📝 Notes: {notes||"RAS"}</div>
+            <div style={{fontSize:12, fontWeight:700, color:T.textBright, marginBottom:12}}>✅ Confirmer</div>
+            <div style={{background:T.card2||T.bg, borderRadius:8, padding:12, fontSize:11, color:T.textMuted, lineHeight:2, marginBottom:16}}>
+              <div>⏱ <b style={{color:T.textBright}}>{debutR}–{finR}</b> = {parseFloat(heures).toFixed(1)}h</div>
+              <div>📝 {notes||"RAS"}</div>
               <div>📊 Statut → <b style={{color:T.green}}>Heures confirmées</b></div>
             </div>
-            <button disabled={sending} onClick={async()=>{
+            <button disabled={sending} onClick={async () => {
               setSending(true);
-              await onDone({heures,notes:notes||"RAS",statut:"Heures confirmées"});
-            }} style={{width:"100%",padding:14,borderRadius:10,background:T.green+"22",color:T.green,border:`1px solid ${T.green}33`,fontSize:14,fontWeight:700,cursor:"pointer",opacity:sending?.5:1}}>
-              {sending?"Enregistrement...":"✅ Confirmer et enregistrer"}
+              await onDone({heures, debutR, finR, notes:notes||"RAS", statut:"Heures confirmées"});
+            }} style={{
+              width:"100%", padding:14, borderRadius:10, fontSize:13, fontWeight:700,
+              background:T.green+"20", color:T.green, border:`1px solid ${T.green}33`,
+              opacity:sending?.5:1, cursor:sending?"not-allowed":"pointer",
+            }}>
+              {sending ? "Enregistrement..." : "✅ Confirmer et enregistrer"}
             </button>
-            <button onClick={()=>setStep(2)} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,background:"none",border:`1px solid ${T.border}`,color:T.textFaint,fontSize:11,cursor:"pointer"}}>← Modifier</button>
+            <button onClick={() => setStep(2)} style={{...btnStyle(T, true), width:"100%", marginTop:8}}>← Modifier</button>
           </div>
         )}
       </div>
+
+      {step === 3 && !sending && (
+        <div style={{textAlign:"center", marginTop:20}}>
+          <div style={{fontSize:11, color:T.textFaint}}>Mission terminée — tu peux souffler.</div>
+        </div>
+      )}
     </div>
   );
 }
 
-// ============================================================
-// BREATHE
-// ============================================================
-function Breathe({active,toggle,T}){
-  const[phase,setPhase]=React.useState(0);
-  const[cycle,setCycle]=React.useState(0);
-  const labels=["Inspire","Retiens","Expire","Retiens"];
-  const sizes=[120,120,50,50];
-  React.useEffect(()=>{if(!active){setPhase(0);setCycle(0);}},[active]);
-  React.useEffect(()=>{if(!active)return;const t=setTimeout(()=>{if(phase===3){setCycle(c=>c+1);setPhase(0);}else setPhase(p=>p+1);},4000);return()=>clearTimeout(t);},[active,phase]);
-  return(
-    <div style={{textAlign:"center",padding:"20px 0"}}>
-      <div style={{fontSize:10,color:T.textFaint,fontWeight:700,letterSpacing:1.5,marginBottom:20}}>RESPIRATION</div>
-      <div style={{width:active?sizes[phase]:45,height:active?sizes[phase]:45,borderRadius:"50%",margin:"36px auto",background:active?`radial-gradient(circle,${T.accent}33,${T.accent}05)`:T.card,border:`1.5px solid ${active?T.accent+"55":T.border}`,transition:"all 4s cubic-bezier(.4,0,.2,1)",display:"flex",alignItems:"center",justifyContent:"center"}}>
-        {active&&<span style={{fontSize:12,color:T.accent,fontWeight:600}}>{labels[phase]}</span>}
-      </div>
-      {active&&<div style={{fontSize:10,color:T.textFaint,marginBottom:14}}>Cycle {cycle+1}</div>}
-      <button onClick={toggle} style={{padding:"10px 28px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:active?T.red+"12":T.accent+"12",color:active?T.red:T.accent,border:`1px solid ${active?T.red+"33":T.accent+"33"}`}}>{active?"Arrêter":"Commencer"}</button>
+// ─────────────────────────────────────────────
+// MICRO COMPONENTS
+// ─────────────────────────────────────────────
+function SectionLabel(text, T) {
+  return <div style={{fontSize:9, color:T.textFaint, fontWeight:700, letterSpacing:1.8, textTransform:"uppercase", marginBottom:6, marginTop:8, fontFamily:"'DM Mono',monospace"}}>{text}</div>;
+}
+function StatBox({l,v,c,T}) {
+  return (
+    <div style={{background:T.card, borderRadius:10, padding:"10px 12px", textAlign:"center"}}>
+      <div style={{fontSize:9, color:T.textFaint, marginBottom:2}}>{l}</div>
+      <div style={{fontSize:17, fontWeight:700, color:c}}>{v}</div>
     </div>
   );
 }
+function FldBox({l,v,T,mono,small}) {
+  return (
+    <div>
+      <div style={{fontSize:9, color:T.textFaint, marginBottom:1}}>{l}</div>
+      <div style={{fontSize:small?9:11, fontWeight:600, color:T.textMuted, fontFamily:mono?"'DM Mono',monospace":"inherit", wordBreak:"break-all"}}>{v}</div>
+    </div>
+  );
+}
+function Row({l,v,T,bold,accent}) {
+  return (
+    <div style={{display:"flex", justifyContent:"space-between", marginBottom:3}}>
+      <span style={{color:T.textFaint}}>{l}</span>
+      <span style={{fontWeight:bold?700:500, color:accent||T.textMuted}}>{v}</span>
+    </div>
+  );
+}
+function btnStyle(T, ghost) {
+  return {
+    flex:1, padding:"10px 16px", borderRadius:8, fontSize:12, fontWeight:600,
+    background: ghost ? "none" : T.accent+"18",
+    color: ghost ? T.textMuted : T.accent,
+    border:`1px solid ${ghost ? T.border : T.accent+"33"}`,
+    cursor:"pointer",
+  };
+}
 
-// ============================================================
+// ─────────────────────────────────────────────
 // RENDER
-// ============================================================
+// ─────────────────────────────────────────────
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
+
 </body>
 </html>
