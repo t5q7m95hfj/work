@@ -1,276 +1,407 @@
-
 <!DOCTYPE html>
-
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>End of Day</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080c14">
+<title>Mission Control</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300&display=swap');
-  :root {
-    --bg:#0e0e0f; --surface:#161618; --muted:#2a2a2d;
-    --text:#c8c4bb; --dim:#5a5752; --accent:#8fa38a; --warm:#c4a882;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif;overflow:hidden;user-select:none;}
-  #bgc{position:fixed;inset:0;z-index:0;opacity:.4;}
-  .screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;opacity:0;pointer-events:none;transition:opacity .8s ease;}
-  .screen.active{opacity:1;pointer-events:all;}
-  .lbl{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--dim);margin-bottom:12px;text-transform:uppercase;}
-  h1,h2{font-weight:300;font-style:italic;text-align:center;line-height:1.25;}
-  h1{font-size:clamp(30px,8vw,50px);margin-bottom:14px;}
-  h2{font-size:clamp(20px,5vw,30px);margin-bottom:8px;}
-  .sub{font-size:13px;color:var(--dim);font-style:italic;margin-bottom:32px;text-align:center;line-height:1.6;}
-  .btn-g{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--accent);background:none;border:1px solid rgba(143,163,138,.3);padding:12px 32px;cursor:pointer;transition:all .3s;text-transform:uppercase;}
-  .btn-g:hover{background:rgba(143,163,138,.06);border-color:rgba(143,163,138,.6);}
-  .btn-m{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--bg);background:var(--accent);border:none;padding:13px 32px;cursor:pointer;text-transform:uppercase;transition:background .3s;}
-  .btn-m:hover{background:#a0b89b;}
-  .btn-s{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:var(--dim);background:none;border:1px solid var(--muted);padding:13px 24px;cursor:pointer;text-transform:uppercase;transition:all .3s;}
-  .btn-s:hover{color:var(--text);border-color:rgba(143,163,138,.3);}
-  .lnk{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;color:var(--dim);background:none;border:none;cursor:pointer;text-transform:uppercase;transition:color .2s;}
-  .lnk:hover{color:var(--text);}
-  .row{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;justify-content:center;}
-
-/* S1 */
-#s1 .time{font-family:‘DM Mono’,monospace;font-size:11px;letter-spacing:.2em;color:var(–dim);margin-bottom:52px;}
-#s1 p{font-size:16px;color:var(–dim);font-style:italic;margin-bottom:60px;}
-
-/* S2 Breathe */
-.bwrap{position:relative;width:190px;height:190px;margin-bottom:48px;}
-.br{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(143,163,138,.2);}
-.br.inner{inset:28px;border-color:rgba(143,163,138,.4);background:radial-gradient(circle,rgba(143,163,138,.05) 0%,transparent 70%);}
-.br.pulse{inset:0;border:none;background:radial-gradient(circle,rgba(143,163,138,.04) 0%,transparent 60%);}
-.btxt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-style:italic;color:var(–accent);letter-spacing:.05em;}
-@keyframes bi{0%{transform:scale(1);opacity:.3}100%{transform:scale(1.35);opacity:.9}}
-@keyframes bh{0%,100%{transform:scale(1.35);opacity:.9}}
-@keyframes bo{0%{transform:scale(1.35);opacity:.9}100%{transform:scale(1);opacity:.3}}
-.bin .br.inner,.bin .br.pulse{animation:bi 4s ease-in-out forwards;}
-.bhold .br.inner,.bhold .br.pulse{animation:bh 4s ease-in-out forwards;}
-.bout .br.inner,.bout .br.pulse{animation:bo 6s ease-in-out forwards;}
-.bctr{font-family:‘DM Mono’,monospace;font-size:11px;color:var(–dim);letter-spacing:.15em;margin-bottom:32px;}
-
-/* S3 Write */
-#dump{width:100%;max-width:460px;min-height:130px;background:var(–surface);border:1px solid var(–muted);color:var(–text);font-family:‘Cormorant Garamond’,serif;font-size:17px;line-height:1.7;font-style:italic;padding:18px;resize:none;outline:none;border-radius:2px;transition:border-color .3s,opacity .6s,transform .6s;caret-color:var(–accent);}
-#dump:focus{border-color:rgba(143,163,138,.4);}
-#dump::placeholder{color:var(–dim);}
-
-/* S4 Draw */
-#s4{padding:20px 16px;justify-content:flex-start;padding-top:32px;}
-.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;justify-content:center;}
-.swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .2s,border-color .2s;}
-.swatch:hover{transform:scale(1.15);}
-.swatch.on{border-color:var(–text);transform:scale(1.1);}
-.bsize{display:flex;align-items:center;gap:6px;font-family:‘DM Mono’,monospace;font-size:10px;color:var(–dim);letter-spacing:.1em;}
-#bslider{-webkit-appearance:none;width:70px;height:2px;background:var(–muted);outline:none;border-radius:2px;cursor:pointer;}
-#bslider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(–accent);cursor:pointer;}
-#dc{border-radius:4px;cursor:crosshair;touch-action:none;display:block;}
-.dact{display:flex;gap:10px;margin-top:14px;align-items:center;}
-.btn-cl{font-family:‘DM Mono’,monospace;font-size:10px;letter-spacing:.15em;color:var(–dim);background:none;border:1px solid var(–muted);padding:8px 18px;cursor:pointer;text-transform:uppercase;transition:all .2s;}
-.btn-cl:hover{color:var(–text);border-color:rgba(143,163,138,.3);}
-
-/* S5 Ripple */
-#rzone{width:min(300px,82vw);height:min(300px,82vw);border-radius:50%;background:radial-gradient(circle,rgba(143,163,138,.04) 0%,transparent 70%);border:1px solid rgba(143,163,138,.12);position:relative;cursor:pointer;overflow:hidden;flex-shrink:0;transition:border-color .3s;}
-#rzone:hover{border-color:rgba(143,163,138,.25);}
-.rel{position:absolute;border-radius:50%;border:1px solid rgba(143,163,138,.5);transform:translate(-50%,-50%) scale(0);animation:ro 2.5s ease-out forwards;pointer-events:none;}
-@keyframes ro{0%{transform:translate(-50%,-50%) scale(0);opacity:.8}100%{transform:translate(-50%,-50%) scale(4);opacity:0}}
-.rdot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:var(–accent);opacity:.3;}
-#tctr{font-family:‘DM Mono’,monospace;font-size:11px;letter-spacing:.15em;color:var(–dim);margin-top:22px;transition:color .3s;}
-#dbtn{margin-top:20px;opacity:0;transition:opacity .5s,color .3s;}
-
-/* S6 Close */
-#s6 h2{font-size:clamp(26px,7vw,42px);margin-bottom:14px;}
-#s6 p{font-size:15px;color:var(–dim);font-style:italic;text-align:center;max-width:300px;line-height:1.8;margin-bottom:44px;}
-.ibox{font-family:‘DM Mono’,monospace;font-size:12px;letter-spacing:.08em;color:var(–warm);text-align:center;margin-bottom:40px;max-width:280px;line-height:1.9;padding:18px 24px;border:1px solid rgba(196,168,130,.2);}
-
-body::after{content:’’;position:fixed;inset:0;background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’ opacity=‘0.03’/%3E%3C/svg%3E”);pointer-events:none;z-index:200;opacity:.35;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#080c14;color:#ddd8ce;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:#4fc3f7;text-decoration:none}
+button{font-family:inherit}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#1a2530;border-radius:4px}
+#root{max-width:480px;margin:0 auto;min-height:100vh}
+.loading{display:flex;align-items:center;justify-content:center;height:100vh;color:#3a4a5a;font-size:14px}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+.loading span{animation:pulse 1.5s infinite}
 </style>
-
 </head>
 <body>
-<canvas id="bgc"></canvas>
+<div id="root"><div class="loading"><span>Chargement...</span></div></div>
 
-<!-- S1: Greeting -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.10/babel.min.js"></script>
 
-<div class="screen active" id="s1">
-  <div class="time" id="clock"></div>
-  <h1>The day<br>is done.</h1>
-  <p>You can put it down now.</p>
-  <button class="btn-g" onclick="go('s2')">Begin</button>
-</div>
+<script type="text/babel">
+// ============================================================
+// CONFIG — UPDATE THIS WITH YOUR GAS WEB APP URL
+// ============================================================
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
 
-<!-- S2: Breathe -->
+// ============================================================
+// CONSTANTS
+// ============================================================
+const DAYS_FR=["dim","lun","mar","mer","jeu","ven","sam"];
+const MONTHS_FR=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const MONTHS_SHORT=["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
 
-<div class="screen" id="s2">
-  <div class="lbl">Breathe</div>
-  <div class="bwrap" id="bwrap">
-    <div class="br pulse"></div>
-    <div class="br"></div>
-    <div class="br inner"></div>
-    <div class="btxt" id="btxt">breathe in</div>
-  </div>
-  <div class="bctr" id="bctr">round 1 of 4</div>
-  <button class="lnk" onclick="stopBreath();go('s3')">skip →</button>
-</div>
+const CLIENT_META={
+  "Philibert Tourisme":{tag:"PHIL",color:"#43a047",contact:"Mélissa Hassaïm",email:"rhone-ops@philibert.fr",cohost:"Véronique Olivier · 06 41 60 42 88",emergency:"+33 4 78 98 56 49"},
+  "Go Côte Saône":{tag:"GCS",color:"#42a5f5",contact:"Marion",phone:"06.20.08.10.92",email:"gcs@gocotesaone.com"},
+  "Feel the French Way":{tag:"FTFW",color:"#ab47bc",contact:"Caroline",email:"contact@feelthefrenchway.fr",cohost:"caroline.meet.and.greet@gmail.com"},
+  "Un Monde Bleu":{tag:"UMB",color:"#ff7043",contact:"Audrey Foret",phone:"+33 7 43 36 05 69",email:"OpsRiviera@umb-dmc.fr",notes:"Répondre au thread · autocariste: rhonecroisieres@galeo.mobi"},
+};
 
-<!-- S3: Write -->
+const TRANSPORT=[
+  {dest:"Perrache",time:45},{dest:"Part-Dieu",time:45},{dest:"LYS",time:52},
+  {dest:"Quai Claude Bernard",time:45},{dest:"Vienne",time:105},{dest:"Genève",time:180},
+];
 
-<div class="screen" id="s3">
-  <div class="lbl">Release</div>
-  <h2>What's still<br>spinning?</h2>
-  <p class="sub">Write it all out. It goes nowhere.</p>
-  <textarea id="dump" placeholder="the late group… the blocked dock… what I could have said…"></textarea>
-  <div class="row">
-    <button class="btn-m" onclick="handleDump()">Let it go</button>
-    <button class="btn-s" onclick="go('s4')">Nothing tonight</button>
-  </div>
-</div>
+// ============================================================
+// UTILS
+// ============================================================
+function fmtDate(d){
+  if(!d)return"";
+  if(typeof d==="string"){
+    const s=d.trim();
+    if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);
+    const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(m)return`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+    return s;
+  }
+  return"";
+}
+function friendlyDate(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DAYS_FR[d.getDay()]} ${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`;}
+function friendlyDateLong(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DAYS_FR[d.getDay()]} ${d.getDate()} ${MONTHS_FR[d.getMonth()]}`;}
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function tomorrowISO(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);}
+function currentMonth(){return String(new Date().getMonth()+1).padStart(2,"0");}
+function getMeta(c){if(!c)return{tag:"?",color:"#555"};for(const[k,v]of Object.entries(CLIENT_META))if(c.toLowerCase().includes(k.split(" ")[0].toLowerCase()))return v;return{tag:"?",color:"#555"};}
+function travelMin(e){if(!e)return null;const u=e.toUpperCase();for(const t of TRANSPORT)if(u.includes(t.dest.toUpperCase()))return t.time;if(u.includes("AIRPORT")||u.includes("LYS"))return 52;return 45;}
 
-<!-- S4: Draw -->
+// ============================================================
+// DATA FETCHING
+// ============================================================
+async function fetchMissions(month="current"){
+  try{
+    const url=`${GAS_URL}?action=missions&month=${encodeURIComponent(month)}`;
+    const r=await fetch(url);
+    const data=await r.json();
+    return data.missions||[];
+  }catch(e){
+    console.error("Fetch error:",e);
+    return null; // null signals error
+  }
+}
 
-<div class="screen" id="s4">
-  <div class="lbl">Draw</div>
-  <h2>Make something.<br>Or just make a mess.</h2>
-  <p class="sub">No rules. Your hand moving is enough.</p>
-  <div class="toolbar">
-    <div class="swatch on" style="background:#8fa38a" data-c="#8fa38a" onclick="setClr(this)"></div>
-    <div class="swatch" style="background:#c4a882" data-c="#c4a882" onclick="setClr(this)"></div>
-    <div class="swatch" style="background:#a08898" data-c="#a08898" onclick="setClr(this)"></div>
-    <div class="swatch" style="background:#7a9eb5" data-c="#7a9eb5" onclick="setClr(this)"></div>
-    <div class="swatch" style="background:#c8c4bb" data-c="#c8c4bb" onclick="setClr(this)"></div>
-    <div class="swatch" style="background:#e8855a" data-c="#e8855a" onclick="setClr(this)"></div>
-    <div class="swatch" style="background:#3d3d40" data-c="#3d3d40" onclick="setClr(this)"></div>
-    <div class="bsize">
-      size
-      <input type="range" id="bslider" min="2" max="28" value="8" oninput="bs=+this.value">
+async function fetchWeather(){
+  try{
+    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weather_code&daily=precipitation_probability_max&timezone=Europe/Paris&forecast_days=1");
+    const d=await r.json();
+    const code=d.current?.weather_code||0;
+    const temp=Math.round(d.current?.temperature_2m||0);
+    const rain=d.daily?.precipitation_probability_max?.[0]||0;
+    const icons={0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌧️",55:"🌧️",61:"🌧️",63:"🌧️",65:"🌧️",71:"🌨️",73:"🌨️",75:"🌨️",80:"🌦️",81:"🌧️",82:"🌧️",95:"⛈️"};
+    return{temp,icon:icons[code]||"🌤️",rain};
+  }catch(e){return{temp:"?",icon:"🌤️",rain:0};}
+}
+
+async function updateField(id,field,value){
+  try{
+    const url=`${GAS_URL}?action=update&id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`;
+    const r=await fetch(url);
+    return await r.json();
+  }catch(e){return{error:e.message};}
+}
+
+// ============================================================
+// APP
+// ============================================================
+function App(){
+  const[tab,setTab]=React.useState("today");
+  const[detail,setDetail]=React.useState(null);
+  const[missions,setMissions]=React.useState([]);
+  const[loading,setLoading]=React.useState(true);
+  const[weather,setWeather]=React.useState({temp:"·",icon:"🌤️",rain:0});
+  const[breatheOn,setBreatheOn]=React.useState(false);
+  const[lastRefresh,setLastRefresh]=React.useState(null);
+
+  const loadData=React.useCallback(async()=>{
+    setLoading(true);
+    const[m,w]=await Promise.all([fetchMissions("current"),fetchWeather()]);
+    if(m!==null)setMissions(m);
+    if(w)setWeather(w);
+    setLoading(false);
+    setLastRefresh(new Date());
+  },[]);
+
+  React.useEffect(()=>{loadData();},[loadData]);
+
+  const t=todayISO(),tm=tomorrowISO(),cm=currentMonth();
+  const monthName=MONTHS_FR[parseInt(cm)-1]||"?";
+
+  const todayM=React.useMemo(()=>missions.filter(m=>fmtDate(m["Date mission"])===t).sort((a,b)=>(a["Début"]||a["Debut"]||"z").localeCompare(b["Début"]||b["Debut"]||"z")),[missions,t]);
+  const tmrwM=React.useMemo(()=>missions.filter(m=>fmtDate(m["Date mission"])===tm).sort((a,b)=>(a["Début"]||a["Debut"]||"z").localeCompare(b["Début"]||b["Debut"]||"z")),[missions,tm]);
+  const upcoming=React.useMemo(()=>missions.filter(m=>fmtDate(m["Date mission"])>t).sort((a,b)=>(a["Date mission"]||"").localeCompare(b["Date mission"]||"")),[missions,t]);
+  const monthDone=missions.filter(m=>{const s=(m["Statut"]||"").toLowerCase();return s.includes("envoyé")||s.includes("terminé");}).length;
+  const monthBase=missions.reduce((s,m)=>s+(parseFloat(m["Base (HT)"])||0),0);
+  const monthDeb=missions.reduce((s,m)=>s+(parseFloat(m["Débours"])||parseFloat(m["Debours"])||0),0);
+
+  // Group by date for month view
+  const byDate=React.useMemo(()=>{
+    const g={};
+    missions.forEach(m=>{const d=fmtDate(m["Date mission"]);if(d)(g[d]=g[d]||[]).push(m);});
+    return g;
+  },[missions]);
+
+  if(loading)return <div className="loading"><span>Chargement des missions...</span></div>;
+
+  return(
+    <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh"}}>
+      {/* HEADER */}
+      <div style={{padding:"18px 20px 14px",background:"linear-gradient(180deg,#0e1320,#0a0f1a)",borderBottom:"1px solid #151d2a"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+          <div>
+            <div style={{fontSize:9,letterSpacing:3,color:"#3a4858",textTransform:"uppercase",marginBottom:2}}>Mission Control</div>
+            <div style={{fontSize:19,fontWeight:700,color:"#eae7e0"}}>{new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}</div>
+          </div>
+          <div style={{textAlign:"right",fontSize:12,color:"#6a7a8a"}}>
+            <div style={{fontSize:18}}>{weather.icon}</div>
+            <div>{weather.temp}°C</div>
+            {weather.rain>15&&<div style={{fontSize:10,color:"#64b5f6"}}>🌧 {weather.rain}%</div>}
+          </div>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:4}}>
+          <div style={{fontSize:11,color:"#4a5a6a"}}>{monthName} · {missions.length} missions · {monthDone} terminées</div>
+          <button onClick={loadData} style={{background:"none",border:"none",color:"#2a3a4a",fontSize:10,cursor:"pointer",padding:4}}>↻ refresh</button>
+        </div>
+      </div>
+
+      {/* NAV */}
+      <div style={{display:"flex",borderBottom:"1px solid #151d2a",background:"#0a0f1a",position:"sticky",top:0,zIndex:10}}>
+        {[{id:"today",icon:"☀️",label:"Aujourd'hui"},{id:"month",icon:"📅",label:MONTHS_SHORT[parseInt(cm)-1]},{id:"finance",icon:"💶",label:"Finances"},{id:"breathe",icon:"🌿",label:"Pause"}].map(n=>(
+          <button key={n.id} onClick={()=>{setTab(n.id);setDetail(null);setBreatheOn(false);}} style={{
+            flex:1,padding:"9px 0 7px",background:"none",border:"none",cursor:"pointer",
+            color:tab===n.id?"#eae7e0":"#2e3e4e",fontSize:9,fontWeight:tab===n.id?700:400,
+            borderBottom:tab===n.id?"2px solid #4fc3f7":"2px solid transparent",letterSpacing:.5,
+          }}><div style={{fontSize:14,marginBottom:1}}>{n.icon}</div>{n.label}</button>
+        ))}
+      </div>
+
+      {/* CONTENT */}
+      <div style={{padding:"14px 16px 40px",minHeight:"65vh"}}>
+
+        {/* TODAY */}
+        {tab==="today"&&!detail&&(
+          <div>
+            {todayM.length===0?(
+              <div style={{textAlign:"center",padding:"28px 0"}}>
+                <div style={{fontSize:32,marginBottom:4}}>☀️</div>
+                <div style={{fontSize:14,color:"#5a6a7a"}}>Pas de mission aujourd'hui</div>
+              </div>
+            ):(
+              <>{Label("AUJOURD'HUI")}{todayM.map(m=><Card key={m["Mission ID"]} m={m} onTap={()=>setDetail(m)}/>)}</>
+            )}
+            {tmrwM.length>0&&<>{Label("DEMAIN · "+friendlyDate(tm))}{tmrwM.map(m=><Card key={m["Mission ID"]} m={m} compact onTap={()=>setDetail(m)}/>)}</>}
+            {todayM.length===0&&tmrwM.length===0&&upcoming.length>0&&(
+              <>{Label("PROCHAINE · "+friendlyDate(fmtDate(upcoming[0]["Date mission"])))}<Card m={upcoming[0]} onTap={()=>setDetail(upcoming[0])}/></>
+            )}
+          </div>
+        )}
+
+        {/* DETAIL */}
+        {detail&&<Detail m={detail} onBack={()=>setDetail(null)} onUpdate={async(id,f,v)=>{await updateField(id,f,v);loadData();}}/>}
+
+        {/* MONTH */}
+        {tab==="month"&&!detail&&(
+          <div>
+            {Label(`${monthName.toUpperCase()} · ${missions.length} MISSIONS`)}
+            {Object.entries(byDate).sort(([a],[b])=>a.localeCompare(b)).map(([date,ms])=>(
+              <div key={date} style={{marginBottom:12}}>
+                <div style={{fontSize:11,fontWeight:700,color:date===t?"#4fc3f7":date===tm?"#81c784":"#3a4a5a",letterSpacing:1,marginBottom:4}}>
+                  {friendlyDateLong(date).toUpperCase()}{date===t?" · AUJOURD'HUI":""}{date===tm?" · DEMAIN":""}
+                </div>
+                {ms.map(m=><Card key={m["Mission ID"]||Math.random()} m={m} compact onTap={()=>setDetail(m)}/>)}
+              </div>
+            ))}
+            {Label("CONTACTS")}
+            {Object.entries(CLIENT_META).map(([name,meta])=>(
+              <div key={name} style={{background:"#0f1520",borderRadius:10,padding:12,marginBottom:6,borderLeft:`3px solid ${meta.color}`}}>
+                <div style={{fontWeight:700,fontSize:12,color:meta.color}}>{meta.tag} · {name}</div>
+                <div style={{fontSize:11,color:"#5a6a7a",marginTop:3,lineHeight:1.7}}>
+                  {meta.contact}{meta.phone?` · ${meta.phone}`:""}<br/>
+                  <a href={`mailto:${meta.email}`}>{meta.email}</a>
+                  {meta.cohost&&<><br/>🤝 {meta.cohost}</>}
+                  {meta.emergency&&<><br/>🚨 <a href={`tel:${meta.emergency}`} style={{color:"#ef9a9a"}}>{meta.emergency}</a></>}
+                  {meta.notes&&<><br/><span style={{color:"#e6a23c",fontSize:10}}>⚠️ {meta.notes}</span></>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* FINANCE */}
+        {tab==="finance"&&(
+          <div>
+            {Label(`${monthName.toUpperCase()} · FINANCES`)}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
+              <Stat l="Base HT" v={`${monthBase.toLocaleString("fr-FR")}€`} c="#4fc3f7"/>
+              <Stat l="Débours" v={`${monthDeb.toLocaleString("fr-FR")}€`} c="#81c784"/>
+              <Stat l="Net" v={`${Math.round(monthBase*.74+monthDeb).toLocaleString("fr-FR")}€`} c="#ffb74d"/>
+              <Stat l="Missions" v={`${monthDone}/${missions.length}`} c="#ce93d8"/>
+            </div>
+            {Label("PAR CLIENT")}
+            {Object.entries(CLIENT_META).map(([name,meta])=>{
+              const cm=missions.filter(m=>(m["Client"]||"").includes(name.split(" ")[0]));
+              if(!cm.length)return null;
+              const cb=cm.reduce((s,m)=>s+(parseFloat(m["Base (HT)"])||0),0);
+              const cd=cm.reduce((s,m)=>s+(parseFloat(m["Débours"])||parseFloat(m["Debours"])||0),0);
+              return(
+                <div key={name} style={{background:"#0f1520",borderRadius:10,padding:"10px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,display:"flex",justifyContent:"space-between"}}>
+                  <div><div style={{fontWeight:700,fontSize:12,color:meta.color}}>{meta.tag}</div><div style={{fontSize:10,color:"#3a4a5a"}}>{cm.length} missions</div></div>
+                  <div style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:700,color:"#9a968e"}}>{cb>0?`${cb}€`:"TBD"}</div>{cd>0&&<div style={{fontSize:10,color:"#4a5a6a"}}>+{cd}€ déb</div>}</div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* BREATHE */}
+        {tab==="breathe"&&<Breathe active={breatheOn} toggle={()=>setBreatheOn(!breatheOn)}/>}
+      </div>
     </div>
-  </div>
-  <canvas id="dc"></canvas>
-  <div class="dact">
-    <button class="btn-cl" onclick="clearDraw()">Clear</button>
-    <button class="btn-m" style="padding:8px 24px" onclick="go('s5')">Continue →</button>
-  </div>
-</div>
-
-<!-- S5: Ripple -->
-
-<div class="screen" id="s5">
-  <div class="lbl">Release</div>
-  <h2>Tap to let things go</h2>
-  <p class="sub">Each tap — one less thing to carry</p>
-  <div id="rzone" onclick="spawnR(event)" ontouchstart="touchR(event)">
-    <div class="rdot"></div>
-  </div>
-  <div id="tctr">···</div>
-  <button id="dbtn" class="lnk" onclick="go('s6')">I'm good →</button>
-</div>
-
-<!-- S6: Close -->
-
-<div class="screen" id="s6">
-  <h2>Good night,<br>Joseph.</h2>
-  <p>You did what needed doing.<br>The rest can wait until tomorrow.</p>
-  <div class="ibox" id="ibox">absorb · release · move on</div>
-  <button class="lnk" onclick="reset()">start over</button>
-</div>
-
-<script>
-// clock
-function tick(){const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0');document.getElementById('clock').textContent=h+':'+m;}
-tick();setInterval(tick,30000);
-
-// nav
-function go(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==='s2')startBreath();
-  if(id==='s4')initDraw();
-  if(id==='s6')showClose();
+  );
 }
 
-// breathe
-let bt=null,bc=0;
-const PH=[{l:'breathe in…',d:4000,c:'bin'},{l:'hold…',d:4000,c:'bhold'},{l:'breathe out…',d:6000,c:'bout'}];
-function startBreath(){bc=0;runP(0,0);}
-function stopBreath(){if(bt)clearTimeout(bt);}
-function runP(c,p){
-  if(c>=4){setTimeout(()=>go('s3'),600);return;}
-  const w=document.getElementById('bwrap'),t=document.getElementById('btxt'),r=document.getElementById('bctr'),ph=PH[p];
-  w.className='bwrap '+ph.c;t.textContent=ph.l;r.textContent='round '+(c+1)+' of 4';
-  void w.offsetWidth;
-  const np=(p+1)%3,nc=np===0?c+1:c;
-  bt=setTimeout(()=>runP(nc,np),ph.d);
+// ============================================================
+// COMPONENTS
+// ============================================================
+function Label(t){return<div style={{fontSize:10,color:"#3a4858",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:6,marginTop:4}}>{t}</div>;}
+function Stat({l,v,c}){return<div style={{background:"#0f1520",borderRadius:10,padding:"10px 12px",textAlign:"center"}}><div style={{fontSize:9,color:"#3a4858",marginBottom:2}}>{l}</div><div style={{fontSize:16,fontWeight:700,color:c}}>{v}</div></div>;}
+
+function Card({m,compact,onTap}){
+  const meta=getMeta(m["Client"]);
+  const done=(m["Statut"]||"").toLowerCase().includes("envoyé")||(m["Statut"]||"").toLowerCase().includes("terminé");
+  const debut=m["Début"]||m["Debut"]||"TBD";
+  const type=(m["Type"]||"").replace("ASSISTANCE ","").split(" - ").pop();
+  const desc=m["Description"]||"";
+  return(
+    <div onClick={onTap} style={{background:"#0f1520",borderRadius:compact?10:12,padding:compact?"8px 12px":"12px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,cursor:"pointer",opacity:done?.5:1,transition:"transform .1s"}}
+      onPointerDown={e=>e.currentTarget.style.transform="scale(0.98)"}onPointerUp={e=>e.currentTarget.style.transform=""}onPointerLeave={e=>e.currentTarget.style.transform=""}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div style={{flex:1}}>
+          <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+            <span style={{fontSize:compact?11:13,fontWeight:700,color:meta.color}}>{meta.tag}</span>
+            <span style={{fontSize:compact?10:12,color:"#5a6a7a"}}>{debut}</span>
+            {!compact&&<span style={{fontSize:10,color:"#3a4858"}}>{friendlyDate(fmtDate(m["Date mission"]))}</span>}
+            {done&&<span style={{fontSize:8,background:"#132013",color:"#5a9a5a",padding:"1px 4px",borderRadius:3}}>✓</span>}
+          </div>
+          <div style={{fontSize:compact?10:12,color:"#7a756a",marginTop:2}}>{type}</div>
+        </div>
+        <div style={{textAlign:"right",fontSize:10,color:"#2a3a4a"}}>
+          {desc&&<div style={{fontFamily:"monospace",fontSize:9,color:"#3a4a5a"}}>{desc}</div>}
+        </div>
+      </div>
+    </div>
+  );
 }
 
-// write
-function handleDump(){
-  const v=document.getElementById('dump').value.trim();
-  if(v){try{const s=JSON.parse(localStorage.getItem('jmc_notes')||'{}');const k=new Date().toLocaleDateString('en-GB');s[k]=(s[k]?s[k]+'\n---\n':'')+v;localStorage.setItem('jmc_notes',JSON.stringify(s));}catch(e){}}
-  const ta=document.getElementById('dump');ta.style.opacity='0';ta.style.transform='translateY(-8px)';
-  setTimeout(()=>go('s4'),600);
+function Detail({m,onBack,onUpdate}){
+  const meta=getMeta(m["Client"]);
+  const base=parseFloat(m["Base (HT)"])||0;
+  const deb=parseFloat(m["Débours"])||parseFloat(m["Debours"])||0;
+  const debut=m["Début"]||m["Debut"]||"TBD";
+  const heures=m["Heures"]||"";
+  const endroit=m["Endroit"]||"";
+  const trvl=travelMin(endroit);
+  const mid=m["Mission ID"]||"";
+
+  return(
+    <div>
+      <button onClick={onBack} style={{background:"none",border:"none",color:"#4fc3f7",fontSize:11,cursor:"pointer",padding:"0 0 8px"}}>← Retour</button>
+      <div style={{background:"#0f1520",borderRadius:14,overflow:"hidden",borderLeft:`4px solid ${meta.color}`}}>
+        <div style={{padding:"16px 16px 12px"}}>
+          <div style={{display:"flex",justifyContent:"space-between"}}>
+            <div>
+              <div style={{fontSize:9,color:meta.color,fontWeight:700,letterSpacing:1.5}}>{meta.tag} · {m["Client"]}</div>
+              <div style={{fontSize:15,fontWeight:700,color:"#eae7e0",marginTop:2}}>{(m["Type"]||"").replace("ASSISTANCE ","")}</div>
+            </div>
+            <div style={{fontSize:8,padding:"2px 6px",borderRadius:4,background:(m["Statut"]||"").includes("envoyé")?"#132013":"#0f1530",color:(m["Statut"]||"").includes("envoyé")?"#5a9a5a":"#5a7aaa",fontWeight:600}}>{m["Statut"]||"—"}</div>
+          </div>
+
+          {/* Departure time helper */}
+          {debut!=="TBD"&&trvl&&(
+            <div style={{marginTop:8,padding:"6px 10px",background:"rgba(79,195,247,0.08)",borderRadius:8,border:"1px solid rgba(79,195,247,0.15)"}}>
+              <div style={{fontSize:10,color:"#4fc3f7",fontWeight:600}}>⏰ Mission : {debut}</div>
+              <div style={{fontSize:9,color:"#3a5a7a",marginTop:1}}>Départ maison ~{(()=>{
+                const p=debut.split(":");if(p.length<2)return"?";
+                const dep=parseInt(p[0])*60+parseInt(p[1])-trvl-15;
+                return`${String(Math.floor(dep/60)).padStart(2,"0")}:${String(dep%60).padStart(2,"0")}`;
+              })()}</div>
+            </div>
+          )}
+
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:12,fontSize:11}}>
+            <div><div style={{color:"#2a3a4a",fontSize:9}}>Date</div><div style={{color:"#7a756a",fontWeight:600}}>{friendlyDateLong(fmtDate(m["Date mission"]))}</div></div>
+            <div><div style={{color:"#2a3a4a",fontSize:9}}>Heure</div><div style={{color:"#7a756a",fontWeight:600}}>{debut}</div></div>
+            <div><div style={{color:"#2a3a4a",fontSize:9}}>Lieu</div><div style={{color:"#7a756a"}}>{endroit||"—"}</div></div>
+            <div><div style={{color:"#2a3a4a",fontSize:9}}>Durée</div><div style={{color:"#7a756a"}}>{heures?heures+"h":"TBD"}</div></div>
+            <div><div style={{color:"#2a3a4a",fontSize:9}}>Réf</div><div style={{color:"#7a756a",fontFamily:"monospace",fontSize:10}}>{m["Description"]||"—"}</div></div>
+            <div><div style={{color:"#2a3a4a",fontSize:9}}>Trajet</div><div style={{color:"#7a756a"}}>{trvl?`~${trvl} min`:"—"}</div></div>
+          </div>
+        </div>
+
+        {/* Finances */}
+        {(base>0||deb>0)&&(
+          <div style={{padding:"10px 16px",borderTop:"1px solid #151d2a",fontSize:11}}>
+            <div style={{display:"flex",justifyContent:"space-between",color:"#3a4a5a",marginBottom:2}}><span>Base HT</span><span style={{color:"#6a6560"}}>{base?base+"€":"TBD"}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",color:"#3a4a5a",marginBottom:2}}><span>Débours</span><span style={{color:"#6a6560"}}>{deb?deb+"€":"—"}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontWeight:700,color:"#ffb74d",fontSize:12,marginTop:3}}><span>Net</span><span>{Math.round(base*.74+deb)}€</span></div>
+          </div>
+        )}
+
+        {/* Notes */}
+        {m["Notes"]&&<div style={{padding:"8px 16px 12px",fontSize:10,color:"#4a5a6a",lineHeight:1.5}}>📝 {m["Notes"]}</div>}
+
+        {/* Contact */}
+        <div style={{padding:"10px 16px 14px",borderTop:"1px solid #151d2a"}}>
+          <div style={{fontSize:9,color:"#2a3a4a",marginBottom:3}}>CONTACT</div>
+          <div style={{fontSize:11,color:"#4a5a6a"}}>
+            {meta.contact}{meta.phone?<> · <a href={`tel:${meta.phone}`}>{meta.phone}</a></>:""} · <a href={`mailto:${meta.email}`}>{meta.email}</a>
+          </div>
+        </div>
+
+        {/* Mission ID footer */}
+        <div style={{padding:"6px 16px 10px",fontSize:9,color:"#1a2530",fontFamily:"monospace"}}>{mid}</div>
+      </div>
+    </div>
+  );
 }
 
-// draw
-let dctx,drawing=false,bc_clr='#8fa38a',bs=8,lx=0,ly=0;
-function initDraw(){
-  const c=document.getElementById('dc');
-  const mw=Math.min(window.innerWidth-32,480),mh=Math.min(window.innerHeight-310,280);
-  c.width=mw;c.height=mh;c.style.width=mw+'px';c.style.height=mh+'px';
-  dctx=c.getContext('2d');
-  dctx.fillStyle='#1a1a1c';dctx.fillRect(0,0,mw,mh);
-  dctx.strokeStyle='rgba(255,255,255,0.025)';dctx.lineWidth=1;
-  for(let x=0;x<mw;x+=40){dctx.beginPath();dctx.moveTo(x,0);dctx.lineTo(x,mh);dctx.stroke();}
-  for(let y=0;y<mh;y+=40){dctx.beginPath();dctx.moveTo(0,y);dctx.lineTo(mw,y);dctx.stroke();}
-  c.onmousedown=e=>{drawing=true;lx=e.offsetX;ly=e.offsetY;dot(lx,ly);};
-  c.onmousemove=e=>{if(!drawing)return;line(e.offsetX,e.offsetY);};
-  c.onmouseup=c.onmouseleave=()=>{drawing=false;};
-  c.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0],r=c.getBoundingClientRect();drawing=true;lx=t.clientX-r.left;ly=t.clientY-r.top;dot(lx,ly);},{passive:false});
-  c.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0],r=c.getBoundingClientRect();line(t.clientX-r.left,t.clientY-r.top);},{passive:false});
-  c.addEventListener('touchend',()=>{drawing=false;},{passive:false});
-}
-function dot(x,y){dctx.globalAlpha=.85;dctx.fillStyle=bc_clr;dctx.beginPath();dctx.arc(x,y,bs/2,0,Math.PI*2);dctx.fill();dctx.globalAlpha=1;}
-function line(x,y){dctx.globalAlpha=.75;dctx.strokeStyle=bc_clr;dctx.lineWidth=bs;dctx.lineCap='round';dctx.lineJoin='round';dctx.beginPath();dctx.moveTo(lx,ly);dctx.lineTo(x,y);dctx.stroke();dctx.globalAlpha=1;lx=x;ly=y;}
-function setClr(el){document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('on'));el.classList.add('on');bc_clr=el.dataset.c;}
-function clearDraw(){const c=document.getElementById('dc');dctx.fillStyle='#1a1a1c';dctx.fillRect(0,0,c.width,c.height);dctx.strokeStyle='rgba(255,255,255,0.025)';dctx.lineWidth=1;for(let x=0;x<c.width;x+=40){dctx.beginPath();dctx.moveTo(x,0);dctx.lineTo(x,c.height);dctx.stroke();}for(let y=0;y<c.height;y+=40){dctx.beginPath();dctx.moveTo(0,y);dctx.lineTo(c.width,y);dctx.stroke();}}
-
-// ripple
-let tc=0;
-function spawnR(e){_rip(e.offsetX,e.offsetY);}
-function touchR(e){e.preventDefault();const t=e.touches[0],r=document.getElementById('rzone').getBoundingClientRect();_rip(t.clientX-r.left,t.clientY-r.top);}
-function _rip(x,y){
-  tc++;
-  const z=document.getElementById('rzone'),sz=Math.max(z.offsetWidth,z.offsetHeight)*.6;
-  const el=document.createElement('div');el.className='rel';
-  el.style.cssText=`left:${x}px;top:${y}px;width:${sz}px;height:${sz}px`;
-  z.appendChild(el);el.addEventListener('animationend',()=>el.remove());
-  const msgs=['···','···','keep going…','good…','yes…','almost…','there…'];
-  const ctr=document.getElementById('tctr');
-  ctr.textContent=tc<msgs.length?msgs[tc]:tc+' things released';
-  if(tc===3)ctr.style.color='var(--accent)';
-  if(tc>=5){const db=document.getElementById('dbtn');db.style.opacity='1';}
+// ============================================================
+// BREATHE
+// ============================================================
+function Breathe({active,toggle}){
+  const[phase,setPhase]=React.useState(0);
+  const[cycle,setCycle]=React.useState(0);
+  const labels=["Inspire","Retiens","Expire","Retiens"];
+  const sizes=[120,120,50,50];
+  React.useEffect(()=>{if(!active){setPhase(0);setCycle(0);}},[active]);
+  React.useEffect(()=>{if(!active)return;const t=setTimeout(()=>{if(phase===3){setCycle(c=>c+1);setPhase(0);}else setPhase(p=>p+1);},4000);return()=>clearTimeout(t);},[active,phase]);
+  return(
+    <div style={{textAlign:"center",padding:"20px 0"}}>
+      <div style={{fontSize:10,color:"#2a3a4a",fontWeight:700,letterSpacing:1.5,marginBottom:20}}>RESPIRATION</div>
+      <div style={{width:active?sizes[phase]:45,height:active?sizes[phase]:45,borderRadius:"50%",margin:"36px auto",background:active?"radial-gradient(circle,rgba(79,195,247,.2),rgba(79,195,247,.02))":"#0f1520",border:`1.5px solid ${active?"rgba(79,195,247,.3)":"#151d2a"}`,transition:"all 4s cubic-bezier(.4,0,.2,1)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+        {active&&<span style={{fontSize:12,color:"#4fc3f7",fontWeight:600}}>{labels[phase]}</span>}
+      </div>
+      {active&&<div style={{fontSize:10,color:"#2a3a4a",marginBottom:14}}>Cycle {cycle+1}</div>}
+      <button onClick={toggle} style={{padding:"10px 28px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:active?"rgba(239,154,154,.08)":"rgba(79,195,247,.08)",color:active?"#ef9a9a":"#4fc3f7",border:`1px solid ${active?"rgba(239,154,154,.2)":"rgba(79,195,247,.2)"}`}}>{active?"Arrêter":"Commencer"}</button>
+      {!active&&<div style={{marginTop:20,fontSize:11,color:"#2a3a4a",lineHeight:1.7}}>Respiration en boîte · 4-4-4-4<br/><span style={{fontSize:10}}>Après une longue mission</span></div>}
+    </div>
+  );
 }
 
-// close
-function showClose(){
-  const i=localStorage.getItem('jmc_intention')||'absorb · release · move on';
-  document.getElementById('ibox').textContent=i;
-}
-
-// reset
-function reset(){
-  tc=0;stopBreath();
-  document.getElementById('tctr').textContent='···';
-  document.getElementById('dbtn').style.opacity='0';
-  const ta=document.getElementById('dump');ta.value='';ta.style.opacity='1';ta.style.transform='none';
-  go('s1');
-}
-
-// background orbs
-const bgc=document.getElementById('bgc'),bctx=bgc.getContext('2d');let orbs=[];
-function initBg(){bgc.width=window.innerWidth;bgc.height=window.innerHeight;orbs=Array.from({length:4},(_,i)=>({x:Math.random()*bgc.width,y:Math.random()*bgc.height,r:160+Math.random()*220,vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,hue:i<2?120:35,a:.03+Math.random()*.04}));}
-function drawBg(){bctx.clearRect(0,0,bgc.width,bgc.height);orbs.forEach(o=>{const g=bctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,`hsla(${o.hue},25%,55%,${o.a})`);g.addColorStop(1,'hsla(0,0%,0%,0)');bctx.fillStyle=g;bctx.beginPath();bctx.arc(o.x,o.y,o.r,0,Math.PI*2);bctx.fill();o.x+=o.vx;o.y+=o.vy;if(o.x<-o.r)o.x=bgc.width+o.r;if(o.x>bgc.width+o.r)o.x=-o.r;if(o.y<-o.r)o.y=bgc.height+o.r;if(o.y>bgc.height+o.r)o.y=-o.r;});requestAnimationFrame(drawBg);}
-initBg();drawBg();window.addEventListener('resize',initBg);
+// ============================================================
+// RENDER
+// ============================================================
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
-
 </body>
 </html>
