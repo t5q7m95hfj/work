@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -11,181 +12,191 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',system-ui,sans-serif;background:#080c14;color:#ddd8ce;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:#4fc3f7;text-decoration:none}
+body{font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.dark{background:#080c14;color:#ddd8ce}
+body.light{background:#f5f3ef;color:#1a1a1a}
+a{text-decoration:none}
 button{font-family:inherit}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:#1a2530;border-radius:4px}
 #root{max-width:480px;margin:0 auto;min-height:100vh}
-.loading{display:flex;align-items:center;justify-content:center;height:100vh;color:#3a4a5a;font-size:14px}
-@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
-.loading span{animation:pulse 1.5s infinite}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:24px;height:24px;border:2px solid #1a2a3a;border-top:2px solid #4fc3f7;border-radius:50%;animation:spin .8s linear infinite}
+.light .spinner{border-color:#ddd;border-top-color:#1565c0}
 </style>
 </head>
-<body>
-<div id="root"><div class="loading"><span>Chargement...</span></div></div>
+<body class="dark">
+<div id="root"><div class="loading"><div class="spinner"></div><span style="font-size:12px;opacity:.5">Chargement...</span></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.10/babel.min.js"></script>
 
 <script type="text/babel">
 // ============================================================
-// CONFIG — UPDATE THIS WITH YOUR GAS WEB APP URL
+// CONFIG
 // ============================================================
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
+const GAS_URL="https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
 
 // ============================================================
-// CONSTANTS
+// THEME
 // ============================================================
-const DAYS_FR=["dim","lun","mar","mer","jeu","ven","sam"];
-const MONTHS_FR=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-const MONTHS_SHORT=["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
-
-const CLIENT_META={
-  "Philibert Tourisme":{tag:"PHIL",color:"#43a047",contact:"Mélissa Hassaïm",email:"rhone-ops@philibert.fr",cohost:"Véronique Olivier · 06 41 60 42 88",emergency:"+33 4 78 98 56 49"},
-  "Go Côte Saône":{tag:"GCS",color:"#42a5f5",contact:"Marion",phone:"06.20.08.10.92",email:"gcs@gocotesaone.com"},
-  "Feel the French Way":{tag:"FTFW",color:"#ab47bc",contact:"Caroline",email:"contact@feelthefrenchway.fr",cohost:"caroline.meet.and.greet@gmail.com"},
-  "Un Monde Bleu":{tag:"UMB",color:"#ff7043",contact:"Audrey Foret",phone:"+33 7 43 36 05 69",email:"OpsRiviera@umb-dmc.fr",notes:"Répondre au thread · autocariste: rhonecroisieres@galeo.mobi"},
+const DARK={
+  bg:"#080c14",card:"#0f1520",border:"#151d2a",
+  text:"#ddd8ce",textMuted:"#5a6a7a",textFaint:"#3a4858",textBright:"#eae7e0",
+  accent:"#4fc3f7",green:"#81c784",orange:"#ffb74d",red:"#ef9a9a",purple:"#ce93d8",
+  cardHover:"#141e2c",timeBox:"rgba(79,195,247,0.08)",timeBorder:"rgba(79,195,247,0.15)",
+};
+const LIGHT={
+  bg:"#f5f3ef",card:"#ffffff",border:"#e0dcd4",
+  text:"#1a1a1a",textMuted:"#5a5a5a",textFaint:"#8a8a8a",textBright:"#000000",
+  accent:"#1565c0",green:"#2e7d32",orange:"#e65100",red:"#c62828",purple:"#6a1b9a",
+  cardHover:"#f0ede8",timeBox:"rgba(21,101,192,0.06)",timeBorder:"rgba(21,101,192,0.15)",
 };
 
-const TRANSPORT=[
-  {dest:"Perrache",time:45},{dest:"Part-Dieu",time:45},{dest:"LYS",time:52},
-  {dest:"Quai Claude Bernard",time:45},{dest:"Vienne",time:105},{dest:"Genève",time:180},
-];
+// ============================================================
+// CLIENT META
+// ============================================================
+const CMETA={
+  "Philibert Tourisme":{tag:"PHIL",color:"#43a047",lc:"#2e7d32",contact:"Mélissa Hassaïm",email:"rhone-ops@philibert.fr",cohost:"Véronique Olivier · 06 41 60 42 88",emergency:"+33 4 78 98 56 49"},
+  "Go Côte Saône":{tag:"GCS",color:"#42a5f5",lc:"#1565c0",contact:"Marion",phone:"06.20.08.10.92",email:"gcs@gocotesaone.com"},
+  "Feel the French Way":{tag:"FTFW",color:"#ab47bc",lc:"#6a1b9a",contact:"Caroline",email:"contact@feelthefrenchway.fr",cohost:"caroline.meet.and.greet@gmail.com"},
+  "Un Monde Bleu":{tag:"UMB",color:"#ff7043",lc:"#e65100",contact:"Audrey Foret",phone:"+33 7 43 36 05 69",email:"OpsRiviera@umb-dmc.fr",notes:"Répondre au thread · autocariste: rhonecroisieres@galeo.mobi"},
+};
+const TRANSPORT=[{d:"Perrache",t:45},{d:"Part-Dieu",t:45},{d:"LYS Aéroport",t:52},{d:"Quai Claude Bernard",t:45},{d:"Vienne",t:105},{d:"Genève",t:180}];
 
 // ============================================================
 // UTILS
 // ============================================================
-function fmtDate(d){
-  if(!d)return"";
-  if(typeof d==="string"){
-    const s=d.trim();
-    if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);
-    const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-    if(m)return`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
-    return s;
-  }
-  return"";
-}
-function friendlyDate(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DAYS_FR[d.getDay()]} ${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`;}
-function friendlyDateLong(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DAYS_FR[d.getDay()]} ${d.getDate()} ${MONTHS_FR[d.getMonth()]}`;}
-function todayISO(){return new Date().toISOString().slice(0,10);}
-function tomorrowISO(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);}
-function currentMonth(){return String(new Date().getMonth()+1).padStart(2,"0");}
-function getMeta(c){if(!c)return{tag:"?",color:"#555"};for(const[k,v]of Object.entries(CLIENT_META))if(c.toLowerCase().includes(k.split(" ")[0].toLowerCase()))return v;return{tag:"?",color:"#555"};}
-function travelMin(e){if(!e)return null;const u=e.toUpperCase();for(const t of TRANSPORT)if(u.includes(t.dest.toUpperCase()))return t.time;if(u.includes("AIRPORT")||u.includes("LYS"))return 52;return 45;}
+const DF=["dim","lun","mar","mer","jeu","ven","sam"];
+const MF=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const MS=["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
+function fd(d){if(!d)return"";const s=String(d).trim();if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m)return`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;return s;}
+function nice(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DF[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]}`;}
+function niceLong(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DF[d.getDay()]} ${d.getDate()} ${MF[d.getMonth()]}`;}
+function today(){return new Date().toISOString().slice(0,10);}
+function tmrw(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);}
+function cMonth(){return String(new Date().getMonth()+1).padStart(2,"0");}
+function gm(c){if(!c)return{tag:"?",color:"#666",lc:"#444"};for(const[k,v]of Object.entries(CMETA))if(c.toLowerCase().includes(k.split(" ")[0].toLowerCase()))return v;return{tag:"?",color:"#666",lc:"#444"};}
+function trv(e){if(!e)return null;const u=e.toUpperCase();for(const t of TRANSPORT)if(u.includes(t.d.toUpperCase()))return t.t;if(u.includes("AIRPORT")||u.includes("LYS"))return 52;return 45;}
+function depTime(debut,travel){if(!debut||!travel)return null;const p=debut.split(":");if(p.length<2)return null;const m=parseInt(p[0])*60+parseInt(p[1])-travel-15;return`${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;}
 
 // ============================================================
-// DATA FETCHING
+// DATA
 // ============================================================
-async function fetchMissions(month="current"){
-  try{
-    const url=`${GAS_URL}?action=missions&month=${encodeURIComponent(month)}`;
-    const r=await fetch(url);
-    const data=await r.json();
-    return data.missions||[];
-  }catch(e){
-    console.error("Fetch error:",e);
-    return null; // null signals error
-  }
+async function fetchM(month){
+  try{const r=await fetch(`${GAS_URL}?action=missions&month=${encodeURIComponent(month||"current")}`);const d=await r.json();return d.missions||[];}
+  catch(e){console.error(e);return null;}
 }
-
-async function fetchWeather(){
-  try{
-    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weather_code&daily=precipitation_probability_max&timezone=Europe/Paris&forecast_days=1");
-    const d=await r.json();
-    const code=d.current?.weather_code||0;
-    const temp=Math.round(d.current?.temperature_2m||0);
-    const rain=d.daily?.precipitation_probability_max?.[0]||0;
-    const icons={0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌧️",55:"🌧️",61:"🌧️",63:"🌧️",65:"🌧️",71:"🌨️",73:"🌨️",75:"🌨️",80:"🌦️",81:"🌧️",82:"🌧️",95:"⛈️"};
-    return{temp,icon:icons[code]||"🌤️",rain};
-  }catch(e){return{temp:"?",icon:"🌤️",rain:0};}
+async function fetchW(){
+  try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weather_code&daily=precipitation_probability_max&timezone=Europe/Paris&forecast_days=1");
+  const d=await r.json();const code=d.current?.weather_code||0;const temp=Math.round(d.current?.temperature_2m||0);const rain=d.daily?.precipitation_probability_max?.[0]||0;
+  const icons={0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",51:"🌦️",53:"🌧️",61:"🌧️",63:"🌧️",71:"🌨️",80:"🌦️",95:"⛈️"};
+  return{temp,icon:icons[code]||"🌤️",rain};}catch(e){return{temp:"?",icon:"🌤️",rain:0};}
 }
-
 async function updateField(id,field,value){
-  try{
-    const url=`${GAS_URL}?action=update&id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`;
-    const r=await fetch(url);
-    return await r.json();
-  }catch(e){return{error:e.message};}
+  try{const r=await fetch(`${GAS_URL}?action=update&id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`);return await r.json();}
+  catch(e){return{error:e.message};}
 }
+
+// ============================================================
+// FIELD GETTERS (handles accent variations)
+// ============================================================
+function F(m,k){return m[k]||m[k.replace("é","e")]||m[k.replace("è","e")]||m[k.replace("û","u")]||"";}
+function mDate(m){return fd(F(m,"Date mission"));}
+function mDebut(m){return F(m,"Début")||F(m,"Debut")||"";}
+function mClient(m){return F(m,"Client");}
+function mType(m){return F(m,"Type");}
+function mDesc(m){return F(m,"Description");}
+function mHeures(m){return F(m,"Heures");}
+function mBase(m){return F(m,"Base (HT)");}
+function mDeb(m){return F(m,"Débours")||F(m,"Debours");}
+function mStatut(m){return F(m,"Statut");}
+function mNotes(m){return F(m,"Notes");}
+function mEndroit(m){return F(m,"Endroit");}
+function mMid(m){return F(m,"Mission ID");}
+function isDone(m){const s=(mStatut(m)).toLowerCase();return s.includes("envoyé")||s.includes("terminé")||s.includes("confirme");}
 
 // ============================================================
 // APP
 // ============================================================
 function App(){
+  const[theme,setTheme]=React.useState(()=>localStorage.getItem("mc_theme")||"dark");
   const[tab,setTab]=React.useState("today");
   const[detail,setDetail]=React.useState(null);
   const[missions,setMissions]=React.useState([]);
   const[loading,setLoading]=React.useState(true);
   const[weather,setWeather]=React.useState({temp:"·",icon:"🌤️",rain:0});
   const[breatheOn,setBreatheOn]=React.useState(false);
-  const[lastRefresh,setLastRefresh]=React.useState(null);
+  const[postMission,setPostMission]=React.useState(null);
 
-  const loadData=React.useCallback(async()=>{
+  const T=theme==="dark"?DARK:LIGHT;
+  React.useEffect(()=>{document.body.className=theme;localStorage.setItem("mc_theme",theme);},[theme]);
+
+  const load=React.useCallback(async()=>{
     setLoading(true);
-    const[m,w]=await Promise.all([fetchMissions("current"),fetchWeather()]);
+    const[m,w]=await Promise.all([fetchM("current"),fetchW()]);
     if(m!==null)setMissions(m);
     if(w)setWeather(w);
     setLoading(false);
-    setLastRefresh(new Date());
   },[]);
+  React.useEffect(()=>{load();},[load]);
 
-  React.useEffect(()=>{loadData();},[loadData]);
+  const t0=today(),t1=tmrw(),cm=cMonth(),mn=MF[parseInt(cm)-1]||"?";
+  const todayM=React.useMemo(()=>missions.filter(m=>mDate(m)===t0).sort((a,b)=>(mDebut(a)||"z").localeCompare(mDebut(b)||"z")),[missions,t0]);
+  const tmrwM=React.useMemo(()=>missions.filter(m=>mDate(m)===t1).sort((a,b)=>(mDebut(a)||"z").localeCompare(mDebut(b)||"z")),[missions,t1]);
+  const upcoming=React.useMemo(()=>missions.filter(m=>mDate(m)>t0).sort((a,b)=>mDate(a).localeCompare(mDate(b))),[missions,t0]);
+  const done=missions.filter(isDone).length;
+  const mBase_=missions.reduce((s,m)=>s+(parseFloat(mBase(m))||0),0);
+  const mDeb_=missions.reduce((s,m)=>s+(parseFloat(mDeb(m))||0),0);
+  const byDate=React.useMemo(()=>{const g={};missions.forEach(m=>{const d=mDate(m);if(d)(g[d]=g[d]||[]).push(m);});return g;},[missions]);
 
-  const t=todayISO(),tm=tomorrowISO(),cm=currentMonth();
-  const monthName=MONTHS_FR[parseInt(cm)-1]||"?";
+  if(loading)return<div className="loading"><div className="spinner"></div><span style={{fontSize:12,color:T.textFaint}}>Chargement...</span></div>;
 
-  const todayM=React.useMemo(()=>missions.filter(m=>fmtDate(m["Date mission"])===t).sort((a,b)=>(a["Début"]||a["Debut"]||"z").localeCompare(b["Début"]||b["Debut"]||"z")),[missions,t]);
-  const tmrwM=React.useMemo(()=>missions.filter(m=>fmtDate(m["Date mission"])===tm).sort((a,b)=>(a["Début"]||a["Debut"]||"z").localeCompare(b["Début"]||b["Debut"]||"z")),[missions,tm]);
-  const upcoming=React.useMemo(()=>missions.filter(m=>fmtDate(m["Date mission"])>t).sort((a,b)=>(a["Date mission"]||"").localeCompare(b["Date mission"]||"")),[missions,t]);
-  const monthDone=missions.filter(m=>{const s=(m["Statut"]||"").toLowerCase();return s.includes("envoyé")||s.includes("terminé");}).length;
-  const monthBase=missions.reduce((s,m)=>s+(parseFloat(m["Base (HT)"])||0),0);
-  const monthDeb=missions.reduce((s,m)=>s+(parseFloat(m["Débours"])||parseFloat(m["Debours"])||0),0);
-
-  // Group by date for month view
-  const byDate=React.useMemo(()=>{
-    const g={};
-    missions.forEach(m=>{const d=fmtDate(m["Date mission"]);if(d)(g[d]=g[d]||[]).push(m);});
-    return g;
-  },[missions]);
-
-  if(loading)return <div className="loading"><span>Chargement des missions...</span></div>;
+  // Post-mission flow
+  if(postMission)return<PostMissionFlow m={postMission} T={T} onDone={async(data)=>{
+    if(data.heures)await updateField(mMid(postMission),"heures",data.heures);
+    if(data.notes)await updateField(mMid(postMission),"notes",data.notes);
+    if(data.statut)await updateField(mMid(postMission),"statut",data.statut);
+    setPostMission(null);load();
+  }} onCancel={()=>setPostMission(null)}/>;
 
   return(
-    <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh"}}>
+    <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:T.bg}}>
       {/* HEADER */}
-      <div style={{padding:"18px 20px 14px",background:"linear-gradient(180deg,#0e1320,#0a0f1a)",borderBottom:"1px solid #151d2a"}}>
+      <div style={{padding:"16px 18px 12px",background:theme==="dark"?"linear-gradient(180deg,#0e1320,#0a0f1a)":"linear-gradient(180deg,#fff,#f8f6f2)",borderBottom:`1px solid ${T.border}`}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
-            <div style={{fontSize:9,letterSpacing:3,color:"#3a4858",textTransform:"uppercase",marginBottom:2}}>Mission Control</div>
-            <div style={{fontSize:19,fontWeight:700,color:"#eae7e0"}}>{new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}</div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:9,letterSpacing:3,color:T.textFaint,textTransform:"uppercase"}}>Mission Control</span>
+              <button onClick={()=>setTheme(theme==="dark"?"light":"dark")} style={{background:"none",border:"none",cursor:"pointer",fontSize:12,padding:2,color:T.textFaint}}>{theme==="dark"?"☀️":"🌙"}</button>
+            </div>
+            <div style={{fontSize:18,fontWeight:700,color:T.textBright,marginTop:1}}>{new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}</div>
           </div>
-          <div style={{textAlign:"right",fontSize:12,color:"#6a7a8a"}}>
+          <div style={{textAlign:"right",fontSize:12,color:T.textMuted}}>
             <div style={{fontSize:18}}>{weather.icon}</div>
             <div>{weather.temp}°C</div>
-            {weather.rain>15&&<div style={{fontSize:10,color:"#64b5f6"}}>🌧 {weather.rain}%</div>}
+            {weather.rain>15&&<div style={{fontSize:10,color:T.accent}}>🌧 {weather.rain}%</div>}
           </div>
         </div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:4}}>
-          <div style={{fontSize:11,color:"#4a5a6a"}}>{monthName} · {missions.length} missions · {monthDone} terminées</div>
-          <button onClick={loadData} style={{background:"none",border:"none",color:"#2a3a4a",fontSize:10,cursor:"pointer",padding:4}}>↻ refresh</button>
+          <div style={{fontSize:11,color:T.textFaint}}>{mn} · {missions.length} missions · {done} terminées</div>
+          <button onClick={load} style={{background:"none",border:"none",color:T.textFaint,fontSize:10,cursor:"pointer",padding:4}}>↻</button>
         </div>
       </div>
 
       {/* NAV */}
-      <div style={{display:"flex",borderBottom:"1px solid #151d2a",background:"#0a0f1a",position:"sticky",top:0,zIndex:10}}>
-        {[{id:"today",icon:"☀️",label:"Aujourd'hui"},{id:"month",icon:"📅",label:MONTHS_SHORT[parseInt(cm)-1]},{id:"finance",icon:"💶",label:"Finances"},{id:"breathe",icon:"🌿",label:"Pause"}].map(n=>(
+      <div style={{display:"flex",borderBottom:`1px solid ${T.border}`,background:T.bg,position:"sticky",top:0,zIndex:10}}>
+        {[{id:"today",icon:"☀️",label:"Aujourd'hui"},{id:"month",icon:"📅",label:MS[parseInt(cm)-1]},{id:"finance",icon:"💶",label:"Finances"},{id:"breathe",icon:"🌿",label:"Pause"}].map(n=>(
           <button key={n.id} onClick={()=>{setTab(n.id);setDetail(null);setBreatheOn(false);}} style={{
             flex:1,padding:"9px 0 7px",background:"none",border:"none",cursor:"pointer",
-            color:tab===n.id?"#eae7e0":"#2e3e4e",fontSize:9,fontWeight:tab===n.id?700:400,
-            borderBottom:tab===n.id?"2px solid #4fc3f7":"2px solid transparent",letterSpacing:.5,
+            color:tab===n.id?T.textBright:T.textFaint,fontSize:9,fontWeight:tab===n.id?700:400,
+            borderBottom:tab===n.id?`2px solid ${T.accent}`:"2px solid transparent",letterSpacing:.5,
           }}><div style={{fontSize:14,marginBottom:1}}>{n.icon}</div>{n.label}</button>
         ))}
       </div>
 
-      {/* CONTENT */}
       <div style={{padding:"14px 16px 40px",minHeight:"65vh"}}>
 
         {/* TODAY */}
@@ -194,69 +205,74 @@ function App(){
             {todayM.length===0?(
               <div style={{textAlign:"center",padding:"28px 0"}}>
                 <div style={{fontSize:32,marginBottom:4}}>☀️</div>
-                <div style={{fontSize:14,color:"#5a6a7a"}}>Pas de mission aujourd'hui</div>
+                <div style={{fontSize:14,color:T.textMuted}}>Pas de mission aujourd'hui</div>
               </div>
             ):(
-              <>{Label("AUJOURD'HUI")}{todayM.map(m=><Card key={m["Mission ID"]} m={m} onTap={()=>setDetail(m)}/>)}</>
+              <>{Lbl("AUJOURD'HUI",T)}{todayM.map(m=><Card key={mMid(m)} m={m} T={T} onTap={()=>setDetail(m)}/>)}</>
             )}
-            {tmrwM.length>0&&<>{Label("DEMAIN · "+friendlyDate(tm))}{tmrwM.map(m=><Card key={m["Mission ID"]} m={m} compact onTap={()=>setDetail(m)}/>)}</>}
+            {tmrwM.length>0&&<>{Lbl("DEMAIN · "+nice(t1),T)}{tmrwM.map(m=><Card key={mMid(m)} m={m} T={T} compact onTap={()=>setDetail(m)}/>)}</>}
             {todayM.length===0&&tmrwM.length===0&&upcoming.length>0&&(
-              <>{Label("PROCHAINE · "+friendlyDate(fmtDate(upcoming[0]["Date mission"])))}<Card m={upcoming[0]} onTap={()=>setDetail(upcoming[0])}/></>
+              <>{Lbl("PROCHAINE · "+nice(mDate(upcoming[0])),T)}<Card m={upcoming[0]} T={T} onTap={()=>setDetail(upcoming[0])}/></>
             )}
           </div>
         )}
 
         {/* DETAIL */}
-        {detail&&<Detail m={detail} onBack={()=>setDetail(null)} onUpdate={async(id,f,v)=>{await updateField(id,f,v);loadData();}}/>}
+        {detail&&<Detail m={detail} T={T} theme={theme} onBack={()=>setDetail(null)} onPostMission={()=>{setPostMission(detail);setDetail(null);}}/>}
 
         {/* MONTH */}
         {tab==="month"&&!detail&&(
           <div>
-            {Label(`${monthName.toUpperCase()} · ${missions.length} MISSIONS`)}
+            {Lbl(`${mn.toUpperCase()} · ${missions.length} MISSIONS`,T)}
             {Object.entries(byDate).sort(([a],[b])=>a.localeCompare(b)).map(([date,ms])=>(
               <div key={date} style={{marginBottom:12}}>
-                <div style={{fontSize:11,fontWeight:700,color:date===t?"#4fc3f7":date===tm?"#81c784":"#3a4a5a",letterSpacing:1,marginBottom:4}}>
-                  {friendlyDateLong(date).toUpperCase()}{date===t?" · AUJOURD'HUI":""}{date===tm?" · DEMAIN":""}
+                <div style={{fontSize:11,fontWeight:700,color:date===t0?T.accent:date===t1?T.green:T.textFaint,letterSpacing:1,marginBottom:4}}>
+                  {niceLong(date).toUpperCase()}{date===t0?" · AUJOURD'HUI":""}{date===t1?" · DEMAIN":""}
                 </div>
-                {ms.map(m=><Card key={m["Mission ID"]||Math.random()} m={m} compact onTap={()=>setDetail(m)}/>)}
+                {ms.map(m=><Card key={mMid(m)||Math.random()} m={m} T={T} compact onTap={()=>setDetail(m)}/>)}
               </div>
             ))}
-            {Label("CONTACTS")}
-            {Object.entries(CLIENT_META).map(([name,meta])=>(
-              <div key={name} style={{background:"#0f1520",borderRadius:10,padding:12,marginBottom:6,borderLeft:`3px solid ${meta.color}`}}>
+            {Lbl("CONTACTS",T)}
+            {Object.entries(CMETA).map(([name,meta])=>(
+              <div key={name} style={{background:T.card,borderRadius:10,padding:12,marginBottom:6,borderLeft:`3px solid ${meta.color}`,fontSize:11,color:T.textMuted,lineHeight:1.7}}>
                 <div style={{fontWeight:700,fontSize:12,color:meta.color}}>{meta.tag} · {name}</div>
-                <div style={{fontSize:11,color:"#5a6a7a",marginTop:3,lineHeight:1.7}}>
+                <div style={{marginTop:3}}>
                   {meta.contact}{meta.phone?` · ${meta.phone}`:""}<br/>
-                  <a href={`mailto:${meta.email}`}>{meta.email}</a>
+                  <a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a>
                   {meta.cohost&&<><br/>🤝 {meta.cohost}</>}
-                  {meta.emergency&&<><br/>🚨 <a href={`tel:${meta.emergency}`} style={{color:"#ef9a9a"}}>{meta.emergency}</a></>}
-                  {meta.notes&&<><br/><span style={{color:"#e6a23c",fontSize:10}}>⚠️ {meta.notes}</span></>}
+                  {meta.emergency&&<><br/>🚨 <a href={`tel:${meta.emergency}`} style={{color:T.red}}>{meta.emergency}</a></>}
+                  {meta.notes&&<><br/><span style={{color:T.orange,fontSize:10}}>⚠️ {meta.notes}</span></>}
                 </div>
               </div>
             ))}
+            {Lbl("TRAJETS DEPUIS SAINT-PRIEST",T)}
+            <div style={{background:T.card,borderRadius:10,padding:12,fontSize:11,color:T.textFaint,lineHeight:1.9}}>
+              {TRANSPORT.map((t,i)=><div key={i}>🚗 {t.d} — {t.t} min</div>)}
+              <div style={{fontSize:9,marginTop:4,opacity:.6}}>Avant 6h: Bolt VTC</div>
+            </div>
           </div>
         )}
 
         {/* FINANCE */}
         {tab==="finance"&&(
           <div>
-            {Label(`${monthName.toUpperCase()} · FINANCES`)}
+            {Lbl(`${mn.toUpperCase()} · FINANCES`,T)}
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
-              <Stat l="Base HT" v={`${monthBase.toLocaleString("fr-FR")}€`} c="#4fc3f7"/>
-              <Stat l="Débours" v={`${monthDeb.toLocaleString("fr-FR")}€`} c="#81c784"/>
-              <Stat l="Net" v={`${Math.round(monthBase*.74+monthDeb).toLocaleString("fr-FR")}€`} c="#ffb74d"/>
-              <Stat l="Missions" v={`${monthDone}/${missions.length}`} c="#ce93d8"/>
+              <StatBox l="Base HT" v={`${mBase_.toLocaleString("fr-FR")}€`} c={T.accent} T={T}/>
+              <StatBox l="Débours" v={`${mDeb_.toLocaleString("fr-FR")}€`} c={T.green} T={T}/>
+              <StatBox l="Net" v={`${Math.round(mBase_*.74+mDeb_).toLocaleString("fr-FR")}€`} c={T.orange} T={T}/>
+              <StatBox l="Missions" v={`${done}/${missions.length}`} c={T.purple} T={T}/>
             </div>
-            {Label("PAR CLIENT")}
-            {Object.entries(CLIENT_META).map(([name,meta])=>{
-              const cm=missions.filter(m=>(m["Client"]||"").includes(name.split(" ")[0]));
-              if(!cm.length)return null;
-              const cb=cm.reduce((s,m)=>s+(parseFloat(m["Base (HT)"])||0),0);
-              const cd=cm.reduce((s,m)=>s+(parseFloat(m["Débours"])||parseFloat(m["Debours"])||0),0);
+            {Lbl("PAR CLIENT",T)}
+            {Object.entries(CMETA).map(([name,meta])=>{
+              const cm2=missions.filter(m=>mClient(m).includes(name.split(" ")[0]));
+              if(!cm2.length)return null;
+              const cb=cm2.reduce((s,m)=>s+(parseFloat(mBase(m))||0),0);
+              const cd=cm2.reduce((s,m)=>s+(parseFloat(mDeb(m))||0),0);
               return(
-                <div key={name} style={{background:"#0f1520",borderRadius:10,padding:"10px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,display:"flex",justifyContent:"space-between"}}>
-                  <div><div style={{fontWeight:700,fontSize:12,color:meta.color}}>{meta.tag}</div><div style={{fontSize:10,color:"#3a4a5a"}}>{cm.length} missions</div></div>
-                  <div style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:700,color:"#9a968e"}}>{cb>0?`${cb}€`:"TBD"}</div>{cd>0&&<div style={{fontSize:10,color:"#4a5a6a"}}>+{cd}€ déb</div>}</div>
+                <div key={name} style={{background:T.card,borderRadius:10,padding:"10px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,display:"flex",justifyContent:"space-between"}}>
+                  <div><div style={{fontWeight:700,fontSize:12,color:meta.color}}>{meta.tag}</div><div style={{fontSize:10,color:T.textFaint}}>{cm2.length} missions</div></div>
+                  <div style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:700,color:T.textMuted}}>{cb>0?`${cb}€`:"TBD"}</div>{cd>0&&<div style={{fontSize:10,color:T.textFaint}}>+{cd}€ déb</div>}</div>
                 </div>
               );
             })}
@@ -264,7 +280,7 @@ function App(){
         )}
 
         {/* BREATHE */}
-        {tab==="breathe"&&<Breathe active={breatheOn} toggle={()=>setBreatheOn(!breatheOn)}/>}
+        {tab==="breathe"&&<Breathe active={breatheOn} toggle={()=>setBreatheOn(!breatheOn)} T={T}/>}
       </div>
     </div>
   );
@@ -273,104 +289,216 @@ function App(){
 // ============================================================
 // COMPONENTS
 // ============================================================
-function Label(t){return<div style={{fontSize:10,color:"#3a4858",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:6,marginTop:4}}>{t}</div>;}
-function Stat({l,v,c}){return<div style={{background:"#0f1520",borderRadius:10,padding:"10px 12px",textAlign:"center"}}><div style={{fontSize:9,color:"#3a4858",marginBottom:2}}>{l}</div><div style={{fontSize:16,fontWeight:700,color:c}}>{v}</div></div>;}
+function Lbl(t,T){return<div style={{fontSize:10,color:T.textFaint,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:6,marginTop:4}}>{t}</div>;}
+function StatBox({l,v,c,T}){return<div style={{background:T.card,borderRadius:10,padding:"10px 12px",textAlign:"center"}}><div style={{fontSize:9,color:T.textFaint,marginBottom:2}}>{l}</div><div style={{fontSize:16,fontWeight:700,color:c}}>{v}</div></div>;}
 
-function Card({m,compact,onTap}){
-  const meta=getMeta(m["Client"]);
-  const done=(m["Statut"]||"").toLowerCase().includes("envoyé")||(m["Statut"]||"").toLowerCase().includes("terminé");
-  const debut=m["Début"]||m["Debut"]||"TBD";
-  const type=(m["Type"]||"").replace("ASSISTANCE ","").split(" - ").pop();
-  const desc=m["Description"]||"";
+function Card({m,compact,onTap,T}){
+  const meta=gm(mClient(m));
+  const dn=isDone(m);
+  const debut=mDebut(m)||"TBD";
+  const type=(mType(m)).replace("ASSISTANCE ","").split(" - ").pop();
   return(
-    <div onClick={onTap} style={{background:"#0f1520",borderRadius:compact?10:12,padding:compact?"8px 12px":"12px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,cursor:"pointer",opacity:done?.5:1,transition:"transform .1s"}}
+    <div onClick={onTap} style={{background:T.card,borderRadius:compact?10:12,padding:compact?"8px 12px":"12px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,cursor:"pointer",opacity:dn?.5:1,transition:"transform .1s"}}
       onPointerDown={e=>e.currentTarget.style.transform="scale(0.98)"}onPointerUp={e=>e.currentTarget.style.transform=""}onPointerLeave={e=>e.currentTarget.style.transform=""}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div style={{flex:1}}>
           <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
             <span style={{fontSize:compact?11:13,fontWeight:700,color:meta.color}}>{meta.tag}</span>
-            <span style={{fontSize:compact?10:12,color:"#5a6a7a"}}>{debut}</span>
-            {!compact&&<span style={{fontSize:10,color:"#3a4858"}}>{friendlyDate(fmtDate(m["Date mission"]))}</span>}
-            {done&&<span style={{fontSize:8,background:"#132013",color:"#5a9a5a",padding:"1px 4px",borderRadius:3}}>✓</span>}
+            <span style={{fontSize:compact?10:12,color:T.textMuted}}>{debut}</span>
+            {!compact&&<span style={{fontSize:10,color:T.textFaint}}>{nice(mDate(m))}</span>}
+            {dn&&<span style={{fontSize:8,background:T.green+"22",color:T.green,padding:"1px 4px",borderRadius:3}}>✓</span>}
           </div>
-          <div style={{fontSize:compact?10:12,color:"#7a756a",marginTop:2}}>{type}</div>
+          <div style={{fontSize:compact?10:12,color:T.textMuted,marginTop:2}}>{type}</div>
         </div>
-        <div style={{textAlign:"right",fontSize:10,color:"#2a3a4a"}}>
-          {desc&&<div style={{fontFamily:"monospace",fontSize:9,color:"#3a4a5a"}}>{desc}</div>}
+        <div style={{textAlign:"right",fontSize:10,color:T.textFaint}}>
+          {mDesc(m)&&<div style={{fontFamily:"monospace",fontSize:9}}>{mDesc(m)}</div>}
         </div>
       </div>
     </div>
   );
 }
 
-function Detail({m,onBack,onUpdate}){
-  const meta=getMeta(m["Client"]);
-  const base=parseFloat(m["Base (HT)"])||0;
-  const deb=parseFloat(m["Débours"])||parseFloat(m["Debours"])||0;
-  const debut=m["Début"]||m["Debut"]||"TBD";
-  const heures=m["Heures"]||"";
-  const endroit=m["Endroit"]||"";
-  const trvl=travelMin(endroit);
-  const mid=m["Mission ID"]||"";
+// ============================================================
+// DETAIL VIEW
+// ============================================================
+function Detail({m,T,theme,onBack,onPostMission}){
+  const meta=gm(mClient(m));
+  const base=parseFloat(mBase(m))||0,deb=parseFloat(mDeb(m))||0;
+  const debut=mDebut(m)||"TBD";
+  const endroit=mEndroit(m);
+  const trvl=trv(endroit);
+  const dep=depTime(debut,trvl);
+  const dn=isDone(m);
 
   return(
     <div>
-      <button onClick={onBack} style={{background:"none",border:"none",color:"#4fc3f7",fontSize:11,cursor:"pointer",padding:"0 0 8px"}}>← Retour</button>
-      <div style={{background:"#0f1520",borderRadius:14,overflow:"hidden",borderLeft:`4px solid ${meta.color}`}}>
+      <button onClick={onBack} style={{background:"none",border:"none",color:T.accent,fontSize:11,cursor:"pointer",padding:"0 0 8px"}}>← Retour</button>
+      <div style={{background:T.card,borderRadius:14,overflow:"hidden",borderLeft:`4px solid ${meta.color}`}}>
+        {/* Header */}
         <div style={{padding:"16px 16px 12px"}}>
           <div style={{display:"flex",justifyContent:"space-between"}}>
             <div>
-              <div style={{fontSize:9,color:meta.color,fontWeight:700,letterSpacing:1.5}}>{meta.tag} · {m["Client"]}</div>
-              <div style={{fontSize:15,fontWeight:700,color:"#eae7e0",marginTop:2}}>{(m["Type"]||"").replace("ASSISTANCE ","")}</div>
+              <div style={{fontSize:9,color:meta.color,fontWeight:700,letterSpacing:1.5}}>{meta.tag} · {mClient(m)}</div>
+              <div style={{fontSize:15,fontWeight:700,color:T.textBright,marginTop:2}}>{mType(m).replace("ASSISTANCE ","")}</div>
             </div>
-            <div style={{fontSize:8,padding:"2px 6px",borderRadius:4,background:(m["Statut"]||"").includes("envoyé")?"#132013":"#0f1530",color:(m["Statut"]||"").includes("envoyé")?"#5a9a5a":"#5a7aaa",fontWeight:600}}>{m["Statut"]||"—"}</div>
+            <div style={{fontSize:8,padding:"2px 6px",borderRadius:4,background:dn?T.green+"22":T.accent+"22",color:dn?T.green:T.accent,fontWeight:600}}>{mStatut(m)||"—"}</div>
           </div>
 
-          {/* Departure time helper */}
+          {/* Departure helper */}
           {debut!=="TBD"&&trvl&&(
-            <div style={{marginTop:8,padding:"6px 10px",background:"rgba(79,195,247,0.08)",borderRadius:8,border:"1px solid rgba(79,195,247,0.15)"}}>
-              <div style={{fontSize:10,color:"#4fc3f7",fontWeight:600}}>⏰ Mission : {debut}</div>
-              <div style={{fontSize:9,color:"#3a5a7a",marginTop:1}}>Départ maison ~{(()=>{
-                const p=debut.split(":");if(p.length<2)return"?";
-                const dep=parseInt(p[0])*60+parseInt(p[1])-trvl-15;
-                return`${String(Math.floor(dep/60)).padStart(2,"0")}:${String(dep%60).padStart(2,"0")}`;
-              })()}</div>
+            <div style={{marginTop:8,padding:"6px 10px",background:T.timeBox,borderRadius:8,border:`1px solid ${T.timeBorder}`}}>
+              <div style={{fontSize:10,color:T.accent,fontWeight:600}}>⏰ Mission : {debut}</div>
+              {dep&&<div style={{fontSize:9,color:T.textMuted,marginTop:1}}>Départ maison ~{dep} · trajet ~{trvl}min</div>}
             </div>
           )}
 
+          {/* Info grid */}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:12,fontSize:11}}>
-            <div><div style={{color:"#2a3a4a",fontSize:9}}>Date</div><div style={{color:"#7a756a",fontWeight:600}}>{friendlyDateLong(fmtDate(m["Date mission"]))}</div></div>
-            <div><div style={{color:"#2a3a4a",fontSize:9}}>Heure</div><div style={{color:"#7a756a",fontWeight:600}}>{debut}</div></div>
-            <div><div style={{color:"#2a3a4a",fontSize:9}}>Lieu</div><div style={{color:"#7a756a"}}>{endroit||"—"}</div></div>
-            <div><div style={{color:"#2a3a4a",fontSize:9}}>Durée</div><div style={{color:"#7a756a"}}>{heures?heures+"h":"TBD"}</div></div>
-            <div><div style={{color:"#2a3a4a",fontSize:9}}>Réf</div><div style={{color:"#7a756a",fontFamily:"monospace",fontSize:10}}>{m["Description"]||"—"}</div></div>
-            <div><div style={{color:"#2a3a4a",fontSize:9}}>Trajet</div><div style={{color:"#7a756a"}}>{trvl?`~${trvl} min`:"—"}</div></div>
+            <FldBox l="Date" v={niceLong(mDate(m))} T={T}/>
+            <FldBox l="Heure" v={debut} T={T}/>
+            <FldBox l="Lieu" v={endroit||"—"} T={T}/>
+            <FldBox l="Durée" v={mHeures(m)?mHeures(m)+"h":"TBD"} T={T}/>
+            <FldBox l="Réf" v={mDesc(m)||"—"} T={T} mono/>
+            <FldBox l="ID" v={mMid(m)} T={T} mono small/>
           </div>
         </div>
 
         {/* Finances */}
         {(base>0||deb>0)&&(
-          <div style={{padding:"10px 16px",borderTop:"1px solid #151d2a",fontSize:11}}>
-            <div style={{display:"flex",justifyContent:"space-between",color:"#3a4a5a",marginBottom:2}}><span>Base HT</span><span style={{color:"#6a6560"}}>{base?base+"€":"TBD"}</span></div>
-            <div style={{display:"flex",justifyContent:"space-between",color:"#3a4a5a",marginBottom:2}}><span>Débours</span><span style={{color:"#6a6560"}}>{deb?deb+"€":"—"}</span></div>
-            <div style={{display:"flex",justifyContent:"space-between",fontWeight:700,color:"#ffb74d",fontSize:12,marginTop:3}}><span>Net</span><span>{Math.round(base*.74+deb)}€</span></div>
+          <div style={{padding:"10px 16px",borderTop:`1px solid ${T.border}`,fontSize:11}}>
+            <div style={{display:"flex",justifyContent:"space-between",color:T.textFaint,marginBottom:2}}><span>Base HT</span><span style={{color:T.textMuted}}>{base?base+"€":"TBD"}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",color:T.textFaint,marginBottom:2}}><span>Débours</span><span style={{color:T.textMuted}}>{deb?deb+"€":"—"}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontWeight:700,color:T.orange,fontSize:12,marginTop:3}}><span>Net</span><span>{Math.round(base*.74+deb)}€</span></div>
           </div>
         )}
 
         {/* Notes */}
-        {m["Notes"]&&<div style={{padding:"8px 16px 12px",fontSize:10,color:"#4a5a6a",lineHeight:1.5}}>📝 {m["Notes"]}</div>}
+        {mNotes(m)&&<div style={{padding:"8px 16px 12px",fontSize:10,color:T.textFaint,lineHeight:1.5}}>📝 {mNotes(m)}</div>}
 
         {/* Contact */}
-        <div style={{padding:"10px 16px 14px",borderTop:"1px solid #151d2a"}}>
-          <div style={{fontSize:9,color:"#2a3a4a",marginBottom:3}}>CONTACT</div>
-          <div style={{fontSize:11,color:"#4a5a6a"}}>
-            {meta.contact}{meta.phone?<> · <a href={`tel:${meta.phone}`}>{meta.phone}</a></>:""} · <a href={`mailto:${meta.email}`}>{meta.email}</a>
+        <div style={{padding:"10px 16px",borderTop:`1px solid ${T.border}`}}>
+          <div style={{fontSize:9,color:T.textFaint,marginBottom:3}}>CONTACT</div>
+          <div style={{fontSize:11,color:T.textMuted}}>
+            {meta.contact}{meta.phone?<> · <a href={`tel:${meta.phone}`} style={{color:T.accent}}>{meta.phone}</a></>:""} · <a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a>
           </div>
+          {meta.cohost&&<div style={{fontSize:10,color:T.textFaint,marginTop:2}}>🤝 {meta.cohost}</div>}
+          {meta.emergency&&<div style={{fontSize:10,marginTop:2}}>🚨 <a href={`tel:${meta.emergency}`} style={{color:T.red}}>{meta.emergency}</a></div>}
         </div>
 
-        {/* Mission ID footer */}
-        <div style={{padding:"6px 16px 10px",fontSize:9,color:"#1a2530",fontFamily:"monospace"}}>{mid}</div>
+        {/* POST-MISSION BUTTON */}
+        {!dn&&(
+          <div style={{padding:"12px 16px 16px",borderTop:`1px solid ${T.border}`}}>
+            <button onClick={onPostMission} style={{
+              width:"100%",padding:"12px",borderRadius:10,fontSize:13,fontWeight:700,cursor:"pointer",
+              background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,
+              transition:"all .2s",
+            }}>✅ Fin de mission — Logger les heures</button>
+          </div>
+        )}
+
+        <div style={{padding:"4px 16px 10px",fontSize:8,color:T.textFaint,fontFamily:"monospace"}}>{mMid(m)}</div>
       </div>
+    </div>
+  );
+}
+
+function FldBox({l,v,T,mono,small}){
+  return<div><div style={{color:T.textFaint,fontSize:9}}>{l}</div><div style={{color:T.textMuted,fontWeight:600,fontSize:small?10:11,fontFamily:mono?"monospace":"inherit"}}>{v}</div></div>;
+}
+
+// ============================================================
+// POST-MISSION FLOW
+// ============================================================
+function PostMissionFlow({m,T,onDone,onCancel}){
+  const[step,setStep]=React.useState(1);
+  const[heures,setHeures]=React.useState(mHeures(m)||"");
+  const[debutR,setDebutR]=React.useState(mDebut(m)||"");
+  const[finR,setFinR]=React.useState("");
+  const[notes,setNotes]=React.useState("");
+  const[sending,setSending]=React.useState(false);
+
+  const meta=gm(mClient(m));
+
+  return(
+    <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:T.bg,padding:20}}>
+      <button onClick={onCancel} style={{background:"none",border:"none",color:T.textFaint,fontSize:11,cursor:"pointer",marginBottom:12}}>← Annuler</button>
+
+      <div style={{background:T.card,borderRadius:14,padding:20,borderLeft:`4px solid ${meta.color}`}}>
+        <div style={{fontSize:10,color:meta.color,fontWeight:700,letterSpacing:1}}>{meta.tag} · {mType(m).replace("ASSISTANCE ","")}</div>
+        <div style={{fontSize:14,fontWeight:700,color:T.textBright,marginTop:2,marginBottom:16}}>{niceLong(mDate(m))}</div>
+
+        {/* Step 1: Hours */}
+        {step===1&&(
+          <div>
+            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>⏱ Heures réelles</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+              <div>
+                <div style={{fontSize:10,color:T.textFaint,marginBottom:4}}>Début</div>
+                <input type="time" value={debutR} onChange={e=>setDebutR(e.target.value)} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:14}}/>
+              </div>
+              <div>
+                <div style={{fontSize:10,color:T.textFaint,marginBottom:4}}>Fin</div>
+                <input type="time" value={finR} onChange={e=>setFinR(e.target.value)} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:14}}/>
+              </div>
+            </div>
+            {debutR&&finR&&(()=>{
+              const[sh,sm]=debutR.split(":").map(Number);
+              const[eh,em]=finR.split(":").map(Number);
+              const h=((eh*60+em)-(sh*60+sm))/60;
+              return<div style={{fontSize:12,color:T.accent,marginBottom:8}}>= {h.toFixed(1)}h</div>;
+            })()}
+            <button onClick={()=>{
+              if(debutR&&finR){
+                const[sh,sm]=debutR.split(":").map(Number);
+                const[eh,em]=finR.split(":").map(Number);
+                setHeures(String(((eh*60+em)-(sh*60+sm))/60));
+              }
+              setStep(2);
+            }} style={{width:"100%",padding:12,borderRadius:10,background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,fontSize:13,fontWeight:600,cursor:"pointer"}}>
+              Suivant →
+            </button>
+          </div>
+        )}
+
+        {/* Step 2: Notes */}
+        {step===2&&(
+          <div>
+            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>📝 Notes de terrain</div>
+            <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="RAS, incident, remarques..." rows={4} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:13,resize:"vertical",fontFamily:"inherit"}}/>
+            <div style={{display:"flex",gap:8,marginTop:12}}>
+              <button onClick={()=>setStep(1)} style={{flex:1,padding:10,borderRadius:8,background:"none",border:`1px solid ${T.border}`,color:T.textMuted,fontSize:12,cursor:"pointer"}}>← Retour</button>
+              <button onClick={()=>setStep(3)} style={{flex:2,padding:10,borderRadius:8,background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,fontSize:12,fontWeight:600,cursor:"pointer"}}>Suivant →</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Confirm */}
+        {step===3&&(
+          <div>
+            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>✅ Confirmer</div>
+            <div style={{fontSize:12,color:T.textMuted,lineHeight:1.8,marginBottom:16}}>
+              <div>⏱ Heures: <b style={{color:T.textBright}}>{heures||"—"}h</b> ({debutR}–{finR})</div>
+              <div>📝 Notes: {notes||"RAS"}</div>
+              <div>📊 Statut → <b style={{color:T.green}}>Heures confirmées</b></div>
+            </div>
+            <button disabled={sending} onClick={async()=>{
+              setSending(true);
+              await onDone({heures,notes:notes||"RAS",statut:"Heures confirmées"});
+            }} style={{width:"100%",padding:14,borderRadius:10,background:T.green+"22",color:T.green,border:`1px solid ${T.green}33`,fontSize:14,fontWeight:700,cursor:"pointer",opacity:sending?.5:1}}>
+              {sending?"Enregistrement...":"✅ Confirmer et enregistrer"}
+            </button>
+            <button onClick={()=>setStep(2)} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,background:"none",border:`1px solid ${T.border}`,color:T.textFaint,fontSize:11,cursor:"pointer"}}>← Modifier</button>
+          </div>
+        )}
+      </div>
+
+      {/* Decompress suggestion after confirming */}
+      {step===3&&(
+        <div style={{textAlign:"center",marginTop:20}}>
+          <div style={{fontSize:11,color:T.textFaint}}>Mission terminée? Prends un moment.</div>
+          <button onClick={()=>{onCancel();/* would navigate to breathe tab */}} style={{marginTop:8,padding:"8px 20px",borderRadius:16,background:"none",border:`1px solid ${T.textFaint}33`,color:T.textFaint,fontSize:11,cursor:"pointer"}}>🌿 Respirer</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -378,7 +506,7 @@ function Detail({m,onBack,onUpdate}){
 // ============================================================
 // BREATHE
 // ============================================================
-function Breathe({active,toggle}){
+function Breathe({active,toggle,T}){
   const[phase,setPhase]=React.useState(0);
   const[cycle,setCycle]=React.useState(0);
   const labels=["Inspire","Retiens","Expire","Retiens"];
@@ -387,13 +515,13 @@ function Breathe({active,toggle}){
   React.useEffect(()=>{if(!active)return;const t=setTimeout(()=>{if(phase===3){setCycle(c=>c+1);setPhase(0);}else setPhase(p=>p+1);},4000);return()=>clearTimeout(t);},[active,phase]);
   return(
     <div style={{textAlign:"center",padding:"20px 0"}}>
-      <div style={{fontSize:10,color:"#2a3a4a",fontWeight:700,letterSpacing:1.5,marginBottom:20}}>RESPIRATION</div>
-      <div style={{width:active?sizes[phase]:45,height:active?sizes[phase]:45,borderRadius:"50%",margin:"36px auto",background:active?"radial-gradient(circle,rgba(79,195,247,.2),rgba(79,195,247,.02))":"#0f1520",border:`1.5px solid ${active?"rgba(79,195,247,.3)":"#151d2a"}`,transition:"all 4s cubic-bezier(.4,0,.2,1)",display:"flex",alignItems:"center",justifyContent:"center"}}>
-        {active&&<span style={{fontSize:12,color:"#4fc3f7",fontWeight:600}}>{labels[phase]}</span>}
+      <div style={{fontSize:10,color:T.textFaint,fontWeight:700,letterSpacing:1.5,marginBottom:20}}>RESPIRATION</div>
+      <div style={{width:active?sizes[phase]:45,height:active?sizes[phase]:45,borderRadius:"50%",margin:"36px auto",background:active?`radial-gradient(circle,${T.accent}33,${T.accent}05)`:T.card,border:`1.5px solid ${active?T.accent+"55":T.border}`,transition:"all 4s cubic-bezier(.4,0,.2,1)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+        {active&&<span style={{fontSize:12,color:T.accent,fontWeight:600}}>{labels[phase]}</span>}
       </div>
-      {active&&<div style={{fontSize:10,color:"#2a3a4a",marginBottom:14}}>Cycle {cycle+1}</div>}
-      <button onClick={toggle} style={{padding:"10px 28px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:active?"rgba(239,154,154,.08)":"rgba(79,195,247,.08)",color:active?"#ef9a9a":"#4fc3f7",border:`1px solid ${active?"rgba(239,154,154,.2)":"rgba(79,195,247,.2)"}`}}>{active?"Arrêter":"Commencer"}</button>
-      {!active&&<div style={{marginTop:20,fontSize:11,color:"#2a3a4a",lineHeight:1.7}}>Respiration en boîte · 4-4-4-4<br/><span style={{fontSize:10}}>Après une longue mission</span></div>}
+      {active&&<div style={{fontSize:10,color:T.textFaint,marginBottom:14}}>Cycle {cycle+1}</div>}
+      <button onClick={toggle} style={{padding:"10px 28px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:active?T.red+"12":T.accent+"12",color:active?T.red:T.accent,border:`1px solid ${active?T.red+"33":T.accent+"33"}`}}>{active?"Arrêter":"Commencer"}</button>
+      {!active&&<div style={{marginTop:20,fontSize:11,color:T.textFaint,lineHeight:1.7}}>Respiration en boîte · 4-4-4-4<br/><span style={{fontSize:10}}>Après une longue mission</span></div>}
     </div>
   );
 }
@@ -403,5 +531,6 @@ function Breathe({active,toggle}){
 // ============================================================
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
+
 </body>
 </html>
