@@ -2,1025 +2,1243 @@
 
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#080c14">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Mission Control</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .3s,color .3s}
-body.dark{background:#080c14;color:#ddd8ce}
-body.light{background:#f0ede6;color:#1a1814}
-a{text-decoration:none}
-button{font-family:inherit;cursor:pointer}
-input,textarea{font-family:inherit}
-#root{max-width:480px;margin:0 auto;min-height:100vh}
-.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:10px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner{width:22px;height:22px;border:2px solid transparent;border-top:2px solid #4fc3f7;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .25s ease forwards}
-@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
-.pulse{animation:pulse 2s ease infinite}
+:root {
+  --bg0:#080c14;--bg1:#0f1520;--bg2:#0a1018;--bg3:#0c1220;
+  --border:#151d2a;--border2:#1e2a38;
+  --txt0:#eae7e0;--txt1:#ddd8ce;--txt2:#8a8480;--txt3:#5a6a7a;--txt4:#3a4858;
+  --accent:#4fc3f7;--green:#81c784;--amber:#ffb74d;--red:#ef9a9a;--purple:#ce93d8;
+  --phil:#43a047;--gcs:#42a5f5;--ftfw:#ab47bc;--umb:#ff7043;
+  --tap:48px;
+}
+.light {
+  --bg0:#f5f0e8;--bg1:#ffffff;--bg2:#ede8dc;--bg3:#e8e2d4;
+  --border:#ccc6b8;--border2:#b8b0a0;
+  --txt0:#141008;--txt1:#1e1a10;--txt2:#4a4438;--txt3:#6a6058;--txt4:#8a8070;
+  --accent:#0066aa;--green:#1a6b1e;--amber:#8a4a00;--red:#b02020;--purple:#5a1880;
+  --phil:#2e7d32;--gcs:#0d6eaf;--ftfw:#7b1fa2;--umb:#d84315;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overscroll-behavior:none;}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:var(--txt1);-webkit-font-smoothing:antialiased;}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:50;background:var(–bg3);border-bottom:1px solid var(–border);padding:13px 16px 11px;}
+.hdr-inner{display:flex;justify-content:space-between;align-items:flex-start;}
+.hdr-eyebrow{font-size:10px;letter-spacing:2.5px;color:var(–txt4);text-transform:uppercase;margin-bottom:3px;font-weight:600;}
+.hdr-date{font-size:22px;font-weight:700;color:var(–txt0);line-height:1.1;letter-spacing:-0.3px;}
+.hdr-month{font-size:12px;color:var(–txt3);margin-top:4px;}
+.hdr-right{display:flex;align-items:flex-start;gap:8px;}
+.hdr-weather{text-align:right;margin-right:4px;}
+.hdr-temp{font-size:17px;font-weight:600;color:var(–txt2);}
+.hdr-rain{font-size:10px;color:var(–accent);margin-top:1px;}
+.icon-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(–border2);background:var(–bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+
+/* ── NAV ── */
+.nav{position:sticky;top:70px;z-index:40;background:var(–bg3);border-bottom:1px solid var(–border);display:flex;}
+.nav-btn{flex:1;height:50px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(–txt4);font-size:9px;font-weight:700;letter-spacing:.6px;border-bottom:2px solid transparent;transition:all .15s;font-family:‘DM Sans’,sans-serif;}
+.nav-btn.on{color:var(–txt0);border-bottom-color:var(–accent);}
+.nav-icon{font-size:15px;}
+
+.content{padding:14px 14px 100px;}
+
+/* ── LABELS ── */
+.slabel{font-size:10px;color:var(–txt4);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:4px 0 8px;}
+.slabel.mt{margin-top:20px;}
+
+/* ── MISSION CARDS ── */
+.mcard{background:var(–bg1);border-radius:12px;padding:13px 14px;margin-bottom:8px;border-left:3px solid;cursor:pointer;transition:transform .1s;user-select:none;}
+.mcard:active{transform:scale(0.985);}
+.mcard.dim{opacity:.42;}
+.mc-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.mc-left{flex:1;}
+.mc-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:3px;}
+.mc-tag{font-size:13px;font-weight:700;}
+.mc-time{font-size:13px;color:var(–txt3);}
+.mc-date-s{font-size:11px;color:var(–txt4);}
+.mc-type{font-size:13px;color:var(–txt2);}
+.mc-pills{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
+.mpill{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;}
+.mp-pax{background:rgba(79,195,247,.1);color:var(–accent);}
+.mp-loc{background:rgba(129,199,132,.1);color:var(–green);}
+.mp-ops{background:rgba(206,147,216,.1);color:var(–purple);}
+.mp-ok{background:rgba(129,199,132,.12);color:var(–green);}
+.mc-right{text-align:right;flex-shrink:0;margin-left:8px;}
+.mc-ref{font-family:‘DM Mono’,monospace;font-size:10px;color:var(–txt4);margin-bottom:2px;}
+
+/* ── BADGE ── */
+.bdg{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;}
+.bdg-plan{background:rgba(79,195,247,.1);color:var(–accent);}
+.bdg-done{background:rgba(129,199,132,.1);color:var(–green);}
+.bdg-cancel{background:rgba(239,154,154,.1);color:var(–red);}
+
+/* ── UPCOMING BOX ── */
+.ubox{background:var(–bg2);border-radius:10px;padding:12px 14px;margin-top:8px;border:1px solid var(–border);}
+.ulbl{font-size:10px;color:var(–green);font-weight:700;letter-spacing:1px;margin-bottom:7px;text-transform:uppercase;}
+.uitem{display:flex;gap:8px;align-items:baseline;margin-bottom:3px;font-size:12px;}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:44px 0 20px;}
+.empty-icon{font-size:42px;margin-bottom:8px;}
+.empty-title{font-size:16px;color:var(–txt2);}
+.empty-sub{font-size:13px;color:var(–txt4);margin-top:3px;}
+
+/* ── DETAIL ── */
+.back-btn{background:none;border:none;color:var(–accent);font-size:13px;cursor:pointer;padding:0 0 10px;display:flex;align-items:center;gap:4px;min-height:var(–tap);}
+.dcard{background:var(–bg1);border-radius:14px;overflow:hidden;border-top:3px solid;}
+.dhdr{padding:16px 16px 12px;}
+.d-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.d-client{font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:3px;}
+.d-title{font-size:17px;font-weight:700;color:var(–txt0);line-height:1.2;}
+.shift-box{padding:10px 13px;border-radius:10px;background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.16);margin:10px 0 14px;}
+.shift-time{font-size:20px;font-weight:700;color:var(–accent);}
+.shift-sub{font-size:12px;color:rgba(79,195,247,.55);margin-top:2px;}
+.key-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
+.kpill{font-size:12px;padding:5px 11px;border-radius:7px;font-weight:500;background:var(–bg2);color:var(–txt2);border:1px solid var(–border);}
+.kpill.hi{color:var(–accent);border-color:rgba(79,195,247,.2);background:rgba(79,195,247,.06);}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.ifield label{font-size:10px;color:var(–txt4);display:block;margin-bottom:2px;}
+.ifield span{font-size:13px;color:var(–txt2);font-weight:600;}
+.ifield span.mono{font-family:‘DM Mono’,monospace;font-size:11px;}
+.sdiv{border-top:1px solid var(–border);}
+.sin{padding:12px 16px;}
+.stitle{font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:9px;}
+.blue{color:var(–accent);}
+.green{color:var(–green);}
+.amber{color:var(–amber);}
+.purple{color:var(–purple);}
+.muted{color:var(–txt4);}
+
+/* ── OPS ── */
+.orow{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
+.o-icon{font-size:14px;flex-shrink:0;line-height:1.35;}
+.o-lbl{font-size:10px;color:var(–txt4);min-width:56px;padding-top:1px;}
+.o-val{font-size:12px;color:var(–txt2);flex:1;line-height:1.5;}
+.o-ph{color:var(–accent);text-decoration:none;}
+.o-urg{color:var(–red)!important;}
+.o-sub{font-size:10px;color:var(–txt4);font-weight:600;margin:8px 0 4px;text-transform:uppercase;letter-spacing:.8px;}
+.o-contact{font-size:12px;color:var(–txt2);margin-bottom:3px;}
+
+/* ── EMAIL ── */
+.etoggle{cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.ebody{padding:9px 11px;background:var(–bg2);border-radius:8px;font-size:12px;color:var(–txt3);line-height:1.6;margin:7px 0 6px;white-space:pre-wrap;}
+.att{font-size:12px;color:var(–accent);padding:6px 10px;background:var(–bg2);border-radius:7px;margin-bottom:4px;display:flex;align-items:center;gap:6px;min-height:var(–tap);cursor:pointer;}
+
+/* ── FINANCES in detail ── */
+.frow{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;}
+.flbl{color:var(–txt3);}
+.fval{color:var(–txt2);}
+.fnet{font-size:17px;font-weight:700;color:var(–amber);margin-top:4px;}
+
+/* ── LOG ── */
+.log-entries{margin-bottom:12px;}
+.lentry{display:flex;gap:9px;margin-bottom:8px;}
+.lts{font-size:10px;color:var(–txt4);font-family:‘DM Mono’,monospace;min-width:36px;padding-top:3px;}
+.lbubble{flex:1;background:var(–bg2);border-radius:8px;padding:7px 10px;}
+.ltag{font-size:9px;color:var(–txt4);margin-bottom:3px;}
+.ltext{font-size:12px;color:var(–txt2);line-height:1.5;}
+.log-empty{font-size:12px;color:var(–txt4);font-style:italic;margin-bottom:12px;}
+.log-types{display:flex;gap:6px;margin-bottom:8px;}
+.ltbtn{flex:1;padding:8px 4px;font-size:11px;border-radius:8px;border:1px solid var(–border);background:var(–bg2);color:var(–txt3);cursor:pointer;text-align:center;min-height:var(–tap);font-family:‘DM Sans’,sans-serif;}
+.ltbtn.on{border-color:rgba(79,195,247,.35);background:rgba(79,195,247,.07);color:var(–accent);}
+.ta{width:100%;padding:10px 12px;background:var(–bg2);border:1px solid var(–border);border-radius:10px;color:var(–txt1);font-size:13px;font-family:‘DM Sans’,inherit;resize:none;line-height:1.5;}
+.ta:focus{outline:none;border-color:rgba(79,195,247,.35);}
+.submit-btn{width:100%;margin-top:7px;padding:12px;background:rgba(79,195,247,.07);border:1px solid rgba(79,195,247,.22);border-radius:10px;color:var(–accent);font-size:13px;font-weight:600;cursor:pointer;min-height:var(–tap);font-family:‘DM Sans’,sans-serif;}
+
+/* ── EDIT ── */
+.editrow{display:flex;gap:8px;align-items:center;margin-bottom:7px;}
+.einput{flex:1;padding:10px 12px;background:var(–bg2);border:1px solid var(–border2);border-radius:9px;color:var(–txt1);font-size:13px;font-family:‘DM Sans’,inherit;min-height:var(–tap);}
+.einput:focus{outline:none;border-color:rgba(79,195,247,.35);}
+.esave{padding:10px 12px;background:rgba(79,195,247,.07);border:1px solid rgba(79,195,247,.22);border-radius:9px;color:var(–accent);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;min-height:var(–tap);font-family:‘DM Sans’,sans-serif;}
+
+/* ── PMF ── */
+.pmf-trigger{width:100%;padding:15px;background:rgba(129,199,132,.07);border:1px solid rgba(129,199,132,.22);border-radius:12px;color:var(–green);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;min-height:var(–tap);font-family:‘DM Sans’,sans-serif;}
+.pmf-trigger:active{transform:scale(.98);}
+.pmf-step-hdr{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.pmf-num{width:27px;height:27px;border-radius:50%;background:var(–green);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pmf-step-title{font-size:15px;font-weight:700;color:var(–txt0);}
+.pmf-time-row{display:flex;gap:12px;align-items:center;margin-bottom:10px;}
+.pmf-time-block{flex:1;text-align:center;}
+.pmf-time-lbl{font-size:10px;color:var(–txt4);margin-bottom:5px;}
+.pmf-tinput{width:100%;padding:12px;background:var(–bg2);border:1px solid var(–border);border-radius:10px;color:var(–txt1);font-size:16px;text-align:center;font-family:‘DM Mono’,monospace;min-height:var(–tap);}
+.pmf-tinput:focus{outline:none;border-color:rgba(129,199,132,.45);}
+.pmf-arrow{font-size:22px;color:var(–txt4);flex-shrink:0;}
+.pmf-dur{font-size:14px;color:var(–green);text-align:center;margin-bottom:14px;font-weight:600;min-height:20px;}
+.pbtn{width:100%;padding:13px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;min-height:var(–tap);transition:all .15s;font-family:‘DM Sans’,sans-serif;}
+.pbtn-next{background:rgba(79,195,247,.07);border:1px solid rgba(79,195,247,.22);color:var(–accent);}
+.pbtn-confirm{background:rgba(129,199,132,.08);border:1px solid rgba(129,199,132,.28);color:var(–green);}
+.pback{font-size:12px;color:var(–txt4);cursor:pointer;text-align:center;margin-top:12px;display:flex;align-items:center;justify-content:center;min-height:var(–tap);}
+.rpt-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
+.rtbtn{padding:11px;background:var(–bg2);border:1px solid var(–border);border-radius:10px;color:var(–txt2);font-size:12px;font-weight:600;cursor:pointer;text-align:center;min-height:var(–tap);font-family:‘DM Sans’,sans-serif;}
+.rtbtn.on{border-color:rgba(206,147,216,.4);background:rgba(206,147,216,.07);color:var(–purple);}
+.rpt-output{background:var(–bg2);border-radius:10px;padding:13px;font-size:12px;color:var(–txt2);line-height:1.8;margin-bottom:12px;white-space:pre-wrap;max-height:280px;overflow-y:auto;}
+.rpt-loading{text-align:center;padding:24px;color:var(–txt4);font-size:13px;}
+.rpt-actions{display:flex;gap:8px;}
+.rabtn{flex:1;padding:12px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;min-height:var(–tap);font-family:‘DM Sans’,sans-serif;}
+.debrief-list{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.dbtn{padding:13px 12px;background:var(–bg2);border:1px solid var(–border);border-radius:10px;color:var(–txt2);font-size:13px;cursor:pointer;text-align:left;min-height:var(–tap);font-family:‘DM Sans’,sans-serif;}
+.dbtn.on{border-color:rgba(206,147,216,.4);background:rgba(206,147,216,.07);color:var(–purple);}
+.decomp-a{display:flex;align-items:center;justify-content:center;gap:7px;padding:13px;background:rgba(129,199,132,.06);border:1px solid rgba(129,199,132,.2);border-radius:11px;color:var(–green);font-size:13px;text-decoration:none;min-height:var(–tap);}
+
+/* ── MONTH ── */
+.m-date-hdr{font-size:12px;font-weight:700;letter-spacing:.8px;margin-bottom:5px;margin-top:16px;}
+
+/* ── FINANCE ── */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.scard{background:var(–bg1);border-radius:10px;padding:11px 13px;text-align:center;}
+.scard-lbl{font-size:10px;color:var(–txt4);margin-bottom:3px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;}
+.scard-val{font-size:18px;font-weight:700;}
+
+.month-section{background:var(–bg1);border-radius:12px;margin-bottom:8px;overflow:hidden;border:1px solid var(–border);}
+.month-hdr{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.month-hdr-left{display:flex;flex-direction:column;gap:2px;}
+.month-hdr-name{font-size:13px;font-weight:700;color:var(–txt1);}
+.month-hdr-summary{font-size:11px;color:var(–txt3);}
+.month-hdr-right{display:flex;align-items:center;gap:10px;}
+.month-hdr-net{font-size:15px;font-weight:700;color:var(–amber);}
+.month-chevron{font-size:11px;color:var(–txt4);transition:transform .2s;}
+.month-chevron.open{transform:rotate(180deg);}
+.month-body{padding:0 14px 12px;display:none;}
+.month-body.open{display:block;}
+.mf-mission{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px solid var(–border);font-size:12px;}
+.mf-mission:first-child{border-top:none;}
+.mf-left{display:flex;flex-direction:column;gap:2px;}
+.mf-ref{font-family:‘DM Mono’,monospace;font-size:10px;color:var(–txt4);}
+.mf-type{font-size:12px;color:var(–txt2);}
+.mf-date{font-size:10px;color:var(–txt4);}
+.mf-right{text-align:right;flex-shrink:0;}
+.mf-base{font-size:13px;font-weight:600;color:var(–txt2);}
+.mf-deb{font-size:10px;color:var(–txt4);}
+.mf-status{font-size:10px;padding:2px 6px;border-radius:3px;margin-top:2px;}
+
+.client-section{background:var(–bg1);border-radius:12px;margin-bottom:8px;overflow:hidden;border:1px solid var(–border);}
+.client-hdr{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;border-left:3px solid;}
+.client-hdr-left{display:flex;flex-direction:column;gap:2px;}
+.client-tag{font-size:11px;font-weight:700;letter-spacing:.8px;}
+.client-count{font-size:11px;color:var(–txt4);}
+.client-hdr-right{display:flex;align-items:center;gap:10px;}
+.client-total{font-size:15px;font-weight:700;}
+.client-chevron{font-size:11px;color:var(–txt4);transition:transform .2s;}
+.client-chevron.open{transform:rotate(180deg);}
+.client-missions{padding:0 14px 12px;display:none;}
+.client-missions.open{display:block;}
+
+.ref-box{background:var(–bg1);border-radius:10px;padding:13px 14px;font-size:12px;color:var(–txt3);line-height:2;border:1px solid var(–border);}
+
+/* ── PAUSE / DECOMPRESSION ── */
+#decomp-wrap{width:100%;min-height:calc(100vh - 160px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px 80px;position:relative;}
+.dc-screen{display:none;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:420px;text-align:center;}
+.dc-screen.active{display:flex;}
+.dc-lbl{font-family:‘DM Mono’,monospace;font-size:11px;letter-spacing:.2em;color:var(–txt4);margin-bottom:12px;text-transform:uppercase;}
+.dc-h1{font-family:‘Cormorant Garamond’,serif;font-size:clamp(30px,8vw,46px);font-weight:300;font-style:italic;color:var(–txt0);line-height:1.2;margin-bottom:14px;}
+.dc-h2{font-family:‘Cormorant Garamond’,serif;font-size:clamp(20px,5vw,28px);font-weight:300;font-style:italic;color:var(–txt0);line-height:1.25;margin-bottom:8px;}
+.dc-sub{font-size:13px;color:var(–txt3);font-style:italic;margin-bottom:32px;line-height:1.6;}
+.dc-time{font-family:‘DM Mono’,monospace;font-size:11px;letter-spacing:.2em;color:var(–txt4);margin-bottom:40px;}
+.dc-btn-g{font-family:‘DM Mono’,monospace;font-size:11px;letter-spacing:.15em;color:var(–green);background:none;border:1px solid rgba(129,199,132,.3);padding:13px 32px;cursor:pointer;text-transform:uppercase;border-radius:6px;}
+.dc-btn-m{font-family:‘DM Mono’,monospace;font-size:11px;letter-spacing:.15em;color:var(–bg0);background:var(–green);border:none;padding:13px 32px;cursor:pointer;text-transform:uppercase;border-radius:6px;}
+.dc-btn-s{font-family:‘DM Mono’,monospace;font-size:11px;letter-spacing:.15em;color:var(–txt4);background:none;border:1px solid var(–border);padding:13px 24px;cursor:pointer;text-transform:uppercase;border-radius:6px;}
+.dc-lnk{font-family:‘DM Mono’,monospace;font-size:10px;letter-spacing:.15em;color:var(–txt4);background:none;border:none;cursor:pointer;text-transform:uppercase;}
+.dc-row{display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;justify-content:center;}
+.bwrap{position:relative;width:180px;height:180px;margin-bottom:40px;}
+.br{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(79,195,247,.15);}
+.br.inner{inset:26px;border-color:rgba(79,195,247,.35);background:radial-gradient(circle,rgba(79,195,247,.04) 0%,transparent 70%);}
+.br.pulse{inset:0;border:none;background:radial-gradient(circle,rgba(79,195,247,.03) 0%,transparent 60%);}
+.btxt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-style:italic;color:var(–accent);letter-spacing:.05em;font-family:‘Cormorant Garamond’,serif;}
+@keyframes bi{0%{transform:scale(1);opacity:.3}100%{transform:scale(1.35);opacity:.9}}
+@keyframes bh{0%,100%{transform:scale(1.35);opacity:.9}}
+@keyframes bo{0%{transform:scale(1.35);opacity:.9}100%{transform:scale(1);opacity:.3}}
+.dc-bin .br.inner,.dc-bin .br.pulse{animation:bi 4s ease-in-out forwards;}
+.dc-bhold .br.inner,.dc-bhold .br.pulse{animation:bh 4s ease-in-out forwards;}
+.dc-bout .br.inner,.dc-bout .br.pulse{animation:bo 4s ease-in-out forwards;}
+.bctr{font-family:‘DM Mono’,monospace;font-size:11px;color:var(–txt4);letter-spacing:.15em;margin-bottom:32px;}
+#dc-dump{width:100%;max-width:440px;min-height:120px;background:var(–bg1);border:1px solid var(–border);color:var(–txt1);font-family:‘Cormorant Garamond’,serif;font-size:17px;line-height:1.7;font-style:italic;padding:16px;resize:none;outline:none;border-radius:8px;caret-color:var(–accent);}
+#dc-dump:focus{border-color:rgba(129,199,132,.4);}
+#dc-dump::placeholder{color:var(–txt4);}
+.dc-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;}
+.dc-swatch{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .2s,border-color .2s;flex-shrink:0;}
+.dc-swatch:hover{transform:scale(1.15);}
+.dc-swatch.on{border-color:var(–txt0);transform:scale(1.1);}
+.bsize{display:flex;align-items:center;gap:6px;font-family:‘DM Mono’,monospace;font-size:10px;color:var(–txt4);letter-spacing:.1em;}
+#bslider{-webkit-appearance:none;width:70px;height:2px;background:var(–border);outline:none;border-radius:2px;cursor:pointer;}
+#bslider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(–green);cursor:pointer;}
+#dc-canvas{border-radius:4px;cursor:crosshair;touch-action:none;display:block;}
+.dact{display:flex;gap:10px;margin-top:12px;align-items:center;}
+.dc-btn-cl{font-family:‘DM Mono’,monospace;font-size:10px;letter-spacing:.15em;color:var(–txt4);background:none;border:1px solid var(–border);padding:8px 16px;cursor:pointer;text-transform:uppercase;border-radius:4px;}
+#rzone{width:min(280px,80vw);height:min(280px,80vw);border-radius:50%;background:radial-gradient(circle,rgba(129,199,132,.04) 0%,transparent 70%);border:1px solid rgba(129,199,132,.12);position:relative;cursor:pointer;overflow:hidden;flex-shrink:0;}
+.rel{position:absolute;border-radius:50%;border:1px solid rgba(129,199,132,.5);transform:translate(-50%,-50%) scale(0);animation:ro 2.5s ease-out forwards;pointer-events:none;}
+@keyframes ro{0%{transform:translate(-50%,-50%) scale(0);opacity:.8}100%{transform:translate(-50%,-50%) scale(4);opacity:0}}
+.rdot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:var(–green);opacity:.3;}
+#dc-tctr{font-family:‘DM Mono’,monospace;font-size:11px;letter-spacing:.15em;color:var(–txt4);margin-top:18px;}
+#dc-dbtn{margin-top:16px;opacity:0;transition:opacity .5s;}
+.dc-ibox{font-family:‘DM Mono’,monospace;font-size:12px;letter-spacing:.08em;color:var(–amber);text-align:center;margin-bottom:36px;max-width:280px;line-height:1.9;padding:16px 22px;border:1px solid rgba(255,183,77,.2);border-radius:6px;}
+
+.spin{display:inline-block;animation:sp .8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+a{color:var(–accent);text-decoration:none;}
 </style>
+
 </head>
-<body class="dark">
-<div id="root"><div class="loading"><div class="spinner"></div><span style="font-size:11px;opacity:.4;letter-spacing:1px">CHARGEMENT</span></div></div>
+<body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<div class="hdr">
+  <div class="hdr-inner">
+    <div>
+      <div class="hdr-eyebrow">Mission Control</div>
+      <div class="hdr-date" id="hdr-date">—</div>
+      <div class="hdr-month" id="hdr-month">—</div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-weather">
+        <div class="hdr-temp" id="wx-temp">—</div>
+        <div class="hdr-rain" id="wx-rain"></div>
+      </div>
+      <button class="icon-btn" onclick="toggleMode()" id="mode-btn" title="Mode">☀️</button>
+      <button class="icon-btn" onclick="refreshData()" id="refresh-btn" title="Actualiser" style="color:var(--accent)">↻</button>
+    </div>
+  </div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<nav class="nav">
+  <button class="nav-btn on" onclick="go('today')" id="nb-today"><span class="nav-icon">☀️</span>AUJOURD'HUI</button>
+  <button class="nav-btn" onclick="go('month')" id="nb-month"><span class="nav-icon">📅</span><span id="month-lbl">MOIS</span></button>
+  <button class="nav-btn" onclick="go('finance')" id="nb-finance"><span class="nav-icon">💶</span>FINANCES</button>
+  <button class="nav-btn" onclick="go('pause')" id="nb-pause"><span class="nav-icon">🌿</span>PAUSE</button>
+</nav>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.10/babel.min.js"></script>
+<div class="content" id="content"></div>
 
-<script type="text/babel">
-// ─────────────────────────────────────────────
-// CONFIG
-// ─────────────────────────────────────────────
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
+// ─────────────────────────────────────────────────────────────
 
-// ─────────────────────────────────────────────
-// THEMES
-// ─────────────────────────────────────────────
-const DARK = {
-  bg:"#080c14", card:"#0e1420", card2:"#111928", border:"#151d2c",
-  text:"#ddd8ce", textMuted:"#6a7a8a", textFaint:"#3a4858", textBright:"#eae7e0",
-  accent:"#4fc3f7", green:"#81c784", orange:"#ffb74d", red:"#ef9a9a", purple:"#ce93d8", yellow:"#fff176",
-  cardHover:"#131e2e", timeBox:"rgba(79,195,247,0.07)", timeBorder:"rgba(79,195,247,0.18)",
-  inputBg:"#080c14", tag:"rgba(79,195,247,0.12)",
+const DAYS=["dim","lun","mar","mer","jeu","ven","sam"];
+const MO_LONG=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const MO_SH=["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
+
+const META={
+  "Philibert Tourisme":{tag:"PHIL",hex:"#43a047",contact:"Mélissa Hassaïm",phone:"+33 4 78 98 56 49",email:"rhone-ops@philibert.fr",cohost:"Véronique Olivier · 06 41 60 42 88",emergency:"+33 4 78 98 56 49"},
+  "Go Côte Saône":{tag:"GCS",hex:"#42a5f5",contact:"Marion",phone:"06.20.08.10.92",email:"gcs@gocotesaone.com"},
+  "Feel the French Way":{tag:"FTFW",hex:"#ab47bc",contact:"Laura Brionne",email:"contact@feelthefrenchway.fr",cohost:"Caroline · caroline.meet.and.greet@gmail.com"},
+  "Un Monde Bleu":{tag:"UMB",hex:"#ff7043",contact:"Audrey Foret",phone:"+33 7 43 36 05 69",email:"OpsRiviera@umb-dmc.fr",notes:"Répondre au thread — autocariste: rhonecroisieres@galeo.mobi"},
 };
-const LIGHT = {
-  bg:"#f0ede6", card:"#faf8f4", card2:"#f4f1eb", border:"#ddd8cf",
-  text:"#1a1814", textMuted:"#4a4540", textFaint:"#8a8278", textBright:"#0a0806",
-  accent:"#1565c0", green:"#2e7d32", orange:"#bf360c", red:"#b71c1c", purple:"#4a148c", yellow:"#f57f17",
-  cardHover:"#f5f2ec", timeBox:"rgba(21,101,192,0.05)", timeBorder:"rgba(21,101,192,0.18)",
-  inputBg:"#faf8f4", tag:"rgba(21,101,192,0.1)",
-};
+const TRAVEL={"PERRACHE":45,"PART-DIEU":45,"PART DIEU":45,"LYS":52,"AEROPORT":52,"AIRPORT":52,"INTERCONTINENTAL":40,"HOTEL":40,"QUAI CLAUDE BERNARD":45,"QUAI RAMBAUD":60,"BELLECOUR":45,"VIENNE":105,"STE-COLOMBE":105,"GENEVE":180};
+const RPT_LABELS={RAS:"✅ RAS",INCIDENT:"⚠️ Incident",ANNULATION:"❌ Annulation",ANOMALIE:"🔧 Anomalie",OT:"⏱ Heures supp"};
+const CLIENT_PRENOM={"Philibert Tourisme":"Mélissa","Go Côte Saône":"Marion","Feel the French Way":"Laura","Un Monde Bleu":"Audrey"};
 
-// ─────────────────────────────────────────────
-// CLIENT METADATA
-// ─────────────────────────────────────────────
-const CMETA = {
-  "Philibert Tourisme": {
-    tag:"PHIL", color:"#43a047",
-    contact:"Mélissa Hassaïm", email:"rhone-ops@philibert.fr",
-    cohost:"Véronique Olivier · 06 41 60 42 88",
-    emergency:"+33 4 78 98 56 49",
-    rates:"2H=73€ · 4H=146€ · 5H=172.50€ · 10H=295€\nBellecour: 36.50€/h\nFrais: gare 21.50€ · airport 47€ · Vienne 10.80€×2",
-  },
-  "Go Côte Saône": {
-    tag:"GCS", color:"#42a5f5",
-    contact:"Marion", phone:"06.20.08.10.92", email:"gcs@gocotesaone.com",
-    rates:"Forfait 450€ + 20€ repas débours\nCode facture: VK09-SUP02",
-  },
-  "Feel the French Way": {
-    tag:"FTFW", color:"#ab47bc",
-    contact:"Caroline", email:"contact@feelthefrenchway.fr",
-    cohost:"caroline.meet.and.greet@gmail.com",
-    rates:"Gare: 2H=100€ · 5H=220€\nAéroport: 2H=100€ · 5H=195€ · 10H=340€\nFrais: gare 25€ · airport 50€ (1/jour max)",
-  },
-  "Un Monde Bleu": {
-    tag:"UMB", color:"#ff7043",
-    contact:"Audrey Foret", phone:"+33 7 43 36 05 69", email:"OpsRiviera@umb-dmc.fr",
-    notes:"⚠️ Toujours répondre au thread · autocariste: rhonecroisieres@galeo.mobi",
-    rates:"Gare: 2H=92€→8H=282€\nAéroport: 2H=108€→8H=293€\nTransport: 31€ forfait · 18€ one-way (airport, 1/jour)",
-  },
-};
+// ─── STATE ────────────────────────────────────────────────────
+let missions=[], fieldLogs={}, tab="today", detail=null;
+let pmf=null, pmfStep=0;
+let emailOpen={};
+let light=localStorage.getItem("mc_light")==="1";
 
-const TRANSPORT = [
-  {d:"Perrache",t:45},{d:"Part-Dieu",t:45},{d:"LYS Aéroport",t:52},
-  {d:"Quai Claude Bernard",t:45},{d:"Vienne",t:105},{d:"Genève",t:180},
-  {d:"Montpellier",t:180},{d:"Bâle",t:150},{d:"Chalon",t:90},
-];
+// ─── BOOT ─────────────────────────────────────────────────────
+window.addEventListener("load",()=>{
+  if(light)document.body.classList.add("light");
+  updateModeBtn();
+  renderHeader();
+  loadWeather();
+  loadMissions();
+  initDecomp();
+});
 
-// ─────────────────────────────────────────────
-// UTILS
-// ─────────────────────────────────────────────
-const DF = ["dim","lun","mar","mer","jeu","ven","sam"];
-const MF = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-const MS = ["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
+function toggleMode(){light=!light;document.body.classList.toggle("light",light);localStorage.setItem("mc_light",light?"1":"0");updateModeBtn();}
+function updateModeBtn(){document.getElementById("mode-btn").textContent=light?"🌙":"☀️";}
 
-function fd(d) {
-  if (!d) return "";
-  const s = String(d).trim();
-  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
-  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (m) return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
-  return s;
+function renderHeader(){
+  const n=new Date();
+  document.getElementById("hdr-date").textContent=`${DAYS[n.getDay()]} ${n.getDate()} ${MO_LONG[n.getMonth()]}`;
+  const cm=String(n.getMonth()+1).padStart(2,"0");
+  const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm);
+  const done=mms.filter(isDone).length;
+  document.getElementById("hdr-month").textContent=`${MO_LONG[n.getMonth()]} · ${mms.length} missions · ${done} terminées`;
+  document.getElementById("month-lbl").textContent=MO_SH[n.getMonth()].toUpperCase();
 }
-function nice(iso) { if (!iso) return ""; const d = new Date(iso+"T12:00:00"); return `${DF[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]}`; }
-function niceLong(iso) { if (!iso) return ""; const d = new Date(iso+"T12:00:00"); return `${DF[d.getDay()]} ${d.getDate()} ${MF[d.getMonth()]}`; }
-function today() { return new Date().toISOString().slice(0,10); }
-function tmrw() { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().slice(0,10); }
-function cMonth() { return String(new Date().getMonth()+1).padStart(2,"0"); }
-function nowHHMM() { const d = new Date(); return `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; }
 
-function gm(c) {
-  if (!c) return {tag:"?",color:"#666"};
-  for (const [k,v] of Object.entries(CMETA)) {
-    if (c.toLowerCase().includes(k.split(" ")[0].toLowerCase())) return v;
-  }
-  return {tag:"?",color:"#666"};
+async function loadWeather(){
+  try{
+    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.75&longitude=4.85&current=temperature_2m,weathercode,precipitation_probability&timezone=Europe/Paris");
+    const d=await r.json();const c=d.current;
+    const codes=[0,1,2,3,45,48,51,53,55,61,63,65,71,73,75,77,80,81,82,85,86,95,96,99];
+    const icons=["☀️","🌤","⛅","🌥","🌫","🌫","🌦","🌦","🌧","🌧","🌧","🌧","❄️","❄️","❄️","🌨","🌦","🌦","⛈","❄️","❄️","⛈","⛈","⛈"];
+    const idx=codes.indexOf(c.weathercode);
+    const icon=idx>=0?icons[idx]:"⛅";
+    document.getElementById("wx-temp").textContent=`${icon} ${Math.round(c.temperature_2m)}°C`;
+    if(c.precipitation_probability>15)document.getElementById("wx-rain").textContent=`🌧 ${c.precipitation_probability}%`;
+  }catch(e){document.getElementById("wx-temp").textContent="";}
 }
-function trv(e) {
-  if (!e) return null;
-  const u = e.toUpperCase();
-  for (const t of TRANSPORT) if (u.includes(t.d.toUpperCase())) return t.t;
-  if (u.includes("AIRPORT")||u.includes("LYS")) return 52;
+
+async function loadMissions(){
+  const stored=localStorage.getItem("mc_missions");
+  if(stored){try{missions=JSON.parse(stored).map(norm);}catch(e){}}
+  try{
+    const r=await fetch(GAS_URL+"?action=all");
+    const d=await r.json();
+    if(d.missions&&d.missions.length){missions=d.missions.map(norm);localStorage.setItem("mc_missions",JSON.stringify(d.missions));}
+  }catch(e){}
+  if(!missions.length)missions=DEMO.map(norm);
+  renderHeader();render();
+}
+
+async function refreshData(){
+  const b=document.getElementById("refresh-btn");
+  b.style.opacity=".4";b.textContent="⟳";
+  missions=[];localStorage.removeItem("mc_missions");
+  await loadMissions();
+  b.style.opacity="1";b.textContent="↻";
+}
+
+async function saveField(mid,field,val){
+  try{await fetch(`${GAS_URL}?action=update&id=${encodeURIComponent(mid)}&field=${field}&value=${encodeURIComponent(val)}`);return true;}catch(e){return false;}
+}
+
+function norm(m){
+  const o={};
+  for(const[k,v]of Object.entries(m))o[k]=v;
+  o.mid=m["Mission ID"]||m.mid||"";
+  o.date=m["Date mission"]||m.date||"";
+  o.client=m["Client"]||m.client||"";
+  o.type=m["Type"]||m.type||"";
+  o.desc=m["Description"]||m.desc||"";
+  o.heures=m["Heures"]||m.heures||"";
+  o.base=m["Base (HT)"]||m["Base"]||m.base||"";
+  o.debours=m["Débours"]||m["Debours"]||m.debours||"";
+  // Time fields: handle both "HH:MM:SS" and "HH:MM" formats from sheet
+  let rawDebut=m["Début"]||m["Debut"]||m.debut||"";
+  if(rawDebut&&rawDebut.length>5)rawDebut=rawDebut.slice(0,5);
+  o.debut=rawDebut;
+  o.endroit=m["Endroit"]||m.endroit||"";
+  o.statut=m["Statut"]||m.statut||"";
+  o.notes=m["Notes"]||m.notes||"";
+  o.voyage=m["Voyage (min)"]||m["Voyage"]||m.voyage||"";
+  o.facture=m["Facture#"]||m.facture||"";
+  o.ndb=m["NDB#"]||m.ndb||"";
+  o.dateEnvoi=m["Date envoi"]||m.dateEnvoi||"";
+  return o;
+}
+
+// ─── UTILS ────────────────────────────────────────────────────
+const todayISO=()=>new Date().toISOString().slice(0,10);
+const tomorrowISO=()=>{const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);};
+const nowTime=()=>{const n=new Date();return`${pad(n.getHours())}:${pad(n.getMinutes())}`;};
+const pad=n=>String(n).padStart(2,"0");
+const isDone=m=>{const s=(m.statut||"").toLowerCase();return s.includes("envoyé")||s.includes("terminé")||s.includes("confirmé");};
+const isCancelled=m=>(m.statut||"").toLowerCase().includes("annul");
+const isInvoiced=m=>!!(m.facture);
+
+function getMeta(client){
+  if(!client)return{tag:"?",hex:"#666"};
+  for(const[k,v]of Object.entries(META))if(client.toLowerCase().includes(k.split(" ")[0].toLowerCase()))return v;
+  return{tag:"?",hex:"#666"};
+}
+function travelMin(e){
+  if(!e)return null;
+  const up=e.toUpperCase();
+  for(const[k,v]of Object.entries(TRAVEL))if(up.includes(k))return v;
   return 45;
 }
-function depTime(debut, travel) {
-  if (!debut||!travel) return null;
-  const p = debut.split(":");
-  if (p.length < 2) return null;
-  const m = parseInt(p[0])*60 + parseInt(p[1]) - travel - 15;
-  if (m < 0) return null;
-  return `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;
+function depTime(shift,trvl){
+  if(!shift||!trvl)return null;
+  const parts=shift.split(":");
+  const h=parseInt(parts[0]),m=parseInt(parts[1]);
+  if(isNaN(h)||isNaN(m))return null;
+  const d=h*60+m-trvl-15;
+  if(d<0)return null;
+  return`${pad(Math.floor(d/60))}:${pad(d%60)}`;
+}
+function durStr(s,e){
+  if(!s||!e)return"";
+  const[sh,sm]=s.split(":").map(Number);
+  const[eh,em]=e.split(":").map(Number);
+  const diff=(eh*60+em)-(sh*60+sm);
+  if(diff<=0)return"";
+  const hh=Math.floor(diff/60),mm=diff%60;
+  return mm>0?`${hh}h${pad(mm)}`:`${hh}h`;
+}
+function durToDecimal(s,e){
+  if(!s||!e)return"";
+  const[sh,sm]=s.split(":").map(Number);
+  const[eh,em]=e.split(":").map(Number);
+  const diff=(eh*60+em)-(sh*60+sm);
+  if(diff<=0)return"";
+  return(diff/60).toFixed(1);
+}
+function fdShort(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DAYS[d.getDay()]} ${d.getDate()} ${MO_SH[d.getMonth()]}`;}
+function fdLong(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DAYS[d.getDay()]} ${d.getDate()} ${MO_LONG[d.getMonth()]}`;}
+function badge(m){
+  if(isCancelled(m))return`<span class="bdg bdg-cancel">Annulé</span>`;
+  if(isDone(m))return`<span class="bdg bdg-done">✓ Terminé</span>`;
+  return`<span class="bdg bdg-plan">${m.statut||"Planifié"}</span>`;
+}
+const net=(b,d)=>Math.round((parseFloat(b)||0)*.74+(parseFloat(d)||0));
+
+// ─── NAV ──────────────────────────────────────────────────────
+function go(t){
+  if(t!=="today"&&t!=="month")detail=null;
+  tab=t;
+  ["today","month","finance","pause"].forEach(id=>document.getElementById(`nb-${id}`).classList.toggle("on",id===t));
+  render();
+  if(t==="pause")renderDecompScreen();
 }
 
-// ─────────────────────────────────────────────
-// FIELD ACCESSORS
-// ─────────────────────────────────────────────
-function F(m,k) { return m[k]||m[k.replace("é","e")]||m[k.replace("è","e")]||m[k.replace("û","u")]||""; }
-function mDate(m)   { return fd(F(m,"Date mission")); }
-function mDebut(m)  { return F(m,"Début")||F(m,"Debut")||""; }
-function mClient(m) { return F(m,"Client"); }
-function mType(m)   { return F(m,"Type"); }
-function mDesc(m)   { return F(m,"Description"); }
-function mHeures(m) { return F(m,"Heures"); }
-function mBase(m)   { return F(m,"Base (HT)")||F(m,"Base")|| ""; }
-function mDeb(m)    { return F(m,"Débours")||F(m,"Debours")||""; }
-function mStatut(m) { return F(m,"Statut"); }
-function mNotes(m)  { return F(m,"Notes"); }
-function mEndroit(m){ return F(m,"Endroit"); }
-function mMid(m)    { return F(m,"Mission ID"); }
-function mVoyage(m) { return F(m,"Voyage(min)")||F(m,"Voyage"); }
-function isDone(m)  { const s=(mStatut(m)).toLowerCase(); return s.includes("envoyé")||s.includes("terminé")||s.includes("confirme")||s.includes("heures"); }
-function typeShort(m){ return mType(m).replace("ASSISTANCE ","").split(" - ").pop().split(" - ")[0]; }
-
-// ─────────────────────────────────────────────
-// LOCAL STORAGE — OPS OVERLAY
-// ─────────────────────────────────────────────
-function opsKey(mid)    { return `ops_${mid}`; }
-function logKey(mid)    { return `log_${mid}`; }
-function getOps(mid)    { try { return JSON.parse(localStorage.getItem(opsKey(mid))||"{}"); } catch(e) { return {}; } }
-function setOps(mid,d)  { localStorage.setItem(opsKey(mid), JSON.stringify(d)); }
-function getLog(mid)    { try { return JSON.parse(localStorage.getItem(logKey(mid))||"null"); } catch(e) { return null; } }
-function setLog(mid,d)  { localStorage.setItem(logKey(mid), JSON.stringify(d)); }
-
-// ─────────────────────────────────────────────
-// API CALLS
-// ─────────────────────────────────────────────
-async function fetchMissions(month) {
-  try {
-    const r = await fetch(`${GAS_URL}?action=missions&month=${encodeURIComponent(month||"current")}`);
-    const d = await r.json();
-    return d.missions || [];
-  } catch(e) { console.error(e); return null; }
-}
-async function fetchWeather() {
-  try {
-    const r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weather_code&daily=precipitation_probability_max&timezone=Europe/Paris&forecast_days=1");
-    const d = await r.json();
-    const code = d.current?.weather_code || 0;
-    const temp = Math.round(d.current?.temperature_2m || 0);
-    const rain = d.daily?.precipitation_probability_max?.[0] || 0;
-    const icons = {0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",51:"🌦️",53:"🌧️",61:"🌧️",63:"🌧️",71:"🌨️",80:"🌦️",95:"⛈️"};
-    return { temp, icon: icons[code]||"🌤️", rain };
-  } catch(e) { return { temp:"?", icon:"🌤️", rain:0 }; }
-}
-async function updateField(id, field, value) {
-  try {
-    const r = await fetch(`${GAS_URL}?action=update&id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`);
-    return await r.json();
-  } catch(e) { return { error: e.message }; }
+function render(){
+  const el=document.getElementById("content");
+  if(!el)return;
+  if(tab==="pause"){el.innerHTML="";renderDecomp();return;}
+  if(detail&&(tab==="today"||tab==="month")){el.innerHTML=renderDetail(detail);return;}
+  switch(tab){
+    case"today":  el.innerHTML=renderToday();break;
+    case"month":  el.innerHTML=renderMonth();break;
+    case"finance":el.innerHTML=renderFinance();break;
+  }
 }
 
-// ─────────────────────────────────────────────
-// APP ROOT
-// ─────────────────────────────────────────────
-function App() {
-  const [theme, setTheme]       = React.useState(() => localStorage.getItem("mc_theme")||"dark");
-  const [tab, setTab]           = React.useState("today");
-  const [detail, setDetail]     = React.useState(null);
-  const [missions, setMissions] = React.useState([]);
-  const [loading, setLoading]   = React.useState(true);
-  const [weather, setWeather]   = React.useState({temp:"·",icon:"🌤️",rain:0});
-  const [postMission, setPostMission] = React.useState(null);
-  const [refreshKey, setRefreshKey]   = React.useState(0);
-
-  const T = theme === "dark" ? DARK : LIGHT;
-
-  React.useEffect(() => {
-    document.body.className = theme;
-    document.querySelector('meta[name="theme-color"]').content = theme === "dark" ? "#080c14" : "#f0ede6";
-    localStorage.setItem("mc_theme", theme);
-  }, [theme]);
-
-  const load = React.useCallback(async () => {
-    setLoading(true);
-    const [m, w] = await Promise.all([fetchMissions("current"), fetchWeather()]);
-    if (m !== null) setMissions(m);
-    if (w) setWeather(w);
-    setLoading(false);
-  }, []);
-
-  React.useEffect(() => { load(); }, [load]);
-
-  const t0 = today(), t1 = tmrw(), cm = cMonth();
-  const mnLabel = MF[parseInt(cm)-1] || "?";
-
-  const todayM   = React.useMemo(() => missions.filter(m => mDate(m) === t0).sort((a,b) => (mDebut(a)||"z").localeCompare(mDebut(b)||"z")), [missions, t0]);
-  const tmrwM    = React.useMemo(() => missions.filter(m => mDate(m) === t1).sort((a,b) => (mDebut(a)||"z").localeCompare(mDebut(b)||"z")), [missions, t1]);
-  const upcoming = React.useMemo(() => missions.filter(m => mDate(m) > t0).sort((a,b) => mDate(a).localeCompare(mDate(b))), [missions, t0]);
-
-  const done    = missions.filter(isDone).length;
-  const totalHT = missions.reduce((s,m) => s+(parseFloat(mBase(m))||0), 0);
-  const totalDeb = missions.reduce((s,m) => s+(parseFloat(mDeb(m))||0), 0);
-
-  const byDate = React.useMemo(() => {
-    const g = {};
-    missions.forEach(m => { const d = mDate(m); if (d) (g[d]=g[d]||[]).push(m); });
-    return g;
-  }, [missions]);
-
-  if (loading) return (
-    <div className="loading">
-      <div className="spinner"></div>
-      <span style={{fontSize:10,color:T.textFaint,letterSpacing:2}}>CHARGEMENT</span>
-    </div>
-  );
-
-  // POST-MISSION FLOW
-  if (postMission) return (
-    <PostMissionFlow
-      m={postMission} T={T}
-      onDone={async (data) => {
-        if (data.heures) await updateField(mMid(postMission), "heures", data.heures);
-        if (data.notes)  await updateField(mMid(postMission), "notes", data.notes);
-        if (data.statut) await updateField(mMid(postMission), "statut", data.statut);
-        setLog(mMid(postMission), data);
-        setPostMission(null);
-        setRefreshKey(k => k+1);
-        load();
-      }}
-      onCancel={() => setPostMission(null)}
-    />
-  );
-
-  return (
-    <div key={refreshKey} style={{maxWidth:480, margin:"0 auto", minHeight:"100vh", background:T.bg}}>
-
-      {/* ── HEADER ── */}
-      <Header T={T} theme={theme} onToggleTheme={() => setTheme(theme==="dark"?"light":"dark")}
-        weather={weather} missions={missions} done={done} mnLabel={mnLabel} onRefresh={load} />
-
-      {/* ── NAV ── */}
-      <Nav tab={tab} setTab={(t) => { setTab(t); setDetail(null); }} T={T} cm={cm} />
-
-      <div style={{padding:"14px 15px 60px", minHeight:"65vh"}}>
-
-        {/* TODAY TAB */}
-        {tab === "today" && !detail && (
-          <TodayTab T={T} todayM={todayM} tmrwM={tmrwM} upcoming={upcoming} t0={t0} t1={t1}
-            onDetail={setDetail} />
-        )}
-
-        {/* DETAIL VIEW */}
-        {detail && (
-          <DetailView m={detail} T={T} theme={theme}
-            onBack={() => setDetail(null)}
-            onPostMission={() => { setPostMission(detail); setDetail(null); }}
-          />
-        )}
-
-        {/* MONTH TAB */}
-        {tab === "month" && !detail && (
-          <MonthTab T={T} byDate={byDate} t0={t0} t1={t1} mnLabel={mnLabel}
-            missions={missions} onDetail={setDetail} />
-        )}
-
-        {/* FINANCE TAB */}
-        {tab === "finance" && (
-          <FinanceTab T={T} missions={missions} done={done} totalHT={totalHT} totalDeb={totalDeb} mnLabel={mnLabel} />
-        )}
-
-        {/* BREATHE TAB */}
-        {tab === "breathe" && <BreatheTab T={T} />}
-
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// HEADER
-// ─────────────────────────────────────────────
-function Header({T, theme, onToggleTheme, weather, missions, done, mnLabel, onRefresh}) {
-  const now = new Date();
-  const dateStr = now.toLocaleDateString("fr-FR", {weekday:"long",day:"numeric",month:"long"});
-
-  return (
-    <div style={{
-      padding:"14px 16px 10px",
-      background: theme==="dark" ? "linear-gradient(180deg,#0d1420 0%,#080c14 100%)" : "linear-gradient(180deg,#faf8f4 0%,#f0ede6 100%)",
-      borderBottom:`1px solid ${T.border}`,
-    }}>
-      <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
-        <div>
-          <div style={{display:"flex", alignItems:"center", gap:8, marginBottom:2}}>
-            <span style={{fontSize:8, letterSpacing:3, color:T.textFaint, textTransform:"uppercase", fontFamily:"'DM Mono',monospace"}}>Mission Control</span>
-            <button onClick={onToggleTheme} style={{background:"none",border:"none",fontSize:11,padding:"1px 4px",color:T.textFaint,borderRadius:4}}>
-              {theme==="dark"?"☀️":"🌙"}
-            </button>
-          </div>
-          <div style={{fontSize:17, fontWeight:700, color:T.textBright, lineHeight:1.2}}>{dateStr}</div>
-          <div style={{fontSize:10, color:T.textFaint, marginTop:3, fontFamily:"'DM Mono',monospace"}}>
-            {mnLabel} · {missions.length} missions · {done} terminées
-          </div>
-        </div>
-        <div style={{textAlign:"right", display:"flex", flexDirection:"column", alignItems:"flex-end", gap:2}}>
-          <div style={{fontSize:22, lineHeight:1}}>{weather.icon}</div>
-          <div style={{fontSize:14, fontWeight:600, color:T.textMuted}}>{weather.temp}°C</div>
-          {weather.rain > 15 && <div style={{fontSize:9, color:T.accent}}>🌧 {weather.rain}%</div>}
-          <button onClick={onRefresh} style={{background:"none",border:"none",color:T.textFaint,fontSize:10,padding:2,marginTop:2}}>↻</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// NAV
-// ─────────────────────────────────────────────
-function Nav({tab, setTab, T, cm}) {
-  const items = [
-    {id:"today", icon:"☀️", label:"Aujourd'hui"},
-    {id:"month", icon:"📅", label:MS[parseInt(cm)-1]},
-    {id:"finance", icon:"💶", label:"Finances"},
-    {id:"breathe", icon:"🌿", label:"Pause"},
-  ];
-  return (
-    <div style={{display:"flex", borderBottom:`1px solid ${T.border}`, background:T.bg, position:"sticky", top:0, zIndex:20}}>
-      {items.map(n => (
-        <button key={n.id} onClick={() => setTab(n.id)} style={{
-          flex:1, padding:"8px 0 6px", background:"none", border:"none",
-          color: tab===n.id ? T.textBright : T.textFaint,
-          fontSize:8, fontWeight: tab===n.id ? 700 : 400,
-          borderBottom: tab===n.id ? `2px solid ${T.accent}` : "2px solid transparent",
-          letterSpacing:.8, textTransform:"uppercase",
-          transition:"color .15s",
-        }}>
-          <div style={{fontSize:15, marginBottom:2}}>{n.icon}</div>
-          {n.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// TODAY TAB
-// ─────────────────────────────────────────────
-function TodayTab({T, todayM, tmrwM, upcoming, t0, t1, onDetail}) {
-  const hasToday = todayM.length > 0;
-  const hasTmrw  = tmrwM.length > 0;
-
-  return (
-    <div className="fade-up">
-      {!hasToday && !hasTmrw && upcoming.length === 0 && (
-        <div style={{textAlign:"center", padding:"40px 0"}}>
-          <div style={{fontSize:40, marginBottom:8}}>☀️</div>
-          <div style={{fontSize:14, color:T.textMuted}}>Pas de missions</div>
-        </div>
-      )}
-      {hasToday && <>{SectionLabel("AUJOURD'HUI", T)}{todayM.map(m => <MissionCard key={mMid(m)} m={m} T={T} onTap={() => onDetail(m)} />)}</>}
-      {hasTmrw  && <>{SectionLabel("DEMAIN · "+nice(t1), T)}{tmrwM.map(m => <MissionCard key={mMid(m)} m={m} T={T} compact onTap={() => onDetail(m)} />)}</>}
-      {!hasToday && !hasTmrw && upcoming.length > 0 && (
-        <>{SectionLabel("PROCHAINE · "+nice(mDate(upcoming[0])), T)}
-          <MissionCard m={upcoming[0]} T={T} onTap={() => onDetail(upcoming[0])} /></>
-      )}
-      {upcoming.slice(0, 4).length > 0 && hasToday && (
-        <>{SectionLabel("À VENIR", T)}
-          {upcoming.slice(0,3).map(m => <MissionCard key={mMid(m)} m={m} T={T} compact onTap={() => onDetail(m)} />)}</>
-      )}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// MISSION CARD
-// ─────────────────────────────────────────────
-function MissionCard({m, compact, onTap, T}) {
-  const meta = gm(mClient(m));
-  const done = isDone(m);
-  const debut = mDebut(m) || "TBD";
-  const tShort = typeShort(m);
-  const log = getLog(mMid(m));
-
-  return (
-    <div onClick={onTap} style={{
-      background:T.card, borderRadius:compact?10:12, padding:compact?"8px 12px":"12px 14px",
-      marginBottom:6, borderLeft:`3px solid ${meta.color}`,
-      cursor:"pointer", opacity: done ? .55 : 1,
-      transition:"transform .1s, background .15s",
-    }}
-      onPointerDown={e=>e.currentTarget.style.transform="scale(0.985)"}
-      onPointerUp={e=>e.currentTarget.style.transform=""}
-      onPointerLeave={e=>e.currentTarget.style.transform=""}
-    >
-      <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
-        <div style={{flex:1, minWidth:0}}>
-          <div style={{display:"flex", alignItems:"center", gap:5, flexWrap:"wrap"}}>
-            <span style={{
-              fontSize:9, fontWeight:700, color:meta.color, letterSpacing:.8,
-              background:meta.color+"18", padding:"2px 6px", borderRadius:4,
-              fontFamily:"'DM Mono',monospace",
-            }}>{meta.tag}</span>
-            <span style={{fontSize:compact?12:13, fontWeight:600, color:T.textBright}}>{debut}</span>
-            {!compact && <span style={{fontSize:10, color:T.textFaint}}>{nice(mDate(m))}</span>}
-            {done && <span style={{fontSize:8, color:T.green}}>✓</span>}
-            {log && !done && <span style={{fontSize:8, color:T.orange, fontFamily:"'DM Mono',monospace"}}>LOG</span>}
-          </div>
-          <div style={{fontSize:compact?10:11, color:T.textMuted, marginTop:2, fontWeight:500}}>{tShort}</div>
-        </div>
-        <div style={{textAlign:"right", fontSize:9, color:T.textFaint, fontFamily:"'DM Mono',monospace", marginLeft:8}}>
-          {mDesc(m) && <div>{mDesc(m)}</div>}
-          {mBase(m) && <div style={{color:T.textMuted, marginTop:1}}>{mBase(m)}€</div>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// DETAIL VIEW
-// ─────────────────────────────────────────────
-function DetailView({m, T, theme, onBack, onPostMission}) {
-  const meta   = gm(mClient(m));
-  const base   = parseFloat(mBase(m)) || 0;
-  const deb    = parseFloat(mDeb(m)) || 0;
-  const debut  = mDebut(m) || "TBD";
-  const endroit = mEndroit(m);
-  const trvl   = trv(endroit);
-  const dep    = depTime(debut, trvl);
-  const done   = isDone(m);
-  const mid    = mMid(m);
-  const log    = getLog(mid);
-  const ops    = getOps(mid);
-
-  const [editingOps, setEditingOps] = React.useState(false);
-  const [opsData, setOpsData]       = React.useState(ops);
-
-  const saveOps = () => { setOps(mid, opsData); setEditingOps(false); };
-
-  return (
-    <div className="fade-up">
-      <button onClick={onBack} style={{background:"none",border:"none",color:T.accent,fontSize:11,cursor:"pointer",padding:"0 0 10px",display:"flex",alignItems:"center",gap:4}}>
-        ← Retour
-      </button>
-
-      <div style={{background:T.card, borderRadius:14, overflow:"hidden", borderLeft:`4px solid ${meta.color}`, marginBottom:10}}>
-
-        {/* ── HEAD ── */}
-        <div style={{padding:"14px 16px 12px"}}>
-          <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
-            <div style={{flex:1}}>
-              <div style={{fontSize:9, color:meta.color, fontWeight:700, letterSpacing:1.5, fontFamily:"'DM Mono',monospace"}}>{meta.tag} · {mClient(m)}</div>
-              <div style={{fontSize:15, fontWeight:700, color:T.textBright, marginTop:2, lineHeight:1.3}}>{mType(m).replace("ASSISTANCE ","")}</div>
-            </div>
-            <div style={{
-              fontSize:8, padding:"3px 7px", borderRadius:4, fontWeight:600, whiteSpace:"nowrap", marginLeft:8,
-              background: done ? T.green+"22" : T.accent+"18",
-              color: done ? T.green : T.accent,
-            }}>{mStatut(m)||"—"}</div>
-          </div>
-
-          {/* DEPARTURE HELPER */}
-          {debut !== "TBD" && trvl && (
-            <div style={{marginTop:10, padding:"8px 10px", background:T.timeBox, borderRadius:8, border:`1px solid ${T.timeBorder}`}}>
-              <div style={{fontSize:11, color:T.accent, fontWeight:600}}>⏰ Mission à {debut}</div>
-              {dep && <div style={{fontSize:10, color:T.textMuted, marginTop:1}}>Départ maison ~{dep} · trajet ~{trvl} min</div>}
-            </div>
-          )}
-
-          {/* INFO GRID */}
-          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:12}}>
-            <FldBox l="Date" v={niceLong(mDate(m))} T={T} />
-            <FldBox l="Heure" v={debut} T={T} />
-            <FldBox l="Lieu" v={endroit||"—"} T={T} />
-            <FldBox l="Durée" v={mHeures(m)?mHeures(m)+"h":"TBD"} T={T} />
-            <FldBox l="Référence" v={mDesc(m)||"—"} T={T} mono />
-            <FldBox l="ID" v={mid} T={T} mono small />
-          </div>
-        </div>
-
-        {/* ── FINANCES ── */}
-        {(base > 0 || deb > 0) && (
-          <div style={{padding:"10px 16px", borderTop:`1px solid ${T.border}`, fontSize:11}}>
-            <Row l="Base HT" v={base?base+"€":"TBD"} T={T} />
-            <Row l="Débours" v={deb?deb+"€":"—"} T={T} />
-            <Row l="Net (après URSSAF)" v={Math.round(base*.74+deb)+"€"} T={T} bold accent={T.orange} />
-          </div>
-        )}
-
-        {/* ── OPS OVERLAY ── */}
-        <div style={{padding:"10px 16px", borderTop:`1px solid ${T.border}`}}>
-          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:editingOps?10:6}}>
-            <div style={{fontSize:9, color:T.textFaint, fontWeight:700, letterSpacing:1.5}}>INFOS MISSION</div>
-            <button onClick={() => editingOps ? saveOps() : setEditingOps(true)} style={{
-              background:"none", border:`1px solid ${T.border}`, borderRadius:6,
-              padding:"3px 8px", fontSize:9, color:T.accent, cursor:"pointer",
-            }}>{editingOps ? "💾 Sauver" : "✏️ Éditer"}</button>
-          </div>
-
-          {editingOps ? (
-            <OpsEditor data={opsData} setData={setOpsData} T={T} />
-          ) : (
-            <OpsDisplay data={opsData} T={T} />
-          )}
-        </div>
-
-        {/* ── NOTES ── */}
-        {mNotes(m) && (
-          <div style={{padding:"8px 16px", borderTop:`1px solid ${T.border}`, fontSize:10, color:T.textFaint, lineHeight:1.6}}>
-            📝 {mNotes(m)}
-          </div>
-        )}
-
-        {/* ── CONTACT ── */}
-        <div style={{padding:"10px 16px", borderTop:`1px solid ${T.border}`}}>
-          <div style={{fontSize:9, color:T.textFaint, marginBottom:4, letterSpacing:1.5, fontWeight:700}}>CONTACT</div>
-          <div style={{fontSize:11, color:T.textMuted, lineHeight:1.8}}>
-            {meta.contact}
-            {meta.phone && <> · <a href={`tel:${meta.phone}`} style={{color:T.accent}}>{meta.phone}</a></>}
-            {" · "}<a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a>
-          </div>
-          {meta.cohost && <div style={{fontSize:10, color:T.textFaint, marginTop:2}}>🤝 {meta.cohost}</div>}
-          {meta.emergency && <div style={{fontSize:10, marginTop:2}}>🚨 <a href={`tel:${meta.emergency}`} style={{color:T.red}}>{meta.emergency}</a></div>}
-          {meta.notes && <div style={{fontSize:9, color:T.orange, marginTop:4}}>{meta.notes}</div>}
-        </div>
-
-        {/* ── POST-MISSION LOG ── */}
-        {log && (
-          <div style={{padding:"10px 16px", borderTop:`1px solid ${T.border}`, background:T.green+"08"}}>
-            <div style={{fontSize:9, color:T.green, fontWeight:700, letterSpacing:1.5, marginBottom:4}}>✅ MISSION LOGGÉE</div>
-            <div style={{fontSize:11, color:T.textMuted, lineHeight:1.8}}>
-              ⏱ {log.debutR}–{log.finR} = {log.heures}h
-              {log.notes && log.notes !== "RAS" && <><br/>📝 {log.notes}</>}
-              {log.statut && <><br/><span style={{color:T.green}}>{log.statut}</span></>}
-            </div>
-          </div>
-        )}
-
-        {/* ── POST-MISSION BUTTON ── */}
-        {!done && (
-          <div style={{padding:"12px 16px 14px", borderTop:`1px solid ${T.border}`}}>
-            <button onClick={onPostMission} style={{
-              width:"100%", padding:"12px", borderRadius:10, fontSize:13, fontWeight:700,
-              background:T.accent+"15", color:T.accent, border:`1px solid ${T.accent}30`,
-              transition:"all .2s",
-            }}>
-              ✅ Fin de mission — Logger les heures
-            </button>
-          </div>
-        )}
-
-        <div style={{padding:"4px 16px 8px", fontSize:8, color:T.textFaint, fontFamily:"'DM Mono',monospace"}}>{mid}</div>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// OPS DISPLAY & EDITOR
-// ─────────────────────────────────────────────
-const OPS_FIELDS = [
-  {k:"pax",     label:"Pax"},
-  {k:"coaches", label:"Cars"},
-  {k:"tgv",     label:"TGV #"},
-  {k:"trainTime",label:"Heure train"},
-  {k:"pdship",  label:"PD Ship"},
-  {k:"driver",  label:"Chauffeur"},
-  {k:"driverPhone", label:"Tel chauffeur"},
-  {k:"parisHost", label:"Host Paris"},
-  {k:"mise",    label:"Mise en place"},
-  {k:"notes",   label:"Notes terrain"},
-];
-
-function OpsDisplay({data, T}) {
-  const entries = OPS_FIELDS.filter(f => data[f.k]);
-  if (!entries.length) return (
-    <div style={{fontSize:10, color:T.textFaint, fontStyle:"italic", paddingBottom:4}}>
-      Aucune info saisie — appuyer ✏️ pour ajouter
-    </div>
-  );
-  return (
-    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:6}}>
-      {entries.map(f => (
-        <div key={f.k}>
-          <div style={{fontSize:9, color:T.textFaint}}>{f.label}</div>
-          <div style={{fontSize:11, color:T.textMuted, fontWeight:500}}>{data[f.k]}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function OpsEditor({data, setData, T}) {
-  return (
-    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8}}>
-      {OPS_FIELDS.map(f => (
-        <div key={f.k}>
-          <div style={{fontSize:9, color:T.textFaint, marginBottom:3}}>{f.label}</div>
-          <input
-            value={data[f.k]||""}
-            onChange={e => setData({...data,[f.k]:e.target.value})}
-            placeholder="—"
-            style={{
-              width:"100%", padding:"5px 8px", borderRadius:6, fontSize:11,
-              border:`1px solid ${T.border}`, background:T.inputBg, color:T.textBright,
-            }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// MONTH TAB
-// ─────────────────────────────────────────────
-function MonthTab({T, byDate, t0, t1, mnLabel, missions, onDetail}) {
-  const [expanded, setExpanded] = React.useState(null);
-
-  return (
-    <div className="fade-up">
-      {SectionLabel(`${mnLabel.toUpperCase()} · ${missions.length} MISSIONS`, T)}
-
-      {Object.entries(byDate).sort(([a],[b]) => a.localeCompare(b)).map(([date,ms]) => {
-        const isToday  = date === t0;
-        const isTmrw   = date === t1;
-        const isPast   = date < t0;
-        return (
-          <div key={date} style={{marginBottom:10}}>
-            <div style={{
-              fontSize:10, fontWeight:700, letterSpacing:.8, marginBottom:4,
-              color: isToday ? T.accent : isTmrw ? T.green : isPast ? T.textFaint : T.textMuted,
-            }}>
-              {niceLong(date).toUpperCase()}
-              {isToday ? " · AUJOURD'HUI" : isTmrw ? " · DEMAIN" : ""}
-            </div>
-            {ms.map(m => <MissionCard key={mMid(m)||Math.random()} m={m} T={T} compact onTap={() => onDetail(m)} />)}
-          </div>
-        );
-      })}
-
-      {SectionLabel("CONTACTS", T)}
-      {Object.entries(CMETA).map(([name, meta]) => (
-        <div key={name} style={{background:T.card, borderRadius:10, marginBottom:6, overflow:"hidden", borderLeft:`3px solid ${meta.color}`}}>
-          <button onClick={() => setExpanded(expanded===name?null:name)} style={{
-            width:"100%", background:"none", border:"none", cursor:"pointer",
-            padding:"10px 12px", display:"flex", justifyContent:"space-between", alignItems:"center",
-          }}>
-            <div style={{display:"flex", alignItems:"center", gap:8}}>
-              <span style={{fontSize:10, fontWeight:700, color:meta.color, fontFamily:"'DM Mono',monospace"}}>{meta.tag}</span>
-              <span style={{fontSize:11, color:T.textMuted}}>{name}</span>
-            </div>
-            <span style={{fontSize:10, color:T.textFaint}}>{expanded===name?"▲":"▼"}</span>
-          </button>
-          {expanded === name && (
-            <div style={{padding:"0 12px 12px", fontSize:11, color:T.textMuted, lineHeight:1.9}}>
-              {meta.contact}
-              {meta.phone && <> · <a href={`tel:${meta.phone}`} style={{color:T.accent}}>{meta.phone}</a></>}
-              <br/><a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a>
-              {meta.cohost && <><br/>🤝 {meta.cohost}</>}
-              {meta.emergency && <><br/>🚨 <a href={`tel:${meta.emergency}`} style={{color:T.red}}>{meta.emergency}</a></>}
-              {meta.notes && <><br/><span style={{fontSize:9,color:T.orange}}>{meta.notes}</span></>}
-              {meta.rates && (
-                <div style={{marginTop:6, padding:"6px 8px", background:T.card2, borderRadius:6, fontSize:9, color:T.textFaint, whiteSpace:"pre-line"}}>
-                  {meta.rates}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
-
-      {SectionLabel("TRAJETS DEPUIS SAINT-PRIEST", T)}
-      <div style={{background:T.card, borderRadius:10, padding:"10px 14px", fontSize:11, color:T.textFaint, lineHeight:2}}>
-        {TRANSPORT.map((t,i) => (
-          <div key={i} style={{display:"flex", justifyContent:"space-between"}}>
-            <span>🚗 {t.d}</span>
-            <span style={{fontFamily:"'DM Mono',monospace", color:T.textMuted}}>{t.t} min</span>
-          </div>
-        ))}
-        <div style={{fontSize:9, marginTop:4, color:T.textFaint, opacity:.7}}>Avant 06h00 → Bolt VTC</div>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// FINANCE TAB
-// ─────────────────────────────────────────────
-function FinanceTab({T, missions, done, totalHT, totalDeb, mnLabel}) {
-  const net = Math.round(totalHT * .74 + totalDeb);
-  const urssaf = Math.round(totalHT * .26);
-
-  return (
-    <div className="fade-up">
-      {SectionLabel(`${mnLabel.toUpperCase()} · FINANCES`, T)}
-
-      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:14}}>
-        <StatBox l="Base HT" v={`${totalHT.toLocaleString("fr-FR")}€`} c={T.accent} T={T} />
-        <StatBox l="Débours" v={`${totalDeb.toLocaleString("fr-FR")}€`} c={T.green} T={T} />
-        <StatBox l="Net estimé" v={`${net.toLocaleString("fr-FR")}€`} c={T.orange} T={T} />
-        <StatBox l="URSSAF ~" v={`${urssaf.toLocaleString("fr-FR")}€`} c={T.red} T={T} />
-      </div>
-      <div style={{background:T.card, borderRadius:10, padding:"8px 12px", marginBottom:14, fontSize:10, color:T.textFaint, lineHeight:1.7}}>
-        Net = Base×0.74 + Débours · URSSAF = Base×0.26 · TVA non applicable art. 293B CGI
-      </div>
-
-      {SectionLabel("PAR CLIENT", T)}
-      {Object.entries(CMETA).map(([name,meta]) => {
-        const cm = missions.filter(m => mClient(m).toLowerCase().includes(name.split(" ")[0].toLowerCase()));
-        if (!cm.length) return null;
-        const cb = cm.reduce((s,m) => s+(parseFloat(mBase(m))||0), 0);
-        const cd = cm.reduce((s,m) => s+(parseFloat(mDeb(m))||0), 0);
-        const cdone = cm.filter(isDone).length;
-        return (
-          <div key={name} style={{background:T.card, borderRadius:10, padding:"10px 14px", marginBottom:6, borderLeft:`3px solid ${meta.color}`, display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-            <div>
-              <div style={{fontWeight:700, fontSize:11, color:meta.color, fontFamily:"'DM Mono',monospace"}}>{meta.tag}</div>
-              <div style={{fontSize:10, color:T.textFaint}}>{cm.length} missions · {cdone} terminées</div>
-            </div>
-            <div style={{textAlign:"right"}}>
-              <div style={{fontSize:13, fontWeight:700, color:T.textMuted}}>{cb>0?`${cb}€`:"TBD"}</div>
-              {cd>0 && <div style={{fontSize:10, color:T.textFaint}}>+{cd}€ déb</div>}
-            </div>
-          </div>
-        );
-      })}
-
-      {SectionLabel("STATUTS", T)}
-      {(() => {
-        const statuts = {};
-        missions.forEach(m => { const s = mStatut(m)||"Non défini"; statuts[s] = (statuts[s]||0)+1; });
-        return Object.entries(statuts).sort((a,b)=>b[1]-a[1]).map(([s,n]) => (
-          <div key={s} style={{display:"flex", justifyContent:"space-between", padding:"5px 0", borderBottom:`1px solid ${T.border}`, fontSize:11}}>
-            <span style={{color:T.textMuted}}>{s}</span>
-            <span style={{fontFamily:"'DM Mono',monospace", color:T.textFaint}}>{n}</span>
-          </div>
-        ));
-      })()}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// BREATHE TAB
-// ─────────────────────────────────────────────
-function BreatheTab({T}) {
-  const [active, setActive]     = React.useState(false);
-  const [phase, setPhase]       = React.useState(0);
-  const [cycle, setCycle]       = React.useState(0);
-  const [noteText, setNoteText] = React.useState("");
-  const [noteSaved, setNoteSaved] = React.useState(false);
-
-  const phases = ["Inspire","Retiens","Expire","Retiens"];
-  const durations = [4000, 4000, 4000, 4000];
-
-  React.useEffect(() => {
-    if (!active) { setPhase(0); return; }
-    const t = setTimeout(() => {
-      const next = (phase+1)%4;
-      if (next === 0) setCycle(c => c+1);
-      setPhase(next);
-    }, durations[phase]);
-    return () => clearTimeout(t);
-  }, [active, phase]);
-
-  const size = active ? (phase===0||phase===1 ? 130 : 50) : 50;
-
-  const saveNote = () => {
-    if (!noteText.trim()) return;
-    const notes = JSON.parse(localStorage.getItem("decompress_notes")||"[]");
-    notes.push({ ts: new Date().toISOString(), text: noteText });
-    localStorage.setItem("decompress_notes", JSON.stringify(notes));
-    setNoteText("");
-    setNoteSaved(true);
-    setTimeout(() => setNoteSaved(false), 2000);
-  };
-
-  return (
-    <div className="fade-up" style={{textAlign:"center", paddingTop:10}}>
-      {SectionLabel("RESPIRATION · BOX 4-4-4-4", T)}
-
-      <div style={{
-        width:size, height:size, borderRadius:"50%",
-        margin:"30px auto 20px",
-        background: active
-          ? `radial-gradient(circle, ${T.accent}25, ${T.accent}05)`
-          : T.card,
-        border:`1.5px solid ${active ? T.accent+"55" : T.border}`,
-        transition:"all 4s cubic-bezier(.4,0,.2,1)",
-        display:"flex", alignItems:"center", justifyContent:"center",
-        boxShadow: active ? `0 0 40px ${T.accent}15` : "none",
-      }}>
-        {active && <span style={{fontSize:10, color:T.accent, fontWeight:600, letterSpacing:.5}}>{phases[phase]}</span>}
-      </div>
-
-      {active && <div style={{fontSize:10, color:T.textFaint, marginBottom:16}}>Cycle {cycle+1} · {phases[phase]}</div>}
-
-      <button onClick={() => setActive(!active)} style={{
-        padding:"10px 30px", borderRadius:20, fontSize:12, fontWeight:600,
-        background: active ? T.red+"18" : T.accent+"18",
-        color: active ? T.red : T.accent,
-        border:`1px solid ${active ? T.red+"33" : T.accent+"33"}`,
-      }}>
-        {active ? "Arrêter" : "Commencer"}
-      </button>
-
-      {!active && (
-        <div style={{marginTop:8, fontSize:10, color:T.textFaint, lineHeight:1.7}}>
-          Après une longue mission · 4 cycles = 1 min
-        </div>
-      )}
-
-      {/* QUICK JOURNAL */}
-      <div style={{marginTop:28, textAlign:"left"}}>
-        {SectionLabel("DÉCHARGE RAPIDE", T)}
-        <textarea
-          value={noteText}
-          onChange={e => setNoteText(e.target.value)}
-          placeholder="Ce que tu gardes en toi depuis la mission..."
-          rows={4}
-          style={{
-            width:"100%", padding:"10px 12px", borderRadius:10, fontSize:12,
-            border:`1px solid ${T.border}`, background:T.card, color:T.textBright,
-            resize:"vertical", fontFamily:"'DM Sans',sans-serif", lineHeight:1.6,
-          }}
-        />
-        <button onClick={saveNote} style={{
-          width:"100%", marginTop:8, padding:"10px", borderRadius:8, fontSize:12, fontWeight:600,
-          background: noteSaved ? T.green+"18" : T.card2||T.card,
-          color: noteSaved ? T.green : T.textMuted,
-          border:`1px solid ${noteSaved ? T.green+"33" : T.border}`,
-        }}>
-          {noteSaved ? "✓ Enregistré" : "Enregistrer"}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// POST-MISSION FLOW
-// ─────────────────────────────────────────────
-function PostMissionFlow({m, T, onDone, onCancel}) {
-  const [step, setStep]     = React.useState(1);
-  const [debutR, setDebutR] = React.useState(mDebut(m)||"");
-  const [finR, setFinR]     = React.useState("");
-  const [notes, setNotes]   = React.useState("");
-  const [sending, setSending] = React.useState(false);
-
-  const meta = gm(mClient(m));
-
-  let heures = "";
-  if (debutR && finR) {
-    const [sh,sm] = debutR.split(":").map(Number);
-    const [eh,em] = finR.split(":").map(Number);
-    heures = String(((eh*60+em)-(sh*60+sm))/60);
+// ══════════════════════════════════════════════════════════════
+// TODAY
+// ══════════════════════════════════════════════════════════════
+function renderToday(){
+  const t=todayISO(),tm=tomorrowISO();
+  const todayMs=missions.filter(m=>m.date===t).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
+  const tmMs=missions.filter(m=>m.date===tm).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
+  const upcoming=missions.filter(m=>m.date>tm&&!isCancelled(m)).sort((a,b)=>a.date.localeCompare(b.date));
+  let h="";
+
+  if(todayMs.length){
+    h+=`<div class="slabel">AUJOURD'HUI</div>`;
+    h+=todayMs.map(m=>mcard(m,false)).join("");
+  } else {
+    h+=`<div class="empty"><div class="empty-icon">☀️</div><div class="empty-title">Pas de mission aujourd'hui</div>${tmMs.length?`<div class="empty-sub">${tmMs.length} mission${tmMs.length>1?"s":""} demain</div>`:""}</div>`;
   }
 
-  return (
-    <div style={{maxWidth:480, margin:"0 auto", minHeight:"100vh", background:T.bg, padding:20}}>
-      <button onClick={onCancel} style={{background:"none",border:"none",color:T.textFaint,fontSize:11,cursor:"pointer",marginBottom:14}}>← Annuler</button>
+  if(tmMs.length){
+    h+=`<div class="slabel${todayMs.length?" mt":""}">DEMAIN · ${fdShort(tm).toUpperCase()}</div>`;
+    h+=tmMs.map(m=>mcard(m,true)).join("");
+  }
 
-      {/* Progress dots */}
-      <div style={{display:"flex", gap:6, justifyContent:"center", marginBottom:16}}>
-        {[1,2,3].map(s => (
-          <div key={s} style={{width:6, height:6, borderRadius:"50%", background: s<=step ? T.accent : T.border, transition:"background .2s"}} />
-        ))}
-      </div>
+  if(!todayMs.length&&!tmMs.length&&upcoming.length){
+    h+=`<div class="slabel">PROCHAINE MISSION</div>${mcard(upcoming[0],true)}`;
+    upcoming.slice(1,4).length&&(h+=aVenir(upcoming.slice(1,4)));
+  } else if(upcoming.length){
+    h+=aVenir(upcoming.slice(0,4));
+  }
+  return h;
+}
 
-      <div style={{background:T.card, borderRadius:14, padding:20, borderLeft:`4px solid ${meta.color}`}}>
-        <div style={{fontSize:9, color:meta.color, fontWeight:700, letterSpacing:1, fontFamily:"'DM Mono',monospace"}}>{meta.tag} · {mType(m).replace("ASSISTANCE ","")}</div>
-        <div style={{fontSize:14, fontWeight:700, color:T.textBright, marginTop:2, marginBottom:16}}>{niceLong(mDate(m))}</div>
+function aVenir(ms){
+  return`<div class="ubox"><div class="ulbl">À VENIR</div>${ms.map(m=>{
+    const mt=getMeta(m.client);
+    const typeS=(m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop();
+    return`<div class="uitem">
+      <span style="color:${mt.hex};font-weight:700;font-size:11px;min-width:38px">${mt.tag}</span>
+      <span style="color:var(--txt3);min-width:80px">${fdShort(m.date)}</span>
+      <span style="color:var(--txt4)">${typeS}${m.debut?` · ${m.debut}`:""}</span>
+    </div>`;
+  }).join("")}</div>`;
+}
 
-        {step === 1 && (
-          <div>
-            <div style={{fontSize:12, fontWeight:700, color:T.textBright, marginBottom:12}}>⏱ Heures réelles</div>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:12}}>
-              <div>
-                <div style={{fontSize:10, color:T.textFaint, marginBottom:4}}>Début</div>
-                <input type="time" value={debutR} onChange={e=>setDebutR(e.target.value)}
-                  style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.inputBg,color:T.textBright,fontSize:14}} />
-              </div>
-              <div>
-                <div style={{fontSize:10, color:T.textFaint, marginBottom:4}}>Fin</div>
-                <input type="time" value={finR} onChange={e=>setFinR(e.target.value)}
-                  style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.inputBg,color:T.textBright,fontSize:14}} />
-              </div>
-            </div>
-            {debutR && finR && <div style={{fontSize:12, color:T.accent, marginBottom:12}}>= {parseFloat(heures).toFixed(1)}h</div>}
-            <button onClick={() => setStep(2)} style={btnStyle(T)}>Suivant →</button>
-          </div>
-        )}
+function mcard(m,compact){
+  const mt=getMeta(m.client);
+  const done=isDone(m);
+  const typeS=(m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop();
+  const hasOps=!!(m.ops);
+  const hasEmail=!!(m.email);
 
-        {step === 2 && (
-          <div>
-            <div style={{fontSize:12, fontWeight:700, color:T.textBright, marginBottom:12}}>📝 Notes de terrain</div>
-            <textarea value={notes} onChange={e=>setNotes(e.target.value)}
-              placeholder="RAS, incident, remarques client..." rows={4}
-              style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.inputBg,color:T.textBright,fontSize:12,resize:"vertical",fontFamily:"inherit",lineHeight:1.6}} />
-            <div style={{display:"flex", gap:8, marginTop:12}}>
-              <button onClick={() => setStep(1)} style={btnStyle(T, true)}>← Retour</button>
-              <button onClick={() => setStep(3)} style={{...btnStyle(T), flex:2}}>Suivant →</button>
-            </div>
-          </div>
-        )}
+  // Key pills for top
+  const pills=[];
+  const pax=m.ops?.pax||m.pax;
+  if(pax)pills.push(`<span class="mpill mp-pax">👥 ${pax} pax</span>`);
+  if(m.endroit&&!compact)pills.push(`<span class="mpill mp-loc">📍 ${m.endroit.split(",")[0]}</span>`);
+  if(hasOps&&!compact)pills.push(`<span class="mpill mp-ops">📋 ops</span>`);
+  if(done&&!compact)pills.push(`<span class="mpill mp-ok">✓ clôturé</span>`);
 
-        {step === 3 && (
-          <div>
-            <div style={{fontSize:12, fontWeight:700, color:T.textBright, marginBottom:12}}>✅ Confirmer</div>
-            <div style={{background:T.card2||T.bg, borderRadius:8, padding:12, fontSize:11, color:T.textMuted, lineHeight:2, marginBottom:16}}>
-              <div>⏱ <b style={{color:T.textBright}}>{debutR}–{finR}</b> = {parseFloat(heures).toFixed(1)}h</div>
-              <div>📝 {notes||"RAS"}</div>
-              <div>📊 Statut → <b style={{color:T.green}}>Heures confirmées</b></div>
-            </div>
-            <button disabled={sending} onClick={async () => {
-              setSending(true);
-              await onDone({heures, debutR, finR, notes:notes||"RAS", statut:"Heures confirmées"});
-            }} style={{
-              width:"100%", padding:14, borderRadius:10, fontSize:13, fontWeight:700,
-              background:T.green+"20", color:T.green, border:`1px solid ${T.green}33`,
-              opacity:sending?.5:1, cursor:sending?"not-allowed":"pointer",
-            }}>
-              {sending ? "Enregistrement..." : "✅ Confirmer et enregistrer"}
-            </button>
-            <button onClick={() => setStep(2)} style={{...btnStyle(T, true), width:"100%", marginTop:8}}>← Modifier</button>
-          </div>
-        )}
-      </div>
-
-      {step === 3 && !sending && (
-        <div style={{textAlign:"center", marginTop:20}}>
-          <div style={{fontSize:11, color:T.textFaint}}>Mission terminée — tu peux souffler.</div>
+  return`<div class="mcard${done||isCancelled(m)?" dim":""}" style="border-left-color:${mt.hex}" onclick="openD('${m.mid}')">
+    <div class="mc-top">
+      <div class="mc-left">
+        <div class="mc-meta">
+          <span class="mc-tag" style="color:${mt.hex}">${mt.tag}</span>
+          ${m.debut?`<span class="mc-time">${m.debut}</span>`:""}
+          ${!compact?`<span class="mc-date-s">${fdShort(m.date)}</span>`:""}
         </div>
-      )}
+        <div class="mc-type">${typeS}</div>
+        ${pills.length?`<div class="mc-pills">${pills.join("")}</div>`:""}
+      </div>
+      <div class="mc-right">
+        ${m.desc?`<div class="mc-ref">${m.desc}</div>`:""}
+        ${badge(m)}
+      </div>
     </div>
-  );
+  </div>`;
 }
 
-// ─────────────────────────────────────────────
-// MICRO COMPONENTS
-// ─────────────────────────────────────────────
-function SectionLabel(text, T) {
-  return <div style={{fontSize:9, color:T.textFaint, fontWeight:700, letterSpacing:1.8, textTransform:"uppercase", marginBottom:6, marginTop:8, fontFamily:"'DM Mono',monospace"}}>{text}</div>;
+// ══════════════════════════════════════════════════════════════
+// DETAIL
+// ══════════════════════════════════════════════════════════════
+function openD(mid){
+  detail=missions.find(m=>m.mid===mid)||null;
+  pmf=null;pmfStep=0;
+  render();
+  window.scrollTo(0,0);
 }
-function StatBox({l,v,c,T}) {
-  return (
-    <div style={{background:T.card, borderRadius:10, padding:"10px 12px", textAlign:"center"}}>
-      <div style={{fontSize:9, color:T.textFaint, marginBottom:2}}>{l}</div>
-      <div style={{fontSize:17, fontWeight:700, color:c}}>{v}</div>
+function closeD(){detail=null;render();}
+
+function renderDetail(m){
+  const mt=getMeta(m.client);
+  const base=parseFloat(m.base)||0,deb=parseFloat(m.debours)||0;
+  const trvl=m.voyage?parseInt(m.voyage):travelMin(m.endroit);
+  const dep=m.debut&&trvl?depTime(m.debut,trvl):null;
+  const eOpen=emailOpen[m.mid];
+  const mLogs=fieldLogs[m.mid]||[];
+
+  let h=`<button class="back-btn" onclick="closeD()">← Retour</button>
+  <div class="dcard" style="border-top-color:${mt.hex}">
+
+  <div class="dhdr">
+    <div class="d-top">
+      <div>
+        <div class="d-client" style="color:${mt.hex}">${mt.tag} · ${m.client}</div>
+        <div class="d-title">${(m.type||"").replace("ASSISTANCE ","")}</div>
+      </div>
+      ${badge(m)}
+    </div>`;
+
+  // Shift box + departure calc
+  if(m.debut){
+    h+=`<div class="shift-box">
+      <div class="shift-time">⏰ ${m.debut}</div>
+      ${dep?`<div class="shift-sub">Départ maison ~ ${dep} · trajet ~${trvl} min depuis Saint-Priest</div>`:""}
+    </div>`;
+  }
+
+  // Key info pills (pax, coaches, location)
+  const keyPills=[];
+  const pax=m.ops?.pax||m.pax;
+  const coaches=m.ops?.coaches;
+  if(pax)keyPills.push(`<span class="kpill hi">👥 ${pax} pax</span>`);
+  if(coaches)keyPills.push(`<span class="kpill hi">🚌 ${coaches} car${coaches>1?"s":""}</span>`);
+  if(m.endroit)keyPills.push(`<span class="kpill">📍 ${m.endroit}</span>`);
+  if(m.heures)keyPills.push(`<span class="kpill">⏱ ${m.heures}h prévues</span>`);
+  if(keyPills.length)h+=`<div class="key-pills">${keyPills.join("")}</div>`;
+
+  h+=`<div class="igrid" style="margin-top:12px">
+      <div class="ifield"><label>Date</label><span>${fdLong(m.date)}</span></div>
+      <div class="ifield"><label>Réf</label><span class="mono">${m.desc||"—"}</span></div>
+      <div class="ifield"><label>Statut</label><span>${m.statut||"Planifié"}</span></div>
+      <div class="ifield"><label>Trajet</label><span>${trvl?"~"+trvl+" min":"—"}</span></div>
     </div>
-  );
-}
-function FldBox({l,v,T,mono,small}) {
-  return (
-    <div>
-      <div style={{fontSize:9, color:T.textFaint, marginBottom:1}}>{l}</div>
-      <div style={{fontSize:small?9:11, fontWeight:600, color:T.textMuted, fontFamily:mono?"'DM Mono',monospace":"inherit", wordBreak:"break-all"}}>{v}</div>
+    ${m.notes?`<div style="margin-top:10px;font-size:12px;color:var(--txt3);line-height:1.5;background:var(--bg2);padding:8px 10px;border-radius:8px">📝 ${m.notes}</div>`:""}
+  </div>`;
+
+  // OPS
+  if(m.ops){
+    const o=m.ops;
+    h+=`<div class="sdiv"><div class="sin"><div class="stitle blue">OPÉRATIONS</div>
+      ${o.trainInfo?`<div class="orow"><span class="o-icon">🚄</span><span class="o-lbl">Train</span><span class="o-val">TGV ${o.trainInfo.tgv} · Arr. ${o.trainInfo.arrivalTime}${o.trainInfo.etaShip?` → Bateau ${o.trainInfo.etaShip}`:""}</span></div>`:""}
+      ${o.shipContact?`<div class="orow"><span class="o-icon">⚓</span><span class="o-lbl">${o.shipContact.role||"PD Ship"}</span><span class="o-val">${o.shipContact.name} · <a class="o-ph" href="tel:${o.shipContact.phone}">${o.shipContact.phone}</a></span></div>`:""}
+      ${o.cohost?`<div class="orow"><span class="o-icon">🤝</span><span class="o-lbl">Co-host</span><span class="o-val">${o.cohost.name} · <a class="o-ph" href="tel:${o.cohost.phone}">${o.cohost.phone}</a></span></div>`:""}
+      ${o.emergency?`<div class="orow"><span class="o-icon">🚨</span><span class="o-lbl">Astreinte</span><span class="o-val o-urg"><a class="o-ph o-urg" href="tel:${o.emergency}">${o.emergency}</a></span></div>`:""}
+      ${o.coordinator?`<div class="orow"><span class="o-icon">👤</span><span class="o-lbl">Coord.</span><span class="o-val">${o.coordinator.name}${o.coordinator.phone?` · <a class="o-ph" href="tel:${o.coordinator.phone}">${o.coordinator.phone}</a>`:""}</span></div>`:""}
+      ${o.parisHosts&&o.parisHosts.length?`<div class="o-sub">HOSTS PARIS</div>${o.parisHosts.map(h2=>`<div class="o-contact">${h2.name} · <a class="o-ph" href="tel:${h2.phone}">${h2.phone}</a></div>`).join("")}`:""}
+      ${o.drivers&&o.drivers.length?`<div class="o-sub">CHAUFFEURS</div>${o.drivers.map(d=>`<div class="o-contact">🚌 ${d.name} · <a class="o-ph" href="tel:${d.phone}">${d.phone}</a></div>`).join("")}`:""}
+      ${o.miseEnPlace?`<div class="orow" style="margin-top:8px"><span class="o-icon">📋</span><span class="o-lbl">Mise en place</span><span class="o-val">${o.miseEnPlace}</span></div>`:""}
+    </div></div>`;
+  }
+
+  // EMAIL
+  if(m.email){
+    const e=m.email;
+    h+=`<div class="sdiv"><div class="sin">
+      <div class="etoggle" onclick="toggleEmail('${m.mid}')">
+        <div class="stitle green" style="margin-bottom:0">📧 EMAIL & DOCUMENTS</div>
+        <span style="font-size:11px;color:var(--txt4)">${eOpen?"▲":"▼"}</span>
+      </div>
+      ${eOpen?`<div style="margin-top:8px;font-size:11px;color:var(--txt4)">${e.from||""} · ${e.date||""}</div>
+        <div style="font-size:11px;color:var(--txt3);margin-bottom:2px">${e.subject||""}</div>
+        <div class="ebody">${(e.body||"").trim()}</div>
+        ${e.attachments&&e.attachments.length?e.attachments.map(a=>`<div class="att">${a.type==="pdf"?"📄":"📊"}<span>${a.name}</span></div>`).join(""):""}
+      `:""}
+    </div></div>`;
+  }
+
+  // FIELD LOG
+  h+=`<div class="sdiv"><div class="sin"><div class="stitle purple">JOURNAL DE TERRAIN</div>
+    ${mLogs.length?`<div class="log-entries">${mLogs.map(e2=>`<div class="lentry"><div class="lts">${e2.time}</div><div class="lbubble"><div class="ltag">${e2.type==="incident"?"⚠️ Incident":e2.type==="ras"?"✅ RAS":"📝 Note"}</div><div class="ltext">${e2.text}</div></div></div>`).join("")}</div>`:`<div class="log-empty">Aucune entrée.</div>`}
+    <div class="log-types" id="lt-${m.mid}">
+      <button class="ltbtn on" data-t="note" onclick="selLT('${m.mid}',this)">📝 Note</button>
+      <button class="ltbtn" data-t="incident" onclick="selLT('${m.mid}',this)">⚠️ Incident</button>
+      <button class="ltbtn" data-t="ras" onclick="selLT('${m.mid}',this)">✅ RAS</button>
     </div>
-  );
-}
-function Row({l,v,T,bold,accent}) {
-  return (
-    <div style={{display:"flex", justifyContent:"space-between", marginBottom:3}}>
-      <span style={{color:T.textFaint}}>{l}</span>
-      <span style={{fontWeight:bold?700:500, color:accent||T.textMuted}}>{v}</span>
-    </div>
-  );
-}
-function btnStyle(T, ghost) {
-  return {
-    flex:1, padding:"10px 16px", borderRadius:8, fontSize:12, fontWeight:600,
-    background: ghost ? "none" : T.accent+"18",
-    color: ghost ? T.textMuted : T.accent,
-    border:`1px solid ${ghost ? T.border : T.accent+"33"}`,
-    cursor:"pointer",
-  };
+    <textarea class="ta" id="lta-${m.mid}" rows="2" placeholder="Écrire une entrée…"></textarea>
+
+```
+<button class="submit-btn" onclick="addLog('${m.mid}')">Enregistrer →</button>
+```
+
+  </div></div>`;
+
+// EDIT
+h+=`<div class="sdiv"><div class="sin"><div class="stitle blue">MODIFIER</div>
+<div class="editrow">
+<input class=“einput” id=“eh-${m.mid}” type=“text” placeholder=“Heures (ex: 3.5)” value=”${m.heures||””}”/>
+<button class="esave" onclick="doEdit('${m.mid}','heures','eh')">✓</button>
+</div>
+<div class="editrow">
+<input class=“einput” id=“es-${m.mid}” type=“text” placeholder=“Statut” value=”${m.statut||””}”/>
+<button class="esave" onclick="doEdit('${m.mid}','statut','es')">✓</button>
+</div>
+<textarea class="ta" id="en-${m.mid}" rows="2" placeholder="Notes de terrain…">${m.notes||””}</textarea>
+<button class="submit-btn" style="margin-top:6px" onclick="doEdit('${m.mid}','notes','en')">Sauver les notes</button>
+
+  </div></div>`;
+
+// POST-MISSION FLOW
+h+=renderPMF(m);
+
+// FINANCES — at end
+h+=`<div class="sdiv"><div class="sin"><div class="stitle amber">FINANCES</div> <div class="frow"><span class="flbl">Base HT</span><span class="fval">${base?base+"€":"TBD"}</span></div> <div class="frow"><span class="flbl">Débours</span><span class="fval">${deb?deb+"€":"—"}</span></div> <div class="frow" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)"><span class="flbl">Net imposable</span><span class="fnet">${base||deb?net(base,deb)+"€":"TBD"}</span></div> ${m.facture?`<div class="frow" style="margin-top:6px"><span class="flbl">Facture</span><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--green)">${m.facture}</span></div>`:””}
+
+  </div></div>`;
+
+// CLIENT CONTACT
+const cm=getMeta(m.client);
+h+=`<div class="sdiv"><div class="sin"><div class="stitle muted">CONTACT CLIENT</div> <div style="font-size:13px;color:var(--txt2);line-height:2"> ${cm.contact}${cm.phone?` · <a href="tel:${cm.phone}">${cm.phone}</a>`:""} · <a href="mailto:${cm.email}">${cm.email}</a> ${cm.cohost?`<br/><span style="color:var(--green)">🤝 ${cm.cohost}</span>`:""} ${cm.emergency&&cm.tag==="PHIL"?`<br/><a href="tel:${cm.emergency}" style="color:var(--red)">🚨 Astreinte ${cm.emergency}</a>`:""} ${cm.notes?`<br/><span style="color:var(--amber);font-size:11px">⚠️ ${cm.notes}</span>`:””}
+</div>
+
+  </div></div>`;
+
+h+=`</div>`;
+return h;
 }
 
-// ─────────────────────────────────────────────
-// RENDER
-// ─────────────────────────────────────────────
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+function toggleEmail(mid){emailOpen[mid]=!emailOpen[mid];render();}
+
+async function doEdit(mid,field,pfx){
+const el=document.getElementById(`${pfx}-${mid}`);
+if(!el)return;
+const val=el.value.trim();
+await saveField(mid,field,val);
+const idx=missions.findIndex(m=>m.mid===mid);
+if(idx>-1)missions[idx][field]=val;
+el.style.borderColor=“rgba(129,199,132,.5)”;
+setTimeout(()=>{if(el)el.style.borderColor=””;},1400);
+if(detail&&detail.mid===mid)detail[field]=val;
+}
+
+function addLog(mid){
+const ta=document.getElementById(`lta-${mid}`);
+const sel=document.querySelector(`#lt-${mid} .on`);
+if(!ta||!ta.value.trim())return;
+if(!fieldLogs[mid])fieldLogs[mid]=[];
+fieldLogs[mid].push({time:nowTime(),type:sel?.dataset?.t||“note”,text:ta.value.trim()});
+ta.value=””;render();
+}
+function selLT(mid,btn){
+document.querySelectorAll(`#lt-${mid} .ltbtn`).forEach(b=>b.classList.remove(“on”));
+btn.classList.add(“on”);
+}
+
+// ══════════════════════════════════════════════════════════════
+// POST-MISSION FLOW
+// ══════════════════════════════════════════════════════════════
+function renderPMF(m){
+if(isDone(m))return`<div class="sdiv"><div class="sin" style="text-align:center">
+<div style="font-size:14px;color:var(--green);font-weight:600;margin-bottom:12px">✓ Mission clôturée</div>
+<button class="decomp-a" onclick="go('pause')">🌿 Décompresser</button>
+
+  </div></div>`;
+
+if(!pmf||pmf.mid!==m.mid)return`<div class="sdiv"><div class="sin">
+<div class="stitle green">FIN DE MISSION</div>
+<button class="pmf-trigger" onclick="startPMF('${m.mid}')">✅ Logger les heures & clôturer</button>
+
+  </div></div>`;
+
+return`<div class="sdiv"><div class="sin"><div class="stitle green">FIN DE MISSION</div>${pmfStepHTML(m)}</div></div>`;
+}
+
+function startPMF(mid){pmf={mid,start:””,end:nowTime(),notes:””,tpl:“RAS”,rpt:””,rptLoading:false,debriefState:””,debriefNote:””};pmfStep=1;render();}
+
+function pmfStepHTML(m){
+if(pmfStep===1)return pmfHours(m);
+if(pmfStep===2)return pmfRapport(m);
+if(pmfStep===3)return pmfNotes(m);
+if(pmfStep===4)return pmfDebrief(m);
+if(pmfStep===5)return pmfDone();
+return””;
+}
+
+function pmfHours(m){
+const dur=pmf.start&&pmf.end?durStr(pmf.start,pmf.end):””;
+return`<div class="pmf-step-hdr"><div class="pmf-num">1</div><div class="pmf-step-title">Heures réelles</div></div>
+
+  <div class="pmf-time-row">
+    <div class="pmf-time-block"><div class="pmf-time-lbl">DÉBUT</div>
+      <input class="pmf-tinput" type="time" id="ps" value="${pmf.start||m.debut||""}" onchange="pmf.start=this.value;updDur()"/></div>
+    <div class="pmf-arrow">→</div>
+    <div class="pmf-time-block"><div class="pmf-time-lbl">FIN</div>
+      <input class="pmf-tinput" type="time" id="pe" value="${pmf.end||""}" onchange="pmf.end=this.value;updDur()"/></div>
+  </div>
+  <div class="pmf-dur" id="pd">${dur?"⏱ Durée : "+dur:""}</div>
+  <button class="pbtn pbtn-next" onclick="pmfGo(2,'${m.mid}')">Suivant → Rapport</button>
+  <span class="pback" onclick="pmf=null;pmfStep=0;render()">Annuler</span>`;
+}
+function updDur(){
+  const s=document.getElementById("ps"),e=document.getElementById("pe"),d=document.getElementById("pd");
+  if(s&&e&&d){const dur=durStr(s.value,e.value);d.textContent=dur?"⏱ Durée : "+dur:"";}
+}
+
+function pmfRapport(m){
+const tpls=Object.entries(RPT_LABELS);
+return`<div class="pmf-step-hdr"><div class="pmf-num">2</div><div class="pmf-step-title">Rapport de mission</div></div>
+
+  <div class="rpt-grid">${tpls.map(([k,v])=>`<button class="rtbtn${pmf.tpl===k?" on":""}" onclick="selRpt('${k}')">${v}</button>`).join("")}</div>
+  ${pmf.rptLoading?`<div class="rpt-loading"><span class="spin">↻</span> Rédaction…</div>`:
+    pmf.rpt?`<div class="rpt-output">${pmf.rpt}</div><div class="rpt-actions">
+      <button class="rabtn" style="background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.2);color:var(--accent)" onclick="genRpt('${m.mid}')">↻ Régénérer</button>
+      <button class="rabtn" style="background:rgba(129,199,132,.07);border:1px solid rgba(129,199,132,.22);color:var(--green)" onclick="pmfGo(3,'${m.mid}')">Valider →</button>
+    </div>`:
+    `<button class="pbtn pbtn-next" onclick="genRpt('${m.mid}')">✨ Générer le rapport</button>`
+  }
+  <span class="pback" onclick="pmfStep=1;render()">← Retour</span>`;
+}
+
+function pmfNotes(m){
+return`<div class="pmf-step-hdr"><div class="pmf-num">3</div><div class="pmf-step-title">Notes de terrain</div></div>
+
+  <textarea class="ta" id="pmf-notes" rows="4" placeholder="Tout ce qui s'est passé — retards, pax, chauffeurs, ambiance…">${pmf.notes||""}</textarea>
+
+<button class="pbtn pbtn-next" style="margin-top:8px" onclick="pmfSaveNotes('${m.mid}')">Suivant → Débrief</button>
+<span class="pback" onclick="pmfStep=2;render()">← Retour</span>`;
+}
+
+function pmfDebrief(m){
+const states=[
+{v:“fluide”,l:“😌 Mission fluide — rien à signaler”},
+{v:“chargé”,l:“😮‍💨 Chargé — j’ai géré, ça tire”},
+{v:“incident”,l:“⚠️ Incident ou stress notable”},
+{v:“vide”,l:“😶 Creux — bas stimulation, haute responsabilité”},
+{v:“bien”,l:“🙂 Satisfait — bonne interaction”},
+];
+return`<div class="pmf-step-hdr"><div class="pmf-num">4</div><div class="pmf-step-title">Comment tu sors de là ?</div></div>
+
+  <div class="debrief-list">${states.map(s=>`<button class="dbtn${pmf.debriefState===s.v?" on":""}" onclick="pmf.debriefState='${s.v}';render()">${s.l}</button>`).join("")}</div>
+  ${pmf.debriefState?`<textarea class="ta" id="pmf-db" rows="2" placeholder="Optionnel — une phrase pour lâcher prise…">${pmf.debriefNote||""}</textarea>`:""}
+  <button class="pbtn pbtn-confirm" style="margin-top:10px" onclick="pmfFinish('${m.mid}')">Clôturer la mission</button>
+  <span class="pback" onclick="pmfStep=3;render()">← Retour</span>`;
+}
+
+function pmfDone(){
+return`<div style="text-align:center;padding:8px 0">
+<div style="font-size:30px;margin-bottom:8px">✅</div>
+<div style="font-size:16px;font-weight:700;color:var(--txt0);margin-bottom:4px">Mission clôturée</div>
+<div style="font-size:13px;color:var(--txt3);margin-bottom:20px">Heures et notes enregistrées.</div>
+<button class="decomp-a" onclick="go('pause')">🌿 Prendre un moment — décompresser</button>
+<span class="pback" onclick="closeD()" style="margin-top:12px">← Retour aux missions</span>
+
+  </div>`;
+}
+
+function pmfGo(step,mid){
+if(step===2){const s=document.getElementById(“ps”),e=document.getElementById(“pe”);if(s)pmf.start=s.value;if(e)pmf.end=e.value;}
+pmfStep=step;render();
+}
+function pmfSaveNotes(mid){const ta=document.getElementById(“pmf-notes”);if(ta)pmf.notes=ta.value;pmfStep=4;render();}
+function selRpt(k){pmf.tpl=k;pmf.rpt=””;render();}
+
+async function genRpt(mid){
+const m=missions.find(x=>x.mid===mid);
+if(!m)return;
+pmf.rptLoading=true;render();
+const prenom=CLIENT_PRENOM[m.client]||””;
+const dur=durStr(pmf.start,pmf.end);
+const notes=pmf.notes||“RAS”;
+const planned=m.heures?`${m.heures}h`:“TBD”;
+const P={
+RAS:`Tu es Joseph Markman, accompagnateur touristique freelance à Lyon. Rédige un rapport d'activité professionnel en français. Ton: professionnel, factuel, chaleureux. 4-5 phrases max. Date: ${m.date} | Client: ${m.client} | Type: ${m.type} | Ref: ${m.desc||""} | Début: ${pmf.start||m.debut||""} | Fin: ${pmf.end||""} | Durée: ${dur} | Notes: RAS Format: Bonjour ${prenom},\n\n[2-3 phrases: confirmation prestation, déroulement sans incident, satisfaction]\n\nMerci et bonne journée.\nCordialement,\nJoseph Markman\nAccompagnateur Tourisme — Lyon\nTél : +33 6 51 09 35 57\nRetourne UNIQUEMENT le texte de l'email.`,
+INCIDENT:`Tu es Joseph Markman, accompagnateur touristique freelance à Lyon. Rédige un rapport d'incident professionnel en français. Ton: factuel, précis, calme. Date: ${m.date} | Client: ${m.client} | Type: ${m.type} | Début: ${pmf.start||""} | Fin: ${pmf.end||""} | Notes: ${notes} Format: Bonjour ${prenom},\n\nJe vous contacte suite à ma prestation du ${m.date}.\n\n[Description factuelle: qui, quoi, quand, mesures prises]\n\nCordialement,\nJoseph Markman\nTél : +33 6 51 09 35 57\nRetourne UNIQUEMENT le texte de l'email.`,
+ANNULATION:`Tu es Joseph Markman. Rédige un constat d'annulation professionnel en français. Date: ${m.date} | Client: ${m.client} | Présence: ${pmf.start||""} | Notes: ${notes} Format: Bonjour ${prenom},\n\n[Constat: heure arrivée, attente, absence pax]\n\nCordialement,\nJoseph Markman\nTél : +33 6 51 09 35 57`,
+ANOMALIE:`Tu es Joseph Markman. Rédige un rapport d'anomalie opérationnelle en français. Date: ${m.date} | Client: ${m.client} | Notes: ${notes} Format: Bonjour ${prenom},\n\n[Description, démarches, résolution]\n\nCordialement,\nJoseph Markman\nTél : +33 6 51 09 35 57`,
+OT:`Tu es Joseph Markman. Rédige un rapport signalant des heures supplémentaires. Date: ${m.date} | Client: ${m.client} | Prévu: ${planned} | Réel: ${dur} | Début: ${pmf.start||""} | Fin: ${pmf.end||""} | Notes: ${notes} Format: Bonjour ${prenom},\n\n[Heures prévues vs réelles, justification]\n\nCordialement,\nJoseph Markman\nTél : +33 6 51 09 35 57`,
+};
+try{
+const r=await fetch(“https://api.anthropic.com/v1/messages”,{
+method:“POST”,headers:{“Content-Type”:“application/json”},
+body:JSON.stringify({model:“claude-sonnet-4-20250514”,max_tokens:1000,messages:[{role:“user”,content:P[pmf.tpl]||P.RAS}]})
+});
+const d=await r.json();
+pmf.rpt=d.content?.[0]?.text||“Erreur lors de la génération.”;
+}catch(e){pmf.rpt=“Erreur: “+e.message;}
+pmf.rptLoading=false;render();
+}
+
+async function pmfFinish(mid){
+const ta=document.getElementById(“pmf-db”);if(ta)pmf.debriefNote=ta.value;
+const m=missions.find(x=>x.mid===mid);
+const heures=durToDecimal(pmf.start,pmf.end)||m?.heures||””;
+const noteCombined=[pmf.notes,pmf.debriefNote?`[État: ${pmf.debriefState} — ${pmf.debriefNote}]`:pmf.debriefState?`[État: ${pmf.debriefState}]`:””].filter(Boolean).join(” | “);
+await saveField(mid,“heures”,heures);
+await saveField(mid,“statut”,“Rapport envoyé”);
+if(noteCombined)await saveField(mid,“notes”,noteCombined);
+if(pmf.notes){if(!fieldLogs[mid])fieldLogs[mid]=[];fieldLogs[mid].push({time:nowTime(),type:“note”,text:pmf.notes});}
+const idx=missions.findIndex(m2=>m2.mid===mid);
+if(idx>-1){missions[idx].heures=heures;missions[idx].statut=“Rapport envoyé”;if(noteCombined)missions[idx].notes=noteCombined;}
+if(detail&&detail.mid===mid){detail.heures=heures;detail.statut=“Rapport envoyé”;if(noteCombined)detail.notes=noteCombined;}
+pmfStep=5;render();
+}
+
+// ══════════════════════════════════════════════════════════════
+// MONTH
+// ══════════════════════════════════════════════════════════════
+function renderMonth(){
+const cm=String(new Date().getMonth()+1).padStart(2,“0”);
+const t=todayISO(),tm=tomorrowISO();
+const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm).sort((a,b)=>a.date.localeCompare(b.date));
+const grouped={};
+mms.forEach(m=>{(grouped[m.date]=grouped[m.date]||[]).push(m);});
+
+let h=`<div class="slabel">${MO_LONG[new Date().getMonth()].toUpperCase()} · ${mms.length} MISSIONS</div>`;
+
+Object.entries(grouped).sort(([a],[b])=>a.localeCompare(b)).forEach(([date,ms])=>{
+const isT=date===t,isTm=date===tm;
+const isPast=date<t;
+h+=`<div class="m-date-hdr" style="color:${isT?"var(--accent)":isTm?"var(--green)":isPast?"var(--txt4)":"var(--txt3)"}">${fdLong(date).toUpperCase()}${isT?" · AUJOURD'HUI":""}${isTm?" · DEMAIN":""}</div>`;
+ms.forEach(m=>{
+const mt=getMeta(m.client);
+const typeS=(m.type||””).replace(/ASSISTANCE /gi,””).split(” - “).pop();
+const done=isDone(m),cancelled=isCancelled(m);
+const base=parseFloat(m.base)||0;
+const deb=parseFloat(m.debours)||0;
+h+=`<div class="mcard${done||cancelled?" dim":""}" style="border-left-color:${mt.hex};margin-bottom:6px" onclick="openD('${m.mid}')"> <div class="mc-top"> <div class="mc-left"> <div class="mc-meta"> <span class="mc-tag" style="color:${mt.hex}">${mt.tag}</span> ${m.debut?`<span class="mc-time">${m.debut}</span>`:""} </div> <div class="mc-type">${typeS}</div> ${m.desc?`<div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--txt4);margin-top:2px">${m.desc}</div>`:""} ${m.endroit?`<div style="font-size:11px;color:var(--txt4);margin-top:2px">📍 ${m.endroit}</div>`:""} </div> <div class="mc-right"> ${badge(m)} ${base>0?`<div style="font-size:12px;color:var(--txt2);margin-top:4px;font-weight:600">${base}€</div>`:""} ${deb>0?`<div style="font-size:10px;color:var(--txt4)">+${deb}€ déb</div>`:""} </div> </div> </div>`;
+});
+});
+
+if(!mms.length){
+h+=`<div class="empty"><div class="empty-icon">📅</div><div class="empty-title">Pas de mission ce mois</div></div>`;
+}
+return h;
+}
+
+// ══════════════════════════════════════════════════════════════
+// FINANCE
+// ══════════════════════════════════════════════════════════════
+function renderFinance(){
+const now=new Date();
+const curMonth=now.getMonth();
+const curYear=now.getFullYear();
+
+// Year totals
+const allYear=missions.filter(m=>m.date&&m.date.startsWith(String(curYear)));
+const yB=allYear.reduce((s,m)=>s+(parseFloat(m.base)||0),0);
+const yD=allYear.reduce((s,m)=>s+(parseFloat(m.debours)||0),0);
+const yDone=allYear.filter(isDone).length;
+
+// Current month
+const cm=String(curMonth+1).padStart(2,“0”);
+const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm);
+const mB=mms.reduce((s,m)=>s+(parseFloat(m.base)||0),0);
+const mD=mms.reduce((s,m)=>s+(parseFloat(m.debours)||0),0);
+const mDone=mms.filter(isDone).length;
+
+let h=`<div class="slabel">${MO_LONG[curMonth].toUpperCase()} · APERÇU</div>
+
+  <div class="sgrid">
+    <div class="scard"><div class="scard-lbl">Base HT</div><div class="scard-val" style="color:var(--accent)">${mB?mB.toLocaleString("fr-FR")+"€":"TBD"}</div></div>
+    <div class="scard"><div class="scard-lbl">Débours</div><div class="scard-val" style="color:var(--green)">${mD?mD.toLocaleString("fr-FR")+"€":"—"}</div></div>
+    <div class="scard"><div class="scard-lbl">Net imposable</div><div class="scard-val" style="color:var(--amber)">${mB||mD?net(mB,mD).toLocaleString("fr-FR")+"€":"TBD"}</div></div>
+    <div class="scard"><div class="scard-lbl">Terminées</div><div class="scard-val" style="color:var(--purple)">${mDone}/${mms.length}</div></div>
+  </div>
+
+  <div class="slabel mt">${curYear} · ANNÉE</div>
+  <div class="sgrid">
+    <div class="scard"><div class="scard-lbl">Base HT</div><div class="scard-val" style="color:var(--accent)">${yB?yB.toLocaleString("fr-FR")+"€":"—"}</div></div>
+    <div class="scard"><div class="scard-lbl">Net estimé</div><div class="scard-val" style="color:var(--amber)">${yB||yD?net(yB,yD).toLocaleString("fr-FR")+"€":"—"}</div></div>
+    <div class="scard"><div class="scard-lbl">URSSAF ~</div><div class="scard-val" style="color:var(--red)">${yB?Math.round(yB*.26).toLocaleString("fr-FR")+"€":"—"}</div></div>
+    <div class="scard"><div class="scard-lbl">Missions</div><div class="scard-val" style="color:var(--purple)">${yDone}/${allYear.length}</div></div>
+  </div>`;
+
+// Per client collapsible
+h+=`<div class="slabel mt">PAR CLIENT</div>`;
+Object.entries(META).forEach(([name,mt])=>{
+const cms=allYear.filter(m=>(m.client||””).toLowerCase().includes(name.split(” “)[0].toLowerCase()));
+if(!cms.length)return;
+const cb=cms.reduce((s,m)=>s+(parseFloat(m.base)||0),0);
+const cd=cms.reduce((s,m)=>s+(parseFloat(m.debours)||0),0);
+const cid=“cl-”+mt.tag.toLowerCase();
+h+=`<div class="client-section"> <div class="client-hdr" style="border-left-color:${mt.hex}" onclick="toggleSection('${cid}')"> <div class="client-hdr-left"> <div class="client-tag" style="color:${mt.hex}">${mt.tag} · ${name}</div> <div class="client-count">${cms.length} mission${cms.length>1?"s":""} · ${cms.filter(isDone).length} terminées</div> </div> <div class="client-hdr-right"> <div class="client-total" style="color:${mt.hex}">${cb?cb.toLocaleString("fr-FR")+"€":"TBD"}</div> <div class="client-chevron" id="chev-${cid}">▼</div> </div> </div> <div class="client-missions" id="${cid}"> ${cms.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>{ const base=parseFloat(m.base)||0; const deb=parseFloat(m.debours)||0; const done=isDone(m); const cancelled=isCancelled(m); return`<div class=“mf-mission” style=”${cancelled?“opacity:.4”:””}”>
+<div class="mf-left">
+<div class="mf-date">${fdShort(m.date)}</div>
+<div class="mf-type">${(m.type||””).replace(/ASSISTANCE /gi,””).split(” - “).pop()}</div>
+${m.desc?`<div class="mf-ref">${m.desc}</div>`:””}
+</div>
+<div class="mf-right">
+<div class="mf-base">${base?base+“€”:“TBD”}</div>
+${deb?`<div class="mf-deb">+${deb}€ déb</div>`:””}
+<div class=“mf-status” style=“color:${done?“var(–green)”:cancelled?“var(–red)”:“var(–txt4)”}”>${done?“✓”:cancelled?“✗”:”·”}</div>
+</div>
+</div>`; }).join("")} </div> </div>`;
+});
+
+// Monthly collapsible
+h+=`<div class="slabel mt">PAR MOIS</div>`;
+const months=[“03”,“04”,“05”,“06”,“07”,“08”,“09”,“10”,“11”];
+months.forEach(mm=>{
+const msList=missions.filter(m=>m.date&&m.date.slice(5,7)===mm&&m.date.startsWith(String(curYear)));
+if(!msList.length)return;
+const mth=parseInt(mm)-1;
+const mB2=msList.reduce((s,m)=>s+(parseFloat(m.base)||0),0);
+const mD2=msList.reduce((s,m)=>s+(parseFloat(m.debours)||0),0);
+const mDone2=msList.filter(isDone).length;
+const mid2=“mo-”+mm;
+const isCur=mm===String(curMonth+1).padStart(2,“0”);
+h+=`<div class="month-section"> <div class="month-hdr" onclick="toggleSection('${mid2}')"> <div class="month-hdr-left"> <div class="month-hdr-name" style="${isCur?"color:var(--accent)":""}">${MO_LONG[mth].charAt(0).toUpperCase()+MO_LONG[mth].slice(1)}${isCur?" · En cours":""}</div> <div class="month-hdr-summary">${msList.length} missions · ${mDone2} terminées · ${mB2?mB2+"€ HT":"TBD"}</div> </div> <div class="month-hdr-right"> <div class="month-hdr-net">${mB2||mD2?net(mB2,mD2)+"€":"—"}</div> <div class="month-chevron${isCur?" open":""}" id="chev-${mid2}">▼</div> </div> </div> <div class="month-body${isCur?" open":""}" id="${mid2}"> ${msList.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>{ const base=parseFloat(m.base)||0,deb=parseFloat(m.debours)||0; const mt=getMeta(m.client); const done=isDone(m),cancelled=isCancelled(m); return`<div class=“mf-mission” style=”${cancelled?“opacity:.4”:””}”>
+<div class="mf-left">
+<div style="display:flex;gap:6px;align-items:center">
+<span style="color:${mt.hex};font-size:11px;font-weight:700">${mt.tag}</span>
+<span class="mf-date">${fdShort(m.date)}</span>
+</div>
+<div class="mf-type">${(m.type||””).replace(/ASSISTANCE /gi,””).split(” - “).pop()}</div>
+${m.facture?`<div class="mf-ref" style="color:var(--green)">${m.facture}</div>`:””}
+</div>
+<div class="mf-right">
+<div class="mf-base">${base?base+“€”:“TBD”}</div>
+${deb?`<div class="mf-deb">+${deb}€ déb</div>`:””}
+<div class=“mf-status” style=“color:${done?“var(–green)”:cancelled?“var(–red)”:“var(–txt4)”}”>${done?`✓${m.facture?" · facturé":""}`:cancelled?“✗”:“planifié”}</div>
+</div>
+</div>`; }).join("")} </div> </div>`;
+});
+
+// Reference
+h+=`<div class="slabel mt">RÉFÉRENCES</div>
+
+  <div class="ref-box">
+    SIRET : 92815905200010<br/>
+    IBAN : FR76 2823 3000 0177 6267 3414 414<br/>
+    BIC : REVOFRP2 (Revolut)
+  </div>`;
+
+return h;
+}
+
+function toggleSection(id){
+const body=document.getElementById(id);
+const chev=document.getElementById(“chev-”+id);
+if(!body)return;
+body.classList.toggle(“open”);
+if(chev)chev.classList.toggle(“open”);
+}
+
+// ══════════════════════════════════════════════════════════════
+// PAUSE / DECOMPRESSION
+// ══════════════════════════════════════════════════════════════
+let dcScreen=“s1”;
+let dcBreathTimer=null,dcBreathOn=false,dcBreathPhase=0,dcBreathCycle=0;
+let dcDrawCtx=null,dcDrawing=false,dcColor=”#81c784”,dcBrushSize=8,dcLX=0,dcLY=0;
+let dcTapCount=0;
+
+function initDecomp(){
+// nothing needed on init
+}
+
+function renderDecomp(){
+const el=document.getElementById(“content”);
+if(!el)return;
+el.innerHTML=`<div id="decomp-wrap">
+<!-- S1: Greeting -->
+<div class=“dc-screen${dcScreen===“s1”?” active”:””}” id=“dc-s1”>
+<div class="dc-time" id="dc-clock">—</div>
+<div class="dc-h1">The day<br>is done.</div>
+<div class="dc-sub" style="color:var(--txt3)">You can put it down now.</div>
+<button class="dc-btn-g" onclick="dcGo('s2')">Begin</button>
+</div>
+<!-- S2: Breathe -->
+<div class=“dc-screen${dcScreen===“s2”?” active”:””}” id=“dc-s2”>
+<div class="dc-lbl">Breathe</div>
+<div class="bwrap" id="dc-bwrap">
+<div class="br pulse"></div>
+<div class="br"></div>
+<div class="br inner"></div>
+<div class="btxt" id="dc-btxt">breathe in</div>
+</div>
+<div class="bctr" id="dc-bctr">round 1 of 4</div>
+<button class="dc-lnk" onclick="dcStopBreath();dcGo('s3')">skip →</button>
+</div>
+<!-- S3: Write -->
+<div class=“dc-screen${dcScreen===“s3”?” active”:””}” id=“dc-s3”>
+<div class="dc-lbl">Release</div>
+<div class="dc-h2">What’s still<br>spinning?</div>
+<div class="dc-sub">Write it all out. It goes nowhere.</div>
+<textarea id="dc-dump" placeholder="the late group… the blocked dock… what I could have said…"></textarea>
+<div class="dc-row">
+<button class="dc-btn-m" onclick="dcHandleDump()">Let it go</button>
+<button class="dc-btn-s" onclick="dcGo('s4')">Nothing tonight</button>
+</div>
+</div>
+<!-- S4: Draw -->
+<div class=“dc-screen${dcScreen===“s4”?” active”:””}” id=“dc-s4” style=“padding-top:16px;”>
+<div class="dc-lbl">Draw</div>
+<div class="dc-h2" style="margin-bottom:4px">Make something.<br>Or just make a mess.</div>
+<div class="dc-sub" style="margin-bottom:12px">No rules.</div>
+<div class="dc-toolbar">
+<div class="dc-swatch on" style="background:#81c784" data-c="#81c784" onclick="dcSetClr(this)"></div>
+<div class="dc-swatch" style="background:#ffb74d" data-c="#ffb74d" onclick="dcSetClr(this)"></div>
+<div class="dc-swatch" style="background:#ce93d8" data-c="#ce93d8" onclick="dcSetClr(this)"></div>
+<div class="dc-swatch" style="background:#4fc3f7" data-c="#4fc3f7" onclick="dcSetClr(this)"></div>
+<div class="dc-swatch" style="background:#eae7e0" data-c="#eae7e0" onclick="dcSetClr(this)"></div>
+<div class="dc-swatch" style="background:#ef9a9a" data-c="#ef9a9a" onclick="dcSetClr(this)"></div>
+<div class="dc-swatch" style="background:#3a4858" data-c="#3a4858" onclick="dcSetClr(this)"></div>
+<div class="bsize">taille <input type="range" id="bslider" min="2" max="28" value="8" oninput="dcBrushSize=+this.value"></div>
+</div>
+<canvas id="dc-canvas"></canvas>
+<div class="dact">
+<button class="dc-btn-cl" onclick="dcClearDraw()">Clear</button>
+<button class="dc-btn-m" style="padding:8px 24px" onclick="dcGo('s5')">Continue →</button>
+</div>
+</div>
+<!-- S5: Ripple -->
+<div class=“dc-screen${dcScreen===“s5”?” active”:””}” id=“dc-s5”>
+<div class="dc-lbl">Release</div>
+<div class="dc-h2">Tap to let things go</div>
+<div class="dc-sub">Each tap — one less thing to carry</div>
+<div id="rzone" onclick="dcSpawnR(event)" ontouchstart="dcTouchR(event)">
+<div class="rdot"></div>
+</div>
+<div id="dc-tctr">···</div>
+<button id="dc-dbtn" class="dc-lnk" onclick="dcGo('s6')">I’m good →</button>
+</div>
+<!-- S6: Close -->
+<div class=“dc-screen${dcScreen===“s6”?” active”:””}” id=“dc-s6”>
+<div class="dc-h1" style="margin-bottom:14px">Good night,<br>Joseph.</div>
+<div class="dc-sub">You did what needed doing.<br>The rest can wait until tomorrow.</div>
+<div class="dc-ibox" id="dc-ibox">absorb · release · move on</div>
+<button class="dc-lnk" onclick="dcReset()">start over</button>
+</div>
+
+  </div>`;
+
+dcTickClock();
+if(dcScreen===“s2”)dcStartBreath();
+if(dcScreen===“s4”)dcInitDraw();
+if(dcScreen===“s6”)dcShowClose();
+}
+
+function dcGo(s){
+dcStopBreath();
+dcScreen=s;
+renderDecomp();
+if(s===“s2”)dcStartBreath();
+if(s===“s4”)setTimeout(dcInitDraw,50);
+if(s===“s6”)dcShowClose();
+}
+
+function dcTickClock(){
+const el=document.getElementById(“dc-clock”);
+if(!el)return;
+const n=new Date();
+el.textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
+setTimeout(dcTickClock,30000);
+}
+
+// Breathe
+const DC_PH=[{l:“breathe in…”,c:“dc-bin”},{l:“hold…”,c:“dc-bhold”},{l:“breathe out…”,c:“dc-bout”},{l:“hold…”,c:“dc-bhold”}];
+function dcStartBreath(){dcBreathOn=true;dcBreathPhase=0;dcBreathCycle=0;dcRunBreath();}
+function dcStopBreath(){dcBreathOn=false;if(dcBreathTimer)clearTimeout(dcBreathTimer);}
+function dcRunBreath(){
+if(!dcBreathOn)return;
+const w=document.getElementById(“dc-bwrap”),t=document.getElementById(“dc-btxt”),r=document.getElementById(“dc-bctr”);
+if(!w)return;
+const ph=DC_PH[dcBreathPhase];
+w.className=“bwrap “+ph.c;
+if(t)t.textContent=ph.l;
+if(r)r.textContent=`round ${dcBreathCycle+1} of 4`;
+void w.offsetWidth;
+const np=(dcBreathPhase+1)%4;
+const nc=np===0?dcBreathCycle+1:dcBreathCycle;
+if(nc>=4){dcBreathOn=false;setTimeout(()=>dcGo(“s3”),600);return;}
+dcBreathTimer=setTimeout(()=>{dcBreathPhase=np;dcBreathCycle=nc;dcRunBreath();},4000);
+}
+
+// Write
+function dcHandleDump(){
+const v=document.getElementById(“dc-dump”)?.value?.trim();
+if(v){try{const s=JSON.parse(localStorage.getItem(“jmc_notes”)||”{}”);const k=new Date().toLocaleDateString(“fr-FR”);s[k]=(s[k]?s[k]+”\n—\n”:””)+v;localStorage.setItem(“jmc_notes”,JSON.stringify(s));}catch(e){}}
+dcGo(“s4”);
+}
+
+// Draw
+function dcInitDraw(){
+const c=document.getElementById(“dc-canvas”);
+if(!c)return;
+const mw=Math.min(window.innerWidth-48,420),mh=Math.min(window.innerHeight-340,240);
+c.width=mw;c.height=mh;c.style.width=mw+“px”;c.style.height=mh+“px”;
+dcDrawCtx=c.getContext(“2d”);
+dcDrawCtx.fillStyle=”#0f1520”;dcDrawCtx.fillRect(0,0,mw,mh);
+dcDrawCtx.strokeStyle=“rgba(255,255,255,0.02)”;dcDrawCtx.lineWidth=1;
+for(let x=0;x<mw;x+=40){dcDrawCtx.beginPath();dcDrawCtx.moveTo(x,0);dcDrawCtx.lineTo(x,mh);dcDrawCtx.stroke();}
+for(let y=0;y<mh;y+=40){dcDrawCtx.beginPath();dcDrawCtx.moveTo(0,y);dcDrawCtx.lineTo(mw,y);dcDrawCtx.stroke();}
+c.onmousedown=e=>{dcDrawing=true;dcLX=e.offsetX;dcLY=e.offsetY;dcDot(dcLX,dcLY);};
+c.onmousemove=e=>{if(!dcDrawing)return;dcLine(e.offsetX,e.offsetY);};
+c.onmouseup=c.onmouseleave=()=>{dcDrawing=false;};
+c.addEventListener(“touchstart”,e=>{e.preventDefault();const t=e.touches[0],r=c.getBoundingClientRect();dcDrawing=true;dcLX=t.clientX-r.left;dcLY=t.clientY-r.top;dcDot(dcLX,dcLY);},{passive:false});
+c.addEventListener(“touchmove”,e=>{e.preventDefault();const t=e.touches[0],r=c.getBoundingClientRect();dcLine(t.clientX-r.left,t.clientY-r.top);},{passive:false});
+c.addEventListener(“touchend”,()=>{dcDrawing=false;},{passive:false});
+}
+function dcDot(x,y){dcDrawCtx.globalAlpha=.85;dcDrawCtx.fillStyle=dcColor;dcDrawCtx.beginPath();dcDrawCtx.arc(x,y,dcBrushSize/2,0,Math.PI*2);dcDrawCtx.fill();dcDrawCtx.globalAlpha=1;}
+function dcLine(x,y){dcDrawCtx.globalAlpha=.75;dcDrawCtx.strokeStyle=dcColor;dcDrawCtx.lineWidth=dcBrushSize;dcDrawCtx.lineCap=“round”;dcDrawCtx.lineJoin=“round”;dcDrawCtx.beginPath();dcDrawCtx.moveTo(dcLX,dcLY);dcDrawCtx.lineTo(x,y);dcDrawCtx.stroke();dcDrawCtx.globalAlpha=1;dcLX=x;dcLY=y;}
+function dcSetClr(el){document.querySelectorAll(”.dc-swatch”).forEach(s=>s.classList.remove(“on”));el.classList.add(“on”);dcColor=el.dataset.c;}
+function dcClearDraw(){const c=document.getElementById(“dc-canvas”);if(!c||!dcDrawCtx)return;dcDrawCtx.fillStyle=”#0f1520”;dcDrawCtx.fillRect(0,0,c.width,c.height);}
+
+// Ripple
+function dcSpawnR(e){dcRip(e.offsetX,e.offsetY);}
+function dcTouchR(e){e.preventDefault();const t=e.touches[0],r=document.getElementById(“rzone”).getBoundingClientRect();dcRip(t.clientX-r.left,t.clientY-r.top);}
+function dcRip(x,y){
+dcTapCount++;
+const z=document.getElementById(“rzone”);if(!z)return;
+const sz=Math.max(z.offsetWidth,z.offsetHeight)*.6;
+const el=document.createElement(“div”);el.className=“rel”;
+el.style.cssText=`left:${x}px;top:${y}px;width:${sz}px;height:${sz}px`;
+z.appendChild(el);el.addEventListener(“animationend”,()=>el.remove());
+const msgs=[”···”,”···”,“keep going…”,“good…”,“yes…”,“almost…”,“there…”];
+const ctr=document.getElementById(“dc-tctr”);
+if(ctr)ctr.textContent=dcTapCount<msgs.length?msgs[dcTapCount]:dcTapCount+” things released”;
+if(dcTapCount===3&&ctr)ctr.style.color=“var(–green)”;
+if(dcTapCount>=5){const db=document.getElementById(“dc-dbtn”);if(db)db.style.opacity=“1”;}
+}
+
+// Close
+function dcShowClose(){
+const i=localStorage.getItem(“jmc_intention”)||“absorb · release · move on”;
+const el=document.getElementById(“dc-ibox”);
+if(el)el.textContent=i;
+}
+
+function dcReset(){
+dcScreen=“s1”;dcTapCount=0;dcStopBreath();dcBreathPhase=0;dcBreathCycle=0;
+renderDecomp();
+}
+
+// ══════════════════════════════════════════════════════════════
+// DEMO DATA (with real April 5 mission data from email)
+// ══════════════════════════════════════════════════════════════
+const DEMO=[
+{mid:“2026-03-29-PHIL-01”,date:“2026-03-29”,client:“Philibert Tourisme”,type:“ASSISTANCE GARE LYON - DEPARTS”,desc:“HMD260322_DPT”,heures:“2”,base:“73”,debours:“21.5”,debut:“09:00”,endroit:“Gare de Perrache”,statut:“Planifié”,
+ops:{parisHosts:[{name:“GOUARDERES Laurence”,phone:”+33 6 59 28 54 20”},{name:“MTINSI Lance”,phone:”+33 6 34 95 74 02”}],drivers:[{name:“MESSAOUDE”,phone:“06 08 67 06 65”},{name:“ROCHA MO2”,phone:“06 67 55 63 06”}],cohost:{name:“Véronique OLIVIER”,phone:”+33 6 41 60 42 88”},emergency:”+33 4 78 98 56 49”,pax:54,coaches:2},
+email:{from:“rhone-ops@philibert.fr”,date:“23/03/2026”,subject:”[Phil&O][HMD260322_DPT] Reconfirmation”,body:“09:00/11:00 - HMD260322_DPT\nAssistance Départs Gare Perrache”}},
+{mid:“2026-03-29-PHIL-02”,date:“2026-03-29”,client:“Philibert Tourisme”,type:“ASSISTANCE GARE LYON - ARRIVEES”,desc:“HMD260329_ARR”,heures:“2”,base:“73”,debours:“21.5”,debut:“12:00”,endroit:“Gare de Perrache”,statut:“Planifié”,
+ops:{shipContact:{name:“Michael BRIGHT”,phone:”+49 152 225 381 37”,role:“PD Ship”},emergency:”+33 4 78 98 56 49”,parisHosts:[{name:“GOUARDERES Laurence”,phone:”+33 6 59 28 54 20”},{name:“MTINSI Lance”,phone:”+33 6 34 95 74 02”}],drivers:[{name:“Sylvain”,phone:”+33 7 88 29 26 69”}],trainInfo:{tgv:“6615”,arrivalTime:“15:10”,etaShip:“16:00”},pax:29,coaches:1},
+email:{from:“rhone-ops@philibert.fr”,date:“23/03/2026”,subject:”[Phil&O][HMD260329_ARR] Envoi Reconfirmation”,body:“29/03/2026 - 12:00/14:00 - HMD260329_ARR\nAssistance Arrivées Gare Perrache - PARIS/LYON”,attachments:[{name:“Programme_HMD260329_ARR_260323.pdf”,type:“pdf”},{name:“HMD260329 TSF MANIFEST LYON V3.xlsx”,type:“xlsx”}]}},
+{mid:“2026-04-05-FTFW-01”,date:“2026-04-05”,client:“Feel the French Way”,type:“ASSISTANCE TRANSFERT HOTEL - BATEAU”,desc:“RV260405LG04”,heures:“2”,base:“100”,debours:“25”,debut:“10:00”,endroit:“Intercontinental → Quai Claude Bernard”,statut:“Planifié”,pax:50,
+ops:{pax:50,coaches:1,coordinator:{name:“Laura (FTFW)”,phone:“contact@feelthefrenchway.fr”},cohost:{name:“Caroline (VIP M&G) — Transfert N°1”,phone:“caroline.meet.and.greet@gmail.com”},miseEnPlace:“Présence demandée à 10h00 à l’Intercontinental.\n10h15 : check-out + récupération bagages\n11h00 : mise en place autocar Palisse\n11h15 : départ → Quai Claude Bernard\nArrivée prévue : 11h45 max\n⚠️ Stationner max 15 min devant hôtel\nAppeler Stefani ~5 min avant arrivée au quai pour ouverture barrière”},
+email:{from:“contact@feelthefrenchway.fr”,date:“27/03/2026”,subject:“RV260405LG04 - Embarkation manifest 5th April”,body:“TRANSFERT N°2 — Joseph + car Palisse\n\n• Présence demandée à 10h00\n• 10h15 : début des check-out et récupération des bagages\n• 11h00 : mise en place autocar + chargement bagages puis clients\n• 11h15 : départ vers Quai Claude Bernard\n• Arrivée prévue : 11h45 max\n\nCharter Riverside, ~107–110 passagers total.\nTous logés à l’Intercontinental.\n\nAccès quai : sonner à la borne OU contacter Stefani\n(appeler ~5 min avant arrivée)”,attachments:[{name:“RIVERSIDE RAVEL - EMBARKATION TIMINGS 05 APRIL.xlsx”,type:“xlsx”}]}},
+{mid:“2026-04-08-UMB-01”,date:“2026-04-08”,client:“Un Monde Bleu”,type:“ASSISTANCE TRANSFERT LYON - MONTPELLIER”,desc:“LBY02+LBY03”,heures:””,base:””,debours:””,debut:””,endroit:“Lyon → Montpellier”,statut:“Planifié”,
+email:{from:“OpsRiviera@umb-dmc.fr”,date:“27/03/2026”,subject:“LORD BYRON - LBY02 ET LBY03”,body:“Veuillez trouver en PJ les listes de transferts pour le Lord BYRON du 08.04.”,attachments:[{name:“LORD BYRON - LBY02.pdf”,type:“pdf”},{name:“LORD BYRON - LBY03.pdf”,type:“pdf”}]}},
+{mid:“2026-04-19-GCS-01”,date:“2026-04-19”,client:“Go Côte Saône”,type:“ASSISTANCE TRANSFERT LYON - BALE”,desc:“VK09-SUP02”,heures:“8”,base:“450”,debours:“20”,debut:“08:00”,endroit:“Quai Claude Bernard”,statut:“Planifié”},
+];
 </script>
 
 </body>
