@@ -273,6 +273,7 @@ a{color:var(--accent);text-decoration:none;}
       <div class="hdr-btns">
         <button class="icon-btn" onclick="toggleMode()" id="mode-btn">☀️</button>
         <button class="icon-btn" onclick="refreshData()" id="refresh-btn">↻</button>
+        <button class="icon-btn" onclick="testApiDump()" id="debug-btn">DBG</button>
       </div>
     </div>
   </div>
@@ -286,6 +287,8 @@ a{color:var(--accent);text-decoration:none;}
 <div class="content" id="content"></div>
 <script>
 const GAS_URL="https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
+// Fetch timeout (ms) for GAS requests — increase if your script is slow to respond
+const FETCH_TIMEOUT_MS = 20000;
 const TAX=0.212;
 const DAYS=["dim","lun","mar","mer","jeu","ven","sam"];
 const MOL=["janvier","f\xe9vrier","mars","avril","mai","juin","juillet","ao\xfbt","septembre","octobre","novembre","d\xe9cembre"];
@@ -340,8 +343,9 @@ async function loadMissions(){
   if(stored){try{const p=JSON.parse(stored);if(p&&p.length){missions=p.map(norm);renderHeader();render();}}catch(e){}}
   // 2) Try live GAS API
   try{
-    const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),8000);
-    const r=await fetch(GAS_URL+"?action=all",{signal:ctrl.signal});
+    const ctrl=new AbortController();
+    const to = setTimeout(()=>ctrl.abort(), FETCH_TIMEOUT_MS);
+    const r=await fetch(GAS_URL+"?action=all",{signal:ctrl.signal}).finally(()=>clearTimeout(to));
     // read raw text to improve diagnostics when the endpoint returns an error or non-JSON
     const txt = await r.text();
     if(!r.ok) {
@@ -400,6 +404,41 @@ function norm(m){
   o.voyage=o["Voyage (min)"]||o.voyage||"";
   o.facture=o["Facture#"]||o.facture||"";
   return o;
+}
+
+// Debug helper: fetch raw API response and dump to the page for diagnostics
+async function testApiDump(){
+  createApiDumpUI();
+  const out = document.getElementById('api-dump');
+  out.textContent = 'Fetching...';
+  try{
+    const r = await fetch(GAS_URL + '?action=all');
+    const txt = await r.text();
+    out.textContent = 'HTTP ' + r.status + '\n\n' + txt;
+    if(r.ok){
+      try{ const j = JSON.parse(txt); out.textContent = 'HTTP ' + r.status + ' — parsed JSON\n\n' + JSON.stringify(j, null, 2); }catch(e){}
+    }
+  }catch(err){
+    out.textContent = 'Fetch error: ' + (err.message || err.toString());
+  }
+}
+
+function createApiDumpUI(){
+  if(document.getElementById('api-dump')) return;
+  const c = document.createElement('div');
+  c.style.marginTop='12px';
+  c.style.padding='10px';
+  c.style.background='rgba(0,0,0,0.06)';
+  c.style.border='1px solid rgba(0,0,0,0.06)';
+  const pre = document.createElement('pre');
+  pre.id='api-dump';
+  pre.style.whiteSpace='pre-wrap';
+  pre.style.maxHeight='260px';
+  pre.style.overflow='auto';
+  pre.style.fontSize='12px';
+  pre.style.color='var(--txt1)';
+  c.appendChild(pre);
+  document.getElementById('content').insertAdjacentElement('afterend', c);
 }
 
 const p2=n=>String(n).padStart(2,"0");
