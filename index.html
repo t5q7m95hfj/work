@@ -1,679 +1,769 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080c14">
 <title>Mission Control</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg0:#111418;--bg1:#1c2128;--bg2:#161b22;--bg3:#1c2128;
-  --border:#2d333b;--border2:#444c56;
-  --txt0:#f0ece4;--txt1:#d8d3ca;--txt2:#adb5bd;--txt3:#768390;--txt4:#545d68;
-  --accent:#58a6ff;--green:#3fb950;--amber:#e3b341;--red:#f85149;--purple:#bc8cff;
-  --tap:48px;
-}
-.light{
-  --bg0:#f0ebe0;--bg1:#ffffff;--bg2:#e8e2d6;--bg3:#ddd8cc;
-  --border:#ccc5b8;--border2:#b8b0a2;
-  --txt0:#0d0c08;--txt1:#211e18;--txt2:#3e3a32;--txt3:#65604f;--txt4:#8a8070;
-  --accent:#0969da;--green:#1a7f37;--amber:#9a6700;--red:#cf222e;--purple:#7c3aed;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overscroll-behavior:none;}
-body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:var(--txt1);-webkit-font-smoothing:antialiased;}
-
-/* HEADER */
-.hdr{position:sticky;top:0;z-index:50;background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 15px 10px;}
-.hdr-inner{display:flex;justify-content:space-between;align-items:center;}
-.hdr-eyebrow{font-size:9px;letter-spacing:2.5px;color:var(--txt4);text-transform:uppercase;font-weight:700;margin-bottom:2px;}
-.hdr-date{font-size:22px;font-weight:700;color:var(--txt0);letter-spacing:-0.5px;line-height:1.1;}
-.hdr-sub{font-size:11px;color:var(--txt3);margin-top:3px;}
-/* right side: weather icon | temp/rain | [mode] [refresh] */
-.hdr-right{display:flex;align-items:center;gap:10px;}
-.hdr-wx{display:flex;flex-direction:column;align-items:center;gap:0;}
-.wx-icon{font-size:22px;line-height:1;}
-.wx-temp{font-size:12px;font-weight:600;color:var(--txt1);font-family:'DM Mono',monospace;margin-top:1px;}
-.wx-rain{font-size:9px;color:var(--accent);min-height:12px;}
-.hdr-btns{display:flex;flex-direction:column;gap:5px;}
-.icon-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--txt2);}
-.icon-btn:active{opacity:.6;}
-
-/* NAV */
-.nav{position:sticky;top:68px;z-index:40;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;}
-.nav-btn{flex:1;height:46px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--txt4);font-size:9px;font-weight:700;letter-spacing:.5px;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;font-family:'DM Sans',sans-serif;}
-.nav-btn.on{color:var(--txt0);border-bottom-color:var(--accent);}
-.nav-icon{font-size:14px;}
-.content{padding:12px 13px 90px;}
-
-/* LABELS */
-.slabel{font-size:9px;color:var(--txt3);font-weight:700;letter-spacing:1.8px;text-transform:uppercase;margin:4px 0 8px;}
-.slabel.mt{margin-top:18px;}
-
-/* CARDS */
-.mcard{background:var(--bg1);border-radius:10px;padding:12px 14px;margin-bottom:7px;border-left:3px solid;cursor:pointer;transition:transform .1s;user-select:none;}
-.mcard:active{transform:scale(0.982);}
-.mcard.dim{opacity:.35;}
-.mc-top{display:flex;justify-content:space-between;align-items:flex-start;}
-.mc-left{flex:1;min-width:0;}
-.mc-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px;}
-.mc-tag{font-size:12px;font-weight:700;}
-.mc-time{font-size:12px;color:var(--txt2);font-family:'DM Mono',monospace;}
-.mc-date-s{font-size:10px;color:var(--txt4);}
-.mc-type{font-size:13px;color:var(--txt0);font-weight:600;}
-.mc-pills{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
-.mpill{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;}
-.mp-pax{background:rgba(88,166,255,.12);color:var(--accent);}
-.mp-loc{background:rgba(63,185,80,.1);color:var(--green);}
-.mp-ok{background:rgba(63,185,80,.1);color:var(--green);}
-.mc-right{text-align:right;flex-shrink:0;margin-left:8px;}
-.mc-ref{font-family:'DM Mono',monospace;font-size:9px;color:var(--txt4);margin-bottom:3px;}
-.bdg{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;}
-.bdg-plan{background:rgba(88,166,255,.12);color:var(--accent);}
-.bdg-done{background:rgba(63,185,80,.12);color:var(--green);}
-.bdg-cancel{background:rgba(248,81,73,.12);color:var(--red);}
-
-/* UPCOMING */
-.ubox{background:var(--bg1);border-radius:10px;padding:12px 14px;margin-top:7px;border:1px solid var(--border);}
-.ulbl{font-size:9px;color:var(--green);font-weight:700;letter-spacing:1.5px;margin-bottom:7px;text-transform:uppercase;}
-.uitem{display:flex;gap:8px;align-items:baseline;margin-bottom:4px;font-size:11px;}
-
-/* EMPTY */
-.empty{text-align:center;padding:40px 0 16px;}
-.empty-icon{font-size:36px;margin-bottom:8px;}
-.empty-title{font-size:15px;color:var(--txt2);font-weight:500;}
-.empty-sub{font-size:12px;color:var(--txt4);margin-top:3px;}
-
-/* DETAIL */
-.back-btn{background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;padding:0 0 10px;display:flex;align-items:center;gap:4px;min-height:44px;font-family:'DM Sans',sans-serif;font-weight:500;}
-.dcard{background:var(--bg1);border-radius:12px;overflow:hidden;border-top:3px solid;}
-.dhdr{padding:14px 15px 12px;}
-.d-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;}
-.d-client{font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:3px;text-transform:uppercase;}
-.d-title{font-size:16px;font-weight:700;color:var(--txt0);line-height:1.2;}
-.shift-box{padding:10px 12px;border-radius:8px;background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.14);margin:10px 0 12px;}
-.shift-time{font-size:21px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace;}
-.shift-sub{font-size:11px;color:rgba(88,166,255,.55);margin-top:2px;}
-.key-pills{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 3px;}
-.kpill{font-size:11px;padding:4px 10px;border-radius:6px;font-weight:500;background:var(--bg2);color:var(--txt2);border:1px solid var(--border);}
-.kpill.hi{color:var(--accent);border-color:rgba(88,166,255,.22);background:rgba(88,166,255,.06);}
-.igrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px;}
-.ifield label{font-size:9px;color:var(--txt4);display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.8px;}
-.ifield span{font-size:12px;color:var(--txt1);font-weight:500;}
-.ifield span.mono{font-family:'DM Mono',monospace;font-size:11px;}
-.sdiv{border-top:1px solid var(--border);}
-.sin{padding:11px 15px;}
-.stitle{font-size:9px;font-weight:700;letter-spacing:1.8px;margin-bottom:8px;text-transform:uppercase;}
-.blue{color:var(--accent);}
-.green{color:var(--green);}
-.amber{color:var(--amber);}
-.purple{color:var(--purple);}
-.muted{color:var(--txt4);}
-.orow{display:flex;align-items:flex-start;gap:7px;margin-bottom:6px;}
-.o-icon{font-size:13px;flex-shrink:0;line-height:1.4;}
-.o-lbl{font-size:9px;color:var(--txt4);min-width:54px;padding-top:2px;text-transform:uppercase;letter-spacing:.5px;}
-.o-val{font-size:12px;color:var(--txt1);flex:1;line-height:1.5;}
-.o-ph{color:var(--accent);text-decoration:none;}
-.o-urg{color:var(--red)!important;}
-.o-sub{font-size:9px;color:var(--txt4);font-weight:700;margin:8px 0 4px;text-transform:uppercase;letter-spacing:.8px;}
-.o-contact{font-size:12px;color:var(--txt1);margin-bottom:4px;}
-.mise-box{background:var(--bg2);border-radius:7px;padding:9px 11px;font-size:11px;color:var(--txt2);line-height:1.75;margin-top:6px;white-space:pre-wrap;}
-.etoggle{cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
-.ebody{padding:9px 11px;background:var(--bg2);border-radius:7px;font-size:11px;color:var(--txt2);line-height:1.65;margin:6px 0 5px;white-space:pre-wrap;}
-.att{font-size:11px;color:var(--accent);padding:6px 10px;background:var(--bg2);border-radius:6px;margin-bottom:4px;display:flex;align-items:center;gap:6px;min-height:var(--tap);border:1px solid var(--border);}
-.frow{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
-.flbl{color:var(--txt3);}
-.fval{color:var(--txt1);font-weight:500;}
-.fnet{font-size:16px;font-weight:700;color:var(--amber);margin-top:5px;}
-.log-entries{margin-bottom:10px;}
-.lentry{display:flex;gap:8px;margin-bottom:7px;}
-.lts{font-size:10px;color:var(--txt4);font-family:'DM Mono',monospace;min-width:34px;padding-top:2px;}
-.lbubble{flex:1;background:var(--bg2);border-radius:7px;padding:6px 10px;}
-.ltag{font-size:9px;color:var(--txt4);margin-bottom:2px;}
-.ltext{font-size:11px;color:var(--txt2);line-height:1.5;}
-.log-empty{font-size:11px;color:var(--txt4);font-style:italic;margin-bottom:10px;}
-.log-types{display:flex;gap:5px;margin-bottom:7px;}
-.ltbtn{flex:1;padding:7px 4px;font-size:10px;border-radius:7px;border:1px solid var(--border);background:var(--bg2);color:var(--txt3);cursor:pointer;text-align:center;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
-.ltbtn.on{border-color:rgba(88,166,255,.3);background:rgba(88,166,255,.06);color:var(--accent);}
-.ta{width:100%;padding:9px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--txt0);font-size:12px;font-family:'DM Sans',sans-serif;resize:none;line-height:1.5;}
-.ta:focus{outline:none;border-color:rgba(88,166,255,.3);}
-.submit-btn{width:100%;margin-top:6px;padding:11px;background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);border-radius:9px;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
-.editrow{display:flex;gap:7px;align-items:center;margin-bottom:6px;}
-.einput{flex:1;padding:9px 11px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;color:var(--txt0);font-size:12px;font-family:'DM Sans',sans-serif;min-height:var(--tap);}
-.einput:focus{outline:none;border-color:rgba(88,166,255,.3);}
-.esave{padding:9px 11px;background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);border-radius:8px;color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
-.pmf-trigger{width:100%;padding:13px;background:rgba(63,185,80,.06);border:1px solid rgba(63,185,80,.2);border-radius:10px;color:var(--green);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
-.pmf-step-hdr{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.pmf-num{width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.pmf-step-title{font-size:14px;font-weight:700;color:var(--txt0);}
-.pmf-time-row{display:flex;gap:10px;align-items:center;margin-bottom:9px;}
-.pmf-time-block{flex:1;text-align:center;}
-.pmf-time-lbl{font-size:9px;color:var(--txt4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px;}
-.pmf-tinput{width:100%;padding:11px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--txt0);font-size:16px;text-align:center;font-family:'DM Mono',monospace;min-height:var(--tap);}
-.pmf-tinput:focus{outline:none;border-color:rgba(63,185,80,.4);}
-.pmf-arrow{font-size:20px;color:var(--txt4);flex-shrink:0;}
-.pmf-dur{font-size:13px;color:var(--green);text-align:center;margin-bottom:12px;font-weight:600;min-height:18px;}
-.pbtn{width:100%;padding:12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
-.pbtn-next{background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);color:var(--accent);}
-.pbtn-confirm{background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.25);color:var(--green);}
-.pback{font-size:11px;color:var(--txt4);cursor:pointer;text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;min-height:var(--tap);}
-.rpt-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
-.rtbtn{padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--txt2);font-size:11px;font-weight:600;cursor:pointer;text-align:center;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
-.rtbtn.on{border-color:rgba(188,140,255,.35);background:rgba(188,140,255,.07);color:var(--purple);}
-.rpt-output{background:var(--bg2);border-radius:9px;padding:12px;font-size:11px;color:var(--txt2);line-height:1.8;margin-bottom:10px;white-space:pre-wrap;max-height:260px;overflow-y:auto;}
-.rpt-loading{text-align:center;padding:22px;color:var(--txt4);font-size:12px;}
-.rpt-actions{display:flex;gap:7px;}
-.rabtn{flex:1;padding:11px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
-.debrief-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
-.dbtn{padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--txt1);font-size:12px;cursor:pointer;text-align:left;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
-.dbtn.on{border-color:rgba(188,140,255,.35);background:rgba(188,140,255,.07);color:var(--purple);}
-.decomp-link{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:1px solid rgba(63,185,80,.18);border-radius:10px;color:var(--green);font-size:12px;font-weight:500;min-height:var(--tap);cursor:pointer;background:rgba(63,185,80,.04);font-family:'DM Sans',sans-serif;}
-
-/* MONTH */
-.mo-bar{background:var(--bg1);border-radius:10px;padding:11px 14px;margin-bottom:10px;border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;}
-.mob-lbl{font-size:9px;color:var(--txt4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;font-weight:600;}
-.mob-val{font-size:16px;font-weight:700;}
-.m-date-hdr{font-size:10px;font-weight:700;letter-spacing:.8px;margin:14px 0 5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
-.m-date-pill{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600;}
-
-/* FINANCE */
-.fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
-.fin-card{background:var(--bg1);border-radius:9px;padding:11px 13px;border:1px solid var(--border);}
-.fin-lbl{font-size:9px;color:var(--txt4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;font-weight:700;}
-.fin-val{font-size:18px;font-weight:700;}
-.coll{background:var(--bg1);border-radius:10px;margin-bottom:6px;overflow:hidden;border:1px solid var(--border);}
-.coll-hdr{padding:11px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
-.coll-title{font-size:12px;font-weight:700;color:var(--txt0);}
-.coll-sub{font-size:10px;color:var(--txt3);margin-top:1px;}
-.coll-right{display:flex;align-items:center;gap:8px;}
-.coll-net{font-size:14px;font-weight:700;color:var(--amber);}
-.chev{font-size:10px;color:var(--txt4);transition:transform .2s;}
-.chev.open{transform:rotate(180deg);}
-.coll-body{padding:0 14px 10px;display:none;border-top:1px solid var(--border);}
-.coll-body.open{display:block;}
-.fmr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;}
-.fmr:last-child{border-bottom:none;}
-.fmr-l{display:flex;flex-direction:column;gap:2px;}
-.fmr-r{text-align:right;flex-shrink:0;}
-.fmr-base{font-size:12px;font-weight:600;color:var(--txt1);}
-.fmr-deb{font-size:9px;color:var(--txt4);}
-.fmr-st{font-size:9px;margin-top:2px;}
-.ref-box{background:var(--bg1);border-radius:9px;padding:13px 14px;font-size:12px;color:var(--txt2);line-height:2.1;border:1px solid var(--border);font-family:'DM Mono',monospace;}
-
-/* PAUSE — unified with app tone */
-.pause-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 0 24px;}
-.psc{display:none;flex-direction:column;align-items:center;width:100%;max-width:380px;padding:0 4px;}
-.psc.active{display:flex;}
-/* All pause text uses same DM Sans as the rest of the app */
-.p-eyebrow{font-size:9px;letter-spacing:2px;color:var(--txt4);text-transform:uppercase;font-weight:700;margin-bottom:16px;text-align:center;font-family:'DM Sans',sans-serif;}
-.p-h1{font-size:26px;font-weight:300;color:var(--txt0);line-height:1.2;margin-bottom:10px;text-align:center;letter-spacing:-0.3px;font-family:'DM Sans',sans-serif;}
-.p-sub{font-size:13px;color:var(--txt3);margin-bottom:26px;text-align:center;line-height:1.6;font-family:'DM Sans',sans-serif;font-weight:400;}
-.p-clock{font-family:'DM Mono',monospace;font-size:13px;color:var(--txt4);margin-bottom:32px;letter-spacing:.15em;}
-.p-btn-g{padding:12px 28px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.22);color:var(--green);font-family:'DM Sans',sans-serif;min-height:var(--tap);}
-.p-btn-s{padding:11px 22px;border-radius:8px;font-size:12px;cursor:pointer;background:none;border:1px solid var(--border);color:var(--txt3);font-family:'DM Sans',sans-serif;min-height:var(--tap);}
-.p-btn-ghost{background:none;border:none;font-size:11px;color:var(--txt4);cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;min-height:var(--tap);padding:8px;}
-.p-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center;}
-/* Breathe */
-.p-bwrap{position:relative;width:154px;height:154px;margin-bottom:32px;}
-.p-br{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(88,166,255,.14);}
-.p-br.inner{inset:24px;border-color:rgba(88,166,255,.28);background:radial-gradient(circle,rgba(88,166,255,.04),transparent 70%);}
-.p-br.pulse{inset:0;border:none;background:radial-gradient(circle,rgba(88,166,255,.03),transparent 60%);}
-.p-btxt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);font-style:italic;font-family:'DM Sans',sans-serif;}
-@keyframes bIN{0%{transform:scale(1);opacity:.3}100%{transform:scale(1.35);opacity:.9}}
-@keyframes bHD{0%,100%{transform:scale(1.35);opacity:.9}}
-@keyframes bOT{0%{transform:scale(1.35);opacity:.9}100%{transform:scale(1);opacity:.3}}
-.p-bin .p-br.inner,.p-bin .p-br.pulse{animation:bIN 4s ease-in-out forwards;}
-.p-bhold .p-br.inner,.p-bhold .p-br.pulse{animation:bHD 4s ease-in-out forwards;}
-.p-bout .p-br.inner,.p-bout .p-br.pulse{animation:bOT 4s ease-in-out forwards;}
-.p-bctr{font-family:'DM Mono',monospace;font-size:10px;color:var(--txt4);letter-spacing:.15em;margin-bottom:26px;}
-/* Write */
-.p-textarea{width:100%;max-width:370px;min-height:105px;background:var(--bg1);border:1px solid var(--border);color:var(--txt0);font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.65;padding:12px;resize:none;outline:none;border-radius:9px;caret-color:var(--accent);}
-.p-textarea:focus{border-color:rgba(63,185,80,.28);}
-.p-textarea::placeholder{color:var(--txt4);}
-/* Draw */
-.p-canvas{border-radius:7px;cursor:crosshair;touch-action:none;display:block;}
-.p-toolbar{display:flex;align-items:center;gap:7px;margin-bottom:10px;flex-wrap:wrap;justify-content:center;}
-.p-swatch{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;flex-shrink:0;}
-.p-swatch:hover{transform:scale(1.15);}
-.p-swatch.on{border-color:var(--txt0);}
-.p-bsize{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;color:var(--txt4);}
-#p-bslider{-webkit-appearance:none;width:55px;height:2px;background:var(--border);outline:none;border-radius:2px;cursor:pointer;}
-#p-bslider::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:var(--green);cursor:pointer;}
-.p-dact{display:flex;gap:8px;margin-top:10px;align-items:center;}
-/* Ripple */
-#p-rzone{width:min(220px,68vw);height:min(220px,68vw);border-radius:50%;background:radial-gradient(circle,rgba(63,185,80,.04),transparent 70%);border:1px solid rgba(63,185,80,.1);position:relative;cursor:pointer;overflow:hidden;flex-shrink:0;}
-.p-ripple{position:absolute;border-radius:50%;border:1px solid rgba(63,185,80,.45);transform:translate(-50%,-50%) scale(0);animation:ripOUT 2.5s ease-out forwards;pointer-events:none;}
-@keyframes ripOUT{0%{transform:translate(-50%,-50%) scale(0);opacity:.8}100%{transform:translate(-50%,-50%) scale(4);opacity:0}}
-.p-rdot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:5px;height:5px;border-radius:50%;background:var(--green);opacity:.2;}
-#p-tctr{font-family:'DM Mono',monospace;font-size:10px;color:var(--txt4);margin-top:14px;letter-spacing:.12em;}
-#p-dbtn{margin-top:12px;opacity:0;transition:opacity .5s;}
-/* Intention */
-.p-ibox{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);text-align:center;margin-bottom:28px;max-width:250px;line-height:2;padding:13px 18px;border:1px solid rgba(227,179,65,.18);border-radius:8px;}
-.spin{display:inline-block;animation:sp .8s linear infinite;}
-@keyframes sp{to{transform:rotate(360deg)}}
-a{color:var(--accent);text-decoration:none;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.dark{background:#080c14;color:#ddd8ce}
+body.light{background:#f5f3ef;color:#1a1a1a}
+a{text-decoration:none}
+button{font-family:inherit}
+#root{max-width:480px;margin:0 auto;min-height:100vh}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:24px;height:24px;border:2px solid #1a2a3a;border-top:2px solid #4fc3f7;border-radius:50%;animation:spin .8s linear infinite}
+.light .spinner{border-color:#ddd;border-top-color:#1565c0}
 </style>
 </head>
-<body>
-<div class="hdr">
-  <div class="hdr-inner">
-    <div>
-      <div class="hdr-eyebrow">Mission Control</div>
-      <div class="hdr-date" id="hdr-date">—</div>
-      <div class="hdr-sub" id="hdr-sub">—</div>
-    </div>
-    <div class="hdr-right">
-      <div class="hdr-wx">
-        <div class="wx-icon" id="wx-icon">—</div>
-        <div class="wx-temp" id="wx-temp">—</div>
-        <div class="wx-rain" id="wx-rain"></div>
-      </div>
-      <div class="hdr-btns">
-        <button class="icon-btn" onclick="toggleMode()" id="mode-btn">☀️</button>
-        <button class="icon-btn" onclick="refreshData()" id="refresh-btn">↻</button>
-      </div>
-    </div>
-  </div>
-</div>
-<nav class="nav">
-  <button class="nav-btn on" onclick="go('today')" id="nb-today"><span class="nav-icon">☀️</span>AUJOURD'HUI</button>
-  <button class="nav-btn" onclick="go('month')" id="nb-month"><span class="nav-icon">📅</span><span id="month-lbl">MOIS</span></button>
-  <button class="nav-btn" onclick="go('finance')" id="nb-finance"><span class="nav-icon">💶</span>FINANCES</button>
-  <button class="nav-btn" onclick="go('pause')" id="nb-pause"><span class="nav-icon">🌿</span>PAUSE</button>
-</nav>
-<div class="content" id="content"></div>
-<script>
+<body class="dark">
+<div id="root"><div class="loading"><div class="spinner"></div><span style="font-size:12px;opacity:.5">Chargement...</span></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.10/babel.min.js"></script>
+
+<script type="text/babel">
+// ============================================================
+// CONFIG
+// ============================================================
 const GAS_URL="https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
-const TAX=0.212;
-const DAYS=["dim","lun","mar","mer","jeu","ven","sam"];
-const MOL=["janvier","f\xe9vrier","mars","avril","mai","juin","juillet","ao\xfbt","septembre","octobre","novembre","d\xe9cembre"];
-const MOS=["jan","f\xe9v","mar","avr","mai","jun","jul","ao\xfb","sep","oct","nov","d\xe9c"];
-const META={
-  "Philibert Tourisme":{tag:"PHIL",hex:"#3fb950",contact:"M\xe9lissa Hassa\xefm",phone:"+33 4 78 98 56 49",email:"rhone-ops@philibert.fr",cohost:"V\xe9ronique Olivier \xb7 06 41 60 42 88",emergency:"+33 4 78 98 56 49"},
-  "Go C\xf4te Sa\xf4ne":{tag:"GCS",hex:"#58a6ff",contact:"Marion",phone:"06.20.08.10.92",email:"gcs@gocotesaone.com"},
-  "Feel the French Way":{tag:"FTFW",hex:"#bc8cff",contact:"Laura Brionne",email:"contact@feelthefrenchway.fr",cohost:"Caroline \xb7 caroline.meet.and.greet@gmail.com"},
-  "Un Monde Bleu":{tag:"UMB",hex:"#ff7b54",contact:"Audrey Foret",phone:"+33 7 43 36 05 69",email:"OpsRiviera@umb-dmc.fr",notes:"R\xe9pondre au thread \u2014 autocariste: rhonecroisieres@galeo.mobi"}
+
+// ============================================================
+// THEME
+// ============================================================
+const DARK={
+  bg:"#080c14",card:"#0f1520",border:"#151d2a",
+  text:"#ddd8ce",textMuted:"#5a6a7a",textFaint:"#3a4858",textBright:"#eae7e0",
+  accent:"#4fc3f7",green:"#81c784",orange:"#ffb74d",red:"#ef9a9a",purple:"#ce93d8",
+  cardHover:"#141e2c",timeBox:"rgba(79,195,247,0.08)",timeBorder:"rgba(79,195,247,0.15)",
 };
-const TRAVEL={"PERRACHE":45,"PART-DIEU":45,"PART DIEU":45,"LYS":52,"AEROPORT":52,"AIRPORT":52,"INTERCONTINENTAL":40,"HOTEL":40,"QUAI CLAUDE BERNARD":45,"QUAI RAMBAUD":60,"BELLECOUR":45,"VIENNE":105,"STE-COLOMBE":105,"GENEVE":180};
-const RPT_LABELS={RAS:"\u2705 RAS",INCIDENT:"\u26a0\ufe0f Incident",ANNULATION:"\u274c Annulation",ANOMALIE:"\ud83d\udd27 Anomalie",OT:"\u23f1 Heures supp"};
-const PRENOM={"Philibert Tourisme":"M\xe9lissa","Go C\xf4te Sa\xf4ne":"Marion","Feel the French Way":"Laura","Un Monde Bleu":"Audrey"};
+const LIGHT={
+  bg:"#f5f3ef",card:"#ffffff",border:"#e0dcd4",
+  text:"#1a1a1a",textMuted:"#5a5a5a",textFaint:"#8a8a8a",textBright:"#000000",
+  accent:"#1565c0",green:"#2e7d32",orange:"#e65100",red:"#c62828",purple:"#6a1b9a",
+  cardHover:"#f0ede8",timeBox:"rgba(21,101,192,0.06)",timeBorder:"rgba(21,101,192,0.15)",
+};
 
-let missions=[],flogs={},tab="today",detail=null,pmf=null,pmfStep=0,emailOpen={};
-let light=localStorage.getItem("mc_light")==="1";
-let pScr="s1",pBOn=false,pBTimer=null,pBPhase=0,pBCycle=0;
-let pDCtx=null,pDing=false,pClr="#3fb950",pBrush=8,pLX=0,pLY=0,pTaps=0;
+// ============================================================
+// CLIENT META
+// ============================================================
+const CMETA={
+  "Philibert Tourisme":{tag:"PHIL",color:"#43a047",lc:"#2e7d32",contact:"Mélissa Hassaïm",email:"rhone-ops@philibert.fr",cohost:"Véronique Olivier · 06 41 60 42 88",emergency:"+33 4 78 98 56 49"},
+  "Go Côte Saône":{tag:"GCS",color:"#42a5f5",lc:"#1565c0",contact:"Marion",phone:"06.20.08.10.92",email:"gcs@gocotesaone.com"},
+  "Feel the French Way":{tag:"FTFW",color:"#ab47bc",lc:"#6a1b9a",contact:"Caroline",email:"contact@feelthefrenchway.fr",cohost:"caroline.meet.and.greet@gmail.com"},
+  "Un Monde Bleu":{tag:"UMB",color:"#ff7043",lc:"#e65100",contact:"Audrey Foret",phone:"+33 7 43 36 05 69",email:"OpsRiviera@umb-dmc.fr",notes:"Répondre au thread · autocariste: rhonecroisieres@galeo.mobi"},
+};
+const TRANSPORT=[{d:"Perrache",t:45},{d:"Part-Dieu",t:45},{d:"LYS Aéroport",t:52},{d:"Quai Claude Bernard",t:45},{d:"Vienne",t:105},{d:"Genève",t:180}];
 
-window.addEventListener("load",()=>{
-  if(light)document.body.classList.add("light");
-  updateModeBtn();renderHeader();loadWeather();loadMissions();
-});
 
-function toggleMode(){light=!light;document.body.classList.toggle("light",light);localStorage.setItem("mc_light",light?"1":"0");updateModeBtn();}
-function updateModeBtn(){document.getElementById("mode-btn").textContent=light?"\ud83c\udf19":"\u2600\ufe0f";}
+// ── EMAIL ENRICHMENT ──────────────────────────────────────────
+// Real ops/email data pulled from Gmail. Attachment links open
+// the Gmail message directly (no OAuth needed from browser).
+const EMAIL_DATA={
+  "2026-04-05":{FTFW:{
+    ops:{pax:107,coaches:1,
+      coordinator:{name:"Laura (FTFW)",phone:"contact@feelthefrenchway.fr"},
+      cohost:{name:"Caroline (VIP M&G)",phone:"caroline.meet.and.greet@gmail.com"},
+      miseEnPlace:"Présence à 10h00 — Intercontinental Lyon\n10h15 : check-out + récupération bagages\n11h00 : mise en place autocar Palisse + chargement\n11h15 : départ vers Quai Claude Bernard\nArrivée max 11h45\n⚠️ Stationner max 15 min devant hôtel\n📞 Appeler Stefani ~5 min avant arrivée pour ouverture barrière"},
+    email:{from:"Laura · contact@feelthefrenchway.fr",date:"27/03/2026",
+      subject:"RV260405LG04 - Embarkation manifest 5th April",
+      body:"Joseph + car Palisse\n• Présence à 10h00 — Intercontinental\n• 10h15 : check-out + bagages\n• 11h15 : départ → Quai Claude Bernard\n• Max 11h45 · Stationner 15 min max · Appeler Stefani avant arrivée",
+      attachments:[{name:"RIVERSIDE RAVEL - EMBARKATION TIMINGS 05 APRIL.xlsx",type:"xlsx",url:"https://mail.google.com/mail/u/0/#inbox/19d2e8fffcd6894b"}]},
+  }},
+  "2026-04-08":{
+    UMB:{email:{from:"Audrey Foret · OpsRiviera@umb-dmc.fr",date:"27/03/2026",
+      subject:"LORD BYRON - LBY02 ET LBY03 - TRANSFERTS DU 08.04",
+      body:"LBY02 : Départs Lyon → Montpellier\nLBY03 : Arrivées\nAutocariste: rhonecroisieres@galeo.mobi",
+      attachments:[
+        {name:"LORD BYRON - LBY02 - DEPARTURE TRANSFERS.pdf",type:"pdf",url:"https://mail.google.com/mail/u/0/#inbox/19d2e9dbefbd2fe3"},
+        {name:"LORD BYRON - LBY03 - ARRIVAL TRANSFERS.pdf",type:"pdf",url:"https://mail.google.com/mail/u/0/#inbox/19d2e9dbefbd2fe3"},
+      ]}},
+    PHIL_COOKING:{_inject:true,
+      mid:"2026-04-08-PHIL-LOFN","Date mission":"2026-04-08","Client":"Philibert Tourisme",
+      "Type":"ASSISTANCE COOKING CLASS LYON","Description":"LFN260403_CRUISE",
+      "Heures":"5","Base (HT)":"200","Débours":"21.5","Début":"18:00",
+      "Endroit":"Lyon - Lieu à confirmer","Statut":"Confirmé",
+      "Notes":"Cooking Class LOFN · 8 pax · ⚠️ Mélissa attend ta confirmation",
+      _email:{from:"rhone-ops@philibert.fr",date:"31/03/2026",
+        subject:"RE: [Phil&O][LFN260403_DPT] — LOFN Cooking Class",
+        body:"MERCREDI 8 AVRIL :\nJoseph → Gare Perrache (arr+départs) + Cooking Class LOFN 18h-23h\nCaroline → Aéroport\n⚠️ Mélissa attend ta confirmation.",
+        attachments:[{name:"Voir thread complet",type:"link",url:"https://mail.google.com/mail/u/0/#inbox/19d445b8e9fbc4b9"}]}},
+  },
+  "2026-04-10":{PHIL:{email:{from:"rhone-ops@philibert.fr",date:"30/03/2026",
+    subject:"[Phil&O][LFN260403_DPT] Envoi Reconfirmation",
+    body:"10/04/2026 - 09:00/11:00 - LFN260403_DPT\nAssistance Départs Gare Perrache - LYON/PARIS",
+    attachments:[{name:"Programme_LFN260403_DPT_260330.pdf",type:"pdf",url:"https://mail.google.com/mail/u/0/#inbox/19d3f438792aebbc"}]}}},
+  "2026-04-12":{PHIL:{email:{from:"Léa Viricel · rhone-ops@philibert.fr",date:"01/04/2026",
+    subject:"[Phil&O][HMD260405_DPT] Envoi Reconfirmation",
+    body:"12/04/2026 - 09:00/11:00 - HMD260405_DPT\nAssistance Départs Gare Perrache - LYON/PARIS\n⚠️ Reconfirmer sur phileo.philibert.fr",
+    attachments:[{name:"Programme_HMD260405_DPT_260401.pdf",type:"pdf",url:"https://mail.google.com/mail/u/0/#inbox/19d48d0cbc22ca81"}]}}},
+};
 
-function renderHeader(){
-  const n=new Date(),cm=p2(n.getMonth()+1);
-  document.getElementById("hdr-date").textContent=DAYS[n.getDay()]+" "+n.getDate()+" "+MOL[n.getMonth()];
-  const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm);
-  document.getElementById("hdr-sub").textContent=MOL[n.getMonth()]+" \xb7 "+mms.length+" missions \xb7 "+mms.filter(isDone).length+" termin\xe9es";
-  document.getElementById("month-lbl").textContent=MOS[n.getMonth()].toUpperCase();
-}
-
-async function loadWeather(){
-  try{
-    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weathercode,precipitation_probability&timezone=Europe/Paris&forecast_days=1");
-    const d=await r.json(),c=d.current,wc=c.weathercode||0;
-    const ic=wc===0?"\u2600\ufe0f":wc<=2?"\u26c5":wc===3?"\u2601\ufe0f":wc<=48?"\ud83c\udf2b":wc<=55?"\ud83c\udf26":wc<=67?"\ud83c\udf27":wc<=77?"\u2744\ufe0f":wc<=82?"\ud83c\udf26":"\u26c8\ufe0f";
-    document.getElementById("wx-icon").textContent=ic;
-    document.getElementById("wx-temp").textContent=Math.round(c.temperature_2m)+"\xb0C";
-    document.getElementById("wx-rain").textContent=c.precipitation_probability>20?c.precipitation_probability+"%":"";
-  }catch(e){document.getElementById("wx-icon").textContent="";document.getElementById("wx-temp").textContent="Lyon";}
-}
-
-async function loadMissions(){
-  // 1) Load from localStorage immediately (no blank flash)
-  const stored=localStorage.getItem("mc_missions");
-  if(stored){try{const p=JSON.parse(stored);if(p&&p.length){missions=p.map(norm);renderHeader();render();}}catch(e){}}
-  // 2) Try live GAS API
-  try{
-    const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),8000);
-    const r=await fetch(GAS_URL+"?action=all",{signal:ctrl.signal});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const d=await r.json();
-    if(d&&d.missions&&d.missions.length){
-      missions=d.missions.map(norm);
-      localStorage.setItem("mc_missions",JSON.stringify(d.missions));
-    }
-  }catch(e){
-    // 3) Fall back to DEMO if nothing loaded yet
-    if(!missions.length)missions=DEMO.map(m=>Object.assign({},m));
-  }
-  renderHeader();render();
-}
-
-async function refreshData(){
-  const b=document.getElementById("refresh-btn");b.style.opacity=".4";
-  missions=[];localStorage.removeItem("mc_missions");
-  await loadMissions();b.style.opacity="1";
-}
-async function saveField(mid,f,v){try{await fetch(GAS_URL+"?action=update&id="+encodeURIComponent(mid)+"&field="+f+"&value="+encodeURIComponent(v));}catch(e){}}
-
-function norm(m){
-  const o=Object.assign({},m);
-  if(o._n)return o;
-  o._n=1;
-  o.mid=o["Mission ID"]||o.mid||"";
-  o.date=o["Date mission"]||o.date||"";
-  o.client=o["Client"]||o.client||"";
-  o.type=o["Type"]||o.type||"";
-  o.desc=o["Description"]||o.desc||"";
-  o.heures=o["Heures"]||o.heures||"";
-  o.base=o["Base (HT)"]||o["Base"]||o.base||"";
-  o.debours=o["D\xe9bours"]||o["Debours"]||o.debours||"";
-  let rb=o["D\xe9but"]||o["Debut"]||o.debut||"";
-  if(rb&&rb.length>5)rb=rb.slice(0,5);
-  o.debut=rb;
-  o.endroit=o["Endroit"]||o.endroit||"";
-  o.statut=o["Statut"]||o.statut||"";
-  o.notes=o["Notes"]||o.notes||"";
-  o.voyage=o["Voyage (min)"]||o.voyage||"";
-  o.facture=o["Facture#"]||o.facture||"";
-  return o;
-}
-
-const p2=n=>String(n).padStart(2,"0");
-const tday=()=>new Date().toISOString().slice(0,10);
-const tmrw=()=>{const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);};
-const nowt=()=>{const n=new Date();return p2(n.getHours())+":"+p2(n.getMinutes());};
-const isDone=m=>{const s=(m.statut||"").toLowerCase();return s.includes("envoy")||s.includes("termin")||s.includes("confirm");};
-const isCxl=m=>(m.statut||"").toLowerCase().includes("annul");
-function getMeta(c){if(!c)return{tag:"?",hex:"#666"};for(const[k,v]of Object.entries(META))if(c.toLowerCase().includes(k.split(" ")[0].toLowerCase()))return v;return{tag:"?",hex:"#666"};}
-function trvl(e){if(!e)return 45;const u=e.toUpperCase();for(const[k,v]of Object.entries(TRAVEL))if(u.includes(k))return v;return 45;}
-function depT(sh,tr){if(!sh||!tr)return null;const p=sh.split(":");const h=+p[0],m=+p[1];if(isNaN(h)||isNaN(m))return null;const d=h*60+m-tr-15;if(d<0)return null;return p2(Math.floor(d/60))+":"+p2(d%60);}
-function durS(s,e){if(!s||!e)return"";const[sh,sm]=s.split(":").map(Number),[eh,em]=e.split(":").map(Number);const d=(eh*60+em)-(sh*60+sm);if(d<=0)return"";return Math.floor(d/60)+"h"+(d%60>0?p2(d%60):"");}
-function durD(s,e){if(!s||!e)return"";const[sh,sm]=s.split(":").map(Number),[eh,em]=e.split(":").map(Number);const d=(eh*60+em)-(sh*60+sm);if(d<=0)return"";return(d/60).toFixed(1);}
-function fds(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return DAYS[d.getDay()]+" "+d.getDate()+" "+MOS[d.getMonth()];}
-function fdl(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return DAYS[d.getDay()]+" "+d.getDate()+" "+MOL[d.getMonth()];}
-function badge(m){if(isCxl(m))return'<span class="bdg bdg-cancel">Annul\xe9</span>';if(isDone(m))return'<span class="bdg bdg-done">\u2713 Termin\xe9</span>';return'<span class="bdg bdg-plan">'+(m.statut||"Planifi\xe9")+'</span>';}
-const cnet=(b,d)=>Math.round((parseFloat(b)||0)*(1-TAX)+(parseFloat(d)||0));
-const ctax=b=>Math.round((parseFloat(b)||0)*TAX);
-
-function go(t){if(t!=="today"&&t!=="month")detail=null;tab=t;["today","month","finance","pause"].forEach(id=>document.getElementById("nb-"+id).classList.toggle("on",id===t));render();}
-function render(){
-  const el=document.getElementById("content");if(!el)return;
-  if(detail&&(tab==="today"||tab==="month")){el.innerHTML=rdDetail(detail);return;}
-  if(tab==="today")el.innerHTML=rdToday();
-  else if(tab==="month")el.innerHTML=rdMonth();
-  else if(tab==="finance")el.innerHTML=rdFinance();
-  else if(tab==="pause"){el.innerHTML="";rdPause();}
-}
-
-/* TODAY */
-function rdToday(){
-  const t=tday(),tm=tmrw();
-  const t1=missions.filter(m=>m.date===t).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
-  const t2=missions.filter(m=>m.date===tm).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
-  const up=missions.filter(m=>m.date>tm&&!isCxl(m)).sort((a,b)=>a.date.localeCompare(b.date));
-  let h="";
-  if(t1.length){h+='<div class="slabel">AUJOURD\'HUI</div>'+t1.map(m=>mcard(m,false)).join("");}
-  else h+='<div class="empty"><div class="empty-icon">\u2600\ufe0f</div><div class="empty-title">Pas de mission aujourd\'hui</div>'+(t2.length?'<div class="empty-sub">'+t2.length+" mission"+(t2.length>1?"s":"")+" demain</div>":"")+"</div>";
-  if(t2.length)h+='<div class="slabel'+(t1.length?" mt":"")+'">DEMAIN \xb7 '+fds(tm).toUpperCase()+"</div>"+t2.map(m=>mcard(m,true)).join("");
-  if(!t1.length&&!t2.length&&up.length){h+='<div class="slabel">PROCHAINE</div>'+mcard(up[0],true);if(up.length>1)h+=avenir(up.slice(1,5));}
-  else if(up.length)h+=avenir(up.slice(0,4));
-  return h;
-}
-function avenir(ms){return'<div class="ubox"><div class="ulbl">\xc0 VENIR</div>'+ms.map(m=>{const mt=getMeta(m.client),ts=(m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop();return'<div class="uitem"><span style="color:'+mt.hex+';font-weight:700;font-size:10px;min-width:36px">'+mt.tag+'</span><span style="color:var(--txt3);min-width:74px">'+fds(m.date)+'</span><span style="color:var(--txt4)">'+ts+(m.debut?" \xb7 "+m.debut:"")+"</span></div>";}).join("")+"</div>";}
-function mcard(m,compact){
-  const mt=getMeta(m.client),done=isDone(m),cxl=isCxl(m);
-  const ts=(m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop();
-  const pax=m.ops&&m.ops.pax?m.ops.pax:m.pax||"";
-  const pills=[];
-  if(pax)pills.push('<span class="mpill mp-pax">\ud83d\udc65 '+pax+' pax</span>');
-  if(m.endroit&&!compact)pills.push('<span class="mpill mp-loc">'+m.endroit.split(",")[0].split("\u2192")[0].trim()+'</span>');
-  if(done&&!compact)pills.push('<span class="mpill mp-ok">\u2713 termin\xe9</span>');
-  return'<div class="mcard'+(done||cxl?" dim":"")+'" style="border-left-color:'+mt.hex+'" onclick="openD(\''+m.mid+'\')">'
-    +'<div class="mc-top"><div class="mc-left"><div class="mc-meta"><span class="mc-tag" style="color:'+mt.hex+'">'+mt.tag+'</span>'
-    +(m.debut?'<span class="mc-time">'+m.debut+'</span>':"")
-    +(!compact?'<span class="mc-date-s">'+fds(m.date)+'</span>':"")
-    +'</div><div class="mc-type">'+ts+'</div>'+(pills.length?'<div class="mc-pills">'+pills.join("")+'</div>':"")
-    +'</div><div class="mc-right">'+(m.desc?'<div class="mc-ref">'+m.desc+'</div>':"")+badge(m)+'</div></div></div>';
-}
-
-/* DETAIL */
-function openD(mid){detail=missions.find(m=>m.mid===mid)||null;pmf=null;pmfStep=0;render();window.scrollTo(0,0);}
-function closeD(){detail=null;render();}
-function rdDetail(m){
-  const mt=getMeta(m.client),b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0;
-  const tr=m.voyage?+m.voyage:trvl(m.endroit),dp=m.debut&&tr?depT(m.debut,tr):null;
-  const eO=emailOpen[m.mid],lg=flogs[m.mid]||[];
-  let h='<button class="back-btn" onclick="closeD()">\u2190 Retour</button>'
-    +'<div class="dcard" style="border-top-color:'+mt.hex+'">'
-    +'<div class="dhdr"><div class="d-top"><div><div class="d-client" style="color:'+mt.hex+'">'+mt.tag+" \xb7 "+m.client+'</div><div class="d-title">'+((m.type||"").replace("ASSISTANCE ",""))+'</div></div>'+badge(m)+'</div>';
-  if(m.debut)h+='<div class="shift-box"><div class="shift-time">\u23f0 '+m.debut+'</div>'+(dp?'<div class="shift-sub">D\xe9part maison ~'+dp+" \xb7 trajet ~"+tr+" min</div>":"")+'</div>';
-  const kp=[];const pax=m.ops&&m.ops.pax?m.ops.pax:m.pax||"";
-  if(pax)kp.push('<span class="kpill hi">\ud83d\udc65 '+pax+' pax</span>');
-  if(m.ops&&m.ops.coaches)kp.push('<span class="kpill hi">\ud83d\ude8c '+m.ops.coaches+' car'+(m.ops.coaches>1?"s":"")+'</span>');
-  if(m.endroit)kp.push('<span class="kpill">\ud83d\udccd '+m.endroit+'</span>');
-  if(m.heures)kp.push('<span class="kpill">\u23f1 '+m.heures+'h pr\xe9vues</span>');
-  if(kp.length)h+='<div class="key-pills">'+kp.join("")+'</div>';
-  h+='<div class="igrid"><div class="ifield"><label>Date</label><span>'+fdl(m.date)+'</span></div>'
-    +'<div class="ifield"><label>R\xe9f</label><span class="mono">'+(m.desc||"\u2014")+'</span></div>'
-    +'<div class="ifield"><label>Statut</label><span>'+(m.statut||"Planifi\xe9")+'</span></div>'
-    +'<div class="ifield"><label>Trajet</label><span>~'+tr+' min</span></div></div>'
-    +(m.notes?'<div style="margin-top:9px;background:var(--bg2);padding:8px 11px;border-radius:7px;font-size:11px;color:var(--txt2);line-height:1.55">\ud83d\udcdd '+m.notes+'</div>':"")
-    +'</div>';
-  if(m.ops){const o=m.ops;h+='<div class="sdiv"><div class="sin"><div class="stitle blue">OP\xc9RATIONS</div>';
-    if(o.trainInfo)h+='<div class="orow"><span class="o-icon">\ud83d\ude84</span><span class="o-lbl">Train</span><span class="o-val">TGV '+o.trainInfo.tgv+' \xb7 Arr. '+o.trainInfo.arrivalTime+(o.trainInfo.etaShip?' \u2192 Bateau '+o.trainInfo.etaShip:"")+'</span></div>';
-    if(o.shipContact)h+='<div class="orow"><span class="o-icon">\u2693</span><span class="o-lbl">'+(o.shipContact.role||"PD Ship")+'</span><span class="o-val">'+o.shipContact.name+' \xb7 <a class="o-ph" href="tel:'+o.shipContact.phone+'">'+o.shipContact.phone+'</a></span></div>';
-    if(o.cohost)h+='<div class="orow"><span class="o-icon">\ud83e\udd1d</span><span class="o-lbl">Co-host</span><span class="o-val">'+o.cohost.name+' \xb7 <a class="o-ph" href="tel:'+o.cohost.phone+'">'+o.cohost.phone+'</a></span></div>';
-    if(o.coordinator)h+='<div class="orow"><span class="o-icon">\ud83d\udc64</span><span class="o-lbl">Coord.</span><span class="o-val">'+o.coordinator.name+(o.coordinator.phone?' \xb7 <a class="o-ph" href="tel:'+o.coordinator.phone+'">'+o.coordinator.phone+'</a>':"")+'</span></div>';
-    if(o.emergency)h+='<div class="orow"><span class="o-icon">\ud83d\udea8</span><span class="o-lbl">Astreinte</span><span class="o-val o-urg"><a class="o-ph o-urg" href="tel:'+o.emergency+'">'+o.emergency+'</a></span></div>';
-    if(o.parisHosts&&o.parisHosts.length)h+='<div class="o-sub">HOSTS PARIS</div>'+o.parisHosts.map(x=>'<div class="o-contact">'+x.name+' \xb7 <a class="o-ph" href="tel:'+x.phone+'">'+x.phone+'</a></div>').join("");
-    if(o.drivers&&o.drivers.length)h+='<div class="o-sub">CHAUFFEURS</div>'+o.drivers.map(x=>'<div class="o-contact">\ud83d\ude8c '+x.name+' \xb7 <a class="o-ph" href="tel:'+x.phone+'">'+x.phone+'</a></div>').join("");
-    if(o.miseEnPlace)h+='<div class="o-sub">MISE EN PLACE</div><div class="mise-box">'+o.miseEnPlace+'</div>';
-    h+='</div></div>';}
-  if(m.email){const e=m.email;
-    h+='<div class="sdiv"><div class="sin"><div class="etoggle" onclick="toggleEmail(\''+m.mid+'\')">'
-      +'<div class="stitle green" style="margin-bottom:0">\ud83d\udce7 EMAIL &amp; DOCS</div>'
-      +'<span style="font-size:10px;color:var(--txt4)">'+(eO?"\u25b2":"\u25bc")+'</span></div>';
-    if(eO)h+='<div style="margin-top:6px;font-size:10px;color:var(--txt4)">'+(e.from||"")+" \xb7 "+(e.date||"")+'</div><div style="font-size:10px;color:var(--txt3)">'+(e.subject||"")+'</div><div class="ebody">'+((e.body||"").trim())+'</div>'+(e.attachments&&e.attachments.length?e.attachments.map(a=>'<div class="att">'+(a.type==="pdf"?"\ud83d\udcc4":"\ud83d\udcca")+'<span>'+a.name+'</span></div>').join(""):"");
-    h+='</div></div>';}
-  h+='<div class="sdiv"><div class="sin"><div class="stitle purple">JOURNAL DE TERRAIN</div>'
-    +(lg.length?'<div class="log-entries">'+lg.map(e=>'<div class="lentry"><div class="lts">'+e.time+'</div><div class="lbubble"><div class="ltag">'+(e.type==="incident"?"\u26a0\ufe0f Incident":e.type==="ras"?"\u2705 RAS":"\ud83d\udcdd Note")+'</div><div class="ltext">'+e.text+'</div></div></div>').join("")+'</div>':'<div class="log-empty">Aucune entr\xe9e.</div>')
-    +'<div class="log-types" id="lt-'+m.mid+'"><button class="ltbtn on" data-t="note" onclick="sLT(\''+m.mid+'\',this)">\ud83d\udcdd Note</button><button class="ltbtn" data-t="incident" onclick="sLT(\''+m.mid+'\',this)">\u26a0\ufe0f Incident</button><button class="ltbtn" data-t="ras" onclick="sLT(\''+m.mid+'\',this)">\u2705 RAS</button></div>'
-    +'<textarea class="ta" id="lta-'+m.mid+'" rows="2" placeholder="\xc9crire\u2026"></textarea>'
-    +'<button class="submit-btn" onclick="addLog(\''+m.mid+'\')">Enregistrer \u2192</button></div></div>';
-  h+='<div class="sdiv"><div class="sin"><div class="stitle blue">MODIFIER</div>'
-    +'<div class="editrow"><input class="einput" id="eh-'+m.mid+'" placeholder="Heures (ex: 3.5)" value="'+(m.heures||"")+'"/><button class="esave" onclick="dEdit(\''+m.mid+'\',\'heures\',\'eh\')">\u2713</button></div>'
-    +'<div class="editrow"><input class="einput" id="es-'+m.mid+'" placeholder="Statut" value="'+(m.statut||"")+'"/><button class="esave" onclick="dEdit(\''+m.mid+'\',\'statut\',\'es\')">\u2713</button></div>'
-    +'<textarea class="ta" id="en-'+m.mid+'" rows="2" placeholder="Notes de terrain\u2026">'+(m.notes||"")+'</textarea>'
-    +'<button class="submit-btn" style="margin-top:6px" onclick="dEdit(\''+m.mid+'\',\'notes\',\'en\')">Sauver</button></div></div>';
-  h+=rdPMF(m);
-  if(b>0||d>0)h+='<div class="sdiv"><div class="sin"><div class="stitle amber">FINANCES</div>'
-    +'<div class="frow"><span class="flbl">Base HT</span><span class="fval">'+(b?b+"\u20ac":"TBD")+'</span></div>'
-    +'<div class="frow"><span class="flbl">Taxe (21.2%)</span><span class="fval">'+(b?ctax(b)+"\u20ac":"\u2014")+'</span></div>'
-    +'<div class="frow"><span class="flbl">D\xe9bours</span><span class="fval">'+(d?d+"\u20ac":"\u2014")+'</span></div>'
-    +'<div class="frow" style="padding-top:6px;border-top:1px solid var(--border)"><span class="flbl">Net</span><span class="fnet">'+(b||d?cnet(b,d)+"\u20ac":"TBD")+'</span></div>'
-    +(m.facture?'<div class="frow" style="margin-top:3px"><span class="flbl">Facture</span><span style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--green)">'+m.facture+'</span></div>':"")
-    +'</div></div>';
-  const cm2=getMeta(m.client);
-  h+='<div class="sdiv"><div class="sin"><div class="stitle muted">CONTACT CLIENT</div>'
-    +'<div style="font-size:12px;color:var(--txt1);line-height:2.1">'+cm2.contact
-    +(cm2.phone?' \xb7 <a href="tel:'+cm2.phone+'">'+cm2.phone+'</a>':"")
-    +' \xb7 <a href="mailto:'+cm2.email+'">'+cm2.email+'</a>'
-    +(cm2.cohost?'<br/><span style="color:var(--green)">\ud83e\udd1d '+cm2.cohost+'</span>':"")
-    +(cm2.emergency&&cm2.tag==="PHIL"?'<br/><a href="tel:'+cm2.emergency+'" style="color:var(--red)">\ud83d\udea8 Astreinte '+cm2.emergency+'</a>':"")
-    +(cm2.notes?'<br/><span style="color:var(--amber);font-size:10px">\u26a0\ufe0f '+cm2.notes+'</span>':"")
-    +'</div></div></div></div>';
-  return h;
-}
-function toggleEmail(mid){emailOpen[mid]=!emailOpen[mid];render();}
-async function dEdit(mid,f,pfx){const el=document.getElementById(pfx+"-"+mid);if(!el)return;const v=el.value.trim();await saveField(mid,f,v);const i=missions.findIndex(m=>m.mid===mid);if(i>-1)missions[i][f]=v;if(detail&&detail.mid===mid)detail[f]=v;el.style.borderColor="rgba(63,185,80,.5)";setTimeout(()=>{if(el)el.style.borderColor="";},1400);}
-function addLog(mid){const ta=document.getElementById("lta-"+mid);const sel=document.querySelector("#lt-"+mid+" .on");if(!ta||!ta.value.trim())return;if(!flogs[mid])flogs[mid]=[];flogs[mid].push({time:nowt(),type:sel&&sel.dataset?sel.dataset.t:"note",text:ta.value.trim()});ta.value="";render();}
-function sLT(mid,btn){document.querySelectorAll("#lt-"+mid+" .ltbtn").forEach(b=>b.classList.remove("on"));btn.classList.add("on");}
-
-/* PMF */
-function rdPMF(m){
-  if(isDone(m))return'<div class="sdiv"><div class="sin" style="text-align:center"><div style="font-size:13px;color:var(--green);font-weight:600;margin-bottom:9px">\u2713 Mission cl\xf4tur\xe9e</div><button class="decomp-link" onclick="go(\'pause\')">\ud83c\udf3f D\xe9comprimer</button></div></div>';
-  if(!pmf||pmf.mid!==m.mid)return'<div class="sdiv"><div class="sin"><div class="stitle green">FIN DE MISSION</div><button class="pmf-trigger" onclick="sPMF(\''+m.mid+'\')">\u2705 Logger les heures &amp; cl\xf4turer</button></div></div>';
-  return'<div class="sdiv"><div class="sin"><div class="stitle green">FIN DE MISSION</div>'+pmfHTML(m)+'</div></div>';
-}
-function sPMF(mid){pmf={mid,start:"",end:nowt(),notes:"",tpl:"RAS",rpt:"",rptLoading:false,debriefState:"",debriefNote:""};pmfStep=1;render();}
-function pmfHTML(m){return pmfStep===1?pmfH1(m):pmfStep===2?pmfH2(m):pmfStep===3?pmfH3(m):pmfStep===4?pmfH4(m):pmfStep===5?pmfH5():"";}
-function pmfH1(m){const du=pmf.start&&pmf.end?durS(pmf.start,pmf.end):"";return'<div class="pmf-step-hdr"><div class="pmf-num">1</div><div class="pmf-step-title">Heures r\xe9elles</div></div><div class="pmf-time-row"><div class="pmf-time-block"><div class="pmf-time-lbl">D\xc9BUT</div><input class="pmf-tinput" type="time" id="ps" value="'+(pmf.start||m.debut||"")+'" onchange="pmf.start=this.value;uDur()"/></div><div class="pmf-arrow">\u2192</div><div class="pmf-time-block"><div class="pmf-time-lbl">FIN</div><input class="pmf-tinput" type="time" id="pe" value="'+(pmf.end||"")+'" onchange="pmf.end=this.value;uDur()"/></div></div><div class="pmf-dur" id="pd">'+(du?"\u23f1 "+du:"")+'</div><button class="pbtn pbtn-next" onclick="pmfGo(2,\''+m.mid+'\')">Suivant \u2192 Rapport</button><span class="pback" onclick="pmf=null;pmfStep=0;render()">Annuler</span>';}
-function uDur(){const s=document.getElementById("ps"),e=document.getElementById("pe"),d=document.getElementById("pd");if(s&&e&&d){const du=durS(s.value,e.value);d.textContent=du?"\u23f1 "+du:"";}}
-function pmfH2(m){return'<div class="pmf-step-hdr"><div class="pmf-num">2</div><div class="pmf-step-title">Rapport de mission</div></div><div class="rpt-grid">'+Object.entries(RPT_LABELS).map(([k,v])=>'<button class="rtbtn'+(pmf.tpl===k?" on":"")+'" onclick="sRpt(\''+k+'\')">'+v+'</button>').join("")+'</div>'+(pmf.rptLoading?'<div class="rpt-loading"><span class="spin">\u21bb</span> R\xe9daction\u2026</div>':pmf.rpt?'<div class="rpt-output">'+pmf.rpt+'</div><div class="rpt-actions"><button class="rabtn" style="background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);color:var(--accent)" onclick="genRpt(\''+m.mid+'\')">\u21bb R\xe9g\xe9n\xe9rer</button><button class="rabtn" style="background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.22);color:var(--green)" onclick="pmfGo(3,\''+m.mid+'\')">Valider \u2192</button></div>':'<button class="pbtn pbtn-next" onclick="genRpt(\''+m.mid+'\')">\u2728 G\xe9n\xe9rer le rapport</button>')+'<span class="pback" onclick="pmfStep=1;render()">\u2190 Retour</span>';}
-function pmfH3(m){return'<div class="pmf-step-hdr"><div class="pmf-num">3</div><div class="pmf-step-title">Notes de terrain</div></div><textarea class="ta" id="pmf-notes" rows="4" placeholder="Retards, pax, chauffeurs\u2026">'+(pmf.notes||"")+'</textarea><button class="pbtn pbtn-next" style="margin-top:7px" onclick="pmfSN(\''+m.mid+'\')">Suivant \u2192 D\xe9brief</button><span class="pback" onclick="pmfStep=2;render()">\u2190 Retour</span>';}
-function pmfH4(m){const ss=[{v:"fluide",l:"\ud83d\ude0c Mission fluide"},{v:"charg\xe9",l:"\ud83d\ude2e\u200d\ud83d\udca8 Charg\xe9 \u2014 j'ai g\xe9r\xe9"},{v:"incident",l:"\u26a0\ufe0f Incident ou stress"},{v:"vide",l:"\ud83d\ude36 Creux \u2014 sous-stimul\xe9"},{v:"bien",l:"\ud83d\ude42 Satisfait"}];return'<div class="pmf-step-hdr"><div class="pmf-num">4</div><div class="pmf-step-title">Comment tu sors de l\xe0 ?</div></div><div class="debrief-list">'+ss.map(s=>'<button class="dbtn'+(pmf.debriefState===s.v?" on":"")+'" onclick="pmf.debriefState=\''+s.v+'\';render()">'+s.l+'</button>').join("")+'</div>'+(pmf.debriefState?'<textarea class="ta" id="pmf-db" rows="2" placeholder="Optionnel\u2026">'+(pmf.debriefNote||"")+'</textarea>':"")+'<button class="pbtn pbtn-confirm" style="margin-top:9px" onclick="pmfFin(\''+m.mid+'\')">Cl\xf4turer la mission</button><span class="pback" onclick="pmfStep=3;render()">\u2190 Retour</span>';}
-function pmfH5(){return'<div style="text-align:center;padding:7px 0"><div style="font-size:26px;margin-bottom:7px">\u2705</div><div style="font-size:15px;font-weight:700;color:var(--txt0);margin-bottom:3px">Mission cl\xf4tur\xe9e</div><div style="font-size:12px;color:var(--txt3);margin-bottom:18px">Heures et notes enregistr\xe9es.</div><button class="decomp-link" onclick="go(\'pause\')">\ud83c\udf3f Prendre un moment</button><span class="pback" onclick="closeD()">\u2190 Retour</span></div>';}
-function pmfGo(step,mid){if(step===2){const s=document.getElementById("ps"),e=document.getElementById("pe");if(s)pmf.start=s.value;if(e)pmf.end=e.value;}pmfStep=step;render();}
-function pmfSN(mid){const ta=document.getElementById("pmf-notes");if(ta)pmf.notes=ta.value;pmfStep=4;render();}
-function sRpt(k){pmf.tpl=k;pmf.rpt="";render();}
-async function genRpt(mid){
-  const m=missions.find(x=>x.mid===mid);if(!m)return;
-  pmf.rptLoading=true;render();
-  const pr=PRENOM[m.client]||"",du=durS(pmf.start,pmf.end),no=pmf.notes||"RAS";
-  const pmap={RAS:"Tu es Joseph Markman, accompagnateur touristique freelance \xe0 Lyon. Rapport d'activit\xe9 professionnel en fran\xe7ais. Ton: factuel, chaleureux. 4-5 phrases.\nDate: "+m.date+" | Client: "+m.client+" | Type: "+m.type+" | Ref: "+(m.desc||"")+" | "+pmf.start+"\u2192"+pmf.end+" | Dur\xe9e: "+du+"\nFormat: Bonjour "+pr+",\n\n[corps]\n\nCordialement, Joseph Markman \xb7 +33 6 51 09 35 57\nRetourne UNIQUEMENT le texte.",INCIDENT:"Rapport d'incident. Factuel.\nDate: "+m.date+" | "+pmf.start+"\u2192"+pmf.end+" | Notes: "+no+"\nBonjour "+pr+",\n[description]\nJoseph Markman \xb7 +33 6 51 09 35 57",ANNULATION:"Constat d'annulation.\nDate: "+m.date+" | Notes: "+no+"\nBonjour "+pr+",\n[constat]\nJoseph Markman",ANOMALIE:"Rapport d'anomalie.\nDate: "+m.date+" | Notes: "+no+"\nBonjour "+pr+",\n[anomalie]\nJoseph Markman",OT:"Rapport heures supp.\nDate: "+m.date+" | Pr\xe9vu: "+(m.heures||"?")+"h | R\xe9el: "+du+"\nBonjour "+pr+",\n[heures]\nJoseph Markman"};
-  try{const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,messages:[{role:"user",content:pmap[pmf.tpl]||pmap.RAS}]})});const d=await r.json();pmf.rpt=d.content&&d.content[0]?d.content[0].text:"Erreur.";}catch(e){pmf.rpt="Erreur: "+e.message;}
-  pmf.rptLoading=false;render();
-}
-async function pmfFin(mid){
-  const ta=document.getElementById("pmf-db");if(ta)pmf.debriefNote=ta.value;
-  const m=missions.find(x=>x.mid===mid);
-  const he=durD(pmf.start,pmf.end)||m&&m.heures||"";
-  const nc=[pmf.notes,pmf.debriefNote?"[\xc9tat: "+pmf.debriefState+" \u2014 "+pmf.debriefNote+"]":pmf.debriefState?"[\xc9tat: "+pmf.debriefState+"]":""].filter(Boolean).join(" | ");
-  await saveField(mid,"heures",he);await saveField(mid,"statut","Rapport envoy\xe9");if(nc)await saveField(mid,"notes",nc);
-  if(pmf.notes){if(!flogs[mid])flogs[mid]=[];flogs[mid].push({time:nowt(),type:"note",text:pmf.notes});}
-  const i=missions.findIndex(x=>x.mid===mid);if(i>-1){missions[i].heures=he;missions[i].statut="Rapport envoy\xe9";if(nc)missions[i].notes=nc;}
-  if(detail&&detail.mid===mid){detail.heures=he;detail.statut="Rapport envoy\xe9";if(nc)detail.notes=nc;}
-  pmfStep=5;render();
-}
-
-/* MONTH — full overview */
-function rdMonth(){
-  const now=new Date(),cm=p2(now.getMonth()+1),t=tday(),tm=tmrw();
-  const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm).sort((a,b)=>a.date.localeCompare(b.date));
-  const tB=mms.reduce((s,m)=>s+(parseFloat(m.base)||0),0);
-  const tD=mms.reduce((s,m)=>s+(parseFloat(m.debours)||0),0);
-  const dn=mms.filter(isDone).length;
-  let h='<div class="slabel">'+MOL[now.getMonth()].toUpperCase()+' \xb7 APERçU</div>'
-    +'<div class="mo-bar">'
-    +'<div><div class="mob-lbl">Missions</div><div class="mob-val" style="color:var(--txt0)">'+mms.length+'</div></div>'
-    +'<div><div class="mob-lbl">Base HT</div><div class="mob-val" style="color:var(--accent)">'+(tB?tB+"\u20ac":"\u2014")+'</div></div>'
-    +'<div><div class="mob-lbl">Net est.</div><div class="mob-val" style="color:var(--amber)">'+(tB||tD?cnet(tB,tD)+"\u20ac":"\u2014")+'</div></div>'
-    +'<div><div class="mob-lbl">Termin\xe9es</div><div class="mob-val" style="color:var(--green)">'+dn+'</div></div>'
-    +'</div>';
-  const gr={};mms.forEach(m=>{(gr[m.date]=gr[m.date]||[]).push(m);});
-  h+='<div class="slabel mt">TOUTES LES MISSIONS</div>';
-  if(!Object.keys(gr).length){return h+'<div class="empty"><div class="empty-icon">\ud83d\udcc5</div><div class="empty-title">Pas de mission ce mois</div></div>';}
-  Object.entries(gr).sort(([a],[b])=>a.localeCompare(b)).forEach(([date,ms])=>{
-    const isT=date===t,isTm=date===tm,isPast=date<t;
-    const col=isT?"var(--accent)":isTm?"var(--green)":isPast?"var(--txt4)":"var(--txt2)";
-    h+='<div class="m-date-hdr" style="color:'+col+'">'+fdl(date).toUpperCase()
-      +(isT?' <span class="m-date-pill" style="background:rgba(88,166,255,.12);color:var(--accent)">aujourd\'hui</span>':"")
-      +(isTm?' <span class="m-date-pill" style="background:rgba(63,185,80,.1);color:var(--green)">demain</span>':"")
-      +'</div>';
-    ms.forEach(m=>{
-      const mt=getMeta(m.client),ts=(m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop();
-      const b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0;
-      h+='<div class="mcard'+(isDone(m)||isCxl(m)?" dim":"")+'" style="border-left-color:'+mt.hex+';margin-bottom:5px" onclick="openD(\''+m.mid+'\')">'
-        +'<div class="mc-top"><div class="mc-left">'
-        +'<div class="mc-meta"><span class="mc-tag" style="color:'+mt.hex+'">'+mt.tag+'</span>'
-        +(m.debut?'<span class="mc-time">'+m.debut+'</span>':"")+'</div>'
-        +'<div class="mc-type">'+ts+'</div>'
-        +(m.desc?'<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--txt4);margin-top:2px">'+m.desc+'</div>':"")
-        +(m.endroit?'<div style="font-size:10px;color:var(--txt4);margin-top:2px">\ud83d\udccd '+m.endroit+'</div>':"")
-        +(m.heures?'<div style="font-size:10px;color:var(--txt3);margin-top:2px">\u23f1 '+m.heures+'h pr\xe9vues</div>':"")
-        +'</div><div class="mc-right">'+badge(m)
-        +(b?'<div style="font-size:12px;color:var(--txt1);font-weight:600;margin-top:4px">'+b+'\u20ac</div>':"")
-        +(d?'<div style="font-size:9px;color:var(--txt4)">+'+d+'\u20ac d\xe9b</div>':"")
-        +'</div></div></div>';
+function enrichMissions(missions){
+  const injected=[];
+  Object.values(EMAIL_DATA).forEach(byClient=>{
+    Object.values(byClient).forEach(d=>{
+      if(d._inject){
+        const id=d["Description"]||d.mid;
+        const exists=missions.some(m=>(mDesc(m)||"")==id||(mMid(m)||"")===(d.mid||""));
+        if(!exists)injected.push(d);
+      }
     });
   });
-  return h;
+  const all=[...missions,...injected];
+  all.forEach(m=>{
+    const date=mDate(m);
+    const ed=EMAIL_DATA[date];
+    if(!ed)return;
+    const meta=gm(mClient(m));
+    const tag=meta.tag;
+    if(ed[tag]){
+      if(ed[tag].ops&&!m._ops)m._ops=ed[tag].ops;
+      if(ed[tag].email&&!m._email)m._email=ed[tag].email;
+    }
+    // Also check for injected mission's own email
+    if(m._email===undefined&&m["Description"]){
+      Object.values(ed).forEach(d=>{
+        if(d._inject&&(d["Description"]===m["Description"]||d.mid===mMid(m))){
+          if(d._email)m._email=d._email;
+        }
+      });
+    }
+  });
+  return all;
 }
 
-/* FINANCE */
-function rdFinance(){
-  const now=new Date(),cy=now.getFullYear(),cm=p2(now.getMonth()+1),mth=now.getMonth();
-  function sums(arr){const b=arr.reduce((s,m)=>s+(parseFloat(m.base)||0),0),d=arr.reduce((s,m)=>s+(parseFloat(m.debours)||0),0);return{b,d,tax:ctax(b),net:cnet(b,d),done:arr.filter(isDone).length,tot:arr.length};}
-  const allY=missions.filter(m=>m.date&&m.date.startsWith(String(cy)));
-  const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm);
-  const ms=sums(mms),ys=sums(allY);
-  // Identical card layout for both month and year
-  function grid(s,label){
-    return'<div class="slabel">'+label+'</div><div class="fin-grid">'
-      +'<div class="fin-card"><div class="fin-lbl">Base HT</div><div class="fin-val" style="color:var(--accent)">'+(s.b?s.b.toLocaleString("fr-FR")+"\u20ac":"\u2014")+'</div></div>'
-      +'<div class="fin-card"><div class="fin-lbl">Taxe (21.2%)</div><div class="fin-val" style="color:var(--red)">'+(s.tax?s.tax.toLocaleString("fr-FR")+"\u20ac":"\u2014")+'</div></div>'
-      +'<div class="fin-card"><div class="fin-lbl">D\xe9bours</div><div class="fin-val" style="color:var(--green)">'+(s.d?s.d.toLocaleString("fr-FR")+"\u20ac":"\u2014")+'</div></div>'
-      +'<div class="fin-card"><div class="fin-lbl">Net</div><div class="fin-val" style="color:var(--amber)">'+(s.net?s.net.toLocaleString("fr-FR")+"\u20ac":"\u2014")+'</div></div>'
-      +'</div>';
-  }
-  let h=grid(ms,MOS[mth].toUpperCase()+" "+cy+" \xb7 MOIS EN COURS");
-  h+=grid(ys,cy+" \xb7 ANN\xc9E COMPL\xc8TE");
-  h+='<div class="slabel mt">PAR CLIENT</div>';
-  Object.entries(META).forEach(([name,mt])=>{
-    const cms=allY.filter(m=>(m.client||"").toLowerCase().includes(name.split(" ")[0].toLowerCase()));if(!cms.length)return;
-    const s=sums(cms),id="cl-"+mt.tag;
-    h+='<div class="coll"><div class="coll-hdr" style="border-left:3px solid '+mt.hex+'" onclick="tColl(\''+id+'\')">'
-      +'<div><div class="coll-title" style="color:'+mt.hex+'">'+mt.tag+" \xb7 "+name+'</div><div class="coll-sub">'+s.tot+" missions \xb7 "+s.done+' termin\xe9es</div></div>'
-      +'<div class="coll-right"><div class="coll-net">'+(s.b?s.b+"\u20ac":"TBD")+'</div><div class="chev" id="chev-'+id+'">\u25bc</div></div></div>'
-      +'<div class="coll-body" id="'+id+'">'
-      +cms.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>{const b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0,dn=isDone(m),cx=isCxl(m);return'<div class="fmr" style="'+(cx?"opacity:.4":"")+'"><div class="fmr-l"><div style="font-size:10px;color:var(--txt4)">'+fds(m.date)+'</div><div style="font-size:11px;color:var(--txt1)">'+((m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop())+'</div>'+(m.desc?'<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--txt4)">'+m.desc+'</div>':"")+'</div><div class="fmr-r"><div class="fmr-base">'+(b?b+"\u20ac":"TBD")+'</div>'+(d?'<div class="fmr-deb">+'+d+'\u20ac d\xe9b</div>':"")+'<div class="fmr-st" style="color:'+(dn?"var(--green)":cx?"var(--red)":"var(--txt4)")+'">'+(dn?"\u2713":cx?"\u2717":"\xb7")+'</div></div></div>';}).join("")
-      +'</div></div>';
-  });
-  h+='<div class="slabel mt">PAR MOIS</div>';
-  ["03","04","05","06","07","08","09","10","11"].forEach(mm=>{
-    const ml=missions.filter(m=>m.date&&m.date.slice(5,7)===mm&&m.date.startsWith(String(cy)));if(!ml.length)return;
-    const s=sums(ml),id2="mo-"+mm,iC=mm===cm,mth2=+mm-1;
-    h+='<div class="coll"><div class="coll-hdr" onclick="tColl(\''+id2+'\')">'
-      +'<div><div class="coll-title" style="'+(iC?"color:var(--accent)":"")+'">'+MOL[mth2].charAt(0).toUpperCase()+MOL[mth2].slice(1)+(iC?" \xb7 en cours":"")+'</div><div class="coll-sub">'+s.tot+" mission"+(s.tot>1?"s":"")+" \xb7 "+(s.b?s.b+"\u20ac HT":"TBD")+'</div></div>'
-      +'<div class="coll-right"><div class="coll-net">'+(s.net?s.net+"\u20ac":"\u2014")+'</div><div class="chev'+(iC?" open":"")+'" id="chev-'+id2+'">\u25bc</div></div></div>'
-      +'<div class="coll-body'+(iC?" open":"")+'" id="'+id2+'">'
-      +ml.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>{const b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0,mt=getMeta(m.client),dn=isDone(m),cx=isCxl(m);return'<div class="fmr" style="'+(cx?"opacity:.4":"")+'"><div class="fmr-l"><div style="display:flex;gap:5px;align-items:center"><span style="color:'+mt.hex+';font-size:10px;font-weight:700">'+mt.tag+'</span><span style="font-size:10px;color:var(--txt4)">'+fds(m.date)+'</span></div><div style="font-size:11px;color:var(--txt1)">'+((m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop())+'</div>'+(m.facture?'<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--green)">'+m.facture+'</div>':"")+'</div><div class="fmr-r"><div class="fmr-base">'+(b?b+"\u20ac":"TBD")+'</div>'+(d?'<div class="fmr-deb">+'+d+'\u20ac d\xe9b</div>':"")+'<div class="fmr-st" style="color:'+(dn?"var(--green)":cx?"var(--red)":"var(--txt4)")+'">'+(dn?"\u2713":cx?"\u2717":"planifi\xe9")+'</div></div></div>';}).join("")
-      +'</div></div>';
-  });
-  h+='<div class="slabel mt">R\xc9F\xc9RENCE</div><div class="ref-box">SIRET \xb7 92815905200010<br/>IBAN \xb7 FR76 2823 3000 0177 6267 3414 414<br/>BIC \xb7 REVOFRP2 (Revolut)</div>';
-  return h;
-}
-function tColl(id){const b=document.getElementById(id),c=document.getElementById("chev-"+id);if(!b)return;b.classList.toggle("open");if(c)c.classList.toggle("open");}
-
-/* PAUSE */
-function rdPause(){const el=document.getElementById("content");if(!el)return;el.innerHTML='<div class="pause-wrap" id="pw"></div>';rPS();}
-function rPS(){const w=document.getElementById("pw");if(!w)return;const sc={s1:ps1(),s2:ps2(),s3:ps3(),s4:ps4(),s5:ps5(),s6:ps6()};w.innerHTML=Object.entries(sc).map(([id,h])=>'<div class="psc'+(id===pScr?" active":"")+'" id="psc-'+id+'">'+h+'</div>').join("");if(pScr==="s1")pTick();if(pScr==="s2")pSB();if(pScr==="s4")setTimeout(pIDraw,50);if(pScr==="s6")pSC();}
-function pGo(s){pSBStop();pScr=s;rPS();}
-function ps1(){return'<div class="p-clock" id="p-clock">\u2014</div><div class="p-h1">The day<br>is done.</div><div class="p-sub">You can put it down now.</div><button class="p-btn-g" onclick="pGo(\'s2\')">Begin</button>';}
-function ps2(){return'<div class="p-eyebrow">Breathe \xb7 4\u20134\u20134\u20134</div><div class="p-bwrap" id="p-bwrap"><div class="p-br pulse"></div><div class="p-br"></div><div class="p-br inner"></div><div class="p-btxt" id="p-btxt">breathe in</div></div><div class="p-bctr" id="p-bctr">round 1 of 4</div><button class="p-btn-ghost" onclick="pSBStop();pGo(\'s3\')">skip \u2192</button>';}
-function ps3(){return'<div class="p-eyebrow">Release</div><div class="p-h1" style="font-size:22px;margin-bottom:8px">What\'s still<br>spinning?</div><div class="p-sub">Write it. It goes nowhere.</div><textarea id="p-dump" class="p-textarea" placeholder="the late group\u2026 the dock\u2026 the weather\u2026"></textarea><div class="p-row"><button class="p-btn-g" onclick="pDump()">Let it go</button><button class="p-btn-s" onclick="pGo(\'s4\')">Nothing tonight</button></div>';}
-function ps4(){return'<div class="p-eyebrow">Draw</div><div class="p-h1" style="font-size:20px;margin-bottom:4px">Make something.</div><div class="p-sub" style="margin-bottom:10px">No rules.</div><div class="p-toolbar"><div class="p-swatch on" style="background:#3fb950" data-c="#3fb950" onclick="pSC2(this)"></div><div class="p-swatch" style="background:#e3b341" data-c="#e3b341" onclick="pSC2(this)"></div><div class="p-swatch" style="background:#bc8cff" data-c="#bc8cff" onclick="pSC2(this)"></div><div class="p-swatch" style="background:#58a6ff" data-c="#58a6ff" onclick="pSC2(this)"></div><div class="p-swatch" style="background:#f0ece4" data-c="#f0ece4" onclick="pSC2(this)"></div><div class="p-swatch" style="background:#f85149" data-c="#f85149" onclick="pSC2(this)"></div><div class="p-swatch" style="background:#444c56" data-c="#444c56" onclick="pSC2(this)"></div><div class="p-bsize">size <input type="range" id="p-bslider" min="2" max="24" value="8" oninput="pBrush=+this.value"></div></div><canvas id="p-canvas" class="p-canvas"></canvas><div class="p-dact"><button class="p-btn-ghost" onclick="pClear()">Clear</button><button class="p-btn-g" onclick="pGo(\'s5\')">Continue \u2192</button></div>';}
-function ps5(){return'<div class="p-eyebrow">Release</div><div class="p-h1" style="font-size:20px;margin-bottom:6px">Tap to let go</div><div class="p-sub" style="margin-bottom:14px">One tap, one thing released.</div><div id="p-rzone" onclick="pRipE(event)" ontouchstart="pRipT(event)"><div class="p-rdot"></div></div><div id="p-tctr">\xb7\xb7\xb7</div><button id="p-dbtn" class="p-btn-ghost" onclick="pGo(\'s6\')">I\'m good \u2192</button>';}
-function ps6(){return'<div class="p-h1">Good night,<br>Joseph.</div><div class="p-sub">You did what needed doing.<br>The rest can wait.</div><div class="p-ibox" id="p-ibox">absorb \xb7 release \xb7 move on</div><button class="p-btn-ghost" onclick="pReset()">start over</button>';}
-function pTick(){const e=document.getElementById("p-clock");if(!e)return;const n=new Date();e.textContent=p2(n.getHours())+":"+p2(n.getMinutes());setTimeout(pTick,30000);}
-const PPH=[{l:"breathe in\u2026",c:"p-bin"},{l:"hold\u2026",c:"p-bhold"},{l:"breathe out\u2026",c:"p-bout"},{l:"hold\u2026",c:"p-bhold"}];
-function pSB(){pBOn=true;pBPhase=0;pBCycle=0;pRB();}
-function pSBStop(){pBOn=false;if(pBTimer)clearTimeout(pBTimer);}
-function pRB(){if(!pBOn)return;const w=document.getElementById("p-bwrap"),t=document.getElementById("p-btxt"),r=document.getElementById("p-bctr");if(!w){pBOn=false;return;}const ph=PPH[pBPhase];w.className="p-bwrap "+ph.c;if(t)t.textContent=ph.l;if(r)r.textContent="round "+(pBCycle+1)+" of 4";void w.offsetWidth;const np=(pBPhase+1)%4,nc=np===0?pBCycle+1:pBCycle;if(nc>=4){pBOn=false;setTimeout(()=>pGo("s3"),600);return;}pBTimer=setTimeout(()=>{pBPhase=np;pBCycle=nc;pRB();},4000);}
-function pDump(){const v=document.getElementById("p-dump");if(v&&v.value.trim()){try{const s=JSON.parse(localStorage.getItem("jmc_notes")||"{}");const k=new Date().toLocaleDateString("fr-FR");s[k]=(s[k]?s[k]+"\n---\n":"")+v.value.trim();localStorage.setItem("jmc_notes",JSON.stringify(s));}catch(e){}}pGo("s4");}
-function pIDraw(){const c=document.getElementById("p-canvas");if(!c)return;const mw=Math.min(window.innerWidth-44,380),mh=Math.min(window.innerHeight-300,210);c.width=mw;c.height=mh;pDCtx=c.getContext("2d");pDCtx.fillStyle="#1c2128";pDCtx.fillRect(0,0,mw,mh);pDCtx.strokeStyle="rgba(255,255,255,0.015)";pDCtx.lineWidth=1;for(let x=0;x<mw;x+=40){pDCtx.beginPath();pDCtx.moveTo(x,0);pDCtx.lineTo(x,mh);pDCtx.stroke();}for(let y=0;y<mh;y+=40){pDCtx.beginPath();pDCtx.moveTo(0,y);pDCtx.lineTo(mw,y);pDCtx.stroke();}c.onmousedown=e=>{pDing=true;pLX=e.offsetX;pLY=e.offsetY;pDot(pLX,pLY);};c.onmousemove=e=>{if(!pDing)return;pLine(e.offsetX,e.offsetY);};c.onmouseup=c.onmouseleave=()=>{pDing=false;};c.addEventListener("touchstart",e=>{e.preventDefault();const t=e.touches[0],r=c.getBoundingClientRect();pDing=true;pLX=t.clientX-r.left;pLY=t.clientY-r.top;pDot(pLX,pLY);},{passive:false});c.addEventListener("touchmove",e=>{e.preventDefault();const t=e.touches[0],r=c.getBoundingClientRect();pLine(t.clientX-r.left,t.clientY-r.top);},{passive:false});c.addEventListener("touchend",()=>{pDing=false;},{passive:false});}
-function pDot(x,y){if(!pDCtx)return;pDCtx.globalAlpha=.85;pDCtx.fillStyle=pClr;pDCtx.beginPath();pDCtx.arc(x,y,pBrush/2,0,Math.PI*2);pDCtx.fill();pDCtx.globalAlpha=1;}
-function pLine(x,y){if(!pDCtx)return;pDCtx.globalAlpha=.75;pDCtx.strokeStyle=pClr;pDCtx.lineWidth=pBrush;pDCtx.lineCap="round";pDCtx.lineJoin="round";pDCtx.beginPath();pDCtx.moveTo(pLX,pLY);pDCtx.lineTo(x,y);pDCtx.stroke();pDCtx.globalAlpha=1;pLX=x;pLY=y;}
-function pSC2(el){document.querySelectorAll(".p-swatch").forEach(s=>s.classList.remove("on"));el.classList.add("on");pClr=el.dataset.c;}
-function pClear(){const c=document.getElementById("p-canvas");if(!c||!pDCtx)return;pDCtx.fillStyle="#1c2128";pDCtx.fillRect(0,0,c.width,c.height);}
-function pRipE(e){_rip(e.offsetX,e.offsetY);}
-function pRipT(e){e.preventDefault();const t=e.touches[0],r=document.getElementById("p-rzone").getBoundingClientRect();_rip(t.clientX-r.left,t.clientY-r.top);}
-function _rip(x,y){pTaps++;const z=document.getElementById("p-rzone");if(!z)return;const sz=Math.max(z.offsetWidth,z.offsetHeight)*.6;const el=document.createElement("div");el.className="p-ripple";el.style.cssText="left:"+x+"px;top:"+y+"px;width:"+sz+"px;height:"+sz+"px";z.appendChild(el);el.addEventListener("animationend",()=>el.remove());const msgs=["\xb7\xb7\xb7","\xb7\xb7\xb7","keep going\u2026","good\u2026","yes\u2026","almost\u2026","there\u2026"];const ct=document.getElementById("p-tctr");if(ct)ct.textContent=pTaps<msgs.length?msgs[pTaps]:pTaps+" things released";if(pTaps===3&&ct)ct.style.color="var(--green)";if(pTaps>=5){const db=document.getElementById("p-dbtn");if(db)db.style.opacity="1";}}
-function pSC(){const el=document.getElementById("p-ibox");if(el)el.textContent=localStorage.getItem("jmc_intention")||"absorb \xb7 release \xb7 move on";}
-function pReset(){pScr="s1";pTaps=0;pSBStop();pBPhase=0;pBCycle=0;pDCtx=null;rPS();}
-
+// Demo fallback (used when GAS API is unavailable)
 const DEMO=[
-  {mid:"2026-03-29-PHIL-01",date:"2026-03-29",client:"Philibert Tourisme",type:"ASSISTANCE GARE LYON - DEPARTS",desc:"HMD260322_DPT",heures:"2",base:"73",debours:"21.5",debut:"09:00",endroit:"Gare de Perrache",statut:"Planifi\xe9",pax:54,ops:{pax:54,coaches:2,cohost:{name:"V\xe9ronique OLIVIER",phone:"+33 6 41 60 42 88"},emergency:"+33 4 78 98 56 49",parisHosts:[{name:"GOUARDERES Laurence",phone:"+33 6 59 28 54 20"},{name:"MTINSI Lance",phone:"+33 6 34 95 74 02"}],drivers:[{name:"MESSAOUDE",phone:"06 08 67 06 65"},{name:"ROCHA MO2",phone:"06 67 55 63 06"}]},email:{from:"rhone-ops@philibert.fr",date:"23/03/2026",subject:"[Phil&O][HMD260322_DPT] Reconfirmation",body:"09:00/11:00 - HMD260322_DPT\nAssistance D\xe9parts Gare Perrache"}},
-  {mid:"2026-03-29-PHIL-02",date:"2026-03-29",client:"Philibert Tourisme",type:"ASSISTANCE GARE LYON - ARRIVEES",desc:"HMD260329_ARR",heures:"2",base:"73",debours:"21.5",debut:"12:00",endroit:"Gare de Perrache",statut:"Planifi\xe9",pax:29,ops:{pax:29,coaches:1,shipContact:{name:"Michael BRIGHT",phone:"+49 152 225 381 37",role:"PD Ship"},emergency:"+33 4 78 98 56 49",parisHosts:[{name:"GOUARDERES Laurence",phone:"+33 6 59 28 54 20"},{name:"MTINSI Lance",phone:"+33 6 34 95 74 02"}],drivers:[{name:"Sylvain",phone:"+33 7 88 29 26 69"}],trainInfo:{tgv:"6615",arrivalTime:"15:10",etaShip:"16:00"}},email:{from:"rhone-ops@philibert.fr",date:"23/03/2026",subject:"[Phil&O][HMD260329_ARR] Envoi Reconfirmation",body:"29/03/2026 - 12:00/14:00\nAssistance Arriv\xe9es Gare Perrache",attachments:[{name:"Programme_HMD260329_ARR.pdf",type:"pdf"},{name:"HMD260329 TSF MANIFEST LYON V3.xlsx",type:"xlsx"}]}},
-  {mid:"2026-04-05-FTFW-01",date:"2026-04-05",client:"Feel the French Way",type:"ASSISTANCE TRANSFERT HOTEL - BATEAU",desc:"RV260405LG04",heures:"2",base:"100",debours:"25",debut:"10:00",endroit:"Intercontinental \u2192 Quai Claude Bernard",statut:"Planifi\xe9",pax:50,ops:{pax:50,coaches:1,coordinator:{name:"Laura Brionne (FTFW)",phone:"contact@feelthefrenchway.fr"},miseEnPlace:"Pr\xe9sence demand\xe9e \xe0 10h00 \xe0 l'Intercontinental\n10h15 : check-out + r\xe9cup\xe9ration bagages\n11h00 : mise en place autocar Palisse\n11h15 : d\xe9part \u2192 Quai Claude Bernard\nArriv\xe9e pr\xe9vue : 11h45 max\n\u26a0\ufe0f Stationner max 15 min devant h\xf4tel\nAppeler Stefani ~5 min avant arriv\xe9e quai"},email:{from:"contact@feelthefrenchway.fr",date:"27/03/2026",subject:"RV260405LG04 - Embarkation manifest 5th April",body:"TRANSFERT N\xb02 \u2014 Joseph + car Palisse\n\n\u2022 Pr\xe9sence 10h00 / Intercontinental\n\u2022 10h15 check-out + bagages\n\u2022 11h00 autocar + chargement\n\u2022 11h15 d\xe9part \u2192 Quai Claude Bernard\n\u2022 Arriv\xe9e 11h45 max\n\nCharter Riverside ~107\u2013110 pax",attachments:[{name:"RIVERSIDE RAVEL - EMBARKATION TIMINGS 05 APRIL.xlsx",type:"xlsx"}]}},
-  {mid:"2026-04-08-UMB-01",date:"2026-04-08",client:"Un Monde Bleu",type:"ASSISTANCE TRANSFERT LYON - MONTPELLIER",desc:"LBY02+LBY03",heures:"",base:"",debours:"",debut:"",endroit:"Lyon \u2192 Montpellier",statut:"Planifi\xe9",email:{from:"OpsRiviera@umb-dmc.fr",date:"27/03/2026",subject:"LORD BYRON - LBY02 ET LBY03",body:"Veuillez trouver en PJ les listes de transferts\npour le Lord BYRON du 08.04.",attachments:[{name:"LORD BYRON - LBY02.pdf",type:"pdf"},{name:"LORD BYRON - LBY03.pdf",type:"pdf"}]}},
-  {mid:"2026-04-19-GCS-01",date:"2026-04-19",client:"Go C\xf4te Sa\xf4ne",type:"ASSISTANCE TRANSFERT LYON - BALE",desc:"VK09-SUP02",heures:"8",base:"450",debours:"20",debut:"08:00",endroit:"Quai Claude Bernard",statut:"Planifi\xe9"},
+  {mid:"2026-04-05-FTFW-01","Date mission":"2026-04-05","Client":"Feel the French Way",
+    "Type":"ASSISTANCE TRANSFERT HOTEL - BATEAU","Description":"RV260405LG04",
+    "Heures":"2","Base (HT)":"100","Débours":"25","Début":"10:00",
+    "Endroit":"Intercontinental → Quai Claude Bernard","Statut":"Planifié"},
+  {mid:"2026-04-08-UMB-01","Date mission":"2026-04-08","Client":"Un Monde Bleu",
+    "Type":"ASSISTANCE TRANSFERT LYON - MONTPELLIER","Description":"LBY02+LBY03",
+    "Heures":"","Base (HT)":"","Débours":"","Début":"","Endroit":"Lyon → Montpellier","Statut":"Planifié"},
+  {mid:"2026-04-10-PHIL-01","Date mission":"2026-04-10","Client":"Philibert Tourisme",
+    "Type":"ASSISTANCE GARE LYON - DEPARTS","Description":"LFN260403_DPT",
+    "Heures":"2","Base (HT)":"73","Débours":"21.5","Début":"09:00",
+    "Endroit":"Gare de Perrache","Statut":"Planifié"},
+  {mid:"2026-04-12-PHIL-01","Date mission":"2026-04-12","Client":"Philibert Tourisme",
+    "Type":"ASSISTANCE GARE LYON - DEPARTS","Description":"HMD260405_DPT",
+    "Heures":"2","Base (HT)":"73","Débours":"21.5","Début":"09:00",
+    "Endroit":"Gare de Perrache","Statut":"Planifié","Notes":"⚠️ Reconfirmer sur phileo.philibert.fr"},
+  {mid:"2026-04-19-GCS-01","Date mission":"2026-04-19","Client":"Go Côte Saône",
+    "Type":"ASSISTANCE TRANSFERT LYON - BALE","Description":"VK09-SUP02",
+    "Heures":"8","Base (HT)":"450","Débours":"20","Début":"08:00",
+    "Endroit":"Quai Claude Bernard","Statut":"Planifié"},
 ];
+
+// ============================================================
+// UTILS
+// ============================================================
+const DF=["dim","lun","mar","mer","jeu","ven","sam"];
+const MF=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const MS=["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
+function fd(d){if(!d)return"";const s=String(d).trim();if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m)return`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;return s;}
+function nice(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DF[d.getDay()]} ${d.getDate()} ${MS[d.getMonth()]}`;}
+function niceLong(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return`${DF[d.getDay()]} ${d.getDate()} ${MF[d.getMonth()]}`;}
+function today(){return new Date().toISOString().slice(0,10);}
+function tmrw(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);}
+function cMonth(){return String(new Date().getMonth()+1).padStart(2,"0");}
+function nxtMonth(){const n=new Date().getMonth()+2;return String(n>12?1:n).padStart(2,"00");}
+function gm(c){if(!c)return{tag:"?",color:"#666",lc:"#444"};for(const[k,v]of Object.entries(CMETA))if(c.toLowerCase().includes(k.split(" ")[0].toLowerCase()))return v;return{tag:"?",color:"#666",lc:"#444"};}
+function trv(e){if(!e)return null;const u=e.toUpperCase();for(const t of TRANSPORT)if(u.includes(t.d.toUpperCase()))return t.t;if(u.includes("AIRPORT")||u.includes("LYS"))return 52;return 45;}
+function depTime(debut,travel){if(!debut||!travel)return null;const p=debut.split(":");if(p.length<2)return null;const m=parseInt(p[0])*60+parseInt(p[1])-travel-15;return`${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;}
+
+// ============================================================
+// DATA
+// ============================================================
+async function fetchAll(){
+  // Try action=all first (fixed GAS API), fall back to action=missions (old API)
+  try{
+    const r=await fetch(GAS_URL+"?action=all",{cache:"no-store"});
+    const d=await r.json();
+    if(d.missions&&d.missions.length>0)return d.missions;
+    // Fallback: old API single-month
+    const r2=await fetch(GAS_URL+"?action=missions&month=current",{cache:"no-store"});
+    const d2=await r2.json();
+    return d2.missions||[];
+  }catch(e){console.warn("GAS fetch failed:",e);return null;}
+}
+async function fetchW(){
+  try{const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weather_code&daily=precipitation_probability_max&timezone=Europe/Paris&forecast_days=1");
+  const d=await r.json();const code=d.current?.weather_code||0;const temp=Math.round(d.current?.temperature_2m||0);const rain=d.daily?.precipitation_probability_max?.[0]||0;
+  const icons={0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",51:"🌦️",53:"🌧️",61:"🌧️",63:"🌧️",71:"🌨️",80:"🌦️",95:"⛈️"};
+  return{temp,icon:icons[code]||"🌤️",rain};}catch(e){return{temp:"?",icon:"🌤️",rain:0};}
+}
+async function updateField(id,field,value){
+  try{const r=await fetch(`${GAS_URL}?action=update&id=${encodeURIComponent(id)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`,{cache:"no-store"});return await r.json();}
+  catch(e){return{error:e.message};}
+}
+
+// ============================================================
+// FIELD GETTERS (handles accent variations)
+// ============================================================
+function F(m,k){return m[k]||m[k.replace("é","e")]||m[k.replace("è","e")]||m[k.replace("û","u")]||"";}
+function mDate(m){return fd(F(m,"Date mission"));}
+function mDebut(m){return F(m,"Début")||F(m,"Debut")||"";}
+function mClient(m){return F(m,"Client");}
+function mType(m){return F(m,"Type");}
+function mDesc(m){return F(m,"Description");}
+function mHeures(m){return F(m,"Heures");}
+function mBase(m){return F(m,"Base (HT)");}
+function mDeb(m){return F(m,"Débours")||F(m,"Debours");}
+function mStatut(m){return F(m,"Statut");}
+function mNotes(m){return F(m,"Notes");}
+function mEndroit(m){return F(m,"Endroit");}
+function mMid(m){return F(m,"Mission ID");}
+function isDone(m){const s=(mStatut(m)).toLowerCase();return s.includes("envoyé")||s.includes("terminé")||s.includes("confirme");}
+
+// ============================================================
+// APP
+// ============================================================
+function App(){
+  const[theme,setTheme]=React.useState(()=>localStorage.getItem("mc_theme")||"dark");
+  const[tab,setTab]=React.useState("today");
+  const[detail,setDetail]=React.useState(null);
+  const[missions,setMissions]=React.useState([]);
+  const[loading,setLoading]=React.useState(true);
+  const[weather,setWeather]=React.useState({temp:"·",icon:"🌤️",rain:0});
+  const[breatheOn,setBreatheOn]=React.useState(false);
+  const[postMission,setPostMission]=React.useState(null);
+
+  const T=theme==="dark"?DARK:LIGHT;
+  React.useEffect(()=>{document.body.className=theme;localStorage.setItem("mc_theme",theme);},[theme]);
+
+  const load=React.useCallback(async()=>{
+    // Show cached data instantly, then refresh in background
+    const cached=localStorage.getItem("mc_v3");
+    if(cached&&!missions.length){try{const p=JSON.parse(cached);setMissions(enrichMissions(p));setLoading(false);}catch(e){}}
+    const[m,w]=await Promise.all([fetchAll(),fetchW()]);
+    if(m!==null&&m.length>0){
+      localStorage.setItem("mc_v3",JSON.stringify(m));
+      setMissions(enrichMissions(m));
+    } else if(!cached) {
+      setMissions(enrichMissions(DEMO));
+    }
+    if(w)setWeather(w);
+    setLoading(false);
+  },[]);
+  React.useEffect(()=>{load();},[load]);
+
+  const t0=today(),t1=tmrw(),cm=cMonth(),nm=nxtMonth(),mn=MF[parseInt(cm)-1]||"?",mnNext=MF[parseInt(nm)-1]||"?";
+  const todayM=React.useMemo(()=>missions.filter(m=>mDate(m)===t0).sort((a,b)=>(mDebut(a)||"z").localeCompare(mDebut(b)||"z")),[missions,t0]);
+  const tmrwM=React.useMemo(()=>missions.filter(m=>mDate(m)===t1).sort((a,b)=>(mDebut(a)||"z").localeCompare(mDebut(b)||"z")),[missions,t1]);
+  const upcoming=React.useMemo(()=>missions.filter(m=>mDate(m)>t0).sort((a,b)=>mDate(a).localeCompare(mDate(b))),[missions,t0]);
+  const done=missions.filter(isDone).length;
+  const mBase_=missions.reduce((s,m)=>s+(parseFloat(mBase(m))||0),0);
+  const mDeb_=missions.reduce((s,m)=>s+(parseFloat(mDeb(m))||0),0);
+  const byDate=React.useMemo(()=>{const g={};missions.forEach(m=>{const d=mDate(m);if(d)(g[d]=g[d]||[]).push(m);});return g;},[missions]);
+
+  if(loading)return<div className="loading"><div className="spinner"></div><span style={{fontSize:12,color:T.textFaint}}>Chargement...</span></div>;
+
+  // Post-mission flow
+  if(postMission)return<PostMissionFlow m={postMission} T={T} onDone={async(data)=>{
+    if(data.heures)await updateField(mMid(postMission),"heures",data.heures);
+    if(data.notes)await updateField(mMid(postMission),"notes",data.notes);
+    if(data.statut)await updateField(mMid(postMission),"statut",data.statut);
+    setPostMission(null);load();
+  }} onCancel={()=>setPostMission(null)}/>;
+
+  return(
+    <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:T.bg}}>
+      {/* HEADER */}
+      <div style={{padding:"16px 18px 12px",background:theme==="dark"?"linear-gradient(180deg,#0e1320,#0a0f1a)":"linear-gradient(180deg,#fff,#f8f6f2)",borderBottom:`1px solid ${T.border}`}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+          <div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:9,letterSpacing:3,color:T.textFaint,textTransform:"uppercase"}}>Mission Control</span>
+              <button onClick={()=>setTheme(theme==="dark"?"light":"dark")} style={{background:"none",border:"none",cursor:"pointer",fontSize:12,padding:2,color:T.textFaint}}>{theme==="dark"?"☀️":"🌙"}</button>
+            </div>
+            <div style={{fontSize:18,fontWeight:700,color:T.textBright,marginTop:1}}>{new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}</div>
+          </div>
+          <div style={{textAlign:"right",fontSize:12,color:T.textMuted}}>
+            <div style={{fontSize:18}}>{weather.icon}</div>
+            <div>{weather.temp}°C</div>
+            {weather.rain>15&&<div style={{fontSize:10,color:T.accent}}>🌧 {weather.rain}%</div>}
+          </div>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:4}}>
+          <div style={{fontSize:11,color:T.textFaint}}>{mn} · {missions.length} missions · {done} terminées</div>
+          <button onClick={load} style={{background:"none",border:"none",color:T.textFaint,fontSize:10,cursor:"pointer",padding:4}}>↻</button>
+        </div>
+      </div>
+
+      {/* NAV */}
+      <div style={{display:"flex",borderBottom:`1px solid ${T.border}`,background:T.bg,position:"sticky",top:0,zIndex:10}}>
+        {[{id:"today",icon:"☀️",label:"Aujourd'hui"},{id:"month",icon:"📅",label:MS[parseInt(cm)-1]+"·"+MS[Math.min(parseInt(cm),11)]},{id:"finance",icon:"💶",label:"Finances"},{id:"breathe",icon:"🌿",label:"Pause"}].map(n=>(
+          <button key={n.id} onClick={()=>{setTab(n.id);setDetail(null);setBreatheOn(false);}} style={{
+            flex:1,padding:"9px 0 7px",background:"none",border:"none",cursor:"pointer",
+            color:tab===n.id?T.textBright:T.textFaint,fontSize:9,fontWeight:tab===n.id?700:400,
+            borderBottom:tab===n.id?`2px solid ${T.accent}`:"2px solid transparent",letterSpacing:.5,
+          }}><div style={{fontSize:14,marginBottom:1}}>{n.icon}</div>{n.label}</button>
+        ))}
+      </div>
+
+      <div style={{padding:"14px 16px 40px",minHeight:"65vh"}}>
+
+        {/* TODAY */}
+        {tab==="today"&&!detail&&(
+          <div>
+            {todayM.length===0?(
+              <div style={{textAlign:"center",padding:"28px 0"}}>
+                <div style={{fontSize:32,marginBottom:4}}>☀️</div>
+                <div style={{fontSize:14,color:T.textMuted}}>Pas de mission aujourd'hui</div>
+              </div>
+            ):(
+              <>{Lbl("AUJOURD'HUI",T)}{todayM.map(m=><Card key={mMid(m)} m={m} T={T} onTap={()=>setDetail(m)}/>)}</>
+            )}
+            {tmrwM.length>0&&<>{Lbl("DEMAIN · "+nice(t1),T)}{tmrwM.map(m=><Card key={mMid(m)} m={m} T={T} compact onTap={()=>setDetail(m)}/>)}</>}
+            {todayM.length===0&&tmrwM.length===0&&upcoming.length>0&&(
+              <>{Lbl("PROCHAINE · "+nice(mDate(upcoming[0])),T)}<Card m={upcoming[0]} T={T} onTap={()=>setDetail(upcoming[0])}/></>
+            )}
+          </div>
+        )}
+
+        {/* DETAIL */}
+        {detail&&<Detail m={detail} T={T} theme={theme} onBack={()=>setDetail(null)} onPostMission={()=>{setPostMission(detail);setDetail(null);}}/>}
+
+        {/* MONTH */}
+        {tab==="month"&&!detail&&(
+          <div>
+            <MonthBand label={mn.toUpperCase()} missions={missions.filter(m=>mDate(m).slice(5,7)===cm)} t0={t0} t1={t1} T={T} theme={theme} accent={T.accent} onTap={m=>setDetail(m)}/>
+            <div style={{height:6}}/>
+            <MonthBand label={(MF[parseInt(nm)-1]||"?").toUpperCase()} missions={missions.filter(m=>mDate(m).slice(5,7)===nm)} t0={t0} t1={t1} T={T} theme={theme} accent={T.green} onTap={m=>setDetail(m)}/>
+            {Lbl("CONTACTS CLIENTS",T)}
+            {Object.entries(CMETA).map(([name,meta])=>(
+              <div key={name} style={{background:T.card,borderRadius:10,padding:12,marginBottom:6,borderLeft:`3px solid ${meta.color}`,fontSize:11,color:T.textMuted,lineHeight:1.7}}>
+                <div style={{fontWeight:700,fontSize:12,color:meta.color}}>{meta.tag} · {name}</div>
+                <div style={{marginTop:3}}>
+                  {meta.contact}{meta.phone?` · ${meta.phone}`:""}<br/>
+                  <a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a>
+                  {meta.cohost&&<><br/>🤝 {meta.cohost}</>}
+                  {meta.emergency&&<><br/>🚨 <a href={`tel:${meta.emergency}`} style={{color:T.red}}>{meta.emergency}</a></>}
+                  {meta.notes&&<><br/><span style={{color:T.orange,fontSize:10}}>⚠️ {meta.notes}</span></>}
+                </div>
+              </div>
+            ))}
+            {Lbl("TRAJETS DEPUIS SAINT-PRIEST",T)}
+            <div style={{background:T.card,borderRadius:10,padding:12,fontSize:11,color:T.textFaint,lineHeight:1.9}}>
+              {TRANSPORT.map((t,i)=><div key={i}>🚗 {t.d} — {t.t} min</div>)}
+              <div style={{fontSize:9,marginTop:4,opacity:.6}}>Avant 6h: Bolt VTC</div>
+            </div>
+          </div>
+        )}
+
+        {/* FINANCE */}
+        {tab==="finance"&&(
+          <div>
+            {Lbl(`${mn.toUpperCase()} · FINANCES`,T)}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
+              <StatBox l="Base HT" v={`${mBase_.toLocaleString("fr-FR")}€`} c={T.accent} T={T}/>
+              <StatBox l="Débours" v={`${mDeb_.toLocaleString("fr-FR")}€`} c={T.green} T={T}/>
+              <StatBox l="Net" v={`${Math.round(mBase_*.74+mDeb_).toLocaleString("fr-FR")}€`} c={T.orange} T={T}/>
+              <StatBox l="Missions" v={`${done}/${missions.length}`} c={T.purple} T={T}/>
+            </div>
+            {Lbl("PAR CLIENT",T)}
+            {Object.entries(CMETA).map(([name,meta])=>{
+              const cm2=missions.filter(m=>mClient(m).includes(name.split(" ")[0]));
+              if(!cm2.length)return null;
+              const cb=cm2.reduce((s,m)=>s+(parseFloat(mBase(m))||0),0);
+              const cd=cm2.reduce((s,m)=>s+(parseFloat(mDeb(m))||0),0);
+              return(
+                <div key={name} style={{background:T.card,borderRadius:10,padding:"10px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,display:"flex",justifyContent:"space-between"}}>
+                  <div><div style={{fontWeight:700,fontSize:12,color:meta.color}}>{meta.tag}</div><div style={{fontSize:10,color:T.textFaint}}>{cm2.length} missions</div></div>
+                  <div style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:700,color:T.textMuted}}>{cb>0?`${cb}€`:"TBD"}</div>{cd>0&&<div style={{fontSize:10,color:T.textFaint}}>+{cd}€ déb</div>}</div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* BREATHE */}
+        {tab==="breathe"&&<Breathe active={breatheOn} toggle={()=>setBreatheOn(!breatheOn)} T={T}/>}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// COMPONENTS
+// ============================================================
+function Lbl(t,T){return<div style={{fontSize:10,color:T.textFaint,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:6,marginTop:4}}>{t}</div>;}
+function StatBox({l,v,c,T}){return<div style={{background:T.card,borderRadius:10,padding:"10px 12px",textAlign:"center"}}><div style={{fontSize:9,color:T.textFaint,marginBottom:2}}>{l}</div><div style={{fontSize:16,fontWeight:700,color:c}}>{v}</div></div>;}
+
+function Card({m,compact,onTap,T}){
+  const meta=gm(mClient(m));
+  const dn=isDone(m);
+  const debut=mDebut(m)||"TBD";
+  const type=(mType(m)).replace("ASSISTANCE ","").split(" - ").pop();
+  return(
+    <div onClick={onTap} style={{background:T.card,borderRadius:compact?10:12,padding:compact?"8px 12px":"12px 14px",marginBottom:6,borderLeft:`3px solid ${meta.color}`,cursor:"pointer",opacity:dn?.5:1,transition:"transform .1s"}}
+      onPointerDown={e=>e.currentTarget.style.transform="scale(0.98)"}onPointerUp={e=>e.currentTarget.style.transform=""}onPointerLeave={e=>e.currentTarget.style.transform=""}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div style={{flex:1}}>
+          <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+            <span style={{fontSize:compact?11:13,fontWeight:700,color:meta.color}}>{meta.tag}</span>
+            <span style={{fontSize:compact?10:12,color:T.textMuted}}>{debut}</span>
+            {!compact&&<span style={{fontSize:10,color:T.textFaint}}>{nice(mDate(m))}</span>}
+            {dn&&<span style={{fontSize:8,background:T.green+"22",color:T.green,padding:"1px 4px",borderRadius:3}}>✓</span>}
+          </div>
+          <div style={{fontSize:compact?10:12,color:T.textMuted,marginTop:2}}>{type}</div>
+        </div>
+        <div style={{textAlign:"right",fontSize:10,color:T.textFaint}}>
+          {mDesc(m)&&<div style={{fontFamily:"monospace",fontSize:9}}>{mDesc(m)}</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// DETAIL VIEW
+// ============================================================
+function Detail({m,T,theme,onBack,onPostMission}){
+  const meta=gm(mClient(m));
+  const base=parseFloat(mBase(m))||0,deb=parseFloat(mDeb(m))||0;
+  const debut=mDebut(m)||"TBD";
+  const endroit=mEndroit(m);
+  const trvl=trv(endroit);
+  const dep=depTime(debut,trvl);
+  const dn=isDone(m);
+
+  return(
+    <div>
+      <button onClick={onBack} style={{background:"none",border:"none",color:T.accent,fontSize:11,cursor:"pointer",padding:"0 0 8px"}}>← Retour</button>
+      <div style={{background:T.card,borderRadius:14,overflow:"hidden",borderLeft:`4px solid ${meta.color}`}}>
+        {/* Header */}
+        <div style={{padding:"16px 16px 12px"}}>
+          <div style={{display:"flex",justifyContent:"space-between"}}>
+            <div>
+              <div style={{fontSize:9,color:meta.color,fontWeight:700,letterSpacing:1.5}}>{meta.tag} · {mClient(m)}</div>
+              <div style={{fontSize:15,fontWeight:700,color:T.textBright,marginTop:2}}>{mType(m).replace("ASSISTANCE ","")}</div>
+            </div>
+            <div style={{fontSize:8,padding:"2px 6px",borderRadius:4,background:dn?T.green+"22":T.accent+"22",color:dn?T.green:T.accent,fontWeight:600}}>{mStatut(m)||"—"}</div>
+          </div>
+
+          {/* Departure helper */}
+          {debut!=="TBD"&&trvl&&(
+            <div style={{marginTop:8,padding:"6px 10px",background:T.timeBox,borderRadius:8,border:`1px solid ${T.timeBorder}`}}>
+              <div style={{fontSize:10,color:T.accent,fontWeight:600}}>⏰ Mission : {debut}</div>
+              {dep&&<div style={{fontSize:9,color:T.textMuted,marginTop:1}}>Départ maison ~{dep} · trajet ~{trvl}min</div>}
+            </div>
+          )}
+
+          {/* Info grid */}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:12,fontSize:11}}>
+            <FldBox l="Date" v={niceLong(mDate(m))} T={T}/>
+            <FldBox l="Heure" v={debut} T={T}/>
+            <FldBox l="Lieu" v={endroit||"—"} T={T}/>
+            <FldBox l="Durée" v={mHeures(m)?mHeures(m)+"h":"TBD"} T={T}/>
+            <FldBox l="Réf" v={mDesc(m)||"—"} T={T} mono/>
+            <FldBox l="ID" v={mMid(m)} T={T} mono small/>
+          </div>
+        </div>
+
+        {/* Finances */}
+        {(base>0||deb>0)&&(
+          <div style={{padding:"10px 16px",borderTop:`1px solid ${T.border}`,fontSize:11}}>
+            <div style={{display:"flex",justifyContent:"space-between",color:T.textFaint,marginBottom:2}}><span>Base HT</span><span style={{color:T.textMuted}}>{base?base+"€":"TBD"}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",color:T.textFaint,marginBottom:2}}><span>Débours</span><span style={{color:T.textMuted}}>{deb?deb+"€":"—"}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontWeight:700,color:T.orange,fontSize:12,marginTop:3}}><span>Net</span><span>{Math.round(base*.74+deb)}€</span></div>
+          </div>
+        )}
+
+        {/* Ops data from email enrichment */}
+        {m._ops&&<OpsSection ops={m._ops} T={T}/>}
+        {/* Email & attachments */}
+        {m._email&&<EmailSection email={m._email} T={T}/>}
+        {/* Notes */}
+        {mNotes(m)&&<div style={{padding:"8px 16px 12px",fontSize:10,color:T.textFaint,lineHeight:1.5}}>📝 {mNotes(m)}</div>}
+
+        {/* Contact */}
+        <div style={{padding:"10px 16px",borderTop:`1px solid ${T.border}`}}>
+          <div style={{fontSize:9,color:T.textFaint,marginBottom:3}}>CONTACT</div>
+          <div style={{fontSize:11,color:T.textMuted}}>
+            {meta.contact}{meta.phone?<> · <a href={`tel:${meta.phone}`} style={{color:T.accent}}>{meta.phone}</a></>:""} · <a href={`mailto:${meta.email}`} style={{color:T.accent}}>{meta.email}</a>
+          </div>
+          {meta.cohost&&<div style={{fontSize:10,color:T.textFaint,marginTop:2}}>🤝 {meta.cohost}</div>}
+          {meta.emergency&&<div style={{fontSize:10,marginTop:2}}>🚨 <a href={`tel:${meta.emergency}`} style={{color:T.red}}>{meta.emergency}</a></div>}
+        </div>
+
+        {/* POST-MISSION BUTTON */}
+        {!dn&&(
+          <div style={{padding:"12px 16px 16px",borderTop:`1px solid ${T.border}`}}>
+            <button onClick={onPostMission} style={{
+              width:"100%",padding:"12px",borderRadius:10,fontSize:13,fontWeight:700,cursor:"pointer",
+              background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,
+              transition:"all .2s",
+            }}>✅ Fin de mission — Logger les heures</button>
+          </div>
+        )}
+
+        <div style={{padding:"4px 16px 10px",fontSize:8,color:T.textFaint,fontFamily:"monospace"}}>{mMid(m)}</div>
+      </div>
+    </div>
+  );
+}
+
+function FldBox({l,v,T,mono,small}){
+  return<div><div style={{color:T.textFaint,fontSize:9}}>{l}</div><div style={{color:T.textMuted,fontWeight:600,fontSize:small?10:11,fontFamily:mono?"monospace":"inherit"}}>{v}</div></div>;
+}
+
+// ============================================================
+// POST-MISSION FLOW
+// ============================================================
+function PostMissionFlow({m,T,onDone,onCancel}){
+  const[step,setStep]=React.useState(1);
+  const[heures,setHeures]=React.useState(mHeures(m)||"");
+  const[debutR,setDebutR]=React.useState(mDebut(m)||"");
+  const[finR,setFinR]=React.useState("");
+  const[notes,setNotes]=React.useState("");
+  const[sending,setSending]=React.useState(false);
+
+  const meta=gm(mClient(m));
+
+  return(
+    <div style={{maxWidth:480,margin:"0 auto",minHeight:"100vh",background:T.bg,padding:20}}>
+      <button onClick={onCancel} style={{background:"none",border:"none",color:T.textFaint,fontSize:11,cursor:"pointer",marginBottom:12}}>← Annuler</button>
+
+      <div style={{background:T.card,borderRadius:14,padding:20,borderLeft:`4px solid ${meta.color}`}}>
+        <div style={{fontSize:10,color:meta.color,fontWeight:700,letterSpacing:1}}>{meta.tag} · {mType(m).replace("ASSISTANCE ","")}</div>
+        <div style={{fontSize:14,fontWeight:700,color:T.textBright,marginTop:2,marginBottom:16}}>{niceLong(mDate(m))}</div>
+
+        {/* Step 1: Hours */}
+        {step===1&&(
+          <div>
+            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>⏱ Heures réelles</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+              <div>
+                <div style={{fontSize:10,color:T.textFaint,marginBottom:4}}>Début</div>
+                <input type="time" value={debutR} onChange={e=>setDebutR(e.target.value)} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:14}}/>
+              </div>
+              <div>
+                <div style={{fontSize:10,color:T.textFaint,marginBottom:4}}>Fin</div>
+                <input type="time" value={finR} onChange={e=>setFinR(e.target.value)} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:14}}/>
+              </div>
+            </div>
+            {debutR&&finR&&(()=>{
+              const[sh,sm]=debutR.split(":").map(Number);
+              const[eh,em]=finR.split(":").map(Number);
+              const h=((eh*60+em)-(sh*60+sm))/60;
+              return<div style={{fontSize:12,color:T.accent,marginBottom:8}}>= {h.toFixed(1)}h</div>;
+            })()}
+            <button onClick={()=>{
+              if(debutR&&finR){
+                const[sh,sm]=debutR.split(":").map(Number);
+                const[eh,em]=finR.split(":").map(Number);
+                setHeures(String(((eh*60+em)-(sh*60+sm))/60));
+              }
+              setStep(2);
+            }} style={{width:"100%",padding:12,borderRadius:10,background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,fontSize:13,fontWeight:600,cursor:"pointer"}}>
+              Suivant →
+            </button>
+          </div>
+        )}
+
+        {/* Step 2: Notes */}
+        {step===2&&(
+          <div>
+            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>📝 Notes de terrain</div>
+            <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="RAS, incident, remarques..." rows={4} style={{width:"100%",padding:10,borderRadius:8,border:`1px solid ${T.border}`,background:T.bg,color:T.textBright,fontSize:13,resize:"vertical",fontFamily:"inherit"}}/>
+            <div style={{display:"flex",gap:8,marginTop:12}}>
+              <button onClick={()=>setStep(1)} style={{flex:1,padding:10,borderRadius:8,background:"none",border:`1px solid ${T.border}`,color:T.textMuted,fontSize:12,cursor:"pointer"}}>← Retour</button>
+              <button onClick={()=>setStep(3)} style={{flex:2,padding:10,borderRadius:8,background:T.accent+"18",color:T.accent,border:`1px solid ${T.accent}33`,fontSize:12,fontWeight:600,cursor:"pointer"}}>Suivant →</button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Confirm */}
+        {step===3&&(
+          <div>
+            <div style={{fontSize:12,fontWeight:700,color:T.textBright,marginBottom:12}}>✅ Confirmer</div>
+            <div style={{fontSize:12,color:T.textMuted,lineHeight:1.8,marginBottom:16}}>
+              <div>⏱ Heures: <b style={{color:T.textBright}}>{heures||"—"}h</b> ({debutR}–{finR})</div>
+              <div>📝 Notes: {notes||"RAS"}</div>
+              <div>📊 Statut → <b style={{color:T.green}}>Heures confirmées</b></div>
+            </div>
+            <button disabled={sending} onClick={async()=>{
+              setSending(true);
+              await onDone({heures,notes:notes||"RAS",statut:"Heures confirmées"});
+            }} style={{width:"100%",padding:14,borderRadius:10,background:T.green+"22",color:T.green,border:`1px solid ${T.green}33`,fontSize:14,fontWeight:700,cursor:"pointer",opacity:sending?.5:1}}>
+              {sending?"Enregistrement...":"✅ Confirmer et enregistrer"}
+            </button>
+            <button onClick={()=>setStep(2)} style={{width:"100%",marginTop:8,padding:10,borderRadius:8,background:"none",border:`1px solid ${T.border}`,color:T.textFaint,fontSize:11,cursor:"pointer"}}>← Modifier</button>
+          </div>
+        )}
+      </div>
+
+      {/* Decompress suggestion after confirming */}
+      {step===3&&(
+        <div style={{textAlign:"center",marginTop:20}}>
+          <div style={{fontSize:11,color:T.textFaint}}>Mission terminée? Prends un moment.</div>
+          <button onClick={()=>{onCancel();/* would navigate to breathe tab */}} style={{marginTop:8,padding:"8px 20px",borderRadius:16,background:"none",border:`1px solid ${T.textFaint}33`,color:T.textFaint,fontSize:11,cursor:"pointer"}}>🌿 Respirer</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// BREATHE
+// ============================================================
+function Breathe({active,toggle,T}){
+  const[phase,setPhase]=React.useState(0);
+  const[cycle,setCycle]=React.useState(0);
+  const labels=["Inspire","Retiens","Expire","Retiens"];
+  const sizes=[120,120,50,50];
+  React.useEffect(()=>{if(!active){setPhase(0);setCycle(0);}},[active]);
+  React.useEffect(()=>{if(!active)return;const t=setTimeout(()=>{if(phase===3){setCycle(c=>c+1);setPhase(0);}else setPhase(p=>p+1);},4000);return()=>clearTimeout(t);},[active,phase]);
+  return(
+    <div style={{textAlign:"center",padding:"20px 0"}}>
+      <div style={{fontSize:10,color:T.textFaint,fontWeight:700,letterSpacing:1.5,marginBottom:20}}>RESPIRATION</div>
+      <div style={{width:active?sizes[phase]:45,height:active?sizes[phase]:45,borderRadius:"50%",margin:"36px auto",background:active?`radial-gradient(circle,${T.accent}33,${T.accent}05)`:T.card,border:`1.5px solid ${active?T.accent+"55":T.border}`,transition:"all 4s cubic-bezier(.4,0,.2,1)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+        {active&&<span style={{fontSize:12,color:T.accent,fontWeight:600}}>{labels[phase]}</span>}
+      </div>
+      {active&&<div style={{fontSize:10,color:T.textFaint,marginBottom:14}}>Cycle {cycle+1}</div>}
+      <button onClick={toggle} style={{padding:"10px 28px",borderRadius:20,fontSize:12,fontWeight:600,cursor:"pointer",background:active?T.red+"12":T.accent+"12",color:active?T.red:T.accent,border:`1px solid ${active?T.red+"33":T.accent+"33"}`}}>{active?"Arrêter":"Commencer"}</button>
+      {!active&&<div style={{marginTop:20,fontSize:11,color:T.textFaint,lineHeight:1.7}}>Respiration en boîte · 4-4-4-4<br/><span style={{fontSize:10}}>Après une longue mission</span></div>}
+    </div>
+  );
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+
+// ── MONTHBAND COMPONENT ────────────────────────────────────
+function MonthBand({label,missions,t0,t1,T,theme,accent,onTap}){
+  const mB=missions.reduce((s,m)=>s+(parseFloat(mBase(m))||0),0);
+  const done=missions.filter(isDone).length;
+  const byDate={};
+  missions.forEach(m=>{const d=mDate(m);if(d)(byDate[d]=byDate[d]||[]).push(m);});
+  return(
+    <div>
+      <div style={{background:T.card,borderRadius:10,padding:"9px 13px",marginBottom:8,borderLeft:`3px solid ${accent}`}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{fontWeight:700,fontSize:14,color:T.textBright}}>{label}</div>
+          <div style={{display:"flex",gap:10,fontSize:11,color:T.textFaint}}>
+            <span>{missions.length} missions</span>
+            {done>0&&<span style={{color:T.green}}>{done} ✓</span>}
+            {mB>0&&<span style={{color:T.orange,fontWeight:600}}>{mB}€ HT</span>}
+          </div>
+        </div>
+      </div>
+      {missions.length===0?(
+        <div style={{textAlign:"center",padding:"10px 0",fontSize:12,color:T.textFaint}}>Aucune mission ce mois</div>
+      ):(
+        Object.entries(byDate).sort(([a],[b])=>a.localeCompare(b)).map(([date,ms])=>{
+          const isT=date===t0,isTm=date===t1,isPast=date<t0;
+          return(
+            <div key={date} style={{marginBottom:10}}>
+              <div style={{fontSize:11,fontWeight:700,letterSpacing:.8,marginBottom:4,textTransform:"uppercase",
+                color:isT?T.accent:isTm?T.green:isPast?T.textFaint:T.textMuted}}>
+                {niceLong(date)}{isT?" · Aujourd'hui":""}{isTm?" · Demain":""}
+              </div>
+              {ms.map(m=><Card key={mMid(m)||mDesc(m)||Math.random()} m={m} T={T} theme={theme} compact onTap={()=>onTap(m)}/>)}
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
+}
+
+// ── OPS SECTION ───────────────────────────────────────────
+function OpsSection({ops,T}){
+  if(!ops)return null;
+  return(
+    <div style={{padding:"12px 16px",borderTop:`1px solid ${T.border}`}}>
+      <div style={{fontSize:10,fontWeight:700,color:T.accent,letterSpacing:1.5,marginBottom:9}}>OPÉRATIONS</div>
+      {(ops.pax||ops.coaches)&&(
+        <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:8}}>
+          {ops.pax&&<span style={{fontSize:11,padding:"3px 8px",borderRadius:6,background:T.accent+"18",color:T.accent}}>👥 {ops.pax} pax</span>}
+          {ops.coaches&&<span style={{fontSize:11,padding:"3px 8px",borderRadius:6,background:T.accent+"18",color:T.accent}}>🚌 {ops.coaches} car{ops.coaches>1?"s":""}</span>}
+        </div>
+      )}
+      {ops.trainInfo&&<ORow icon="🚄" lbl={`TGV ${ops.trainInfo.tgv}`} val={`Arr. ${ops.trainInfo.arrivalTime}${ops.trainInfo.etaShip?" → Bateau "+ops.trainInfo.etaShip:""}`} T={T}/>}
+      {ops.shipContact&&<ORow icon="⚓" lbl={ops.shipContact.role||"PD Ship"} val={ops.shipContact.name} phone={ops.shipContact.phone} T={T}/>}
+      {ops.cohost&&<ORow icon="🤝" lbl="Co-host" val={typeof ops.cohost==="string"?ops.cohost:ops.cohost.name} phone={ops.cohost?.phone} T={T}/>}
+      {ops.coordinator&&<ORow icon="👤" lbl="Coord." val={ops.coordinator.name} phone={ops.coordinator.phone} T={T}/>}
+      {ops.emergency&&<ORow icon="🚨" lbl="Astreinte" val={ops.emergency} phone={ops.emergency} urgent T={T}/>}
+      {ops.parisHosts?.length>0&&(
+        <><div style={{fontSize:10,color:T.textFaint,fontWeight:600,margin:"6px 0 3px",textTransform:"uppercase",letterSpacing:.8}}>Hosts Paris</div>
+        {ops.parisHosts.map((h,i)=><div key={i} style={{fontSize:12,color:T.textMuted,marginBottom:2}}>{h.name} · <a href={`tel:${h.phone}`} style={{color:T.accent}}>{h.phone}</a></div>)}</>
+      )}
+      {ops.drivers?.length>0&&(
+        <><div style={{fontSize:10,color:T.textFaint,fontWeight:600,margin:"6px 0 3px",textTransform:"uppercase",letterSpacing:.8}}>Chauffeurs</div>
+        {ops.drivers.map((d,i)=><div key={i} style={{fontSize:12,color:T.textMuted,marginBottom:2}}>🚌 {d.name} · <a href={`tel:${d.phone}`} style={{color:T.accent}}>{d.phone}</a></div>)}</>
+      )}
+      {ops.miseEnPlace&&(
+        <div style={{marginTop:8,fontSize:12,color:T.textMuted,lineHeight:1.7,
+          background:T.bg,padding:"9px 11px",borderRadius:8,border:`1px solid ${T.border}`,whiteSpace:"pre-wrap"}}>
+          {ops.miseEnPlace}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── EMAIL SECTION ──────────────────────────────────────────
+function EmailSection({email,T}){
+  const[open,setOpen]=React.useState(false);
+  if(!email)return null;
+  return(
+    <div style={{padding:"12px 16px",borderTop:`1px solid ${T.border}`}}>
+      <div onClick={()=>setOpen(!open)} style={{cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{fontSize:10,fontWeight:700,color:T.green,letterSpacing:1.5}}>📧 EMAIL & DOCUMENTS</div>
+        <span style={{fontSize:11,color:T.textFaint}}>{open?"▲":"▼"}</span>
+      </div>
+      {open&&(
+        <div style={{marginTop:8}}>
+          <div style={{fontSize:11,color:T.textFaint,marginBottom:2}}>{email.from} · {email.date}</div>
+          <div style={{fontSize:11,color:T.textMuted,marginBottom:6,fontWeight:500}}>{email.subject}</div>
+          <div style={{padding:"8px 11px",background:T.bg,borderRadius:8,fontSize:12,color:T.textMuted,
+            lineHeight:1.6,marginBottom:8,whiteSpace:"pre-wrap",border:`1px solid ${T.border}`}}>
+            {email.body}
+          </div>
+          {email.attachments?.map((a,i)=>(
+            <a key={i} href={a.url||"https://mail.google.com/mail/u/0/"} target="_blank" rel="noopener"
+              style={{display:"flex",alignItems:"center",gap:8,padding:"9px 11px",
+                background:T.bg,borderRadius:8,marginBottom:5,border:`1px solid ${T.border}`,cursor:"pointer"}}>
+              <span style={{fontSize:16,flexShrink:0}}>{a.type==="pdf"?"📄":a.type==="xlsx"?"📊":"🔗"}</span>
+              <span style={{flex:1,fontSize:12,color:T.accent,lineHeight:1.3}}>{a.name}</span>
+              <span style={{fontSize:10,color:T.textFaint,flexShrink:0}}>Ouvrir →</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── OPS ROW helper ─────────────────────────────────────────
+function ORow({icon,lbl,val,phone,urgent,T}){
+  const c=urgent?T.red:T.accent;
+  return(
+    <div style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:6}}>
+      <span style={{fontSize:14,flexShrink:0,lineHeight:1.4}}>{icon}</span>
+      <span style={{fontSize:10,color:T.textFaint,minWidth:56,paddingTop:1}}>{lbl}</span>
+      <span style={{fontSize:12,color:urgent?T.red:T.textMuted,flex:1,lineHeight:1.5}}>
+        {val}{phone&&phone!==val&&<> · <a href={`tel:${phone}`} style={{color:c}}>{phone}</a></>}
+        {phone===val&&<a href={`tel:${phone}`} style={{color:c}}> {phone}</a>}
+      </span>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
