@@ -715,6 +715,7 @@ function _rip(x,y){pTaps++;const z=document.getElementById("p-rzone");if(!z)retu
 function pSC(){const el=document.getElementById("p-ibox");if(el)el.textContent=localStorage.getItem("jmc_intention")||"absorb · release · move on";}
 function pReset(){pScr="s1";pTaps=0;pSBStop();pBPhase=0;pBCycle=0;pDCtx=null;rPS();}
 
+
 // ── TOAST ──
 let _toastTimer=null;
 function toast(msg,type){
@@ -726,7 +727,7 @@ function toast(msg,type){
   _toastTimer=setTimeout(()=>{el.classList.remove('mc-toast-show');},3800);
 }
 
-// ── API DIAGNOSTICS ──
+// ── API TEST ──
 async function testAPI(){
   toast('🔄 Test connexion GAS…','blue');
   try{
@@ -748,33 +749,6 @@ const DEMO=[
   {mid:"2026-04-08-UMB-01",date:"2026-04-08",client:"Un Monde Bleu",type:"ASSISTANCE TRANSFERT LYON - MONTPELLIER",desc:"LBY02+LBY03",heures:"",base:"",debours:"",debut:"",endroit:"Lyon → Montpellier",statut:"Planifié",email:{from:"OpsRiviera@umb-dmc.fr",date:"27/03/2026",subject:"LORD BYRON - LBY02 ET LBY03",body:"Transferts Lord Byron du 08.04"}},
   {mid:"2026-04-19-GCS-01",date:"2026-04-19",client:"Go Côte Saône",type:"ASSISTANCE TRANSFERT LYON - BALE",desc:"VK09-SUP02",heures:"8",base:"450",debours:"20",debut:"08:00",endroit:"Quai Claude Bernard",statut:"Planifié"},
 ];
-
-// ── TOAST ──
-let _toastTimer=null;
-function toast(msg,type='green'){
-  let el=document.getElementById('mc-toast');
-  if(!el){el=document.createElement('div');el.id='mc-toast';document.body.appendChild(el);}
-  el.textContent=msg;
-  el.className='mc-toast mc-toast-'+type+' mc-toast-show';
-  if(_toastTimer)clearTimeout(_toastTimer);
-  _toastTimer=setTimeout(()=>{el.classList.remove('mc-toast-show');},3500);
-}
-
-// ── API TEST ──
-async function testAPI(){
-  toast('🔄 Test connexion GAS…','blue');
-  try{
-    const r=await fetch(GAS_URL+"?action=ping",{signal:AbortSignal.timeout(8000)});
-    if(!r.ok){toast('⚠️ HTTP '+r.status+' — vérifier déploiement (accès: Anyone)','red');return;}
-    const txt=await r.text();
-    let d;try{d=JSON.parse(txt);}catch(e){toast('⚠️ Non-JSON: '+txt.slice(0,40),'red');return;}
-    if(d&&d.ok)toast('✅ GAS OK — '+new Date(d.time).toLocaleTimeString('fr-FR'),'green');
-    else toast('⚠️ Réponse inattendue: '+JSON.stringify(d).slice(0,60),'red');
-  }catch(e){
-    if(e.name==='TimeoutError')toast('❌ Timeout — GAS ne répond pas','red');
-    else toast('❌ '+e.message.slice(0,60),'red');
-  }
-}
 
 </script>
 </body>
