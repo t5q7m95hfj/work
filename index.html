@@ -551,7 +551,7 @@ async function genRpt(mid){
   pmf.rptLoading=true;render();
   const pr=PRENOM[m.client]||"",du=durS(pmf.start,pmf.end),no=pmf.notes||"";
   const ref=m.desc||m.mid||"";
-  const RULES="RÈGLES ABSOLUES:\n- Tutoiement (tu/ta/ton). Jamais vous.\n- 2-3 phrases max pour RAS. 3-5 si incident/notes.\n- Interdit: \"je me permets\", \"je reste disponible\", \"n'hésitez pas\", signature longue.\n- Sign-off fixe: Merci et bonne journée,\\nJoseph\n- Ton: direct, chaleureux, collégial.\nEXEMPLES:\n\"Bonjour Léa, voici le récap du service HMD260329. Rien à signaler, tout s'est déroulé comme prévu. Merci et bonne journée, Joseph\"\n\"Bonjour Audrey, la mission s'est bien déroulée. Les guests étaient 15 pax. Je n'ai pas dépassé les 6h prévues. Merci et bonne journée, Joseph\"\n";
+  const RULES="RÈGLES ABSOLUES:\n- Tutoiement (tu/ta/ton). Jamais vous.\n- 2-3 phrases max pour RAS. 3-5 si incident/notes.\n- Interdit: \"je me permets\", \"je reste disponible\", \"n'hésitez pas\", signature longue.\n- Sign-off fixe: Merci et bonne journée,\\nJoseph\n- Ton: direct, chaleureux, collégial.\nEXEMPLES:\n\"Bonjour Léa, voici le récap du service HMD260329. Rien à signaler, tout s'est déroulé comme prévu. Merci et bonne journée, Joseph\"\n\"Bonjour Audrey, la mission s'est bien déroulée. Les guests étaient 15 pax. Merci et bonne journée, Joseph\"\n";
   const pmap={
     RAS:RULES+"\nRédige un rapport RAS.\nRef: "+ref+" | Date: "+m.date+" | "+pmf.start+"→"+pmf.end+" ("+du+")"+(no?" | Notes: "+no:"")+"\nCommence: Bonjour "+pr+",\nTermine: Merci et bonne journée,\\nJoseph",
     INCIDENT:RULES+"\nRédige un rapport d'incident factuel.\nRef: "+ref+" | Date: "+m.date+" | "+pmf.start+"→"+pmf.end+"\nIncident: "+(no||"voir notes")+"\nCommence: Bonjour "+pr+",\nTermine: Merci et bonne journée,\\nJoseph",
@@ -559,16 +559,20 @@ async function genRpt(mid){
     ANOMALIE:RULES+"\nRédige un rapport d'anomalie factuel.\nRef: "+ref+" | Date: "+m.date+"\nAnomalie: "+(no||"voir notes")+"\nCommence: Bonjour "+pr+",\nTermine: Merci et bonne journée,\\nJoseph",
     OT:RULES+"\nRédige un rapport heures supplémentaires.\nRef: "+ref+" | Date: "+m.date+" | Prévu: "+(m.heures||"?")+"h | Réel: "+pmf.start+"→"+pmf.end+" ("+du+")"+(no?" | Notes: "+no:"")+"\nExemple: \"Bonjour Mélissa, j'ai travaillé de 9h à 13h45, soit 4h45 au lieu des 3h prévues. Merci et bonne journée, Joseph\"\nCommence: Bonjour "+pr+",\nTermine: Merci et bonne journée,\\nJoseph"
   };
+  const prompt=pmap[pmf.tpl]||pmap.RAS;
+  // Route through GAS to avoid iOS/Safari CORS block on direct Anthropic calls
   try{
-    const r=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","anthropic-dangerous-direct-browser-calls":"true"},
-      body:JSON.stringify({model:"claude-sonnet-4-5",max_tokens:350,messages:[{role:"user",content:pmap[pmf.tpl]||pmap.RAS}]})
-    });
-    const d=await r.json();
-    if(d.error)pmf.rpt="Erreur API: "+d.error.message;
-    else pmf.rpt=d.content&&d.content[0]?d.content[0].text:"Erreur.";
-  }catch(e){pmf.rpt="Erreur réseau: "+e.message;}
+    const ctrl=new AbortController();
+    const to=setTimeout(()=>ctrl.abort(),28000);
+    const r=await fetch(GAS_URL+"?action=genRapport&prompt="+encodeURIComponent(prompt),{signal:ctrl.signal}).finally(()=>clearTimeout(to));
+    const txt=await r.text();
+    let d;
+    try{d=JSON.parse(txt);}catch(e){throw new Error("Réponse non-JSON: "+txt.slice(0,80));}
+    if(d.ok&&d.text){pmf.rpt=d.text;}
+    else{pmf.rpt="Erreur: "+(d.error||"réponse vide du serveur");}
+  }catch(e){
+    pmf.rpt="Erreur: "+((e.name==="AbortError")?"délai dépassé (28s) — GAS trop lent":e.message);
+  }
   pmf.rptLoading=false;render();
 }
 async function pmfFin(mid){
