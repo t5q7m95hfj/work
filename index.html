@@ -583,11 +583,11 @@ async function genRpt(mid){
   pmf.rptLoading=true;render();
   const pr=PRENOM[m.client]||"",du=durS(pmf.start,pmf.end),no=pmf.notes||"RAS";
   const pmap={
-    RAS:"Tu es Joseph Markman, accompagnateur touristique freelance à Lyon. Rapport d'activité professionnel en français. Ton: factuel, chaleureux. 4-5 phrases.\nDate: "+m.date+" | Client: "+m.client+" | Type: "+m.type+" | Ref: "+(m.desc||"")+" | "+pmf.start+"→"+pmf.end+" | Durée: "+du+"\nFormat: Bonjour "+pr+",\n\n[corps]\n\nCordialement, Joseph Markman · +33 6 51 09 35 57\nRetourne UNIQUEMENT le texte.",
-    INCIDENT:"Rapport d'incident. Factuel.\nDate: "+m.date+" | "+pmf.start+"→"+pmf.end+" | Notes: "+no+"\nBonjour "+pr+",\n[description]\nJoseph Markman · +33 6 51 09 35 57",
-    ANNULATION:"Constat d'annulation.\nDate: "+m.date+" | Notes: "+no+"\nBonjour "+pr+",\n[constat]\nJoseph Markman",
-    ANOMALIE:"Rapport d'anomalie.\nDate: "+m.date+" | Notes: "+no+"\nBonjour "+pr+",\n[anomalie]\nJoseph Markman",
-    OT:"Rapport heures supp.\nDate: "+m.date+" | Prévu: "+(m.heures||"?")+"h | Réel: "+du+"\nBonjour "+pr+",\n[heures]\nJoseph Markman"
+    RAS: "Bonjour " + pr + ",\n\nVoici le récapitulatif du service du " + m.date + " — " + (m.type||'') + (m.desc?(' — '+m.desc):'') + " — " + pmf.start + "–" + pmf.end + " (" + du + ")." + (pmf.notes?('\n\n' + pmf.notes):'') + "\n\nMerci,\nJoseph",
+    INCIDENT: "Bonjour " + pr + ",\n\nBref rapport d'incident : " + (pmf.notes || '') + "\n\nMerci,\nJoseph",
+    ANNULATION: "Bonjour " + pr + ",\n\nLa mission du " + m.date + " a été annulée. " + (pmf.notes?('\n\n' + pmf.notes):'') + "\n\nMerci,\nJoseph",
+    ANOMALIE: "Bonjour " + pr + ",\n\nPoint d'anomalie : " + (pmf.notes || '') + "\n\nMerci,\nJoseph",
+    OT: "Bonjour " + pr + ",\n\nHeures réelles : " + pmf.start + "–" + pmf.end + " (" + du + ")." + (pmf.notes?('\n\n' + pmf.notes):'') + "\n\nMerci,\nJoseph"
   };
   try{
     const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,messages:[{role:"user",content:pmap[pmf.tpl]||pmap.RAS}]})});
