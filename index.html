@@ -550,15 +550,22 @@ function rdPMF(m){
 
 function sPMF(mid){
   const m=missions.find(x=>x.mid===mid)||{};
-  // Default start = mission scheduled début, end = now
   const defStart=m.debut||"";
-  // Estimate end from début + heures if available
   let defEnd=nowt();
-  if(m.debut&&m.heures){
-    const[h,mn]=(m.debut||"00:00").split(":").map(Number);
-    const endM=h*60+mn+Math.round(parseFloat(m.heures||0)*60);
-    const eh=Math.floor(endM/60),em=endM%60;
-    if(eh<24)defEnd=p2(eh)+":"+p2(em);
+  if(m.debut){
+    // Priority 1: planned heures (decimal hours from sheet)
+    const plannedH=parseFloat(m.heures||0);
+    // Priority 2: voyage (mission duration in minutes from sheet col G)
+    const voyageMin=parseFloat(m.voyage||0);
+    // Use whichever is non-zero; heures takes priority
+    const durationMin=plannedH>0?Math.round(plannedH*60):voyageMin>0?voyageMin:0;
+    if(durationMin>0){
+      const[h,mn]=(m.debut||"00:00").split(":").map(Number);
+      const endM=h*60+mn+durationMin;
+      const eh=Math.floor(endM/60),em=endM%60;
+      if(eh<24)defEnd=p2(eh)+":"+p2(em);
+    }
+    // If no duration data: defEnd stays as nowt() — user adjusts manually
   }
   pmf={mid,start:defStart,end:defEnd,tpl:"RAS",rpt:"",rptLoading:false,debriefState:"",debriefNote:""};
   pmfStep=1;render();
@@ -591,9 +598,11 @@ function pmfH2(m){
       +'<button class="rabtn" style="background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);color:var(--accent)" onclick="genRpt(\''+m.mid+'\')">↻ Régénérer</button>'
       +'<button class="rabtn" style="background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.22);color:var(--green)" onclick="pmfGo(3,\''+m.mid+'\')">Continuer →</button>'
       +'</div>'
-      +'<button class="pbtn" style="margin-top:7px;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.25);color:var(--accent)" onclick="sendRapportNow(\''+m.mid+'\')">📨 Envoyer maintenant au client</button>'
-    :'<button class="pbtn pbtn-next" onclick="genRpt(\''+m.mid+'\')">✨ Générer le rapport</button>';
-  const statusBanner=pmf.sendStatus
+      +'<textarea id="rpt-edit-'+m.mid+'" class="ta" rows="4" style="margin-top:8px;font-size:11px">'+pmf.rpt+'</textarea>'
+     +'<button class="pbtn" style="margin-top:7px;background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.25);color:var(--green)" onclick="scheduleRapport(\''+m.mid+'\')">📅 Planifier envoi — demain 09h00</button>'
+     +(pmf.rapportScheduled?'<button class="pbtn" style="margin-top:5px;background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.2);color:var(--red);font-size:11px" onclick="cancelScheduledRapport(\''+m.mid+'\')">✕ Annuler l\'envoi planifié</button>':"")
+  : '<button class="pbtn pbtn-next" onclick="genRpt(\''+m.mid+'\')">✨ Générer le rapport</button>';
+   const statusBanner=pmf.sendStatus
     ?'<div style="margin-top:8px;padding:9px 11px;border-radius:7px;font-size:11px;'
       +(pmf.sendStatus.ok?'background:rgba(63,185,80,.07);color:var(--green);border:1px solid rgba(63,185,80,.2)':'background:rgba(248,81,73,.07);color:var(--red);border:1px solid rgba(248,81,73,.2)')
       +'">'+pmf.sendStatus.msg+'</div>'
@@ -625,10 +634,10 @@ function pmfH3(m){
 }
 
 function pmfH4(){
-  const sentLine=pmf.rapportSent===true
-    ?'<div style="font-size:11px;color:var(--green);margin-bottom:10px;padding:7px 10px;background:rgba(63,185,80,.07);border-radius:7px;border:1px solid rgba(63,185,80,.15)">📨 Rapport envoyé · '+(pmf.rapportRecipient||'client')+'</div>'
-    :pmf.rapportSent===false
-      ?'<div style="font-size:11px;color:var(--amber);margin-bottom:10px;padding:7px 10px;background:rgba(227,179,65,.07);border-radius:7px;border:1px solid rgba(227,179,65,.15)">⚠️ Non envoyé — envoie manuellement via Gmail</div>'
+  const sentLine=pmf.rapportScheduled===true
+     ?'<div style="font-size:11px;color:var(--green);margin-bottom:10px;padding:7px 10px;background:rgba(63,185,80,.07);border-radius:7px;border:1px solid rgba(63,185,80,.15)">📅 Envoi planifié · '+(pmf.scheduledFor||'demain 09:00')+' → '+(pmf.rapportRecipient||'client')+'</div>'
+     :pmf.rapportScheduled===false
+       ?'<div style="font-size:11px;color:var(--amber);margin-bottom:10px;padding:7px 10px;background:rgba(227,179,65,.07);border-radius:7px;border:1px solid rgba(227,179,65,.15)">⚠️ Non planifié — envoie manuellement via Gmail</div>'
       :'';
   return'<div style="text-align:center;padding:7px 0"><div style="font-size:26px;margin-bottom:7px">✅</div>'
     +'<div style="font-size:15px;font-weight:700;color:var(--txt0);margin-bottom:3px">Mission clôturée</div>'
@@ -650,14 +659,19 @@ async function genRpt(mid){
   pmf.rptLoading=true;render();
   const pr=PRENOM[m.client]||"",du=durS(pmf.start,pmf.end);
   const ref=m.desc||m.mid||"";
-  // Pull journal de terrain entries into prompt
+  // Format date as DD/MM/YY for the rapport
+  const dateFmt=(iso)=>{if(!iso||iso.length<10)return iso||"";const[y,mo,d]=iso.split("-");return d+"/"+mo+"/"+y.slice(2);};
+  const dateStr=dateFmt(m.date);
+  // Description from col F (m.desc already normalised by norm())
+  const descLine=m.desc?" | Mission: "+m.desc:"";
+  // Journal de terrain
   const lg=flogs[m.mid]||[];
   const journalText=lg.length?"\nJournal de terrain:\n"+lg.map(e=>'- ['+e.type+'] '+e.text).join('\n'):"";
-
-  const RULES="RÈGLES ABSOLUES:\n- Tutoiement (tu/ta/ton). Jamais vous.\n- 2-3 phrases max pour RAS. 3-5 si incident/notes.\n- Interdit: \"je me permets\", \"je reste disponible\", \"n'hésitez pas\", signature longue.\n- Sign-off fixe: Merci et bonne journée,\\nJoseph\n- Ton: direct, chaleureux, collégial.\nEXEMPLES:\n\"Bonjour Léa, voici le récap du service HMD260329. Rien à signaler, tout s'est déroulé comme prévu. Merci et bonne journée, Joseph\"\n\"Bonjour Audrey, la mission s'est bien déroulée. Les guests étaient 15 pax. Merci et bonne journée, Joseph\"\n";
+ 
+  const RULES="RÈGLES ABSOLUES:\n- Tutoiement (tu/ta/ton). Jamais vous.\n- 2-3 phrases max pour RAS. 3-5 si incident/notes.\n- Interdit: \"je me permets\", \"je reste disponible\", \"n'hésitez pas\", signature longue.\n- Sign-off fixe: Merci et bonne journée,\\nJoseph\n- Ton: direct, chaleureux, collégial.\n- Inclure la référence mission et la date dans le corps du message.\nEXEMPLES:\n\"Bonjour Marion, mission GCS260412 du 12/04/26 effectuée sans incident. 42 pax transférés quai Rambaud. Merci et bonne journée, Joseph\"\n\"Bonjour Audrey, la mission s'est bien déroulée. Ref LBY03 du 08/04/26 — 28 pax. Merci et bonne journée, Joseph\"\n";
   const pmap={
-    RAS:RULES+"\nRédige un rapport RAS.\nRef: "+ref+" | Date: "+m.date+" | "+pmf.start+"→"+pmf.end+" ("+du+")"+journalText+"\nCommence: Bonjour "+pr+",\nTermine: Merci et bonne journée,\\nJoseph",
-    INCIDENT:RULES+"\nRédige un rapport d'incident factuel basé sur les notes ci-dessous.\nRef: "+ref+" | Date: "+m.date+" | "+pmf.start+"→"+pmf.end+journalText+"\nCommence: Bonjour "+pr+",\nTermine: Merci et bonne journée,\\nJoseph"
+    RAS:RULES+"\nRédige un rapport RAS.\nRef: "+ref+" | Date: "+dateStr+descLine+" | "+pmf.start+"→"+pmf.end+" ("+du+")"+journalText+"\nCommence: Bonjour "+pr+",\nTermine: Merci et bonne journée,\\nJoseph",
+    INCIDENT:RULES+"\nRédige un rapport d'incident factuel basé sur les notes ci-dessous.\nRef: "+ref+" | Date: "+dateStr+descLine+" | "+pmf.start+"→"+pmf.end+journalText+"\nCommence: Bonjour "+pr+",\nTermine: Merci et bonne journée,\\nJoseph"
   };
   const prompt=pmap[pmf.tpl]||pmap.RAS;
   try{
@@ -675,31 +689,51 @@ async function genRpt(mid){
   pmf.rptLoading=false;render();
 }
 
-async function sendRapportNow(mid){
+async function scheduleRapport(mid){
   if(!pmf||!pmf.rpt){toast('Génère le rapport d\'abord','red');return;}
-  pmf.sendStatus=null;toast('📨 Envoi en cours…','blue');render();
+  // Allow user to edit rapport text before scheduling
+  const ta=document.getElementById("rpt-edit-"+mid);
+  if(ta)pmf.rpt=ta.value;
+  pmf.sendStatus=null;toast('📅 Planification…','blue');render();
   const m=missions.find(x=>x.mid===mid);
   const he=pmf.start&&pmf.end?durD(pmf.start,pmf.end):(m&&m.heures||'');
   try{
-    const url=GAS_URL+'?action=sendRapport'+'&id='+encodeURIComponent(mid)+'&rapport='+encodeURIComponent(pmf.rpt)+'&template='+encodeURIComponent(pmf.tpl||'RAS')+'&heures='+encodeURIComponent(he)+'&notes='+encodeURIComponent('');
+    const url=GAS_URL+'?action=scheduleRapport'
+      +'&id='+encodeURIComponent(mid)
+      +'&rapport='+encodeURIComponent(pmf.rpt)
+      +'&template='+encodeURIComponent(pmf.tpl||'RAS')
+      +'&heures='+encodeURIComponent(he)
+      +'&notes='+encodeURIComponent('');
     const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),25000);
     const r=await fetch(url,{signal:ctrl.signal}).finally(()=>clearTimeout(to));
-    const txt=await r.text();let d;try{d=JSON.parse(txt);}catch(e){throw new Error('Non-JSON: '+txt.slice(0,100));}
-    if(d.ok&&d.sent){
-      pmf.sendStatus={ok:true,msg:'✅ Envoyé à '+(d.recipient||'client')};
-      pmf.rapportSent=true;pmf.rapportRecipient=d.recipient||'client';
-      toast('✅ Rapport envoyé','green');
-      const i=missions.findIndex(x=>x.mid===mid);if(i>-1)missions[i].statut='Rapport envoyé';
-      if(detail&&detail.mid===mid)detail.statut='Rapport envoyé';
-      render();setTimeout(()=>{pmfStep=3;render();},1800);
+    const txt=await r.text();let d;
+    try{d=JSON.parse(txt);}catch(e){throw new Error('Non-JSON: '+txt.slice(0,100));}
+    if(d.ok){
+      pmf.sendStatus={ok:true,msg:'📅 Envoi planifié pour '+(d.scheduledFor||'demain 09:00')+' → '+(d.recipient||'client')};
+      pmf.rapportScheduled=true;
+      pmf.scheduledFor=d.scheduledFor||'demain 09:00';
+      pmf.rapportRecipient=d.recipient||'client';
+      toast('📅 Planifié — '+(d.scheduledFor||'demain 09:00'),'green');
+      render();
+      setTimeout(()=>{pmfStep=3;render();},2200);
     }else{
-      pmf.sendStatus={ok:false,msg:'❌ '+(d.msg||'Erreur')};
-      pmf.rapportSent=false;toast('❌ '+(d.msg||'Envoi échoué'),'red');render();
+      pmf.sendStatus={ok:false,msg:'❌ '+(d.msg||'Erreur planification')};
+      toast('❌ '+(d.msg||'Échec'),'red');render();
     }
   }catch(e){
     pmf.sendStatus={ok:false,msg:'❌ '+(e.message||'').slice(0,60)};
-    pmf.rapportSent=false;toast('❌ Réseau: '+(e.message||'').slice(0,50),'red');render();
+    toast('❌ Réseau: '+(e.message||'').slice(0,50),'red');render();
   }
+}
+ 
+async function cancelScheduledRapport(mid){
+  toast('🗑 Annulation…','blue');
+  try{
+    const r=await fetch(GAS_URL+'?action=cancelRapport&id='+encodeURIComponent(mid));
+    const d=await r.json();
+    if(d.ok){pmf.rapportScheduled=false;pmf.scheduledFor=null;pmf.sendStatus=null;toast('✓ Envoi annulé','amber');render();}
+    else toast('❌ '+(d.msg||'Erreur'),'red');
+  }catch(e){toast('❌ '+e.message.slice(0,50),'red');}
 }
 
 async function pmfFin(mid){
@@ -714,7 +748,7 @@ async function pmfFin(mid){
     new Date().toISOString().slice(0,16)
   ].filter(Boolean).join(" | ");
   toast('💾 Sauvegarde…','blue');
-  const finalStatut=pmf.rapportSent?"Rapport envoyé":"Terminé";
+  const finalStatut=pmf.rapportScheduled?"Rapport envoyé":"Terminé";
   const r1=await saveField(mid,"heures",he);
   const r2=await saveField(mid,"statut",finalStatut);
   // Save debrief state to sheet column "Decompress" (AA)
