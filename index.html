@@ -609,12 +609,13 @@ function pmfH2(m){
 
 function pmfH3(m){
   // Step 3 = débrief (état de sortie)
+  // Order: most severe → least severe (helps choose appropriate follow-up)
   const ss=[
-    {v:"fluide",l:"😌 Mission fluide"},
-    {v:"chargé",l:"😮‍💨 Chargé — j'ai géré"},
     {v:"incident",l:"⚠️ Incident ou stress"},
-    {v:"vide",l:"😶 Creux — sous-stimulé"},
-    {v:"bien",l:"🙂 Satisfait"}
+    {v:"chargé",l:"😮‍💨 Chargé — j'ai géré"},
+    {v:"vide",l:"😶 Creux — peu d'activité"},
+    {v:"bien",l:"🙂 Bien — tout OK"},
+    {v:"fluide",l:"😌 Fluide — très bien"}
   ];
   return'<div class="pmf-step-hdr"><div class="pmf-num">3</div><div class="pmf-step-title">Comment tu sors de là ?</div></div>'
     +'<div class="debrief-list">'+ss.map(s=>'<button class="dbtn'+(pmf.debriefState===s.v?" on":"")+'" onclick="pmf.debriefState=\''+s.v+'\';render()">'+s.l+'</button>').join("")+'</div>'
