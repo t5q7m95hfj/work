@@ -539,10 +539,42 @@ function sPMF(mid){pmf={mid,start:"",end:nowt(),notes:"",tpl:"RAS",rpt:"",rptLoa
 function pmfHTML(m){return pmfStep===1?pmfH1(m):pmfStep===2?pmfH2(m):pmfStep===3?pmfH3(m):pmfStep===4?pmfH4(m):pmfStep===5?pmfH5():"";}
 function pmfH1(m){const du=pmf.start&&pmf.end?durS(pmf.start,pmf.end):"";return'<div class="pmf-step-hdr"><div class="pmf-num">1</div><div class="pmf-step-title">Heures réelles</div></div><div class="pmf-time-row"><div class="pmf-time-block"><div class="pmf-time-lbl">DÉBUT</div><input class="pmf-tinput" type="time" id="ps" value="'+(pmf.start||m.debut||"")+'" onchange="pmf.start=this.value;uDur()"/></div><div class="pmf-arrow">→</div><div class="pmf-time-block"><div class="pmf-time-lbl">FIN</div><input class="pmf-tinput" type="time" id="pe" value="'+(pmf.end||"")+'" onchange="pmf.end=this.value;uDur()"/></div></div><div class="pmf-dur" id="pd">'+(du?"⏱ "+du:"")+'</div><button class="pbtn pbtn-next" onclick="pmfGo(2,\''+m.mid+'\')">Suivant → Rapport</button><span class="pback" onclick="pmf=null;pmfStep=0;render()">Annuler</span>';}
 function uDur(){const s=document.getElementById("ps"),e=document.getElementById("pe"),d=document.getElementById("pd");if(s&&e&&d){const du=durS(s.value,e.value);d.textContent=du?"⏱ "+du:"";}}
-function pmfH2(m){return'<div class="pmf-step-hdr"><div class="pmf-num">2</div><div class="pmf-step-title">Rapport de mission</div></div><div class="rpt-grid">'+Object.entries(RPT_LABELS).map(([k,v])=>'<button class="rtbtn'+(pmf.tpl===k?" on":"")+'" onclick="sRpt(\''+k+'\')">'+v+'</button>').join("")+'</div>'+(pmf.rptLoading?'<div class="rpt-loading"><span class="spin">↻</span> Rédaction…</div>':pmf.rpt?'<div class="rpt-output">'+pmf.rpt+'</div><div class="rpt-actions"><button class="rabtn" style="background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);color:var(--accent)" onclick="genRpt(\''+m.mid+'\')" >↻ Régénérer</button><button class="rabtn" style="background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.22);color:var(--green)" onclick="pmfGo(3,\''+m.mid+'\')">Valider →</button></div>':'<button class="pbtn pbtn-next" onclick="genRpt(\''+m.mid+'\')">✨ Générer le rapport</button>')+'<span class="pback" onclick="pmfStep=1;render()">← Retour</span>';}
+function pmfH2(m){
+  const rptActions=pmf.rpt
+    ?'<div class="rpt-actions">'
+      +'<button class="rabtn" style="background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);color:var(--accent)" onclick="genRpt(\''+m.mid+'\')">↻ Régénérer</button>'
+      +'<button class="rabtn" style="background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.22);color:var(--green)" onclick="pmfGo(3,\''+m.mid+'\')">Continuer →</button>'
+      +'</div>'
+      +'<button class="pbtn" style="margin-top:8px;background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.25);color:var(--accent)" onclick="sendRapportNow(\''+m.mid+'\')">📨 Envoyer maintenant au client</button>'
+      +'<div style="font-size:10px;color:var(--txt4);text-align:center;margin-top:4px">Envoie l\'email ET avance vers la clôture</div>'
+    :'<button class="pbtn pbtn-next" onclick="genRpt(\''+m.mid+'\')">✨ Générer le rapport</button>';
+  const statusBanner=pmf.sendStatus
+    ?'<div style="margin-top:8px;padding:9px 11px;border-radius:7px;font-size:11px;'
+      +(pmf.sendStatus.ok?'background:rgba(63,185,80,.07);color:var(--green);border:1px solid rgba(63,185,80,.2)':'background:rgba(248,81,73,.07);color:var(--red);border:1px solid rgba(248,81,73,.2)')
+      +'">'+pmf.sendStatus.msg+'</div>'
+    :'';
+  return '<div class="pmf-step-hdr"><div class="pmf-num">2</div><div class="pmf-step-title">Rapport de mission</div></div>'
+    +'<div class="rpt-grid">'+Object.entries(RPT_LABELS).map(([k,v])=>'<button class="rtbtn'+(pmf.tpl===k?' on':'')+'" onclick="sRpt(\''+k+'\')">'+v+'</button>').join('')+'</div>'
+    +(pmf.rptLoading?'<div class="rpt-loading"><span class="spin">↻</span> Rédaction…</div>'
+      :pmf.rpt?'<div class="rpt-output">'+pmf.rpt+'</div>'+rptActions+statusBanner
+      :rptActions)
+    +'<span class="pback" onclick="pmfStep=1;render()">← Retour</span>';
+}
 function pmfH3(m){return'<div class="pmf-step-hdr"><div class="pmf-num">3</div><div class="pmf-step-title">Notes de terrain</div></div><textarea class="ta" id="pmf-notes" rows="4" placeholder="Retards, pax, chauffeurs…">'+(pmf.notes||"")+'</textarea><button class="pbtn pbtn-next" style="margin-top:7px" onclick="pmfSN(\''+m.mid+'\')">Suivant → Débrief</button><span class="pback" onclick="pmfStep=2;render()">← Retour</span>';}
 function pmfH4(m){const ss=[{v:"fluide",l:"😌 Mission fluide"},{v:"chargé",l:"😮‍💨 Chargé — j'ai géré"},{v:"incident",l:"⚠️ Incident ou stress"},{v:"vide",l:"😶 Creux — sous-stimulé"},{v:"bien",l:"🙂 Satisfait"}];return'<div class="pmf-step-hdr"><div class="pmf-num">4</div><div class="pmf-step-title">Comment tu sors de là ?</div></div><div class="debrief-list">'+ss.map(s=>'<button class="dbtn'+(pmf.debriefState===s.v?" on":"")+'" onclick="pmf.debriefState=\''+s.v+'\';render()">'+s.l+'</button>').join("")+'</div>'+(pmf.debriefState?'<textarea class="ta" id="pmf-db" rows="2" placeholder="Optionnel…">'+(pmf.debriefNote||"")+'</textarea>':"")+'<button class="pbtn pbtn-confirm" style="margin-top:9px" onclick="pmfFin(\''+m.mid+'\')">Clôturer la mission</button><span class="pback" onclick="pmfStep=3;render()">← Retour</span>';}
-function pmfH5(){return'<div style="text-align:center;padding:7px 0"><div style="font-size:26px;margin-bottom:7px">✅</div><div style="font-size:15px;font-weight:700;color:var(--txt0);margin-bottom:3px">Mission clôturée</div><div style="font-size:12px;color:var(--txt3);margin-bottom:18px">Heures et notes enregistrées.</div><button class="decomp-link" onclick="go(\'pause\')">🌿 Prendre un moment</button><span class="pback" onclick="closeD()">← Retour</span></div>';}
+function pmfH5(){
+  const sentLine=pmf.rapportSent===true
+    ?'<div style="font-size:11px;color:var(--green);margin-bottom:12px;padding:7px 10px;background:rgba(63,185,80,.07);border-radius:7px;border:1px solid rgba(63,185,80,.15)">📨 Rapport envoyé · '+(pmf.rapportRecipient||'client')+'</div>'
+    :pmf.rapportSent===false
+      ?'<div style="font-size:11px;color:var(--amber);margin-bottom:12px;padding:7px 10px;background:rgba(227,179,65,.07);border-radius:7px;border:1px solid rgba(227,179,65,.15)">⚠️ Non envoyé — envoie manuellement via Gmail</div>'
+      :'';
+  return'<div style="text-align:center;padding:7px 0"><div style="font-size:26px;margin-bottom:7px">✅</div>'
+    +'<div style="font-size:15px;font-weight:700;color:var(--txt0);margin-bottom:3px">Mission clôturée</div>'
+    +'<div style="font-size:12px;color:var(--txt3);margin-bottom:14px">Heures et notes enregistrées.</div>'
+    +sentLine
+    +'<button class="decomp-link" onclick="go(\'pause\')">🌿 Prendre un moment</button>'
+    +'<span class="pback" onclick="closeD()">← Retour</span></div>';
+}
 function pmfGo(step,mid){if(step===2){const s=document.getElementById("ps"),e=document.getElementById("pe");if(s)pmf.start=s.value;if(e)pmf.end=e.value;}pmfStep=step;render();}
 function pmfSN(mid){const ta=document.getElementById("pmf-notes");if(ta)pmf.notes=ta.value;pmfStep=4;render();}
 function sRpt(k){pmf.tpl=k;pmf.rpt="";render();}
@@ -563,22 +595,73 @@ async function genRpt(mid){
   }catch(e){pmf.rpt="Erreur: "+e.message;}
   pmf.rptLoading=false;render();
 }
+
+// ── SEND RAPPORT TO CLIENT VIA GAS ──
+async function sendRapportNow(mid){
+  if(!pmf||!pmf.rpt){toast('Génère le rapport d\'abord','red');return;}
+  pmf.sendStatus=null;
+  toast('📨 Envoi en cours…','blue');
+  render();
+  const m=missions.find(x=>x.mid===mid);
+  const he=pmf.start&&pmf.end?durD(pmf.start,pmf.end):(m&&m.heures||'');
+  try{
+    const url=GAS_URL
+      +'?action=sendRapport'
+      +'&id='+encodeURIComponent(mid)
+      +'&rapport='+encodeURIComponent(pmf.rpt)
+      +'&template='+encodeURIComponent(pmf.tpl||'RAS')
+      +'&heures='+encodeURIComponent(he)
+      +'&notes='+encodeURIComponent(pmf.notes||'');
+    const ctrl=new AbortController();
+    const to=setTimeout(()=>ctrl.abort(),25000);
+    const r=await fetch(url,{signal:ctrl.signal}).finally(()=>clearTimeout(to));
+    const txt=await r.text();
+    let d;try{d=JSON.parse(txt);}catch(e){throw new Error('Non-JSON: '+txt.slice(0,100));}
+    if(d.ok&&d.sent){
+      pmf.sendStatus={ok:true,msg:'✅ Envoyé à '+( d.recipient||'client')+(d.draftCreated?' · brouillon archivé':'')};
+      pmf.rapportSent=true;
+      pmf.rapportRecipient=d.recipient||'client';
+      toast('✅ Rapport envoyé à '+( d.recipient||'client'),'green');
+      // update local cache so badge changes
+      const i=missions.findIndex(x=>x.mid===mid);
+      if(i>-1)missions[i].statut='Rapport envoyé';
+      if(detail&&detail.mid===mid)detail.statut='Rapport envoyé';
+      render();
+      // auto-advance to step 3 after 1.8s
+      setTimeout(()=>{pmfStep=3;render();},1800);
+    }else{
+      pmf.sendStatus={ok:false,msg:'❌ '+(d.msg||'Erreur')};
+      pmf.rapportSent=false;
+      pmf.rapportError=d.msg||'Erreur';
+      toast('❌ '+(d.msg||'Envoi échoué'),'red');
+      render();
+    }
+  }catch(e){
+    pmf.sendStatus={ok:false,msg:'❌ Réseau: '+(e.message||'').slice(0,60)};
+    pmf.rapportSent=false;
+    pmf.rapportError=e.message||'Erreur réseau';
+    toast('❌ Réseau: '+(e.message||'').slice(0,50),'red');
+    render();
+  }
+}
+
 async function pmfFin(mid){
   const ta=document.getElementById("pmf-db");if(ta)pmf.debriefNote=ta.value;
   const m=missions.find(x=>x.mid===mid);
   const he=durD(pmf.start,pmf.end)||m&&m.heures||"";
   const nc=[pmf.notes,pmf.debriefNote?"[État: "+pmf.debriefState+" — "+pmf.debriefNote+"]":pmf.debriefState?"[État: "+pmf.debriefState+"]":""].filter(Boolean).join(" | ");
   toast('💾 Sauvegarde…','blue');
+  const finalStatut=pmf.rapportSent?"Rapport envoyé":"Terminé";
   const r1=await saveField(mid,"heures",he);
-  const r2=await saveField(mid,"statut","Rapport envoyé");
+  const r2=await saveField(mid,"statut",finalStatut);
   const r3=nc?await saveField(mid,"notes",nc):true;
   if(r1&&r2){toast('✅ Mission clôturée — sheet mis à jour','green');}
-  else{toast('⚠️ Sauvegarde échouée — voir console + vérifier déploiement GAS','red');}
+  else{toast('⚠️ Sauvegarde échouée — vérifier déploiement GAS','red');}
   if(pmf.notes){if(!flogs[mid])flogs[mid]=[];flogs[mid].push({time:nowt(),type:"note",text:pmf.notes});}
   if(pmf.debriefState){saveMoodEntry({date:m.date||tday(),mid:mid,client:m.client||"",moodState:pmf.debriefState,moodNote:pmf.debriefNote||"",heures:he});pendingDecompMid=mid;}
   const i=missions.findIndex(x=>x.mid===mid);
-  if(i>-1){missions[i].heures=he;missions[i].statut="Rapport envoyé";if(nc)missions[i].notes=nc;}
-  if(detail&&detail.mid===mid){detail.heures=he;detail.statut="Rapport envoyé";if(nc)detail.notes=nc;}
+  if(i>-1){missions[i].heures=he;missions[i].statut=finalStatut;if(nc)missions[i].notes=nc;}
+  if(detail&&detail.mid===mid){detail.heures=he;detail.statut=finalStatut;if(nc)detail.notes=nc;}
   pmfStep=5;render();
 }
 function rdMonth(){
