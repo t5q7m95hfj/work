@@ -24,8 +24,6 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overscroll-behavior:none;}
 body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:var(--txt1);-webkit-font-smoothing:antialiased;}
-
-/* HEADER */
 .hdr{position:sticky;top:0;z-index:50;background:var(--bg3);border-bottom:1px solid var(--border);padding:11px 15px 10px;}
 .hdr-inner{display:flex;justify-content:space-between;align-items:center;}
 .hdr-eyebrow{font-size:9px;letter-spacing:2.5px;color:var(--txt4);text-transform:uppercase;font-weight:700;margin-bottom:2px;}
@@ -39,19 +37,13 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:
 .hdr-btns{display:flex;flex-direction:column;gap:5px;}
 .icon-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--txt2);}
 .icon-btn:active{opacity:.6;}
-
-/* NAV */
 .nav{position:sticky;top:68px;z-index:40;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;}
 .nav-btn{flex:1;height:46px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--txt4);font-size:9px;font-weight:700;letter-spacing:.5px;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;font-family:'DM Sans',sans-serif;}
 .nav-btn.on{color:var(--txt0);border-bottom-color:var(--accent);}
 .nav-icon{font-size:14px;}
 .content{padding:12px 13px 90px;}
-
-/* LABELS */
 .slabel{font-size:9px;color:var(--txt3);font-weight:700;letter-spacing:1.8px;text-transform:uppercase;margin:4px 0 8px;}
 .slabel.mt{margin-top:18px;}
-
-/* CARDS */
 .mcard{background:var(--bg1);border-radius:10px;padding:12px 14px;margin-bottom:7px;border-left:3px solid;cursor:pointer;transition:transform .1s;user-select:none;}
 .mcard:active{transform:scale(0.982);}
 .mcard.dim{opacity:.35;}
@@ -73,19 +65,13 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:
 .bdg-plan{background:rgba(88,166,255,.12);color:var(--accent);}
 .bdg-done{background:rgba(63,185,80,.12);color:var(--green);}
 .bdg-cancel{background:rgba(248,81,73,.12);color:var(--red);}
-
-/* UPCOMING */
 .ubox{background:var(--bg1);border-radius:10px;padding:12px 14px;margin-top:7px;border:1px solid var(--border);}
 .ulbl{font-size:9px;color:var(--green);font-weight:700;letter-spacing:1.5px;margin-bottom:7px;text-transform:uppercase;}
 .uitem{display:flex;gap:8px;align-items:baseline;margin-bottom:4px;font-size:11px;}
-
-/* EMPTY */
 .empty{text-align:center;padding:40px 0 16px;}
 .empty-icon{font-size:36px;margin-bottom:8px;}
 .empty-title{font-size:15px;color:var(--txt2);font-weight:500;}
 .empty-sub{font-size:12px;color:var(--txt4);margin-top:3px;}
-
-/* DETAIL */
 .back-btn{background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;padding:0 0 10px;display:flex;align-items:center;gap:4px;min-height:44px;font-family:'DM Sans',sans-serif;font-weight:500;}
 .dcard{background:var(--bg1);border-radius:12px;overflow:hidden;border-top:3px solid;}
 .dhdr{padding:14px 15px 12px;}
@@ -122,18 +108,13 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:
 .etoggle{cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
 .ebody{padding:9px 11px;background:var(--bg2);border-radius:7px;font-size:11px;color:var(--txt2);line-height:1.65;margin:6px 0 5px;white-space:pre-wrap;}
 .att{font-size:11px;color:var(--accent);padding:6px 10px;background:var(--bg2);border-radius:6px;margin-bottom:4px;display:flex;align-items:center;gap:6px;min-height:var(--tap);border:1px solid var(--border);}
-
-/* DOCS BUTTON */
 .doc-btn{display:flex;align-items:center;gap:7px;padding:10px 13px;background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.18);border-radius:8px;color:var(--accent);font-size:12px;font-weight:500;text-decoration:none;min-height:var(--tap);margin-top:8px;transition:background .15s;}
 .doc-btn:active{background:rgba(88,166,255,.12);}
 .doc-btn-icon{font-size:15px;}
 .doc-btn-text{flex:1;}
 .doc-btn-arrow{font-size:10px;color:var(--txt4);}
-
-/* WEATHER ALERT */
 .wx-alert{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;background:rgba(227,179,65,.07);border:1px solid rgba(227,179,65,.2);border-radius:8px;font-size:11px;color:var(--amber);line-height:1.5;margin-bottom:8px;}
 .wx-alert-icon{font-size:16px;flex-shrink:0;}
-
 .frow{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;}
 .flbl{color:var(--txt3);}
 .fval{color:var(--txt1);font-weight:500;}
@@ -181,15 +162,11 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:
 .dbtn{padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--txt1);font-size:12px;cursor:pointer;text-align:left;min-height:var(--tap);font-family:'DM Sans',sans-serif;}
 .dbtn.on{border-color:rgba(188,140,255,.35);background:rgba(188,140,255,.07);color:var(--purple);}
 .decomp-link{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:1px solid rgba(63,185,80,.18);border-radius:10px;color:var(--green);font-size:12px;font-weight:500;min-height:var(--tap);cursor:pointer;background:rgba(63,185,80,.04);font-family:'DM Sans',sans-serif;}
-
-/* MONTH */
 .mo-bar{background:var(--bg1);border-radius:10px;padding:11px 14px;margin-bottom:10px;border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;}
 .mob-lbl{font-size:9px;color:var(--txt4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;font-weight:600;}
 .mob-val{font-size:16px;font-weight:700;}
 .m-date-hdr{font-size:10px;font-weight:700;letter-spacing:.8px;margin:14px 0 5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
 .m-date-pill{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600;}
-
-/* FINANCE */
 .fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
 .fin-card{background:var(--bg1);border-radius:9px;padding:11px 13px;border:1px solid var(--border);}
 .fin-lbl{font-size:9px;color:var(--txt4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;font-weight:700;}
@@ -212,8 +189,6 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:
 .fmr-deb{font-size:9px;color:var(--txt4);}
 .fmr-st{font-size:9px;margin-top:2px;}
 .ref-box{background:var(--bg1);border-radius:9px;padding:13px 14px;font-size:12px;color:var(--txt2);line-height:2.1;border:1px solid var(--border);font-family:'DM Mono',monospace;}
-
-/* SEASONAL LOG — decompression mood tracker */
 .season-hdr{font-size:14px;font-weight:700;color:var(--txt0);margin-bottom:4px;}
 .season-sub{font-size:11px;color:var(--txt3);margin-bottom:14px;}
 .mood-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;}
@@ -226,8 +201,6 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:
 .mood-stat{background:var(--bg2);border-radius:8px;padding:9px 10px;text-align:center;border:1px solid var(--border);}
 .mood-stat-val{font-size:16px;font-weight:700;color:var(--txt0);}
 .mood-stat-lbl{font-size:9px;color:var(--txt4);margin-top:2px;text-transform:uppercase;letter-spacing:.6px;}
-
-/* PAUSE */
 .pause-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 0 24px;}
 .psc{display:none;flex-direction:column;align-items:center;width:100%;max-width:380px;padding:0 4px;}
 .psc.active{display:flex;}
@@ -273,6 +246,12 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg0);color:
 .spin{display:inline-block;animation:sp .8s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg)}}
 a{color:var(--accent);text-decoration:none;}
+/* TOAST NOTIFICATION */
+.mc-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg1);border:1px solid var(--border2);color:var(--txt1);font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;transition:transform .25s,opacity .25s;max-width:88vw;text-align:center;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.25);}
+.mc-toast-show{opacity:1;transform:translateX(-50%) translateY(0);}
+.mc-toast-green{border-color:rgba(63,185,80,.35);color:var(--green);}
+.mc-toast-red{border-color:rgba(248,81,73,.35);color:var(--red);}
+.mc-toast-blue{border-color:rgba(88,166,255,.35);color:var(--accent);}
 </style>
 </head>
 <body>
@@ -291,7 +270,7 @@ a{color:var(--accent);text-decoration:none;}
       </div>
       <div class="hdr-btns">
         <button class="icon-btn" onclick="toggleMode()" id="mode-btn">☀️</button>
-        <button class="icon-btn" onclick="refreshData()" id="refresh-btn">↻</button>
+        <button class="icon-btn" onclick="refreshData()" ondblclick="testAPI()" title="Double-tap: test API" id="refresh-btn">↻</button>
       </div>
     </div>
   </div>
@@ -319,32 +298,16 @@ const META={
 const TRAVEL={"PERRACHE":45,"PART-DIEU":45,"PART DIEU":45,"LYS":52,"AEROPORT":52,"AIRPORT":52,"INTERCONTINENTAL":40,"HOTEL":40,"QUAI CLAUDE BERNARD":45,"QUAI RAMBAUD":60,"BELLECOUR":45,"VIENNE":105,"STE-COLOMBE":105,"GENEVE":180};
 const RPT_LABELS={RAS:"✅ RAS",INCIDENT:"⚠️ Incident",ANNULATION:"❌ Annulation",ANOMALIE:"🔧 Anomalie",OT:"⏱ Heures supp"};
 const PRENOM={"Philibert Tourisme":"Mélissa","Go Côte Saône":"Marion","Feel the French Way":"Laura","Un Monde Bleu":"Audrey"};
-
-// Mood state display config
-const MOOD_DISPLAY={
-  fluide:{label:"😌 Fluide",color:"var(--green)"},
-  chargé:{label:"😮‍💨 Chargé",color:"var(--amber)"},
-  incident:{label:"⚠️ Incident",color:"var(--red)"},
-  vide:{label:"😶 Vide",color:"var(--txt3)"},
-  bien:{label:"🙂 Satisfait",color:"var(--accent)"}
-};
-
+const MOOD_DISPLAY={fluide:{label:"😌 Fluide",color:"var(--green)"},chargé:{label:"😮‍💨 Chargé",color:"var(--amber)"},incident:{label:"⚠️ Incident",color:"var(--red)"},vide:{label:"😶 Vide",color:"var(--txt3)"},bien:{label:"🙂 Satisfait",color:"var(--accent)"}};
 let missions=[],flogs={},tab="today",detail=null,pmf=null,pmfStep=0,emailOpen={},apiStatus='unknown';
-let wxData=null; // cache weather for mission detail weather alerts
+let wxData=null;
 let light=localStorage.getItem("mc_light")==="1";
 let pScr="s1",pBOn=false,pBTimer=null,pBPhase=0,pBCycle=0;
 let pDCtx=null,pDing=false,pClr="#3fb950",pBrush=8,pLX=0,pLY=0,pTaps=0;
-// Pending mission for decompression log (set at pmf close)
 let pendingDecompMid=null;
-
-window.addEventListener("load",()=>{
-  if(light)document.body.classList.add("light");
-  updateModeBtn();renderHeader();loadWeather();loadMissions();
-});
-
+window.addEventListener("load",()=>{if(light)document.body.classList.add("light");updateModeBtn();renderHeader();loadWeather();loadMissions();});
 function toggleMode(){light=!light;document.body.classList.toggle("light",light);localStorage.setItem("mc_light",light?"1":"0");updateModeBtn();}
 function updateModeBtn(){document.getElementById("mode-btn").textContent=light?"🌙":"☀️";}
-
 function renderHeader(){
   const n=new Date(),cm=p2(n.getMonth()+1);
   document.getElementById("hdr-date").textContent=DAYS[n.getDay()]+" "+n.getDate()+" "+MOL[n.getMonth()];
@@ -358,36 +321,21 @@ function renderHeader(){
   if(apiEl)apiEl.textContent=[apiText,lastText].filter(Boolean).join(' • ');
   document.getElementById("month-lbl").textContent=MOS[n.getMonth()].toUpperCase();
 }
-
 async function loadWeather(){
   try{
     const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weathercode,precipitation_probability&hourly=precipitation_probability,weathercode,temperature_2m&timezone=Europe/Paris&forecast_days=3");
-    const d=await r.json();
-    wxData=d; // cache full data
+    const d=await r.json();wxData=d;
     const c=d.current,wc=c.weathercode||0;
     const ic=wc===0?"☀️":wc<=2?"⛅":wc===3?"☁️":wc<=48?"🌫":wc<=55?"🌦":wc<=67?"🌧":wc<=77?"❄️":wc<=82?"🌦":"⛈️";
-    document.getElementById("wx-icon").textContent=ic;
-    document.getElementById("wx-temp").textContent=Math.round(c.temperature_2m)+"°C";
+    document.getElementById("wx-icon").textContent=ic;document.getElementById("wx-temp").textContent=Math.round(c.temperature_2m)+"°C";
     document.getElementById("wx-rain").textContent=c.precipitation_probability>20?c.precipitation_probability+"%":"";
   }catch(e){document.getElementById("wx-icon").textContent="";document.getElementById("wx-temp").textContent="Lyon";}
 }
-
-// Get weather alert string for a specific date (YYYY-MM-DD) and time window
 function getWxAlert(date,startHour,endHour){
   if(!wxData||!wxData.hourly)return null;
-  const times=wxData.hourly.time||[];
-  const probs=wxData.hourly.precipitation_probability||[];
-  const codes=wxData.hourly.weathercode||[];
-  const temps=wxData.hourly.temperature_2m||[];
+  const times=wxData.hourly.time||[],probs=wxData.hourly.precipitation_probability||[],codes=wxData.hourly.weathercode||[],temps=wxData.hourly.temperature_2m||[];
   let maxRain=0,minTemp=99,badCode=false;
-  times.forEach((t,i)=>{
-    if(!t.startsWith(date))return;
-    const hr=parseInt(t.slice(11,13));
-    if(hr<startHour||hr>endHour)return;
-    if(probs[i]>maxRain)maxRain=probs[i];
-    if(temps[i]<minTemp)minTemp=temps[i];
-    if(codes[i]>=61)badCode=true;
-  });
+  times.forEach((t,i)=>{if(!t.startsWith(date))return;const hr=parseInt(t.slice(11,13));if(hr<startHour||hr>endHour)return;if(probs[i]>maxRain)maxRain=probs[i];if(temps[i]<minTemp)minTemp=temps[i];if(codes[i]>=61)badCode=true;});
   const parts=[];
   if(maxRain>=50)parts.push("Pluie probable "+maxRain+"% pendant votre mission");
   else if(maxRain>=30)parts.push("Risque de pluie "+maxRain+"% → prévoir parapluies");
@@ -395,64 +343,51 @@ function getWxAlert(date,startHour,endHour){
   if(badCode)parts.push("Conditions météo défavorables prévues");
   return parts.length?parts.join(" · "):null;
 }
-
 async function loadMissions(){
   const stored=localStorage.getItem("mc_missions");
   if(stored){try{const p=JSON.parse(stored);if(p&&p.length){missions=p.map(norm);renderHeader();render();}}catch(e){}}
   try{
-    const ctrl=new AbortController();
-    const to=setTimeout(()=>ctrl.abort(),FETCH_TIMEOUT_MS);
+    const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),FETCH_TIMEOUT_MS);
     const r=await fetch(GAS_URL+"?action=all",{signal:ctrl.signal}).finally(()=>clearTimeout(to));
     const txt=await r.text();
     if(!r.ok){apiStatus='HTTP '+r.status;throw new Error('GAS fetch failed: '+apiStatus);}
-    let d;
-    try{d=JSON.parse(txt);}catch(err){apiStatus='invalid-json';throw new Error('Invalid JSON: '+txt.slice(0,200));}
-    if(d&&d.missions&&d.missions.length){
-      missions=d.missions.map(norm);
-      try{localStorage.setItem("mc_missions",JSON.stringify(missions));localStorage.setItem("mc_missions_ts",new Date().toISOString());}catch(e){}
-      apiStatus='OK';
-    }else{apiStatus='no-data';console.warn('GAS returned no missions:',d);}
+    let d;try{d=JSON.parse(txt);}catch(err){apiStatus='invalid-json';throw new Error('Invalid JSON');}
+    if(d&&d.missions&&d.missions.length){missions=d.missions.map(norm);try{localStorage.setItem("mc_missions",JSON.stringify(missions));localStorage.setItem("mc_missions_ts",new Date().toISOString());}catch(e){}apiStatus='OK';}
+    else{apiStatus='no-data';}
   }catch(e){
-    console.error('loadMissions error:',e);
-    apiStatus=apiStatus==='OK'?apiStatus:('err:'+(e.message||e.toString()).slice(0,120));
+    apiStatus=apiStatus==='OK'?apiStatus:('err:'+(e.message||e.toString()).slice(0,80));
     if(!missions.length)missions=(typeof DEMO!=='undefined'?DEMO.map(m=>Object.assign({},m)):[]);
   }
   renderHeader();render();
 }
+async function refreshData(){const b=document.getElementById("refresh-btn");b.style.opacity=".4";missions=[];localStorage.removeItem("mc_missions");await loadMissions();b.style.opacity="1";}
 
-async function refreshData(){
-  const b=document.getElementById("refresh-btn");b.style.opacity=".4";
-  missions=[];localStorage.removeItem("mc_missions");
-  await loadMissions();b.style.opacity="1";
+// ── SAVE FIELD — with toast feedback ──
+async function saveField(mid,f,v){
+  try{
+    const r=await fetch(GAS_URL+"?action=update&id="+encodeURIComponent(mid)+"&field="+encodeURIComponent(f)+"&value="+encodeURIComponent(v));
+    if(!r.ok){toast('⚠️ HTTP '+r.status+' — vérifier déploiement GAS','red');return false;}
+    const txt=await r.text();
+    let d;try{d=JSON.parse(txt);}catch(e){toast('⚠️ Réponse non-JSON','red');return false;}
+    if(d&&d.ok===false){toast('❌ '+d.msg,'red');return false;}
+    return true;
+  }catch(e){
+    toast('❌ GAS inaccessible: '+e.message.slice(0,50),'red');
+    console.warn('saveField err',e);return false;
+  }
 }
 
-async function saveField(mid,f,v){try{await fetch(GAS_URL+"?action=update&id="+encodeURIComponent(mid)+"&field="+encodeURIComponent(f)+"&value="+encodeURIComponent(v));}catch(e){console.warn('saveField err',e);}}
-
 function norm(m){
-  const o=Object.assign({},m);
-  if(o._n)return o;
-  o._n=1;
-  o.mid=o["Mission ID"]||o.mid||"";
-  o.date=o["Date mission"]||o.date||"";
-  o.client=o["Client"]||o.client||"";
-  o.type=o["Type"]||o.type||"";
-  o.desc=o["Description"]||o.desc||"";
-  o.heures=o["Heures"]||o.heures||"";
-  o.base=o["Base (HT)"]||o["Base"]||o.base||"";
-  o.debours=o["Débours"]||o["Debours"]||o.debours||"";
-  let rb=o["Début"]||o["Debut"]||o.debut||"";
-  if(rb&&rb.length>5)rb=rb.slice(0,5);
-  o.debut=rb;
-  o.endroit=o["Endroit"]||o.endroit||"";
-  o.statut=o["Statut"]||o.statut||"";
-  o.notes=o["Notes"]||o.notes||"";
-  o.voyage=o["Voyage (min)"]||o.voyage||"";
-  o.facture=o["Facture#"]||o.facture||"";
-  // ── NEW: Docs field (Drive folder URL from email parser) ──
+  const o=Object.assign({},m);if(o._n)return o;o._n=1;
+  o.mid=o["Mission ID"]||o.mid||"";o.date=o["Date mission"]||o.date||"";o.client=o["Client"]||o.client||"";
+  o.type=o["Type"]||o.type||"";o.desc=o["Description"]||o.desc||"";o.heures=o["Heures"]||o.heures||"";
+  o.base=o["Base (HT)"]||o["Base"]||o.base||"";o.debours=o["Débours"]||o["Debours"]||o.debours||"";
+  let rb=o["Début"]||o["Debut"]||o.debut||"";if(rb&&rb.length>5)rb=rb.slice(0,5);o.debut=rb;
+  o.endroit=o["Endroit"]||o.endroit||"";o.statut=o["Statut"]||o.statut||"";o.notes=o["Notes"]||o.notes||"";
+  o.voyage=o["Voyage (min)"]||o.voyage||"";o.facture=o["Facture#"]||o.facture||"";
   o.docs=o["Docs"]||o.docs||"";
   return o;
 }
-
 const p2=n=>String(n).padStart(2,"0");
 const tday=()=>new Date().toISOString().slice(0,10);
 const tmrw=()=>{const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);};
@@ -469,18 +404,8 @@ function fdl(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return DAYS
 function badge(m){if(isCxl(m))return'<span class="bdg bdg-cancel">Annulé</span>';if(isDone(m))return'<span class="bdg bdg-done">✓ Terminé</span>';return'<span class="bdg bdg-plan">'+(m.statut||"Planifié")+'</span>';}
 const cnet=(b,d)=>Math.round((parseFloat(b)||0)*(1-TAX)+(parseFloat(d)||0));
 const ctax=b=>Math.round((parseFloat(b)||0)*TAX);
-
 function go(t){if(t!=="today"&&t!=="month")detail=null;tab=t;["today","month","finance","pause"].forEach(id=>document.getElementById("nb-"+id).classList.toggle("on",id===t));render();}
-function render(){
-  const el=document.getElementById("content");if(!el)return;
-  if(detail&&(tab==="today"||tab==="month")){el.innerHTML=rdDetail(detail);return;}
-  if(tab==="today")el.innerHTML=rdToday();
-  else if(tab==="month")el.innerHTML=rdMonth();
-  else if(tab==="finance")el.innerHTML=rdFinance();
-  else if(tab==="pause"){el.innerHTML="";rdPause();}
-}
-
-/* TODAY */
+function render(){const el=document.getElementById("content");if(!el)return;if(detail&&(tab==="today"||tab==="month")){el.innerHTML=rdDetail(detail);return;}if(tab==="today")el.innerHTML=rdToday();else if(tab==="month")el.innerHTML=rdMonth();else if(tab==="finance")el.innerHTML=rdFinance();else if(tab==="pause"){el.innerHTML="";rdPause();}}
 function rdToday(){
   const t=tday(),tm=tmrw();
   const t1=missions.filter(m=>m.date===t).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
@@ -511,30 +436,18 @@ function mcard(m,compact){
     +'</div><div class="mc-type">'+ts+'</div>'+(pills.length?'<div class="mc-pills">'+pills.join("")+'</div>':"")
     +'</div><div class="mc-right">'+(m.desc?'<div class="mc-ref">'+m.desc+'</div>':"")+badge(m)+'</div></div></div>';
 }
-
-/* DETAIL */
 function openD(mid){detail=missions.find(m=>m.mid===mid)||null;pmf=null;pmfStep=0;render();window.scrollTo(0,0);}
 function closeD(){detail=null;render();}
-
 function rdDetail(m){
   const mt=getMeta(m.client),b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0;
   const tr=m.voyage?+m.voyage:trvl(m.endroit),dp=m.debut&&tr?depT(m.debut,tr):null;
   const eO=emailOpen[m.mid],lg=flogs[m.mid]||[];
-
-  // Weather alert for this mission's date/time
   let wxAlert="";
-  if(m.date&&m.debut&&wxData){
-    const startHr=parseInt(m.debut.slice(0,2))||8;
-    const alert=getWxAlert(m.date,startHr,Math.min(startHr+5,22));
-    if(alert)wxAlert='<div class="wx-alert"><div class="wx-alert-icon">⛈️</div><div>'+alert+'</div></div>';
-  }
-
+  if(m.date&&m.debut&&wxData){const startHr=parseInt(m.debut.slice(0,2))||8;const alert=getWxAlert(m.date,startHr,Math.min(startHr+5,22));if(alert)wxAlert='<div class="wx-alert"><div class="wx-alert-icon">⛈️</div><div>'+alert+'</div></div>';}
   let h='<button class="back-btn" onclick="closeD()">← Retour</button>'
     +'<div class="dcard" style="border-top-color:'+mt.hex+'">'
     +'<div class="dhdr"><div class="d-top"><div><div class="d-client" style="color:'+mt.hex+'">'+mt.tag+" · "+m.client+'</div><div class="d-title">'+((m.type||"").replace("ASSISTANCE ",""))+'</div></div>'+badge(m)+'</div>';
-
   if(wxAlert)h+=wxAlert;
-
   if(m.debut)h+='<div class="shift-box"><div class="shift-time">⏰ '+m.debut+'</div>'+(dp?'<div class="shift-sub">Départ maison ~'+dp+" · trajet ~"+tr+" min</div>":"")+'</div>';
   const kp=[];const pax=m.ops&&m.ops.pax?m.ops.pax:m.pax||"";
   if(pax)kp.push('<span class="kpill hi">👥 '+pax+' pax</span>');
@@ -548,7 +461,6 @@ function rdDetail(m){
     +'<div class="ifield"><label>Trajet</label><span>~'+tr+' min</span></div></div>'
     +(m.notes?'<div style="margin-top:9px;background:var(--bg2);padding:8px 11px;border-radius:7px;font-size:11px;color:var(--txt2);line-height:1.55">📝 '+m.notes+'</div>':"")
     +'</div>';
-
   if(m.ops){const o=m.ops;h+='<div class="sdiv"><div class="sin"><div class="stitle blue">OPÉRATIONS</div>';
     if(o.trainInfo)h+='<div class="orow"><span class="o-icon">🚄</span><span class="o-lbl">Train</span><span class="o-val">TGV '+o.trainInfo.tgv+' · Arr. '+o.trainInfo.arrivalTime+(o.trainInfo.etaShip?' → Bateau '+o.trainInfo.etaShip:"")+'</span></div>';
     if(o.shipContact)h+='<div class="orow"><span class="o-icon">⚓</span><span class="o-lbl">'+(o.shipContact.role||"PD Ship")+'</span><span class="o-val">'+o.shipContact.name+' · <a class="o-ph" href="tel:'+o.shipContact.phone+'">'+o.shipContact.phone+'</a></span></div>';
@@ -559,10 +471,7 @@ function rdDetail(m){
     if(o.drivers&&o.drivers.length)h+='<div class="o-sub">CHAUFFEURS</div>'+o.drivers.map(x=>'<div class="o-contact">🚌 '+x.name+' · <a class="o-ph" href="tel:'+x.phone+'">'+x.phone+'</a></div>').join("");
     if(o.miseEnPlace)h+='<div class="o-sub">MISE EN PLACE</div><div class="mise-box">'+o.miseEnPlace+'</div>';
     h+='</div></div>';}
-
-  // ── EMAIL & DOCS section ──
-  const hasEmail=!!m.email;
-  const hasDocs=!!m.docs;
+  const hasEmail=!!m.email,hasDocs=!!m.docs;
   if(hasEmail||hasDocs){
     h+='<div class="sdiv"><div class="sin"><div class="etoggle" onclick="toggleEmail(\''+m.mid+'\')">'
       +'<div class="stitle green" style="margin-bottom:0">📧 EMAIL &amp; DOCS</div>'
@@ -574,45 +483,24 @@ function rdDetail(m){
           +'<div class="ebody">'+((e.body||"").trim())+'</div>'
           +(e.attachments&&e.attachments.length?e.attachments.map(a=>'<div class="att">'+(a.type==="pdf"?"📄":"📊")+'<span>'+a.name+'</span></div>').join(""):"");
       }
-      // Drive docs button — always shown if docs URL available
-      if(hasDocs){
-        h+='<a href="'+m.docs+'" target="_blank" class="doc-btn">'
-          +'<span class="doc-btn-icon">📁</span>'
-          +'<span class="doc-btn-text">Ouvrir le dossier Drive<br><span style="font-size:10px;color:var(--txt3)">Emails · PDFs · Manifests</span></span>'
-          +'<span class="doc-btn-arrow">↗</span>'
-          +'</a>';
-      }
-    } else {
-      // When collapsed, show a subtle "📎 docs disponibles" hint if docs exist
-      if(hasDocs){h+='<div style="font-size:10px;color:var(--txt3);margin-top:5px">📎 Documents disponibles → ouvrir ↑</div>';}
-    }
+      if(hasDocs){h+='<a href="'+m.docs+'" target="_blank" class="doc-btn"><span class="doc-btn-icon">📁</span><span class="doc-btn-text">Ouvrir le dossier Drive<br><span style="font-size:10px;color:var(--txt3)">Emails · PDFs · Manifests</span></span><span class="doc-btn-arrow">↗</span></a>';}
+    }else{if(hasDocs){h+='<div style="font-size:10px;color:var(--txt3);margin-top:5px">📎 Documents disponibles → ouvrir ↑</div>';}}
     h+='</div></div>';
-  } else if(hasDocs){
-    // No email metadata but docs exist — show standalone button
+  }else if(hasDocs){
     h+='<div class="sdiv"><div class="sin"><div class="stitle green">DOCUMENTS</div>'
-      +'<a href="'+m.docs+'" target="_blank" class="doc-btn">'
-      +'<span class="doc-btn-icon">📁</span>'
-      +'<span class="doc-btn-text">Dossier Drive<br><span style="font-size:10px;color:var(--txt3)">Emails · PDFs · Manifests</span></span>'
-      +'<span class="doc-btn-arrow">↗</span>'
-      +'</a></div></div>';
+      +'<a href="'+m.docs+'" target="_blank" class="doc-btn"><span class="doc-btn-icon">📁</span><span class="doc-btn-text">Dossier Drive<br><span style="font-size:10px;color:var(--txt3)">Emails · PDFs · Manifests</span></span><span class="doc-btn-arrow">↗</span></a></div></div>';
   }
-
-  // Field journal
   h+='<div class="sdiv"><div class="sin"><div class="stitle purple">JOURNAL DE TERRAIN</div>'
     +(lg.length?'<div class="log-entries">'+lg.map(e=>'<div class="lentry"><div class="lts">'+e.time+'</div><div class="lbubble"><div class="ltag">'+(e.type==="incident"?"⚠️ Incident":e.type==="ras"?"✅ RAS":"📝 Note")+'</div><div class="ltext">'+e.text+'</div></div></div>').join("")+'</div>':'<div class="log-empty">Aucune entrée.</div>')
     +'<div class="log-types" id="lt-'+m.mid+'"><button class="ltbtn on" data-t="note" onclick="sLT(\''+m.mid+'\',this)">📝 Note</button><button class="ltbtn" data-t="incident" onclick="sLT(\''+m.mid+'\',this)">⚠️ Incident</button><button class="ltbtn" data-t="ras" onclick="sLT(\''+m.mid+'\',this)">✅ RAS</button></div>'
     +'<textarea class="ta" id="lta-'+m.mid+'" rows="2" placeholder="Écrire…"></textarea>'
     +'<button class="submit-btn" onclick="addLog(\''+m.mid+'\')">Enregistrer →</button></div></div>';
-
-  // Inline edit
   h+='<div class="sdiv"><div class="sin"><div class="stitle blue">MODIFIER</div>'
     +'<div class="editrow"><input class="einput" id="eh-'+m.mid+'" placeholder="Heures (ex: 3.5)" value="'+(m.heures||"")+'"/><button class="esave" onclick="dEdit(\''+m.mid+'\',\'heures\',\'eh\')">✓</button></div>'
     +'<div class="editrow"><input class="einput" id="es-'+m.mid+'" placeholder="Statut" value="'+(m.statut||"")+'"/><button class="esave" onclick="dEdit(\''+m.mid+'\',\'statut\',\'es\')">✓</button></div>'
     +'<textarea class="ta" id="en-'+m.mid+'" rows="2" placeholder="Notes de terrain…">'+(m.notes||"")+'</textarea>'
     +'<button class="submit-btn" style="margin-top:6px" onclick="dEdit(\''+m.mid+'\',\'notes\',\'en\')">Sauver</button></div></div>';
-
   h+=rdPMF(m);
-
   if(b>0||d>0)h+='<div class="sdiv"><div class="sin"><div class="stitle amber">FINANCES</div>'
     +'<div class="frow"><span class="flbl">Base HT</span><span class="fval">'+(b?b+"€":"TBD")+'</span></div>'
     +'<div class="frow"><span class="flbl">Taxe (21.2%)</span><span class="fval">'+(b?ctax(b)+"€":"—")+'</span></div>'
@@ -620,7 +508,6 @@ function rdDetail(m){
     +'<div class="frow" style="padding-top:6px;border-top:1px solid var(--border)"><span class="flbl">Net</span><span class="fnet">'+(b||d?cnet(b,d)+"€":"TBD")+'</span></div>'
     +(m.facture?'<div class="frow" style="margin-top:3px"><span class="flbl">Facture</span><span style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--green)">'+m.facture+'</span></div>':"")
     +'</div></div>';
-
   const cm2=getMeta(m.client);
   h+='<div class="sdiv"><div class="sin"><div class="stitle muted">CONTACT CLIENT</div>'
     +'<div style="font-size:12px;color:var(--txt1);line-height:2.1">'+cm2.contact
@@ -632,13 +519,17 @@ function rdDetail(m){
     +'</div></div></div></div>';
   return h;
 }
-
 function toggleEmail(mid){emailOpen[mid]=!emailOpen[mid];render();}
-async function dEdit(mid,f,pfx){const el=document.getElementById(pfx+"-"+mid);if(!el)return;const v=el.value.trim();await saveField(mid,f,v);const i=missions.findIndex(m=>m.mid===mid);if(i>-1)missions[i][f]=v;if(detail&&detail.mid===mid)detail[f]=v;el.style.borderColor="rgba(63,185,80,.5)";setTimeout(()=>{if(el)el.style.borderColor="";},1400);}
+async function dEdit(mid,f,pfx){
+  const el=document.getElementById(pfx+"-"+mid);if(!el)return;
+  const v=el.value.trim();
+  const ok=await saveField(mid,f,v);
+  const i=missions.findIndex(m=>m.mid===mid);if(i>-1)missions[i][f]=v;
+  if(detail&&detail.mid===mid)detail[f]=v;
+  if(ok){el.style.borderColor="rgba(63,185,80,.5)";setTimeout(()=>{if(el)el.style.borderColor="";},1400);}
+}
 function addLog(mid){const ta=document.getElementById("lta-"+mid);const sel=document.querySelector("#lt-"+mid+" .on");if(!ta||!ta.value.trim())return;if(!flogs[mid])flogs[mid]=[];flogs[mid].push({time:nowt(),type:sel&&sel.dataset?sel.dataset.t:"note",text:ta.value.trim()});ta.value="";render();}
 function sLT(mid,btn){document.querySelectorAll("#lt-"+mid+" .ltbtn").forEach(b=>b.classList.remove("on"));btn.classList.add("on");}
-
-/* PMF */
 function rdPMF(m){
   if(isDone(m))return'<div class="sdiv"><div class="sin" style="text-align:center"><div style="font-size:13px;color:var(--green);font-weight:600;margin-bottom:9px">✓ Mission clôturée</div><button class="decomp-link" onclick="go(\'pause\')">🌿 Décompresser</button></div></div>';
   if(!pmf||pmf.mid!==m.mid)return'<div class="sdiv"><div class="sin"><div class="stitle green">FIN DE MISSION</div><button class="pmf-trigger" onclick="sPMF(\''+m.mid+'\')">✅ Logger les heures & clôturer</button></div></div>';
@@ -655,7 +546,6 @@ function pmfH5(){return'<div style="text-align:center;padding:7px 0"><div style=
 function pmfGo(step,mid){if(step===2){const s=document.getElementById("ps"),e=document.getElementById("pe");if(s)pmf.start=s.value;if(e)pmf.end=e.value;}pmfStep=step;render();}
 function pmfSN(mid){const ta=document.getElementById("pmf-notes");if(ta)pmf.notes=ta.value;pmfStep=4;render();}
 function sRpt(k){pmf.tpl=k;pmf.rpt="";render();}
-
 async function genRpt(mid){
   const m=missions.find(x=>x.mid===mid);if(!m)return;
   pmf.rptLoading=true;render();
@@ -673,35 +563,24 @@ async function genRpt(mid){
   }catch(e){pmf.rpt="Erreur: "+e.message;}
   pmf.rptLoading=false;render();
 }
-
 async function pmfFin(mid){
   const ta=document.getElementById("pmf-db");if(ta)pmf.debriefNote=ta.value;
   const m=missions.find(x=>x.mid===mid);
   const he=durD(pmf.start,pmf.end)||m&&m.heures||"";
   const nc=[pmf.notes,pmf.debriefNote?"[État: "+pmf.debriefState+" — "+pmf.debriefNote+"]":pmf.debriefState?"[État: "+pmf.debriefState+"]":""].filter(Boolean).join(" | ");
-  await saveField(mid,"heures",he);await saveField(mid,"statut","Rapport envoyé");if(nc)await saveField(mid,"notes",nc);
+  toast('💾 Sauvegarde…','blue');
+  const r1=await saveField(mid,"heures",he);
+  const r2=await saveField(mid,"statut","Rapport envoyé");
+  const r3=nc?await saveField(mid,"notes",nc):true;
+  if(r1&&r2){toast('✅ Mission clôturée — sheet mis à jour','green');}
+  else{toast('⚠️ Sauvegarde échouée — voir console + vérifier déploiement GAS','red');}
   if(pmf.notes){if(!flogs[mid])flogs[mid]=[];flogs[mid].push({time:nowt(),type:"note",text:pmf.notes});}
-
-  // ── Save decompression mood entry to seasonal log ──
-  if(pmf.debriefState){
-    saveMoodEntry({
-      date:m.date||tday(),
-      mid:mid,
-      client:m.client||"",
-      moodState:pmf.debriefState,
-      moodNote:pmf.debriefNote||"",
-      heures:he
-    });
-    pendingDecompMid=mid;
-  }
-
+  if(pmf.debriefState){saveMoodEntry({date:m.date||tday(),mid:mid,client:m.client||"",moodState:pmf.debriefState,moodNote:pmf.debriefNote||"",heures:he});pendingDecompMid=mid;}
   const i=missions.findIndex(x=>x.mid===mid);
   if(i>-1){missions[i].heures=he;missions[i].statut="Rapport envoyé";if(nc)missions[i].notes=nc;}
   if(detail&&detail.mid===mid){detail.heures=he;detail.statut="Rapport envoyé";if(nc)detail.notes=nc;}
   pmfStep=5;render();
 }
-
-/* MONTH — full overview */
 function rdMonth(){
   const now=new Date(),cm=p2(now.getMonth()+1),t=tday(),tm=tmrw();
   const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm).sort((a,b)=>a.date.localeCompare(b.date));
@@ -709,12 +588,10 @@ function rdMonth(){
   const tD=mms.reduce((s,m)=>s+(parseFloat(m.debours)||0),0);
   const dn=mms.filter(isDone).length;
   let h='<div class="slabel">'+MOL[now.getMonth()].toUpperCase()+' · APERÇU</div>'
-    +'<div class="mo-bar">'
-    +'<div><div class="mob-lbl">Missions</div><div class="mob-val" style="color:var(--txt0)">'+mms.length+'</div></div>'
+    +'<div class="mo-bar"><div><div class="mob-lbl">Missions</div><div class="mob-val" style="color:var(--txt0)">'+mms.length+'</div></div>'
     +'<div><div class="mob-lbl">Base HT</div><div class="mob-val" style="color:var(--accent)">'+(tB?tB+"€":"—")+'</div></div>'
     +'<div><div class="mob-lbl">Net est.</div><div class="mob-val" style="color:var(--amber)">'+(tB||tD?cnet(tB,tD)+"€":"—")+'</div></div>'
-    +'<div><div class="mob-lbl">Terminées</div><div class="mob-val" style="color:var(--green)">'+dn+'</div></div>'
-    +'</div>';
+    +'<div><div class="mob-lbl">Terminées</div><div class="mob-val" style="color:var(--green)">'+dn+'</div></div></div>';
   const gr={};mms.forEach(m=>{(gr[m.date]=gr[m.date]||[]).push(m);});
   h+='<div class="slabel mt">TOUTES LES MISSIONS</div>';
   if(!Object.keys(gr).length){return h+'<div class="empty"><div class="empty-icon">📅</div><div class="empty-title">Pas de mission ce mois</div></div>';}
@@ -745,24 +622,14 @@ function rdMonth(){
   });
   return h;
 }
-
-/* FINANCE */
 function rdFinance(){
   const now=new Date(),cy=now.getFullYear(),cm=p2(now.getMonth()+1),mth=now.getMonth();
   function sums(arr){const b=arr.reduce((s,m)=>s+(parseFloat(m.base)||0),0),d=arr.reduce((s,m)=>s+(parseFloat(m.debours)||0),0);return{b,d,tax:ctax(b),net:cnet(b,d),done:arr.filter(isDone).length,tot:arr.length};}
   const allY=missions.filter(m=>m.date&&m.date.startsWith(String(cy)));
   const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm);
   const ms=sums(mms),ys=sums(allY);
-  function grid(s,label){
-    return'<div class="slabel">'+label+'</div><div class="fin-grid">'
-      +'<div class="fin-card"><div class="fin-lbl">Base HT</div><div class="fin-val" style="color:var(--accent)">'+(s.b?s.b.toLocaleString("fr-FR")+"€":"—")+'</div></div>'
-      +'<div class="fin-card"><div class="fin-lbl">Taxe (21.2%)</div><div class="fin-val" style="color:var(--red)">'+(s.tax?s.tax.toLocaleString("fr-FR")+"€":"—")+'</div></div>'
-      +'<div class="fin-card"><div class="fin-lbl">Débours</div><div class="fin-val" style="color:var(--green)">'+(s.d?s.d.toLocaleString("fr-FR")+"€":"—")+'</div></div>'
-      +'<div class="fin-card"><div class="fin-lbl">Net</div><div class="fin-val" style="color:var(--amber)">'+(s.net?s.net.toLocaleString("fr-FR")+"€":"—")+'</div></div>'
-      +'</div>';
-  }
-  let h=grid(ms,MOS[mth].toUpperCase()+" "+cy+" · MOIS EN COURS");
-  h+=grid(ys,cy+" · ANNÉE COMPLÈTE");
+  function grid(s,label){return'<div class="slabel">'+label+'</div><div class="fin-grid"><div class="fin-card"><div class="fin-lbl">Base HT</div><div class="fin-val" style="color:var(--accent)">'+(s.b?s.b.toLocaleString("fr-FR")+"€":"—")+'</div></div><div class="fin-card"><div class="fin-lbl">Taxe (21.2%)</div><div class="fin-val" style="color:var(--red)">'+(s.tax?s.tax.toLocaleString("fr-FR")+"€":"—")+'</div></div><div class="fin-card"><div class="fin-lbl">Débours</div><div class="fin-val" style="color:var(--green)">'+(s.d?s.d.toLocaleString("fr-FR")+"€":"—")+'</div></div><div class="fin-card"><div class="fin-lbl">Net</div><div class="fin-val" style="color:var(--amber)">'+(s.net?s.net.toLocaleString("fr-FR")+"€":"—")+'</div></div></div>';}
+  let h=grid(ms,MOS[mth].toUpperCase()+" "+cy+" · MOIS EN COURS");h+=grid(ys,cy+" · ANNÉE COMPLÈTE");
   h+='<div class="slabel mt">PAR CLIENT</div>';
   Object.entries(META).forEach(([name,mt])=>{
     const cms=allY.filter(m=>(m.client||"").toLowerCase().includes(name.split(" ")[0].toLowerCase()));if(!cms.length)return;
@@ -771,8 +638,7 @@ function rdFinance(){
       +'<div><div class="coll-title" style="color:'+mt.hex+'">'+mt.tag+" · "+name+'</div><div class="coll-sub">'+s.tot+" missions · "+s.done+' terminées</div></div>'
       +'<div class="coll-right"><div class="coll-net">'+(s.b?s.b+"€":"TBD")+'</div><div class="chev" id="chev-'+id+'">▼</div></div></div>'
       +'<div class="coll-body" id="'+id+'">'
-      +cms.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>{const b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0,dn=isDone(m),cx=isCxl(m);return'<div class="fmr" style="'+(cx?"opacity:.4":"")+'"><div class="fmr-l"><div style="font-size:10px;color:var(--txt4)">'+fds(m.date)+'</div><div style="font-size:11px;color:var(--txt1)">'+((m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop())+'</div>'+(m.desc?'<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--txt4)">'+m.desc+'</div>':"")+'</div><div class="fmr-r"><div class="fmr-base">'+(b?b+"€":"TBD")+'</div>'+(d?'<div class="fmr-deb">+'+d+'€ déb</div>':"")+'<div class="fmr-st" style="color:'+(dn?"var(--green)":cx?"var(--red)":"var(--txt4)")+'">'+(dn?"✓":cx?"✗":"·")+'</div></div></div>';}).join("")
-      +'</div></div>';
+      +cms.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>{const b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0,dn=isDone(m),cx=isCxl(m);return'<div class="fmr" style="'+(cx?"opacity:.4":"")+'"><div class="fmr-l"><div style="font-size:10px;color:var(--txt4)">'+fds(m.date)+'</div><div style="font-size:11px;color:var(--txt1)">'+((m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop())+'</div>'+(m.desc?'<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--txt4)">'+m.desc+'</div>':"")+'</div><div class="fmr-r"><div class="fmr-base">'+(b?b+"€":"TBD")+'</div>'+(d?'<div class="fmr-deb">+'+d+'€ déb</div>':"")+'<div class="fmr-st" style="color:'+(dn?"var(--green)":cx?"var(--red)":"var(--txt4)")+'">'+(dn?"✓":cx?"✗":"·")+'</div></div></div>';}).join("")+'</div></div>';
   });
   h+='<div class="slabel mt">PAR MOIS</div>';
   ["03","04","05","06","07","08","09","10","11"].forEach(mm=>{
@@ -782,100 +648,47 @@ function rdFinance(){
       +'<div><div class="coll-title" style="'+(iC?"color:var(--accent)":"")+'">'+MOL[mth2].charAt(0).toUpperCase()+MOL[mth2].slice(1)+(iC?" · en cours":"")+'</div><div class="coll-sub">'+s.tot+" mission"+(s.tot>1?"s":"")+" · "+(s.b?s.b+"€ HT":"TBD")+'</div></div>'
       +'<div class="coll-right"><div class="coll-net">'+(s.net?s.net+"€":"—")+'</div><div class="chev'+(iC?" open":"")+'" id="chev-'+id2+'">▼</div></div></div>'
       +'<div class="coll-body'+(iC?" open":"")+'" id="'+id2+'">'
-      +ml.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>{const b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0,mt=getMeta(m.client),dn=isDone(m),cx=isCxl(m);return'<div class="fmr" style="'+(cx?"opacity:.4":"")+'"><div class="fmr-l"><div style="display:flex;gap:5px;align-items:center"><span style="color:'+mt.hex+';font-size:10px;font-weight:700">'+mt.tag+'</span><span style="font-size:10px;color:var(--txt4)">'+fds(m.date)+'</span></div><div style="font-size:11px;color:var(--txt1)">'+((m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop())+'</div>'+(m.facture?'<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--green)">'+m.facture+'</div>':"")+'</div><div class="fmr-r"><div class="fmr-base">'+(b?b+"€":"TBD")+'</div>'+(d?'<div class="fmr-deb">+'+d+'€ déb</div>':"")+'<div class="fmr-st" style="color:'+(dn?"var(--green)":cx?"var(--red)":"var(--txt4)")+'">'+(dn?"✓":cx?"✗":"planifié")+'</div></div></div>';}).join("")
-      +'</div></div>';
+      +ml.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>{const b=parseFloat(m.base)||0,d=parseFloat(m.debours)||0,mt=getMeta(m.client),dn=isDone(m),cx=isCxl(m);return'<div class="fmr" style="'+(cx?"opacity:.4":"")+'"><div class="fmr-l"><div style="display:flex;gap:5px;align-items:center"><span style="color:'+mt.hex+';font-size:10px;font-weight:700">'+mt.tag+'</span><span style="font-size:10px;color:var(--txt4)">'+fds(m.date)+'</span></div><div style="font-size:11px;color:var(--txt1)">'+((m.type||"").replace(/ASSISTANCE /gi,"").split(" - ").pop())+'</div>'+(m.facture?'<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--green)">'+m.facture+'</div>':"")+'</div><div class="fmr-r"><div class="fmr-base">'+(b?b+"€":"TBD")+'</div>'+(d?'<div class="fmr-deb">+'+d+'€ déb</div>':"")+'<div class="fmr-st" style="color:'+(dn?"var(--green)":cx?"var(--red)":"var(--txt4)")+'">'+(dn?"✓":cx?"✗":"planifié")+'</div></div></div>';}).join("")+'</div></div>';
   });
-
-  // ── Seasonal wellbeing log summary ──
   h+=rdSeasonalLog();
-
   h+='<div class="slabel mt">RÉFÉRENCE</div><div class="ref-box">SIRET · 92815905200010<br/>IBAN · FR76 2823 3000 0177 6267 3414 414<br/>BIC · REVOFRP2 (Revolut)</div>';
   return h;
 }
-
 function tColl(id){const b=document.getElementById(id),c=document.getElementById("chev-"+id);if(!b)return;b.classList.toggle("open");if(c)c.classList.toggle("open");}
-
-/* ── SEASONAL DECOMPRESSION LOG ── */
 const MOOD_LOG_KEY='mc_mood_log';
-
-function saveMoodEntry(entry){
-  try{
-    const log=JSON.parse(localStorage.getItem(MOOD_LOG_KEY)||'[]');
-    // Avoid duplicate for same mission
-    const exists=log.findIndex(e=>e.mid===entry.mid);
-    if(exists>-1)log[exists]=entry;
-    else log.push(entry);
-    // Keep max 500 entries
-    if(log.length>500)log.splice(0,log.length-500);
-    localStorage.setItem(MOOD_LOG_KEY,JSON.stringify(log));
-  }catch(e){console.warn('saveMoodEntry error',e);}
-}
-
-function getMoodLog(){
-  try{return JSON.parse(localStorage.getItem(MOOD_LOG_KEY)||'[]');}catch(e){return[];}
-}
-
+function saveMoodEntry(entry){try{const log=JSON.parse(localStorage.getItem(MOOD_LOG_KEY)||'[]');const exists=log.findIndex(e=>e.mid===entry.mid);if(exists>-1)log[exists]=entry;else log.push(entry);if(log.length>500)log.splice(0,log.length-500);localStorage.setItem(MOOD_LOG_KEY,JSON.stringify(log));}catch(e){console.warn('saveMoodEntry error',e);}}
+function getMoodLog(){try{return JSON.parse(localStorage.getItem(MOOD_LOG_KEY)||'[]');}catch(e){return[];}}
 function rdSeasonalLog(){
   const log=getMoodLog();
-  if(!log.length)return'<div class="slabel mt">BIEN-ÊTRE SAISONNIER</div><div style="font-size:11px;color:var(--txt4);padding:10px 0">Aucune entrée encore. Complétez le débrief après chaque mission pour construire votre tableau de bord de bien-être.</div>';
+  if(!log.length)return'<div class="slabel mt">BIEN-ÊTRE SAISONNIER</div><div style="font-size:11px;color:var(--txt4);padding:10px 0">Aucune entrée encore. Complétez le débrief après chaque mission.</div>';
   const now=new Date(),cy=now.getFullYear();
   const yearLog=log.filter(e=>e.date&&e.date.startsWith(String(cy)));
   if(!yearLog.length)return'';
-
-  // Counts per mood
   const counts={};yearLog.forEach(e=>{counts[e.moodState]=(counts[e.moodState]||0)+1;});
   const total=yearLog.length;
-  const best=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0]||null;
   const stressCount=(counts['incident']||0)+(counts['chargé']||0);
   const wellCount=(counts['fluide']||0)+(counts['bien']||0);
   const pct=v=>total>0?Math.round(v/total*100):0;
-
   let h='<div class="slabel mt">BIEN-ÊTRE SAISONNIER '+cy+'</div>'
-    +'<div class="mood-stat-row">'
-    +'<div class="mood-stat"><div class="mood-stat-val">'+total+'</div><div class="mood-stat-lbl">Missions</div></div>'
+    +'<div class="mood-stat-row"><div class="mood-stat"><div class="mood-stat-val">'+total+'</div><div class="mood-stat-lbl">Missions</div></div>'
     +'<div class="mood-stat"><div class="mood-stat-val" style="color:var(--green)">'+pct(wellCount)+'%</div><div class="mood-stat-lbl">Fluide/Satisfait</div></div>'
-    +'<div class="mood-stat"><div class="mood-stat-val" style="color:var(--red)">'+pct(stressCount)+'%</div><div class="mood-stat-lbl">Chargé/Incident</div></div>'
-    +'</div>';
-
-  // Recent entries (last 12)
+    +'<div class="mood-stat"><div class="mood-stat-val" style="color:var(--red)">'+pct(stressCount)+'%</div><div class="mood-stat-lbl">Chargé/Incident</div></div></div>';
   const recent=[...yearLog].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,12);
   h+='<div class="coll"><div class="coll-hdr" onclick="tColl(\'mood-log\')">'
     +'<div><div class="coll-title">Journal humain</div><div class="coll-sub">'+yearLog.length+' entrées · '+cy+'</div></div>'
-    +'<div class="coll-right"><div class="chev" id="chev-mood-log">▼</div></div>'
-    +'</div><div class="coll-body" id="mood-log">';
-  if(recent.length){
-    h+=recent.map(e=>{
-      const md=MOOD_DISPLAY[e.moodState]||{label:e.moodState,color:"var(--txt4)"};
-      const cl=getMeta(e.client);
-      return'<div class="mood-row">'
-        +'<span class="mood-date">'+fds(e.date)+'</span>'
-        +'<span class="mood-mid" style="color:'+cl.hex+'">'+cl.tag+' '+e.mid.slice(-6)+'</span>'
-        +'<span class="mood-state" style="color:'+md.color+'">'+md.label+'</span>'
-        +'</div>'
-        +(e.moodNote?'<div style="font-size:10px;color:var(--txt4);padding:0 0 5px 0;font-style:italic">'+e.moodNote+'</div>':"");
-    }).join("");
-  }else{h+='<div class="mood-empty">Aucune entrée pour '+cy+'.</div>';}
+    +'<div class="coll-right"><div class="chev" id="chev-mood-log">▼</div></div></div>'
+    +'<div class="coll-body" id="mood-log">';
+  if(recent.length){h+=recent.map(e=>{const md=MOOD_DISPLAY[e.moodState]||{label:e.moodState,color:"var(--txt4)"};const cl=getMeta(e.client);return'<div class="mood-row"><span class="mood-date">'+fds(e.date)+'</span><span class="mood-mid" style="color:'+cl.hex+'">'+cl.tag+' '+e.mid.slice(-6)+'</span><span class="mood-state" style="color:'+md.color+'">'+md.label+'</span></div>'+(e.moodNote?'<div style="font-size:10px;color:var(--txt4);padding:0 0 5px 0;font-style:italic">'+e.moodNote+'</div>':"");}).join("");}
+  else{h+='<div class="mood-empty">Aucune entrée pour '+cy+'.</div>';}
   h+='</div></div>';
-
-  // Insight: pattern detection
   if(yearLog.length>=5){
-    // Find most stressful client
-    const byClient={};yearLog.forEach(e=>{
-      if(!byClient[e.client])byClient[e.client]={total:0,stress:0};
-      byClient[e.client].total++;
-      if(e.moodState==='incident'||e.moodState==='chargé')byClient[e.client].stress++;
-    });
+    const byClient={};yearLog.forEach(e=>{if(!byClient[e.client])byClient[e.client]={total:0,stress:0};byClient[e.client].total++;if(e.moodState==='incident'||e.moodState==='chargé')byClient[e.client].stress++;});
     let maxStressClient=null,maxPct=0;
     Object.entries(byClient).forEach(([c,v])=>{if(v.total>=2){const p=v.stress/v.total;if(p>maxPct){maxPct=p;maxStressClient=c;}}});
-    if(maxStressClient&&maxPct>0.4){
-      const tag=getMeta(maxStressClient).tag;
-      h+='<div class="wx-alert" style="margin-top:8px"><div class="wx-alert-icon">💡</div><div><strong>Tendance détectée</strong><br>'+pct(maxPct)+'% des missions '+tag+' vous laissent chargé ou en incident. Moment de réévaluer les conditions ou tarifs?</div></div>';
-    }
+    if(maxStressClient&&maxPct>0.4){const tag=getMeta(maxStressClient).tag;h+='<div class="wx-alert" style="margin-top:8px"><div class="wx-alert-icon">💡</div><div><strong>Tendance détectée</strong><br>'+pct(maxPct)+'% des missions '+tag+' vous laissent chargé ou en incident. Moment de réévaluer les conditions ou tarifs?</div></div>';}
   }
   return h;
 }
-
-/* PAUSE */
 function rdPause(){const el=document.getElementById("content");if(!el)return;el.innerHTML='<div class="pause-wrap" id="pw"></div>';rPS();}
 function rPS(){const w=document.getElementById("pw");if(!w)return;const sc={s1:ps1(),s2:ps2(),s3:ps3(),s4:ps4(),s5:ps5(),s6:ps6()};w.innerHTML=Object.entries(sc).map(([id,h])=>'<div class="psc'+(id===pScr?" active":"")+'" id="psc-'+id+'">'+h+'</div>').join("");if(pScr==="s1")pTick();if(pScr==="s2")pSB();if(pScr==="s4")setTimeout(pIDraw,50);if(pScr==="s6")pSC();}
 function pGo(s){pSBStop();pScr=s;rPS();}
@@ -902,13 +715,67 @@ function _rip(x,y){pTaps++;const z=document.getElementById("p-rzone");if(!z)retu
 function pSC(){const el=document.getElementById("p-ibox");if(el)el.textContent=localStorage.getItem("jmc_intention")||"absorb · release · move on";}
 function pReset(){pScr="s1";pTaps=0;pSBStop();pBPhase=0;pBCycle=0;pDCtx=null;rPS();}
 
+// ── TOAST ──
+let _toastTimer=null;
+function toast(msg,type){
+  type=type||'green';
+  let el=document.getElementById('mc-toast');
+  if(!el){el=document.createElement('div');el.id='mc-toast';document.body.appendChild(el);}
+  el.textContent=msg;el.className='mc-toast mc-toast-'+type+' mc-toast-show';
+  if(_toastTimer)clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>{el.classList.remove('mc-toast-show');},3800);
+}
+
+// ── API DIAGNOSTICS ──
+async function testAPI(){
+  toast('🔄 Test connexion GAS…','blue');
+  try{
+    const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),8000);
+    const r=await fetch(GAS_URL+"?action=ping",{signal:ctrl.signal});
+    if(!r.ok){toast('⚠️ HTTP '+r.status+' — déploiement GAS requis (accès: Anyone)','red');return;}
+    const txt=await r.text();
+    let d;try{d=JSON.parse(txt);}catch(e){toast('⚠️ Non-JSON: '+txt.slice(0,40),'red');return;}
+    if(d&&d.ok)toast('✅ GAS OK · '+new Date(d.time).toLocaleTimeString('fr-FR'),'green');
+    else toast('⚠️ Réponse inattendue: '+JSON.stringify(d).slice(0,50),'red');
+  }catch(e){
+    if(e.name==='AbortError')toast('❌ Timeout — GAS ne répond pas (8s)','red');
+    else toast('❌ '+e.message.slice(0,60),'red');
+  }
+}
+
 const DEMO=[
-  {mid:"2026-03-29-PHIL-01",date:"2026-03-29",client:"Philibert Tourisme",type:"ASSISTANCE GARE LYON - DEPARTS",desc:"HMD260322_DPT",heures:"2",base:"73",debours:"21.5",debut:"09:00",endroit:"Gare de Perrache",statut:"Planifié",pax:54,docs:"https://drive.google.com/drive/folders/example1",ops:{pax:54,coaches:2,cohost:{name:"Véronique OLIVIER",phone:"+33 6 41 60 42 88"},emergency:"+33 4 78 98 56 49",parisHosts:[{name:"GOUARDERES Laurence",phone:"+33 6 59 28 54 20"},{name:"MTINSI Lance",phone:"+33 6 34 95 74 02"}],drivers:[{name:"MESSAOUDE",phone:"06 08 67 06 65"},{name:"ROCHA MO2",phone:"06 67 55 63 06"}]},email:{from:"rhone-ops@philibert.fr",date:"23/03/2026",subject:"[Phil&O][HMD260322_DPT] Reconfirmation",body:"09:00/11:00 - HMD260322_DPT\nAssistance Départs Gare Perrache"}},
-  {mid:"2026-03-29-PHIL-02",date:"2026-03-29",client:"Philibert Tourisme",type:"ASSISTANCE GARE LYON - ARRIVEES",desc:"HMD260329_ARR",heures:"2",base:"73",debours:"21.5",debut:"12:00",endroit:"Gare de Perrache",statut:"Planifié",pax:29,ops:{pax:29,coaches:1,shipContact:{name:"Michael BRIGHT",phone:"+49 152 225 381 37",role:"PD Ship"},emergency:"+33 4 78 98 56 49",parisHosts:[{name:"GOUARDERES Laurence",phone:"+33 6 59 28 54 20"},{name:"MTINSI Lance",phone:"+33 6 34 95 74 02"}],drivers:[{name:"Sylvain",phone:"+33 7 88 29 26 69"}],trainInfo:{tgv:"6615",arrivalTime:"15:10",etaShip:"16:00"}},email:{from:"rhone-ops@philibert.fr",date:"23/03/2026",subject:"[Phil&O][HMD260329_ARR] Envoi Reconfirmation",body:"29/03/2026 - 12:00/14:00\nAssistance Arrivées Gare Perrache",attachments:[{name:"Programme_HMD260329_ARR.pdf",type:"pdf"},{name:"HMD260329 TSF MANIFEST LYON V3.xlsx",type:"xlsx"}]}},
-  {mid:"2026-04-05-FTFW-01",date:"2026-04-05",client:"Feel the French Way",type:"ASSISTANCE TRANSFERT HOTEL - BATEAU",desc:"RV260405LG04",heures:"2",base:"100",debours:"25",debut:"10:00",endroit:"Intercontinental → Quai Claude Bernard",statut:"Planifié",pax:50,docs:"https://drive.google.com/drive/folders/example3",ops:{pax:50,coaches:1,coordinator:{name:"Laura Brionne (FTFW)",phone:"contact@feelthefrenchway.fr"},miseEnPlace:"Présence demandée à 10h00 à l'Intercontinental\n10h15 : check-out + récupération bagages\n11h00 : mise en place autocar Palisse\n11h15 : départ → Quai Claude Bernard\nArrivée prévue : 11h45 max\n⚠️ Stationner max 15 min devant hôtel\nAppeler Stefani ~5 min avant arrivée quai"},email:{from:"contact@feelthefrenchway.fr",date:"27/03/2026",subject:"RV260405LG04 - Embarkation manifest 5th April",body:"TRANSFERT N°2 — Joseph + car Palisse\n\n• Présence 10h00 / Intercontinental\n• 10h15 check-out + bagages\n• 11h00 autocar + chargement\n• 11h15 départ → Quai Claude Bernard\n• Arrivée 11h45 max\n\nCharter Riverside ~107–110 pax",attachments:[{name:"RIVERSIDE RAVEL - EMBARKATION TIMINGS 05 APRIL.xlsx",type:"xlsx"}]}},
-  {mid:"2026-04-08-UMB-01",date:"2026-04-08",client:"Un Monde Bleu",type:"ASSISTANCE TRANSFERT LYON - MONTPELLIER",desc:"LBY02+LBY03",heures:"",base:"",debours:"",debut:"",endroit:"Lyon → Montpellier",statut:"Planifié",email:{from:"OpsRiviera@umb-dmc.fr",date:"27/03/2026",subject:"LORD BYRON - LBY02 ET LBY03",body:"Veuillez trouver en PJ les listes de transferts\npour le Lord BYRON du 08.04.",attachments:[{name:"LORD BYRON - LBY02.pdf",type:"pdf"},{name:"LORD BYRON - LBY03.pdf",type:"pdf"}]}},
+  {mid:"2026-04-05-FTFW-01",date:"2026-04-05",client:"Feel the French Way",type:"ASSISTANCE TRANSFERT HOTEL - BATEAU",desc:"RV260405LG04",heures:"2",base:"100",debours:"25",debut:"10:00",endroit:"Intercontinental → Quai Claude Bernard",statut:"Planifié",pax:50,docs:"",ops:{pax:50,coaches:1,coordinator:{name:"Laura Brionne (FTFW)",phone:"contact@feelthefrenchway.fr"},miseEnPlace:"Présence 10h00 à l'Intercontinental\n10h15: check-out + bagages\n11h00: mise en place autocar\n11h15: départ → Quai Claude Bernard"},email:{from:"contact@feelthefrenchway.fr",date:"27/03/2026",subject:"RV260405LG04 - Embarkation 5th April",body:"TRANSFERT N°2 — Joseph\nPrésence 10h00 / Intercontinental"}},
+  {mid:"2026-04-08-UMB-01",date:"2026-04-08",client:"Un Monde Bleu",type:"ASSISTANCE TRANSFERT LYON - MONTPELLIER",desc:"LBY02+LBY03",heures:"",base:"",debours:"",debut:"",endroit:"Lyon → Montpellier",statut:"Planifié",email:{from:"OpsRiviera@umb-dmc.fr",date:"27/03/2026",subject:"LORD BYRON - LBY02 ET LBY03",body:"Transferts Lord Byron du 08.04"}},
   {mid:"2026-04-19-GCS-01",date:"2026-04-19",client:"Go Côte Saône",type:"ASSISTANCE TRANSFERT LYON - BALE",desc:"VK09-SUP02",heures:"8",base:"450",debours:"20",debut:"08:00",endroit:"Quai Claude Bernard",statut:"Planifié"},
 ];
+
+// ── TOAST ──
+let _toastTimer=null;
+function toast(msg,type='green'){
+  let el=document.getElementById('mc-toast');
+  if(!el){el=document.createElement('div');el.id='mc-toast';document.body.appendChild(el);}
+  el.textContent=msg;
+  el.className='mc-toast mc-toast-'+type+' mc-toast-show';
+  if(_toastTimer)clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>{el.classList.remove('mc-toast-show');},3500);
+}
+
+// ── API TEST ──
+async function testAPI(){
+  toast('🔄 Test connexion GAS…','blue');
+  try{
+    const r=await fetch(GAS_URL+"?action=ping",{signal:AbortSignal.timeout(8000)});
+    if(!r.ok){toast('⚠️ HTTP '+r.status+' — vérifier déploiement (accès: Anyone)','red');return;}
+    const txt=await r.text();
+    let d;try{d=JSON.parse(txt);}catch(e){toast('⚠️ Non-JSON: '+txt.slice(0,40),'red');return;}
+    if(d&&d.ok)toast('✅ GAS OK — '+new Date(d.time).toLocaleTimeString('fr-FR'),'green');
+    else toast('⚠️ Réponse inattendue: '+JSON.stringify(d).slice(0,60),'red');
+  }catch(e){
+    if(e.name==='TimeoutError')toast('❌ Timeout — GAS ne répond pas','red');
+    else toast('❌ '+e.message.slice(0,60),'red');
+  }
+}
+
 </script>
 </body>
 </html>
