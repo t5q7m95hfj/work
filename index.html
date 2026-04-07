@@ -323,31 +323,25 @@ function renderHeader(){
 }
 async function loadWeather(){
   try{
-    // Request both field names — API renamed weathercode → weather_code in late 2024
-    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weather_code,weathercode,precipitation_probability&hourly=precipitation_probability,weather_code,weathercode,temperature_2m&timezone=Europe/Paris&forecast_days=3");
-    if(!r.ok)throw new Error("HTTP "+r.status);
+    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.764&longitude=4.836&current=temperature_2m,weathercode,precipitation_probability&hourly=precipitation_probability,weathercode,temperature_2m&timezone=Europe/Paris&forecast_days=3");
     const d=await r.json();wxData=d;
-    const c=d.current;
-    // Handle both old and new field names
-    const wc=c.weather_code!==undefined?c.weather_code:(c.weathercode!==undefined?c.weathercode:null);
-    if(wc===null)throw new Error("no weathercode");
-    // Complete WMO weather code → emoji map (all codes 0-99)
-    const ic=wc===0?"☀️":wc<=2?"⛅":wc===3?"☁️":wc<=48?"🌫":wc<=55?"🌦":wc<=67?"🌧":wc<=77?"❄️":wc<=82?"🌧":wc<=86?"🌨":wc<=99?"⛈️":"🌡️";
-    const temp=Math.round(c.temperature_2m!==undefined?c.temperature_2m:c["temperature_2m"]||0);
-    const rain=c.precipitation_probability!==undefined?c.precipitation_probability:0;
-    document.getElementById("wx-icon").textContent=ic;
-    document.getElementById("wx-temp").textContent=temp+"°C";
-    document.getElementById("wx-rain").textContent=rain>20?rain+"%":"";
-    // Fix hourly field names too (for getWxAlert)
-    if(wxData.hourly&&!wxData.hourly.weathercode&&wxData.hourly.weather_code){
-      wxData.hourly.weathercode=wxData.hourly.weather_code;
-    }
-  }catch(e){
-    console.warn("[wx]",e.message);
-    document.getElementById("wx-icon").textContent="";
-    document.getElementById("wx-temp").textContent="Lyon";
-    document.getElementById("wx-rain").textContent="";
-  }
+    const c=d.current,wc=c.weathercode||0;
+    const ic=wc===0?"☀️":wc<=2?"⛅":wc===3?"☁️":wc<=48?"🌫":wc<=55?"🌦":wc<=67?"🌧":wc<=77?"❄️":wc<=82?"🌦":"⛈️";
+    document.getElementById("wx-icon").textContent=ic;document.getElementById("wx-temp").textContent=Math.round(c.temperature_2m)+"°C";
+    document.getElementById("wx-rain").textContent=c.precipitation_probability>20?c.precipitation_probability+"%":"";
+  }catch(e){document.getElementById("wx-icon").textContent="";document.getElementById("wx-temp").textContent="Lyon";}
+}
+function getWxAlert(date,startHour,endHour){
+  if(!wxData||!wxData.hourly)return null;
+  const times=wxData.hourly.time||[],probs=wxData.hourly.precipitation_probability||[],codes=wxData.hourly.weathercode||[],temps=wxData.hourly.temperature_2m||[];
+  let maxRain=0,minTemp=99,badCode=false;
+  times.forEach((t,i)=>{if(!t.startsWith(date))return;const hr=parseInt(t.slice(11,13));if(hr<startHour||hr>endHour)return;if(probs[i]>maxRain)maxRain=probs[i];if(temps[i]<minTemp)minTemp=temps[i];if(codes[i]>=61)badCode=true;});
+  const parts=[];
+  if(maxRain>=50)parts.push("Pluie probable "+maxRain+"% pendant votre mission");
+  else if(maxRain>=30)parts.push("Risque de pluie "+maxRain+"% → prévoir parapluies");
+  if(minTemp<8)parts.push("Température basse ~"+Math.round(minTemp)+"°C → habillage chaud conseillé");
+  if(badCode)parts.push("Conditions météo défavorables prévues");
+  return parts.length?parts.join(" · "):null;
 }
 async function loadMissions(){
   const stored=localStorage.getItem("mc_missions");
@@ -388,37 +382,11 @@ function norm(m){
   o.mid=o["Mission ID"]||o.mid||"";o.date=o["Date mission"]||o.date||"";o.client=o["Client"]||o.client||"";
   o.type=o["Type"]||o.type||"";o.desc=o["Description"]||o.desc||"";o.heures=o["Heures"]||o.heures||"";
   o.base=o["Base (HT)"]||o["Base"]||o.base||"";o.debours=o["Débours"]||o["Debours"]||o.debours||"";
- // Inside norm() — replace the debut extraction line:
-let rb=o["Début"]||o["Debut"]||o.debut||"";
-// Convert Google Sheets decimal time (0.375 = 09:00) to HH:MM
-if(rb&&/^0?\.\d+$/.test(String(rb).trim())){
-  const totalMins=Math.round(parseFloat(rb)*24*60);
-  const hh=Math.floor(totalMins/60),mm=totalMins%60;
-  rb=String(hh).padStart(2,"0")+":"+String(mm).padStart(2,"0");
-}
-if(rb&&rb.length>5)rb=rb.slice(0,5);
-// Validate HH:MM format — if not, clear it so sort falls to "z"
-if(rb&&!/^\d{2}:\d{2}$/.test(rb))rb="";
-o.debut=rb;
+  let rb=o["Début"]||o["Debut"]||o.debut||"";if(rb&&rb.length>5)rb=rb.slice(0,5);o.debut=rb;
   o.endroit=o["Endroit"]||o.endroit||"";o.statut=o["Statut"]||o.statut||"";o.notes=o["Notes"]||o.notes||"";
   o.voyage=o["Voyage (min)"]||o.voyage||"";o.facture=o["Facture#"]||o.facture||"";
   o.docs=o["Docs"]||o.docs||"";
-// Extract pax from notes field (Parser stores as "23 pax | TGV 9830 | ...")
-if(!o.pax&&o.notes){
-  const pm=o.notes.match(/(\d+)\s*pax/i);
-  if(pm)o.pax=pm[1];
-}
-// Extract transport ref from notes (e.g. "TGV 9830", "BA356")
-if(!o.desc&&o.notes){
-  const tm=o.notes.match(/\b([A-Z]{2,4}\s?\d{3,5}[A-Z]?(?:\/[A-Z]{3})?)\b/);
-  if(tm&&!o.desc)o.transport=tm[1];
-}
-// If desc is empty but notes has ship name (UMB manifests)
-if(!o.desc&&o.notes){
-  const ship=o.notes.match(/(?:bateau|ship|vessel)[:\s]+([^\|]+)/i);
-  if(ship)o.desc=ship[1].trim().slice(0,30);
-}
-return o;
+  return o;
 }
 const p2=n=>String(n).padStart(2,"0");
 const tday=()=>new Date().toISOString().slice(0,10);
@@ -440,13 +408,8 @@ function go(t){if(t!=="today"&&t!=="month")detail=null;tab=t;["today","month","f
 function render(){const el=document.getElementById("content");if(!el)return;if(detail&&(tab==="today"||tab==="month")){el.innerHTML=rdDetail(detail);return;}if(tab==="today")el.innerHTML=rdToday();else if(tab==="month")el.innerHTML=rdMonth();else if(tab==="finance")el.innerHTML=rdFinance();else if(tab==="pause"){el.innerHTML="";rdPause();}}
 function rdToday(){
   const t=tday(),tm=tmrw();
-  const sortByDebut=(a,b)=>{
-  const da=a.debut||"z",db=b.debut||"z";
-  if(da!==db)return da.localeCompare(db);
-  return(a.mid||"").localeCompare(b.mid||""); // stable tie-break by mission ID
-};
-const t1=missions.filter(m=>m.date===t).sort(sortByDebut);
-const t2=missions.filter(m=>m.date===tm).sort(sortByDebut);
+  const t1=missions.filter(m=>m.date===t).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
+  const t2=missions.filter(m=>m.date===tm).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
   const up=missions.filter(m=>m.date>tm&&!isCxl(m)).sort((a,b)=>a.date.localeCompare(b.date));
   let h="";
   if(t1.length){h+='<div class="slabel">AUJOURD\'HUI</div>'+t1.map(m=>mcard(m,false)).join("");}
