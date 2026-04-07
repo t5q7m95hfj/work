@@ -447,7 +447,6 @@ function rdToday(){
 };
 const t1=missions.filter(m=>m.date===t).sort(sortByDebut);
 const t2=missions.filter(m=>m.date===tm).sort(sortByDebut);
-  const t2=missions.filter(m=>m.date===tm).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
   const up=missions.filter(m=>m.date>tm&&!isCxl(m)).sort((a,b)=>a.date.localeCompare(b.date));
   let h="";
   if(t1.length){h+='<div class="slabel">AUJOURD\'HUI</div>'+t1.map(m=>mcard(m,false)).join("");}
