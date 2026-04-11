@@ -666,8 +666,17 @@ async function genRpt(mid){
   const dateFmt=iso=>{if(!iso||iso.length<10)return iso||"";const[y,mo,d]=iso.split("-");return d+"/"+mo+"/"+y.slice(2);};
   const lg=flogs[m.mid]||[];
   const jt=lg.length?"\nJournal:\n"+lg.map(e=>"- "+e.text).join("\n"):"";
+// Build human-readable mission label from Type + Sens + Endroit (not raw ref code)
+  const typeClean=(m.type||"").replace(/ASSISTANCE\s*/gi,"").trim();
+  const sensClean=(m.sens&&m.sens!=="—")?m.sens:"";
+  const endroitClean=m.endroit||"";
+  let missionLabel=typeClean;
+  if(sensClean)missionLabel+=" — "+sensClean;
+  if(endroitClean)missionLabel+=" ("+endroitClean+")";
+  
   const prompt="RÈGLES: Tutoiement. 2-3 phrases max. Sign-off: Merci et bonne journée,\\nJoseph\n"
-    +(pmf.tpl==="RAS"?"Rapport RAS.":"Rapport incident.")+"\nRef: "+ref+" | "+dateFmt(m.date)+" | "+pmf.start+"→"+pmf.end+" ("+du+")"+jt+"\nCommence: Bonjour "+(pr||"")+(pr?",":"")+"\\nTermine: Merci et bonne journée,\\nJoseph";
+    +"Ne mets pas la description en majuscules. Écris naturellement.\n"
+    +(pmf.tpl==="RAS"?"Rapport RAS.":"Rapport incident.")+"\nRef: "+ref+" | "+dateFmt(m.date)+" | Mission: "+missionLabel+" | "+pmf.start+"→"+pmf.end+" ("+du+")"+jt+"\nCommence: Bonjour "+(pr||"")+(pr?",":"")+"\\nTermine: Merci et bonne journée,\\nJoseph";
   try{
     const r=await fetch(GAS_URL+"?action=genRapport&prompt="+encodeURIComponent(prompt),{signal:AbortSignal.timeout(28000)});
     const d=await r.json();
