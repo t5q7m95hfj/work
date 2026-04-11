@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<title>Mission Control Dashboard</title>
+<title>Mission Control V2 — Calm Ops</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <style>
@@ -394,18 +394,77 @@ function reportNotesFor(mid){
 
 function passengerFieldKey(ops){
   const keys=Object.keys(ops||{});
-  return keys.find(k=>/(passager|passenger|pax)/i.test(k))||"";
+  if(!keys.length) return "";
+  const scored=keys.map(k=>{
+    const low=String(k).toLowerCase();
+    let score=0;
+    if(/passenger\s*list|liste\s*passagers?|passagers?/.test(low)) score+=100;
+    if(/passenger|passager/.test(low)) score+=60;
+    if(/list|liste/.test(low)) score+=25;
+    if(/pax/.test(low)) score+=15;
+    if(/^pax$|^nb\s*pax$|^nombre\s*de\s*pax$/.test(low)) score-=20;
+    return {k,score};
+  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+  return scored.length?scored[0].k:"";
 }
 function parsePassengerList(raw){
-  const txt=String(raw||"").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
+  let txt=String(raw||"").replace(/
+/g,"
+").replace(/
+/g,"
+").trim();
   if(!txt) return [];
-  let parts=[];
-  if(/\n/.test(txt)) parts=txt.split(/\n+/);
-  else if(/[;|•·]/.test(txt)) parts=txt.split(/[;|•·]+/);
-  else if(/\s\/\s/.test(txt)) parts=txt.split(/\s\/\s/g);
-  else if((txt.match(/,/g)||[]).length>=2) parts=txt.split(/,\s*/);
-  else return [txt];
-  return parts.map(s=>s.replace(/^[-*•·\d.)\s]+/,"").trim()).filter(Boolean);
+
+  txt=txt
+    .replace(/\s*[–—-]\s*/g,' | ')
+    .replace(/\s+&\s+/g,' | ')
+    .replace(/\s*•\s*/g,' | ')
+    .replace(/\s*·\s*/g,' | ')
+    .replace(/\s*;\s*/g,' | ')
+    .replace(/\s{2,}/g,' ')
+    .trim();
+
+  // Put flight/segment headers on their own boundary so they don't glue passenger names together
+  txt=txt.replace(/(?:^|\s)([A-Z]{2,}\d{3,}[A-Z]?(?:\s+[A-Z]{3}\/[A-Z]{3})?\s*[:\-]?\s*\d+\s*PAX)\s+/g,'
+$1 | ');
+
+  let chunks=[];
+  if(/
+/.test(txt)) chunks=txt.split(/
++/);
+  else if(/\|/.test(txt)) chunks=txt.split(/\|+/);
+  else chunks=[txt];
+
+  const out=[];
+  const titleRe=/(Mr|Mrs|Ms|Miss|Dr|M\.|Mme\.?|Monsieur|Madame)\s+[^|
+]+?(?=(?:\s+(?:Mr|Mrs|Ms|Miss|Dr|M\.|Mme\.?|Monsieur|Madame)\s+)|$)/g;
+
+  chunks.forEach(chunk=>{
+    let s=String(chunk||'').trim();
+    if(!s) return;
+    s=s.replace(/^[-*•·\d.)\s]+/,"").trim();
+    if(!s) return;
+
+    const titleMatches=[...s.matchAll(titleRe)].map(m=>m[0].trim());
+    if(titleMatches.length>=2){
+      titleMatches.forEach(x=>out.push(x));
+      return;
+    }
+
+    if(/\//.test(s) && /(M\.|Mme\.?|Mr|Mrs|Ms|Miss|Dr)/.test(s)){
+      s.split(/\s*\/\s*/).map(x=>x.trim()).filter(Boolean).forEach(x=>out.push(x));
+      return;
+    }
+
+    out.push(s);
+  });
+
+  const cleaned=out
+    .map(s=>s.replace(/\s{2,}/g,' ').trim())
+    .filter(Boolean)
+    .filter(s=>!/^(passenger\s*list|liste\s*passagers?)$/i.test(s));
+
+  return [...new Set(cleaned)];
 }
 function getPaxChecks(){
   try{return JSON.parse(localStorage.getItem("mc_pax_checks")||"{}");}catch(e){return {};}
