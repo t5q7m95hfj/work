@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<title>Mission Control Dashboard</title>
+<title>Mission Control V2 — Calm Ops</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <style>
@@ -195,6 +195,26 @@ a{color:var(--accent);text-decoration:none;}
 .p-btn-g{padding:12px 28px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.22);color:var(--green);font-family:'DM Sans',sans-serif;min-height:var(--tap);}
 .p-btn-s{padding:11px 22px;border-radius:8px;font-size:12px;cursor:pointer;background:none;border:1px solid var(--border);color:var(--txt3);font-family:'DM Sans',sans-serif;min-height:var(--tap);}
 .p-btn-ghost{background:none;border:none;font-size:11px;color:var(--txt4);cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;min-height:var(--tap);padding:8px;}
+/* PAX CHECKLIST */
+.pax-coll{margin:0 0 10px;border-radius:8px;overflow:hidden;border:1px solid rgba(63,185,80,.2);background:rgba(63,185,80,.03);}
+.pax-coll-hdr{padding:10px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.pax-coll-title{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.8px;text-transform:uppercase;}
+.pax-coll-sub{font-size:10px;color:var(--txt3);margin-top:1px;}
+.pax-prog-wrap{width:44px;height:3px;background:var(--border);border-radius:2px;margin-right:6px;}
+.pax-prog{height:3px;background:var(--green);border-radius:2px;transition:width .3s;}
+.pax-coll-body{padding:0 12px 8px;display:none;border-top:1px solid rgba(63,185,80,.15);}
+.pax-coll-body.open{display:block;}
+.pax-list{padding:2px 0;}
+.pax-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;min-height:44px;}
+.pax-item:last-child{border-bottom:none;}
+.pax-box{width:18px;height:18px;flex-shrink:0;accent-color:var(--green);cursor:pointer;}
+.pax-name{font-size:12px;color:var(--txt1);flex:1;line-height:1.4;}
+.pax-done-msg{text-align:center;font-size:11px;color:var(--green);padding:8px 0;font-weight:600;}
+/* CONTACT BLOCKS */
+.contact-block{margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.contact-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.contact-role{font-size:9px;color:var(--txt4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;font-weight:600;}
+.contact-info{font-size:12px;color:var(--txt1);line-height:1.9;}
 </style>
 </head>
 <body>
@@ -339,6 +359,15 @@ function norm(m){
   o.docs=o["Docs"]||"";
   o.importKey=o["Import key"]||o["Import Key"]||"";
   o.ops=o.ops||{};
+  // Extract Mission_Details structured fields for direct use
+  o.paxChecklist=o.ops["Passenger Checklist"]||"";
+  o.paxCount=o.ops["Pax Count"]||"";
+  o.paxRaw=o.ops["Passenger Raw"]||"";
+  o.shipName=o.ops["Ship Name"]||"";
+  o.meetingPoint=o.ops["Meeting Point"]||"";
+  o.dock=o.ops["Dock / Terminal"]||"";
+  o.transportRef=o.ops["Transport Ref"]||"";
+  o.opsSum=o.ops["Ops Summary"]||"";
   return o;
 }
 const isDone=m=>{const s=(m.statut||"").toLowerCase();return s==="terminé"||s.includes("envoy")||s==="payé";};
@@ -391,73 +420,6 @@ function addLog(mid){
 function reportNotesFor(mid){
   return getLogs(mid).filter(e=>e.report).map(e=>"- "+e.text).join("\n");
 }
-
-function passengerFieldKey(ops){
-  const keys=Object.keys(ops||{});
-  if(!keys.length) return "";
-  const scored=keys.map(k=>{
-    const low=String(k).toLowerCase();
-    let score=0;
-    if(/passenger\s*list|liste\s*passagers?|passagers?/.test(low)) score+=100;
-    if(/passenger|passager/.test(low)) score+=60;
-    if(/list|liste/.test(low)) score+=25;
-    if(/pax/.test(low)) score+=15;
-    if(/^pax$|^nb\s*pax$|^nombre\s*de\s*pax$/.test(low)) score-=20;
-    return {k,score};
-  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
-  return scored.length?scored[0].k:"";
-}
-function parsePassengerList(raw){
-  let txt=String(raw||"").replace(/\r/g,"\n").replace(/\n+/g,"\n").trim();
-  if(!txt) return [];
-
-  txt=txt
-    .replace(/\s*[–—-]\s*/g," | ")
-    .replace(/\s+&\s+/g," | ")
-    .replace(/\s*•\s*/g," | ")
-    .replace(/\s*·\s*/g," | ")
-    .replace(/\s*;\s*/g," | ")
-    .replace(/\s{2,}/g," ")
-    .trim();
-
-  // Put flight/segment headers on their own boundary so they don't glue passenger names together
-  txt=txt.replace(/(?:^|\s)([A-Z]{2,}\d{3,}[A-Z]?(?:\s+[A-Z]{3}\/[A-Z]{3})?\s*[:\-]?\s*\d+\s*PAX)\s+/g,"\n$1 | ");
-
-  let chunks=[];
-  if(/\n/.test(txt)) chunks=txt.split(/\n+/);
-  else if(/\|/.test(txt)) chunks=txt.split(/\|+/);
-  else chunks=[txt];
-
-  const out=[];
-  const titleRe=/(Mr|Mrs|Ms|Miss|Dr|M\.|Mme\.?|Monsieur|Madame)\s+[^|\n]+?(?=(?:\s+(?:Mr|Mrs|Ms|Miss|Dr|M\.|Mme\.?|Monsieur|Madame)\s+)|$)/g;
-
-  chunks.forEach(chunk=>{
-    let s=String(chunk||"").trim();
-    if(!s) return;
-    s=s.replace(/^[-*•·\d.)\s]+/,"").trim();
-    if(!s) return;
-
-    const titleMatches=[...s.matchAll(titleRe)].map(m=>m[0].trim());
-    if(titleMatches.length>=2){
-      titleMatches.forEach(x=>out.push(x));
-      return;
-    }
-
-    if(/\//.test(s) && /(M\.|Mme\.?|Mr|Mrs|Ms|Miss|Dr)/.test(s)){
-      s.split(/\s*\/\s*/).map(x=>x.trim()).filter(Boolean).forEach(x=>out.push(x));
-      return;
-    }
-
-    out.push(s);
-  });
-
-  const cleaned=out
-    .map(s=>s.replace(/\s{2,}/g," ").trim())
-    .filter(Boolean)
-    .filter(s=>!/^(passenger\s*list|liste\s*passagers?)$/i.test(s));
-
-  return [...new Set(cleaned)];
-}
 function getPaxChecks(){
   try{return JSON.parse(localStorage.getItem("mc_pax_checks")||"{}");}catch(e){return {};}
 }
@@ -469,36 +431,69 @@ function togglePax(mid,idx,on){
   if(!data[mid]) data[mid]={};
   data[mid][idx]=!!on;
   savePaxChecks(data);
+  // Update counter + progress bar without full re-render
+  const state=data[mid]||{};
+  const checkedCount=Object.values(state).filter(Boolean).length;
+  const ops=(missions.find(x=>x.mid===mid)||{}).ops||{};
+  const names=(ops["Passenger Checklist"]||"").split("\n").filter(s=>s.trim());
+  const paxTotal=names.length;
+  const paxCount=ops["Pax Count"]||"";
+  const subEl=document.querySelector(".pax-coll-sub");
+  const progEl=document.querySelector(".pax-prog");
+  if(subEl) subEl.textContent=(paxCount||paxTotal+" pax")+" · "+checkedCount+"/"+paxTotal+" cochés";
+  if(progEl) progEl.style.width=paxTotal?Math.round(checkedCount/paxTotal*100)+"%":"0%";
+  const doneEl=document.getElementById("pax-done-"+mid);
+  if(doneEl) doneEl.style.display=(checkedCount===paxTotal&&paxTotal>0)?"block":"none";
 }
 function passengerChecklistHTML(m){
   const ops=m.ops||{};
-  const paxKey=passengerFieldKey(ops);
-  if(!paxKey) return "";
-  const names=parsePassengerList(ops[paxKey]);
+  const checklistRaw=ops["Passenger Checklist"]||"";
+  const paxCount=ops["Pax Count"]||"";
+  const names=checklistRaw.split("\n").map(s=>s.trim()).filter(Boolean);
   if(!names.length) return "";
   const checks=getPaxChecks();
   const state=checks[m.mid]||{};
   const checked=Object.values(state).filter(Boolean).length;
-  return '<div class="pax-wrap"><div class="pax-top"><div class="stitle green" style="margin-bottom:0">PASSAGERS</div><div class="pax-count">'+checked+'/'+names.length+' cochés</div></div><div class="pax-list">'+names.map((name,i)=>'<label class="pax-item"><input class="pax-box" type="checkbox" '+(state[i]?'checked':'')+' onchange="togglePax(\''+m.mid+'\','+i+',this.checked)"/><span class="pax-name">'+name+'</span></label>').join("")+'</div></div>';
+  const pct=names.length?Math.round(checked/names.length*100):0;
+  const collId="pax-"+m.mid;
+  return '<div class="pax-coll"><div class="pax-coll-hdr" onclick="tPax(''+collId+'')"><div><div class="pax-coll-title">👥 Passagers</div><div class="pax-coll-sub">'+(paxCount||names.length+" pax")+" · "+checked+"/"+names.length+' cochés</div></div><div style="display:flex;align-items:center;gap:6px"><div class="pax-prog-wrap"><div class="pax-prog" style="width:'+pct+'%"></div></div><div class="chev" id="chev-'+collId+'">▼</div></div></div><div class="pax-coll-body" id="'+collId+'"><div class="pax-list">'+names.map((name,i)=>'<label class="pax-item"><input class="pax-box" type="checkbox" '+(state[i]?'checked':'')+'onchange="togglePax(''+m.mid+'','+i+',this.checked)"/><span class="pax-name">'+name+'</span></label>').join("")+'</div><div id="pax-done-'+m.mid+'" class="pax-done-msg" style="display:'+(checked===names.length&&names.length>0?'block':'none')+'">✅ Tous les passagers cochés</div></div></div>';
 }
+function tPax(id){
+  const b=document.getElementById(id),c=document.getElementById("chev-"+id);
+  if(!b)return;b.classList.toggle("open");if(c)c.classList.toggle("open");
+}
+
 function contactHTML(m){
   const ops=m.ops||{};
-  const name=ops["Contact Name"]||ops["Sender Name"]||ops["Contact"]||"";
-  const email=ops["Contact Email"]||ops["Sender Email"]||"";
-  const phone=ops["Contact Phone"]||ops["Phone"]||"";
-  if(!name && !email && !phone) return '<div style="font-size:12px;color:var(--txt4)">Contact non parsé.</div>';
-  return '<div style="font-size:12px;color:var(--txt1);line-height:2.1">'
-    +(name||"")
-    +(phone?' · <a href="tel:'+phone+'">'+phone+'</a>':"")
-    +(email?' · <a href="mailto:'+email+'">'+email+'</a>':"")
-    +'</div>';
+  const blocks=[];
+  function cb(role,name,phone,email){
+    if(!name&&!phone&&!email) return;
+    let s='<div class="contact-block"><div class="contact-role">'+role+'</div><div class="contact-info">';
+    if(name) s+=name;
+    if(phone) s+=' · <a href="tel:'+phone+'">'+phone+'</a>';
+    if(email) s+=' · <a href="mailto:'+email+'">'+email+'</a>';
+    s+='</div></div>';
+    blocks.push(s);
+  }
+  cb("Contact client",
+    ops["Contact Client"]||ops["Contact Name"]||ops["Sender Name"]||"",
+    ops["Client Phone"]||ops["Contact Phone"]||"",
+    ops["Contact Email"]||ops["Sender Email"]||"");
+  cb("Cruise Manager",ops["Cruise Manager"]||"",ops["Cruise Phone"]||"","");
+  cb("Chauffeur",ops["Chauffeur"]||"",ops["Tél Chauffeur"]||"","");
+  const colRole=ops["Colleague Role"]?"Collègue · "+ops["Colleague Role"]:"Collègue";
+  cb(colRole,ops["Colleague"]||"",ops["Colleague Phone"]||"","");
+  if(ops["Emergency Contact"]) blocks.push('<div class="contact-block"><div class="contact-role">Urgence</div><div class="contact-info">'+ops["Emergency Contact"]+'</div></div>');
+  if(!blocks.length) return '<div style="font-size:12px;color:var(--txt4)">Contact non parsé.</div>';
+  return blocks.join("");
 }
 function opsBlock(m){
   const ops=m.ops||{};
-  const paxKey=passengerFieldKey(ops);
-  const pairs=Object.entries(ops).filter(([k,v])=>v&&String(v).trim()&&k!==paxKey).slice(0,8);
-  if(!pairs.length) return '<div style="font-size:11px;color:var(--txt4)">Aucune donnée mission détaillée parsée pour le moment.</div>';
-  return pairs.map(([k,v])=>'<div class="orow"><div class="o-lbl">'+k+'</div><div class="o-val">'+String(v)+'</div></div>').join("");
+  const SKIP=new Set(["Passenger Checklist","Passenger Raw","Pax Count","Contact Client","Client Phone","Contact Email","Sender Email","Cruise Manager","Cruise Phone","Chauffeur","Tél Chauffeur","Colleague","Colleague Phone","Colleague Role","Emergency Contact","Contact Name","Sender Name","Contact Phone","Raw Notes","Source PDF","Source Email","Last Updated"]);
+  const ICONS={"Ship Name":"🚢","Dock / Terminal":"⚓","Transport Ref":"📋","Meeting Point":"📍","Vehicle Info":"🚌","Ops Summary":"📌"};
+  const pairs=Object.entries(ops).filter(([k,v])=>v&&String(v).trim()&&!SKIP.has(k)).slice(0,10);
+  if(!pairs.length) return '<div style="font-size:11px;color:var(--txt4)">Aucune donnée opérationnelle parsée.</div>';
+  return pairs.map(([k,v])=>'<div class="orow"><div class="o-icon">'+(ICONS[k]||"•")+'</div><div class="o-lbl">'+k+'</div><div class="o-val">'+String(v)+'</div></div>').join("");
 }
 function go(t){tab=t;if(t==="today")subView="today";detail=null;["today","month","finance"].forEach(id=>document.getElementById("nb-"+id).classList.toggle("on",id===t));render();}
 function render(){
@@ -556,9 +551,12 @@ function rdDetail(m){
   if(m.endroit) kp.push('<span class="kpill">📍 '+m.endroit+'</span>');
   if(m.heures) kp.push('<span class="kpill">⏱ '+m.heures+'h</span>');
   if(m.rapport==="TRUE"||m.rapport===true) kp.push('<span class="kpill hi">📄 Rapport envoyé</span>');
+  if(m.paxCount) kp.push('<span class="kpill">👥 '+m.paxCount+' pax</span>');
+  if(m.meetingPoint) kp.push('<span class="kpill">📍 '+m.meetingPoint+'</span>');
+  if(m.shipName) kp.push('<span class="kpill">🚢 '+m.shipName+'</span>');
   if(kp.length) h+='<div class="key-pills">'+kp.join("")+'</div>';
   h+='<div class="igrid"><div class="ifield"><label>Date</label><span>'+fdl(m.date)+'</span></div><div class="ifield"><label>Réf</label><span class="mono">'+(m.desc||"—")+'</span></div><div class="ifield"><label>Statut</label><span>'+(m.statut||"Planifié")+'</span></div><div class="ifield"><label>Trajet</label><span>~'+tr+' min</span></div></div>'+(m.notes?'<div style="margin-top:9px;background:var(--bg2);padding:8px 11px;border-radius:7px;font-size:11px;color:var(--txt2);line-height:1.55">📝 '+m.notes+'</div>':"")+'</div>';
-  h+='<div class="sdiv"><div class="sin"><div class="stitle blue">MISSION DETAILS</div>'+passengerChecklistHTML(m)+opsBlock(m)+'</div></div>';
+  h+='<div class="sdiv"><div class="sin"><div class="stitle blue">MISSION DETAILS</div>'+opsBlock(m)+'</div></div>';
   if(m.docs) h+='<div class="sdiv"><div class="sin"><div class="stitle green">DOCUMENTS</div><a href="'+m.docs+'" target="_blank" class="doc-btn"><span style="font-size:15px">📁</span><span style="flex:1">Dossier Drive</span><span style="font-size:10px;color:var(--txt4)">↗</span></a></div></div>';
   h+='<div class="sdiv"><div class="sin"><div class="stitle purple">JOURNAL DE MISSION</div>'+(lg.length?'<div class="log-entries">'+lg.map(e=>'<div class="lentry"><div class="lts">'+e.time+'</div><div class="lbubble"><div class="ltag">'+e.kind+' · '+e.context+(e.report?' · rapport':"")+'</div><div class="ltext">'+e.text+'</div></div></div>').join("")+'</div>':'<div class="log-empty">Aucune entrée.</div>')+'<div class="meta-row"><select class="sel" id="lkind-'+m.mid+'"><option>Note</option><option>Timing</option><option>Incident</option><option>Info client</option></select><select class="sel" id="lctx-'+m.mid+'"><option>Avant mission</option><option>Pendant mission</option><option selected>Après mission</option><option>Décompression</option><option>Général</option></select></div><textarea class="ta" id="lta-'+m.mid+'" rows="3" placeholder="Ajouter une note horodatée…"></textarea><label class="chkrow"><input type="checkbox" id="lrpt-'+m.mid+'"/> Inclure si pertinent pour le rapport</label><button class="submit-btn" onclick="addLog(\''+m.mid+'\')">Enregistrer la note</button></div></div>';
   h+=rdPMF(m);
