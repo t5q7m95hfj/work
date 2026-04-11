@@ -340,7 +340,6 @@ const META={
 };
 
 const TRAVEL={"PERRACHE":45,"PART-DIEU":45,"LYS":52,"AEROPORT":52,"QUAI CLAUDE BERNARD":45,"QUAI RAMBAUD":60,"BELLECOUR":45,"VIENNE":105,"GENEVE":180,"CHALON":120};
-const PRENOM={"Philibert Tourisme":"Mélissa","Go Côte Saône":"Marion","Feel the French Way":"Laura","Un Monde Bleu":""}; // UMB: no fixed contact
 const MOOD_LABELS=["","😫","😐","🙂","😊","🤩"];
 const ENERGY_LABELS=["","🪫","🔋","⚡","💪","🚀"];
 
@@ -659,30 +658,66 @@ function pmfGo(step){if(step===2){const s=document.getElementById("ps"),e=docume
 function uDur(){const s=document.getElementById("ps"),e=document.getElementById("pe"),d=document.getElementById("pd");if(s&&e&&d){const du=durS(s.value,e.value);d.textContent=du?"⏱ "+du:"";}}
 
 async function genRpt(mid){
-  const m=missions.find(x=>x.mid===mid);if(!m)return;
-  pmf.rptLoading=true;render();
-  const pr=PRENOM[m.client]||"",du=durS(pmf.start,pmf.end);
-  const ref=m.desc||m.mid||"";
-  const dateFmt=iso=>{if(!iso||iso.length<10)return iso||"";const[y,mo,d]=iso.split("-");return d+"/"+mo+"/"+y.slice(2);};
-  const lg=flogs[m.mid]||[];
-  const jt=lg.length?"\nJournal:\n"+lg.map(e=>"- "+e.text).join("\n"):"";
-// Build human-readable mission label from Type + Sens + Endroit (not raw ref code)
-  const typeClean=(m.type||"").replace(/ASSISTANCE\s*/gi,"").trim();
-  const sensClean=(m.sens&&m.sens!=="—")?m.sens:"";
-  const endroitClean=m.endroit||"";
-  let missionLabel=typeClean;
-  if(sensClean)missionLabel+=" — "+sensClean;
-  if(endroitClean)missionLabel+=" ("+endroitClean+")";
-  
-  const prompt="RÈGLES: Tutoiement. 2-3 phrases max. Sign-off: Merci et bonne journée,\\nJoseph\n"
-    +"Ne mets pas la description en majuscules. Écris naturellement.\n"
-    +(pmf.tpl==="RAS"?"Rapport RAS.":"Rapport incident.")+"\nRef: "+ref+" | "+dateFmt(m.date)+" | Mission: "+missionLabel+" | "+pmf.start+"→"+pmf.end+" ("+du+")"+jt+"\nCommence: Bonjour "+(pr||"")+(pr?",":"")+"\\nTermine: Merci et bonne journée,\\nJoseph";
-  try{
-    const r=await fetch(GAS_URL+"?action=genRapport&prompt="+encodeURIComponent(prompt),{signal:AbortSignal.timeout(28000)});
-    const d=await r.json();
-    pmf.rpt=d.ok&&d.text?d.text:"Erreur: "+(d.error||"");
-  }catch(e){pmf.rpt="Erreur: "+e.message;}
-  pmf.rptLoading=false;render();
+  const m = missions.find(x => x.mid === mid);
+  if (!m) return;
+
+  pmf.rptLoading = true;
+  render();
+
+  const ref = m.desc || m.mid || "service";
+  const du = durS(pmf.start, pmf.end);
+  const dateFmt = iso => {
+    if (!iso || iso.length < 10) return iso || "";
+    const [y, mo, d] = iso.split("-");
+    return d + "/" + mo + "/" + y.slice(2);
+  };
+  const lg = flogs[m.mid] || [];
+  const journalText = lg.length ? lg.map(e => e.text).join(" | ") : "";
+  const notesText = (m.notes || "").trim();
+
+  // RAS = deterministic, no AI
+  if (pmf.tpl === "RAS") {
+    pmf.rpt =
+      "Bonjour,\n\n" +
+      "Voici le récap du service " + ref + ". Rien à signaler, tout s’est bien déroulé.\n\n" +
+      "Merci et bonne journée,\nJoseph";
+    pmf.rptLoading = false;
+    render();
+    return;
+  }
+
+  // Non-RAS = AI-assisted, but tightly constrained
+  const contextBits = [];
+  if (pmf.start && pmf.end) contextBits.push("Horaires réels: " + pmf.start + " à " + pmf.end + (du ? " (" + du + ")" : ""));
+  if (notesText) contextBits.push("Notes mission: " + notesText);
+  if (journalText) contextBits.push("Journal terrain: " + journalText);
+
+  const prompt =
+    "Rédige un email de rapport de mission en français, simple, humain, naturel.\n" +
+    "Tutoiement uniquement.\n" +
+    "Commence par 'Bonjour,'\n" +
+    "Termine exactement par:\nMerci et bonne journée,\nJoseph\n\n" +
+    "Style: court, factuel, pas administratif, pas de formules lourdes, pas de 'je me permets', pas de 'je reste disponible'.\n" +
+    "3 phrases maximum.\n\n" +
+    "Référence service: " + ref + "\n" +
+    "Date: " + dateFmt(m.date) + "\n" +
+    "Type de rapport: " + pmf.tpl + "\n" +
+    (contextBits.length ? contextBits.join("\n") + "\n\n" : "\n") +
+    "Retourne uniquement le texte final de l'email.";
+
+  try {
+    const r = await fetch(
+      GAS_URL + "?action=genRapport&prompt=" + encodeURIComponent(prompt),
+      { signal: AbortSignal.timeout(28000) }
+    );
+    const d = await r.json();
+    pmf.rpt = d.ok && d.text ? d.text : "Erreur: " + (d.error || "");
+  } catch(e) {
+    pmf.rpt = "Erreur: " + e.message;
+  }
+
+  pmf.rptLoading = false;
+  render();
 }
 
 async function scheduleRapport(mid){
