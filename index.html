@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<title>Mission Control V2 — Calm Ops</title>
+<title>Mission Control Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <style>
@@ -408,39 +408,31 @@ function passengerFieldKey(ops){
   return scored.length?scored[0].k:"";
 }
 function parsePassengerList(raw){
-  let txt=String(raw||"").replace(/
-/g,"
-").replace(/
-/g,"
-").trim();
+  let txt=String(raw||"").replace(/\r/g,"\n").replace(/\n+/g,"\n").trim();
   if(!txt) return [];
 
   txt=txt
-    .replace(/\s*[–—-]\s*/g,' | ')
-    .replace(/\s+&\s+/g,' | ')
-    .replace(/\s*•\s*/g,' | ')
-    .replace(/\s*·\s*/g,' | ')
-    .replace(/\s*;\s*/g,' | ')
-    .replace(/\s{2,}/g,' ')
+    .replace(/\s*[–—-]\s*/g," | ")
+    .replace(/\s+&\s+/g," | ")
+    .replace(/\s*•\s*/g," | ")
+    .replace(/\s*·\s*/g," | ")
+    .replace(/\s*;\s*/g," | ")
+    .replace(/\s{2,}/g," ")
     .trim();
 
   // Put flight/segment headers on their own boundary so they don't glue passenger names together
-  txt=txt.replace(/(?:^|\s)([A-Z]{2,}\d{3,}[A-Z]?(?:\s+[A-Z]{3}\/[A-Z]{3})?\s*[:\-]?\s*\d+\s*PAX)\s+/g,'
-$1 | ');
+  txt=txt.replace(/(?:^|\s)([A-Z]{2,}\d{3,}[A-Z]?(?:\s+[A-Z]{3}\/[A-Z]{3})?\s*[:\-]?\s*\d+\s*PAX)\s+/g,"\n$1 | ");
 
   let chunks=[];
-  if(/
-/.test(txt)) chunks=txt.split(/
-+/);
+  if(/\n/.test(txt)) chunks=txt.split(/\n+/);
   else if(/\|/.test(txt)) chunks=txt.split(/\|+/);
   else chunks=[txt];
 
   const out=[];
-  const titleRe=/(Mr|Mrs|Ms|Miss|Dr|M\.|Mme\.?|Monsieur|Madame)\s+[^|
-]+?(?=(?:\s+(?:Mr|Mrs|Ms|Miss|Dr|M\.|Mme\.?|Monsieur|Madame)\s+)|$)/g;
+  const titleRe=/(Mr|Mrs|Ms|Miss|Dr|M\.|Mme\.?|Monsieur|Madame)\s+[^|\n]+?(?=(?:\s+(?:Mr|Mrs|Ms|Miss|Dr|M\.|Mme\.?|Monsieur|Madame)\s+)|$)/g;
 
   chunks.forEach(chunk=>{
-    let s=String(chunk||'').trim();
+    let s=String(chunk||"").trim();
     if(!s) return;
     s=s.replace(/^[-*•·\d.)\s]+/,"").trim();
     if(!s) return;
@@ -460,7 +452,7 @@ $1 | ');
   });
 
   const cleaned=out
-    .map(s=>s.replace(/\s{2,}/g,' ').trim())
+    .map(s=>s.replace(/\s{2,}/g," ").trim())
     .filter(Boolean)
     .filter(s=>!/^(passenger\s*list|liste\s*passagers?)$/i.test(s));
 
