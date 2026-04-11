@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<title>Mission Control V2 — Calm Ops</title>
+<title>Mission Control Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
 <style>
@@ -370,41 +370,65 @@ async function saveField(mid,f,v){
 }
 function getLogs(mid){return mlogs[mid]||[];}
 function saveLogs(){localStorage.setItem("mc_mission_logs",JSON.stringify(mlogs));}
-async function addLog(mid){
+function addLog(mid){
   const ta=document.getElementById("lta-"+mid);
   const kind=document.getElementById("lkind-"+mid);
   const ctx=document.getElementById("lctx-"+mid);
   const rpt=document.getElementById("lrpt-"+mid);
   if(!ta||!ta.value.trim()) return;
-  const entry={
-    time:nowt(),
-    kind:kind?kind.value:"Note",
-    context:ctx?ctx.value:"Après mission",
-    report:!!(rpt&&rpt.checked),
-    text:ta.value.trim()
-  };
   if(!mlogs[mid]) mlogs[mid]=[];
-  mlogs[mid].push(entry);
+  mlogs[mid].push({
+    time: nowt(),
+    kind: kind?kind.value:"Note",
+    context: ctx?ctx.value:"Après mission",
+    report: !!(rpt&&rpt.checked),
+    text: ta.value.trim()
+  });
   saveLogs();
-  // Persist to sheet (fire-and-forget)
-  const m=missions.find(x=>x.mid===mid)||{};
-  try{
-    await fetch(GAS_URL+'?action=saveLog'
-      +'&id='+encodeURIComponent(mid)
-      +'&date='+encodeURIComponent(m.date||tday())
-      +'&time='+encodeURIComponent(entry.time)
-      +'&kind='+encodeURIComponent(entry.kind)
-      +'&context='+encodeURIComponent(entry.context)
-      +'&report='+encodeURIComponent(entry.report)
-      +'&text='+encodeURIComponent(entry.text)
-      +'&client='+encodeURIComponent(m.client||""),
-      {signal:AbortSignal.timeout(10000)});
-  }catch(e){}
   ta.value=""; if(rpt) rpt.checked=false;
   render();
 }
 function reportNotesFor(mid){
   return getLogs(mid).filter(e=>e.report).map(e=>"- "+e.text).join("\n");
+}
+
+function passengerFieldKey(ops){
+  const keys=Object.keys(ops||{});
+  return keys.find(k=>/(passager|passenger|pax)/i.test(k))||"";
+}
+function parsePassengerList(raw){
+  const txt=String(raw||"").replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim();
+  if(!txt) return [];
+  let parts=[];
+  if(/\n/.test(txt)) parts=txt.split(/\n+/);
+  else if(/[;|•·]/.test(txt)) parts=txt.split(/[;|•·]+/);
+  else if(/\s\/\s/.test(txt)) parts=txt.split(/\s\/\s/g);
+  else if((txt.match(/,/g)||[]).length>=2) parts=txt.split(/,\s*/);
+  else return [txt];
+  return parts.map(s=>s.replace(/^[-*•·\d.)\s]+/,"").trim()).filter(Boolean);
+}
+function getPaxChecks(){
+  try{return JSON.parse(localStorage.getItem("mc_pax_checks")||"{}");}catch(e){return {};}
+}
+function savePaxChecks(obj){
+  localStorage.setItem("mc_pax_checks",JSON.stringify(obj));
+}
+function togglePax(mid,idx,on){
+  const data=getPaxChecks();
+  if(!data[mid]) data[mid]={};
+  data[mid][idx]=!!on;
+  savePaxChecks(data);
+}
+function passengerChecklistHTML(m){
+  const ops=m.ops||{};
+  const paxKey=passengerFieldKey(ops);
+  if(!paxKey) return "";
+  const names=parsePassengerList(ops[paxKey]);
+  if(!names.length) return "";
+  const checks=getPaxChecks();
+  const state=checks[m.mid]||{};
+  const checked=Object.values(state).filter(Boolean).length;
+  return '<div class="pax-wrap"><div class="pax-top"><div class="stitle green" style="margin-bottom:0">PASSAGERS</div><div class="pax-count">'+checked+'/'+names.length+' cochés</div></div><div class="pax-list">'+names.map((name,i)=>'<label class="pax-item"><input class="pax-box" type="checkbox" '+(state[i]?'checked':'')+' onchange="togglePax(\''+m.mid+'\','+i+',this.checked)"/><span class="pax-name">'+name+'</span></label>').join("")+'</div></div>';
 }
 function contactHTML(m){
   const ops=m.ops||{};
@@ -420,7 +444,8 @@ function contactHTML(m){
 }
 function opsBlock(m){
   const ops=m.ops||{};
-  const pairs=Object.entries(ops).filter(([k,v])=>v&&String(v).trim()).slice(0,8);
+  const paxKey=passengerFieldKey(ops);
+  const pairs=Object.entries(ops).filter(([k,v])=>v&&String(v).trim()&&k!==paxKey).slice(0,8);
   if(!pairs.length) return '<div style="font-size:11px;color:var(--txt4)">Aucune donnée mission détaillée parsée pour le moment.</div>';
   return pairs.map(([k,v])=>'<div class="orow"><div class="o-lbl">'+k+'</div><div class="o-val">'+String(v)+'</div></div>').join("");
 }
@@ -482,7 +507,7 @@ function rdDetail(m){
   if(m.rapport==="TRUE"||m.rapport===true) kp.push('<span class="kpill hi">📄 Rapport envoyé</span>');
   if(kp.length) h+='<div class="key-pills">'+kp.join("")+'</div>';
   h+='<div class="igrid"><div class="ifield"><label>Date</label><span>'+fdl(m.date)+'</span></div><div class="ifield"><label>Réf</label><span class="mono">'+(m.desc||"—")+'</span></div><div class="ifield"><label>Statut</label><span>'+(m.statut||"Planifié")+'</span></div><div class="ifield"><label>Trajet</label><span>~'+tr+' min</span></div></div>'+(m.notes?'<div style="margin-top:9px;background:var(--bg2);padding:8px 11px;border-radius:7px;font-size:11px;color:var(--txt2);line-height:1.55">📝 '+m.notes+'</div>':"")+'</div>';
-  h+='<div class="sdiv"><div class="sin"><div class="stitle blue">MISSION DETAILS</div>'+opsBlock(m)+'</div></div>';
+  h+='<div class="sdiv"><div class="sin"><div class="stitle blue">MISSION DETAILS</div>'+passengerChecklistHTML(m)+opsBlock(m)+'</div></div>';
   if(m.docs) h+='<div class="sdiv"><div class="sin"><div class="stitle green">DOCUMENTS</div><a href="'+m.docs+'" target="_blank" class="doc-btn"><span style="font-size:15px">📁</span><span style="flex:1">Dossier Drive</span><span style="font-size:10px;color:var(--txt4)">↗</span></a></div></div>';
   h+='<div class="sdiv"><div class="sin"><div class="stitle purple">JOURNAL DE MISSION</div>'+(lg.length?'<div class="log-entries">'+lg.map(e=>'<div class="lentry"><div class="lts">'+e.time+'</div><div class="lbubble"><div class="ltag">'+e.kind+' · '+e.context+(e.report?' · rapport':"")+'</div><div class="ltext">'+e.text+'</div></div></div>').join("")+'</div>':'<div class="log-empty">Aucune entrée.</div>')+'<div class="meta-row"><select class="sel" id="lkind-'+m.mid+'"><option>Note</option><option>Timing</option><option>Incident</option><option>Info client</option></select><select class="sel" id="lctx-'+m.mid+'"><option>Avant mission</option><option>Pendant mission</option><option selected>Après mission</option><option>Décompression</option><option>Général</option></select></div><textarea class="ta" id="lta-'+m.mid+'" rows="3" placeholder="Ajouter une note horodatée…"></textarea><label class="chkrow"><input type="checkbox" id="lrpt-'+m.mid+'"/> Inclure si pertinent pour le rapport</label><button class="submit-btn" onclick="addLog(\''+m.mid+'\')">Enregistrer la note</button></div></div>';
   h+=rdPMF(m);
@@ -560,12 +585,9 @@ async function pmfFin(mid){
   await saveField(mid,"statut","Terminé");
   if(pmf.debriefMood>0||pmf.debriefEnergy>0||pmf.debriefNote){
     const log=JSON.parse(localStorage.getItem('mc_journal')||'[]');
-    const jEntry={date:m.date||tday(),mid,client:m.client||"",type:m.type||"",mood:pmf.debriefMood,energy:pmf.debriefEnergy,context:(pmf.debriefMood<=3||pmf.debriefEnergy<=3)?"Décompression":"Après mission",note:pmf.debriefNote||"",flag:(pmf.debriefMood<=2||pmf.debriefEnergy<=2)?"🔴":(pmf.debriefMood<=3||pmf.debriefEnergy<=3)?"🟡":"🟢"};
-    log.push(jEntry);
+    log.push({date:m.date||tday(),mid,client:m.client||"",type:m.type||"",mood:pmf.debriefMood,energy:pmf.debriefEnergy,context:(pmf.debriefMood<=3||pmf.debriefEnergy<=3)?"Décompression":"Après mission",note:pmf.debriefNote||"",flag:(pmf.debriefMood<=2||pmf.debriefEnergy<=2)?"🔴":(pmf.debriefMood<=3||pmf.debriefEnergy<=3)?"🟡":"🟢"});
     if(log.length>500) log.splice(0,log.length-500);
     localStorage.setItem('mc_journal',JSON.stringify(log));
-    // Persist to Journal tab in sheet
-    saveJournalToSheet(jEntry);
   }
   const i=missions.findIndex(x=>x.mid===mid);
   if(i>-1){missions[i].heures=he;missions[i].statut="Terminé";}
@@ -622,30 +644,12 @@ function saveDecomp(){
   const ta=document.getElementById("p-decomp");
   const txt=ta&&ta.value.trim();
   if(txt){
-    const entry={date:tday(),mid:detail?detail.mid:"",client:detail?detail.client:"",type:detail?detail.type:"",mood:0,energy:0,context:"Décompression",note:txt,flag:"🟡"};
     const log=JSON.parse(localStorage.getItem('mc_journal')||'[]');
-    log.push(entry);
+    log.push({date:tday(),mid:detail?detail.mid:"",client:detail?detail.client:"",type:detail?detail.type:"",mood:0,energy:0,context:"Décompression",note:txt,flag:"🟡"});
     localStorage.setItem('mc_journal',JSON.stringify(log));
-    // Persist to Journal tab in sheet (fire-and-forget)
-    saveJournalToSheet(entry);
   }
   toast('✅ Décompression enregistrée','green');
   render();
-}
-async function saveJournalToSheet(e){
-  try{
-    await fetch(GAS_URL+'?action=saveJournal'
-      +'&date='+encodeURIComponent(e.date||tday())
-      +'&mid='+encodeURIComponent(e.mid||"")
-      +'&mood='+encodeURIComponent(e.mood||"")
-      +'&energy='+encodeURIComponent(e.energy||"")
-      +'&client='+encodeURIComponent(e.client||"")
-      +'&type='+encodeURIComponent(e.type||"")
-      +'&context='+encodeURIComponent(e.context||"")
-      +'&note='+encodeURIComponent(e.note||"")
-      +'&flag='+encodeURIComponent(e.flag||"—"),
-      {signal:AbortSignal.timeout(10000)});
-  }catch(err){}
 }
 let _tt=null;
 function toast(msg,type){
