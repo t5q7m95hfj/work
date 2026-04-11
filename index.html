@@ -426,109 +426,82 @@ function getPaxChecks(){
 function savePaxChecks(obj){
   localStorage.setItem("mc_pax_checks",JSON.stringify(obj));
 }
-function togglePax(mid, idx, on) {
-  const data = getPaxChecks();
-  if (!data[mid]) data[mid] = {};
-  data[mid][idx] = !!on;
+function togglePax(mid,idx,on){
+  const data=getPaxChecks();
+  if(!data[mid]) data[mid]={};
+  data[mid][idx]=!!on;
   savePaxChecks(data);
-
-  const m = missions.find(x => x.mid === mid) || {};
-  const ops = m.ops || {};
-  const names = (ops["Passenger Checklist"] || "")
-    .split("\n")
-    .map(s => s.trim())
-    .filter(Boolean);
-
-  const state = data[mid] || {};
-  const checkedCount = Object.values(state).filter(Boolean).length;
-  const paxTotal = names.length;
-  const paxCount = ops["Pax Count"] || "";
-
-  const subEl = document.querySelector(`#pax-sub-${CSS.escape(mid)}`);
-  const progEl = document.querySelector(`#pax-prog-${CSS.escape(mid)}`);
-  const doneEl = document.getElementById(`pax-done-${mid}`);
-
-  if (subEl) subEl.textContent = `${paxCount || `${paxTotal} pax`} · ${checkedCount}/${paxTotal} cochés`;
-  if (progEl) progEl.style.width = paxTotal ? `${Math.round((checkedCount / paxTotal) * 100)}%` : "0%";
-  if (doneEl) doneEl.style.display = (checkedCount === paxTotal && paxTotal > 0) ? "block" : "none";
+  const state=data[mid]||{};
+  const m=missions.find(x=>x.mid===mid)||{};
+  const ops=m.ops||{};
+  const clRaw=ops['Passenger Checklist']||'';
+  const paxRaw=ops['Passenger Raw']||'';
+  const names=clRaw?clRaw.split('\n').map(s=>s.trim()).filter(Boolean):parseFromRaw(paxRaw);
+  const total=names.length;
+  const checked=Object.values(state).filter(Boolean).length;
+  const pct=total?Math.round(checked/total*100):0;
+  const progEl=document.getElementById('paxprog-'+mid);
+  if(progEl) progEl.style.width=pct+'%';
+  const doneEl=document.getElementById('pax-done-'+mid);
+  if(doneEl) doneEl.style.display=(checked===total&&total>0)?'block':'none';
+}
+function parseFromRaw(raw){
+  if(!raw) return [];
+  const TITLE=/\b(MR|MRS|MS|MISS|DR|Mr|Mrs|Ms|Miss|Dr)\.?\s+/;
+  const SPLIT=/(?=\b(?:MR|MRS|MS|MISS|DR|Mr|Mrs|Ms|Miss|Dr)\.?\s+)/;
+  const lines=raw.replace(/\r/g,'').split('\n');
+  const out=[];
+  lines.forEach(line=>{
+    const s=line.trim();
+    if(!s) return;
+    if(/^[A-Z]{2}\d{3,}/.test(s)||/^\d[\d,\s]*$/.test(s)||/^\d+\s*PAX$/i.test(s)) return;
+    if(!TITLE.test(s)) return;
+    s.split(SPLIT).map(p=>p.trim()).filter(p=>TITLE.test(p)).forEach(p=>{
+      const clean=p.replace(/\s{2,}/g,' ').replace(/\s+\d{2,3}$/,'').trim();
+      if(clean) out.push(clean);
+    });
+  });
+  return [...new Set(out)];
+}
+function passengerChecklistHTML(m){
+  const ops=m.ops||{};
+  // Prefer structured Passenger Checklist; fall back to parsing Passenger Raw
+  const clRaw=ops['Passenger Checklist']||'';
+  const paxRaw=ops['Passenger Raw']||'';
+  const paxCount=ops['Pax Count']||'';
+  const names=clRaw?clRaw.split('\n').map(s=>s.trim()).filter(Boolean):parseFromRaw(paxRaw);
+  if(!names.length&&!paxCount) return '';
+  const checks=getPaxChecks();
+  const state=checks[m.mid]||{};
+  const checked=names.length?Object.values(state).filter(Boolean).length:0;
+  const pct=names.length?Math.round(checked/names.length*100):0;
+  const id='pax-'+m.mid;
+  // Use tColl (already defined) for collapse toggle — avoids quoting issues
+  let html='<div class="pax-coll"><div class="pax-coll-hdr" onclick="tColl(\''+id+'\')">';
+  html+='<div><div class="pax-coll-title">👥 Passagers</div>';
+  html+='<div class="pax-coll-sub">'+(paxCount?paxCount+' pax':names.length+' pax');
+  if(names.length) html+=' · '+checked+'/'+names.length+' cochés';
+  html+='</div></div>';
+  html+='<div style="display:flex;align-items:center;gap:6px">';
+  html+='<div class="pax-prog-wrap"><div class="pax-prog" id="paxprog-'+m.mid+'" style="width:'+pct+'%"></div></div>';
+  html+='<div class="chev" id="chev-'+id+'">▼</div></div></div>';
+  html+='<div class="pax-coll-body" id="'+id+'">';
+  if(names.length){
+    html+='<div class="pax-list">'+names.map((name,i)=>{
+      const esc=name.replace(/'/g,'&#39;');
+      return '<label class="pax-item"><input class="pax-box" type="checkbox" '+(state[i]?'checked ':'')
+        +'onchange="togglePax(\''+m.mid+'\','+i+',this.checked)"/>'
+        +'<span class="pax-name">'+esc+'</span></label>';
+    }).join('')+'</div>';
+    html+='<div id="pax-done-'+m.mid+'" class="pax-done-msg" style="display:'
+      +(checked===names.length&&names.length>0?'block':'none')+'">✅ Tous cochés</div>';
+  } else {
+    html+='<div style="font-size:11px;color:var(--txt3);padding:8px 0">Liste de passagers non disponible — '+paxCount+' pax</div>';
+  }
+  html+='</div></div>';
+  return html;
 }
 
-  function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function passengerChecklistHTML(m) {
-  const ops = m.ops || {};
-  const checklistRaw = ops["Passenger Checklist"] || "";
-  const paxCount = ops["Pax Count"] || "";
-  const names = checklistRaw
-    .split("\n")
-    .map(s => s.trim())
-    .filter(Boolean);
-
-  if (!names.length) return "";
-
-  const checks = getPaxChecks();
-  const state = checks[m.mid] || {};
-  const checked = Object.values(state).filter(Boolean).length;
-  const pct = names.length ? Math.round((checked / names.length) * 100) : 0;
-  const collId = `pax-${m.mid}`;
-
-  return `
-    <div class="pax-coll">
-      <div class="pax-coll-hdr" onclick="tPax('${collId}')">
-        <div>
-          <div class="pax-coll-title">👥 Passagers</div>
-          <div class="pax-coll-sub" id="pax-sub-${m.mid}">
-            ${paxCount || `${names.length} pax`} · ${checked}/${names.length} cochés
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="pax-prog-wrap">
-            <div class="pax-prog" id="pax-prog-${m.mid}" style="width:${pct}%"></div>
-          </div>
-          <div class="chev" id="chev-${collId}">▼</div>
-        </div>
-      </div>
-      <div class="pax-coll-body" id="${collId}">
-        <div class="pax-list">
-          ${names.map((name, i) => `
-            <label class="pax-item">
-              <input
-                class="pax-box"
-                type="checkbox"
-                ${state[i] ? "checked" : ""}
-                onchange="togglePax('${m.mid}', ${i}, this.checked)"
-              />
-              <span class="pax-name">${escapeHtml(name)}</span>
-            </label>
-          `).join("")}
-        </div>
-        <div
-          id="pax-done-${m.mid}"
-          class="pax-done-msg"
-          style="display:${checked === names.length && names.length > 0 ? "block" : "none"}"
-        >
-          ✅ Tous les passagers cochés
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function tPax(id) {
-  const b = document.getElementById(id);
-  const c = document.getElementById("chev-" + id);
-  if (!b) return;
-  b.classList.toggle("open");
-  if (c) c.classList.toggle("open");
-}
-  
 function contactHTML(m){
   const ops=m.ops||{};
   const blocks=[];
@@ -555,12 +528,55 @@ function contactHTML(m){
 }
 function opsBlock(m){
   const ops=m.ops||{};
-  const SKIP=new Set(["Passenger Checklist","Passenger Raw","Pax Count","Contact Client","Client Phone","Contact Email","Sender Email","Cruise Manager","Cruise Phone","Chauffeur","Tél Chauffeur","Colleague","Colleague Phone","Colleague Role","Emergency Contact","Contact Name","Sender Name","Contact Phone","Raw Notes","Source PDF","Source Email","Last Updated"]);
-  const ICONS={"Ship Name":"🚢","Dock / Terminal":"⚓","Transport Ref":"📋","Meeting Point":"📍","Vehicle Info":"🚌","Ops Summary":"📌"};
-  const pairs=Object.entries(ops).filter(([k,v])=>v&&String(v).trim()&&!SKIP.has(k)).slice(0,10);
-  if(!pairs.length) return '<div style="font-size:11px;color:var(--txt4)">Aucune donnée opérationnelle parsée.</div>';
-  return pairs.map(([k,v])=>'<div class="orow"><div class="o-icon">'+(ICONS[k]||"•")+'</div><div class="o-lbl">'+k+'</div><div class="o-val">'+String(v)+'</div></div>').join("");
+  // Fields shown elsewhere — exclude from this block
+  const SKIP=new Set(["Passenger Checklist","Passenger Raw","Pax Count",
+    "Contact Client","Client Phone","Cruise Manager","Cruise Phone",
+    "Chauffeur","Tél Chauffeur","Colleague","Colleague Phone","Colleague Role",
+    "Emergency Contact","Contact Name","Sender Name","Contact Phone",
+    "Contact Email","Sender Email",
+    "Source PDF","Source Email","Source Email Message","Raw Notes","Last Updated"]);
+  const ICONS={
+    "Ops Summary":"📌","Ship Name":"🚢","Dock / Terminal":"⚓",
+    "Transport Ref":"📋","Meeting Point":"📍","Vehicle Info":"🚌",
+    "Colleague":"👤","Emergency Contact":"🆘"};
+  const pairs=Object.entries(ops).filter(([k,v])=>v&&String(v).trim()&&!SKIP.has(k));
+  let out='';
+  if(!pairs.length){
+    out='<div style="font-size:11px;color:var(--txt4)">Aucune donnée opérationnelle disponible.</div>';
+  } else {
+    out=pairs.map(([k,v])=>'<div class="orow"><div class="o-icon">'+(ICONS[k]||"•")
+      +'</div><div class="o-lbl">'+k+'</div><div class="o-val">'+String(v)+'</div></div>').join("");
+  }
+  // Source PDF — always show if present
+  if(ops["Source PDF"]){
+    out+='<a href="'+ops["Source PDF"]+'" target="_blank" class="doc-btn" style="margin-top:10px">'
+      +'<span style="font-size:14px">📄</span><span style="flex:1">Manifeste PDF</span>'
+      +'<span style="font-size:10px;color:var(--txt4)">↗</span></a>';
+  }
+  // Source Email Message — collapsible
+  if(ops["Source Email Message"]){
+    const emId="emsrc-"+m.mid;
+    out+='<div class="coll" style="margin-top:10px">'
+      +'<div class="coll-hdr" style="padding:8px 10px" onclick="tColl(\''+emId+'\')">'
+      +'<div><div class="coll-title" style="font-size:11px">📧 Email source</div>'
+      +(ops["Source Email"]?'<div class="coll-sub">'+ops["Source Email"]+'</div>':'')
+      +'</div><div class="coll-right"><div class="chev" id="chev-'+emId+'">▼</div></div></div>'
+      +'<div class="coll-body" id="'+emId+'">'
+      +'<div style="font-size:10px;color:var(--txt3);white-space:pre-wrap;line-height:1.6;padding-top:4px">'
+      +ops["Source Email Message"].replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>'
+      +'</div></div>';
+  }
+  // Raw Notes
+  if(ops["Raw Notes"]){
+    out+='<div style="margin-top:8px;background:var(--bg2);padding:8px 10px;border-radius:7px;font-size:10px;color:var(--txt3);line-height:1.5">📝 '+ops["Raw Notes"]+'</div>';
+  }
+  // Last Updated
+  if(ops["Last Updated"]){
+    out+='<div style="font-size:9px;color:var(--txt4);margin-top:8px;text-align:right">Mis à jour: '+ops["Last Updated"]+'</div>';
+  }
+  return out;
 }
+
 function go(t){tab=t;if(t==="today")subView="today";detail=null;["today","month","finance"].forEach(id=>document.getElementById("nb-"+id).classList.toggle("on",id===t));render();}
 function render(){
   const el=document.getElementById("content"); if(!el) return;
@@ -621,9 +637,6 @@ function rdDetail(m){
   if(m.meetingPoint) kp.push('<span class="kpill">📍 '+m.meetingPoint+'</span>');
   if(m.shipName) kp.push('<span class="kpill">🚢 '+m.shipName+'</span>');
   if(kp.length) h+='<div class="key-pills">'+kp.join("")+'</div>';
-  if (kp.length) h += '<div class="key-pills">' + kp.join("") + '</div>';
-  h += passengerChecklistHTML(m);
-  h += '<div class="igrid"><div class="ifield"><label>Date</label><span>' + fdl(m.date) + '</span></div> ...';
   h+='<div class="igrid"><div class="ifield"><label>Date</label><span>'+fdl(m.date)+'</span></div><div class="ifield"><label>Réf</label><span class="mono">'+(m.desc||"—")+'</span></div><div class="ifield"><label>Statut</label><span>'+(m.statut||"Planifié")+'</span></div><div class="ifield"><label>Trajet</label><span>~'+tr+' min</span></div></div>'+(m.notes?'<div style="margin-top:9px;background:var(--bg2);padding:8px 11px;border-radius:7px;font-size:11px;color:var(--txt2);line-height:1.55">📝 '+m.notes+'</div>':"")+'</div>';
   h+='<div class="sdiv"><div class="sin"><div class="stitle blue">MISSION DETAILS</div>'+opsBlock(m)+'</div></div>';
   if(m.docs) h+='<div class="sdiv"><div class="sin"><div class="stitle green">DOCUMENTS</div><a href="'+m.docs+'" target="_blank" class="doc-btn"><span style="font-size:15px">📁</span><span style="flex:1">Dossier Drive</span><span style="font-size:10px;color:var(--txt4)">↗</span></a></div></div>';
@@ -750,16 +763,8 @@ function rdJournal(){
   const avgEnergy=yearLog.filter(e=>e.energy>0).reduce((s,e,_,a)=>s+e.energy/a.length,0)||0;
   let h='<div class="slabel mt">BIEN-ÊTRE · '+cy+'</div><div class="mood-stat-row"><div class="mood-stat"><div class="mood-stat-val">'+yearLog.length+'</div><div class="mood-stat-lbl">Entrées</div></div><div class="mood-stat"><div class="mood-stat-val">'+(avgMood?MOOD_LABELS[Math.round(avgMood)]+' '+avgMood.toFixed(1):'—')+'</div><div class="mood-stat-lbl">Humeur</div></div><div class="mood-stat"><div class="mood-stat-val">'+(avgEnergy?ENERGY_LABELS[Math.round(avgEnergy)]+' '+avgEnergy.toFixed(1):'—')+'</div><div class="mood-stat-lbl">Énergie</div></div></div>';
   const recent=[...yearLog].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
-h += '<div class="coll"><div class="coll-hdr" onclick="tColl(\'journal-log\')"><div><div class="coll-title">Journal privé</div><div class="coll-sub">' + yearLog.length + ' entrées</div></div><div class="coll-right"><div class="chev" id="chev-journal-log">▼</div></div></div><div class="coll-body" id="journal-log">' +
-  recent.map(e =>
-    '<div class="mood-row">' +
-      '<span class="mood-date">' + fds(e.date) + '</span>' +
-      '<span class="mood-mid">' + (e.context || "Après mission") + ' · ' + (e.client || "") + '</span>' +
-      '<span class="mood-state">' + (MOOD_LABELS[e.mood || 0] || "—") + ' ' + (ENERGY_LABELS[e.energy || 0] || "") + '</span>' +
-    '</div>' +
-    (e.note ? '<div style="font-size:10px;color:var(--txt4);padding:0 0 5px;font-style:italic">' + e.note + '</div>' : "")
-  ).join("") +
-  '</div></div>';  return h;
+  h+='<div class="coll"><div class="coll-hdr" onclick="tColl(\'journal-log\')"><div><div class="coll-title">Journal privé</div><div class="coll-sub">'+yearLog.length+' entrées</div></div><div class="coll-right"><div class="chev" id="chev-journal-log">▼</div></div></div><div class="coll-body" id="journal-log">'+recent.map(e=>'<div class="mood-row"><span class="mood-date">'+fds(e.date)+'</span><span class="mood-mid">'+(e.context||"Après mission")+' · '+(e.client||"")+'</span><span class="mood-state">'+(MOOD_LABELS[e.mood||0]||"—")+' '+(ENERGY_LABELS[e.energy||0]||"")+'</span></div>'+(e.note?'<div style="font-size:10px;color:var(--txt4);padding:0 0 5px;font-style:italic">'+e.note+'</div>':"")+'</div>').join("");
+  return h;
 }
 function tColl(id){const b=document.getElementById(id),c=document.getElementById("chev-"+id);if(!b)return;b.classList.toggle("open");if(c)c.classList.toggle("open");}
 function goPause(){
