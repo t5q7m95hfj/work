@@ -615,7 +615,13 @@ function avenir(ms){return '<div class="ubox"><div class="ulbl">À venir</div>'+
 function mcard(m,compact){
   const mt=getMeta(m.client),done=isDone(m),cxl=isCxl(m),logs=getLogs(m.mid);
   const pills=[];
-  if(m.endroit&&!compact) pills.push('<span class="mpill mp-loc">'+m.endroit.split(",")[0].split("→")[0].trim()+'</span>');
+  if(!compact){
+    const loc=m.endroit?m.endroit.split(",")[0].split("→")[0].trim():"";
+    const ship=m.shipName||"";
+    if(loc&&ship) pills.push('<span class="mpill mp-loc">'+loc+' · 🚢 '+ship+'</span>');
+    else if(ship) pills.push('<span class="mpill mp-loc">🚢 '+ship+'</span>');
+    else if(loc) pills.push('<span class="mpill mp-loc">'+loc+'</span>');
+  }
   if(logs.length&&!compact) pills.push('<span class="mpill mp-note">'+logs.length+' notes</span>');
   return '<div class="mcard'+(done||cxl?" dim":"")+'" style="border-left-color:'+mt.hex+'" onclick="openD(\''+m.mid+'\')"><div class="mc-top"><div class="mc-left"><div class="mc-meta"><span class="mc-tag" style="color:'+mt.hex+'">'+mt.tag+'</span>'+(m.debut?'<span class="mc-time">'+m.debut+'</span>':"")+(!compact?'<span class="mc-date-s">'+fds(m.date)+'</span>':"")+'</div><div class="mc-type">'+(m.type||"?")+'</div>'+(m.sens&&m.sens!=="—"?'<div class="mc-sens">'+m.sens+'</div>':"")+(pills.length?'<div class="mc-pills">'+pills.join("")+'</div>':"")+'</div><div class="mc-right">'+(m.desc?'<div class="mc-ref">'+m.desc+'</div>':"")+badge(m)+'</div></div></div>';
 }
@@ -628,7 +634,15 @@ function rdDetail(m){
   if(m.date&&m.debut&&wxData){const sh=parseInt(m.debut.slice(0,2))||8;const a=getWxAlert(m.date,sh,Math.min(sh+5,22));if(a) wxAlert='<div class="wx-alert"><div class="wx-alert-icon">&#x26C8;</div><div>'+a+'</div></div>';}
   let h='<button class="back-btn" onclick="closeD()">&#8592; Retour</button><div class="dcard" style="border-top-color:'+mt.hex+'"><div class="dhdr"><div class="d-top"><div><div class="d-client" style="color:'+mt.hex+'">'+mt.tag+' &middot; '+m.client+'</div><div class="d-title">'+(m.type||"Mission")+'</div>'+(m.sens&&m.sens!=="&mdash;"?'<div class="d-sens">'+m.sens+'</div>':"")+'</div>'+badge(m)+'</div>';
   if(wxAlert) h+=wxAlert;
-  if(m.debut) h+='<div class="shift-box"><div class="shift-time">&#x23F0; '+m.debut+'</div>'+(dp?'<div class="shift-sub">D&eacute;part maison ~'+dp+' &middot; trajet ~'+tr+' min</div>':"")+'</div>';
+  if(m.debut){
+    let sb='<div class="shift-box"><div class="shift-time">&#x23F0; '+m.debut;
+    if(m.shipName) sb+=' &nbsp;<span style="font-size:13px;color:rgba(88,166,255,.6);font-family:\'DM Sans\',sans-serif;font-weight:500">&#x1F6A2; '+m.shipName+'</span>';
+    sb+='</div>';
+    if(dp) sb+='<div class="shift-sub">D&eacute;part maison ~'+dp+' &middot; trajet ~'+tr+' min'+(m.dock?' &middot; '+m.dock:'')+'</div>';
+    else if(m.dock) sb+='<div class="shift-sub">'+m.dock+'</div>';
+    sb+='</div>';
+    h+=sb;
+  }
   const kp=[];
   if(m.endroit) kp.push('<span class="kpill">&#x1F4CD; '+m.endroit+'</span>');
   if(m.heures) kp.push('<span class="kpill">&#x23F1; '+m.heures+'h</span>');
