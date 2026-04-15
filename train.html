@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -31,78 +30,44 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Mono',monospace;min-h
 .sv.ok{color:var(--ok)}.sv.warn{color:var(--warn)}.sv.ac{color:var(--acc)}.sv.sm{font-size:.65rem}
 .src-bar{padding:6px 14px;border-bottom:1px solid var(--bdr);background:var(--surf2);font-size:.55rem;color:var(--dim);display:flex;align-items:center;gap:6px}
 #src-status{margin-left:auto;font-size:.54rem}
-#src-status.ok{color:var(--ok)} #src-status.warn{color:var(--warn)} #src-status.live{color:var(--acc)}
+#src-status.ok{color:var(--ok)} #src-status.warn{color:var(--warn)}
 #tlist{padding:11px;display:flex;flex-direction:column;gap:7px}
-.foot{padding:8px 13px;border-top:1px solid var(--bdr);font-size:.53rem;color:var(--mut);display:flex;justify-content:space-between;gap:8px}
-.ldot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ok);margin-right:4px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.lp{animation:pulse 1.05s ease-in-out infinite}
-.card{background:var(--surf);border:1px solid var(--bdr);border-left:3px solid var(--mut);transition:border-left-color .3s,opacity .3s}
+.card{background:var(--surf);border:1px solid var(--bdr);border-left:3px solid var(--mut);transition:all .3s}
 .card.on-time{border-left-color:var(--ok)}
 .card.delayed{border-left-color:var(--warn)}
-.card.not-announced,.card.loading{border-left-color:var(--mut)}
-.card.disrupted{border-left-color:var(--warn)}
-.card.check{border-left-color:#a855f7}
+.card.loading{border-left-color:var(--mut)}
 .card.all-done{opacity:.55}
-.chdr{display:flex;align-items:center;gap:7px;padding:10px 12px 9px;cursor:pointer;user-select:none}
-.chdr:hover{background:rgba(255,255,255,.013)}
-.tbadge{font-size:.54rem;font-weight:500;letter-spacing:.07em;padding:3px 6px;border-radius:2px;flex-shrink:0;text-transform:uppercase}
+.chdr{display:flex;align-items:center;gap:7px;padding:10px 12px 9px;cursor:pointer}
+.tbadge{font-size:.54rem;font-weight:500;padding:3px 6px;border-radius:2px;text-transform:uppercase}
 .b-tgv{background:var(--tgv);color:#fff}.b-ter{background:var(--ter);color:#fff}.b-frec{background:var(--frec);color:#fff}
-.tnum{font-size:.64rem;color:var(--dim);flex-shrink:0;min-width:52px}
+.tnum{font-size:.64rem;color:var(--dim);min-width:52px}
 .troute{flex:1;font-size:.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ttimes{display:flex;align-items:center;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
-.tarr{font-size:.82rem;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ttimes{display:flex;align-items:center;gap:5px;justify-content:flex-end}
+.tarr{font-size:.82rem;font-weight:500;font-variant-numeric:tabular-nums}
 .tarr .orig{text-decoration:line-through;color:var(--mut);font-size:.68rem;margin-right:3px}
 .tarr .real{color:var(--warn)}
-.vpill{font-size:.54rem;background:rgba(0,201,167,.11);color:var(--acc);border:1px solid rgba(0,201,167,.24);padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
-.db{font-size:.57rem;font-weight:500;padding:2px 6px;border-radius:2px;white-space:nowrap;flex-shrink:0}
+.vpill{font-size:.54rem;background:rgba(0,201,167,.11);color:var(--acc);border:1px solid rgba(0,201,167,.24);padding:2px 7px;border-radius:10px}
+.db{font-size:.57rem;font-weight:500;padding:2px 6px;border-radius:2px}
 .d-ok{background:rgba(34,197,94,.12);color:var(--ok)}
 .d-warn{background:rgba(239,68,68,.12);color:var(--warn)}
-.d-amber{background:rgba(255,209,102,.1);color:var(--a2)}
-.d-purple{background:rgba(168,85,247,.1);color:#a855f7}
-.d-mut{background:rgba(74,85,104,.17);color:var(--mut);font-style:italic}
-.chev{color:var(--mut);font-size:.54rem;margin-left:2px;transition:transform .2s;flex-shrink:0}
+.d-mut{background:rgba(74,85,104,.17);color:var(--mut)}
+.chev{color:var(--mut);font-size:.54rem;transition:transform .2s}
 .card.expanded .chev{transform:rotate(180deg)}
 .cbody{display:none;border-top:1px solid var(--bdr);background:rgba(0,0,0,.13)}
 .card.expanded .cbody{display:block}
 .bsec{padding:10px 12px;border-bottom:1px solid var(--bdr)}
-.bsec:last-child{border-bottom:none}
-.slbl{font-size:.5rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.slbl{font-size:.5rem;color:var(--dim);text-transform:uppercase;margin-bottom:6px}
 .plist{display:flex;flex-direction:column;gap:5px}
-.pitem{display:flex;align-items:center;gap:8px;padding:2px 0;cursor:pointer;user-select:none}
-.pcb{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1px solid var(--mut);border-radius:2px;flex-shrink:0;cursor:pointer;position:relative;transition:background .14s,border-color .14s;background:transparent}
-.pcb:checked{background:var(--ok);border-color:var(--ok)}
-.pcb:checked::after{content:'';position:absolute;left:3px;top:1px;width:5px;height:8px;border:2px solid #000;border-top:none;border-left:none;transform:rotate(45deg)}
-.plbl{font-size:.7rem;color:var(--txt);flex:1;transition:color .18s}
-.pitem.done .plbl{color:var(--ok);text-decoration:line-through;text-decoration-color:rgba(34,197,94,.38)}
-.ptag{font-size:.5rem;color:var(--ok);opacity:0;transition:opacity .18s}
-.pitem.done .ptag{opacity:1}
+.pitem{display:flex;align-items:center;gap:8px;font-size:.7rem}
+.pitem.done{color:var(--ok);text-decoration:line-through}
+.pcb{width:16px;height:16px}
 .twocol{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.fgrp{display:flex;flex-direction:column;gap:4px}
-.fwrap{display:flex;align-items:center;gap:6px;background:var(--surf2);border:1px solid var(--bdr);padding:5px 8px;transition:border-color .17s}
-.fwrap:focus-within{border-color:var(--acc)}
-.finp{background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:.68rem;color:var(--txt);width:100%;min-width:0}
-.finp::placeholder{color:var(--mut)}
-.finp.track{color:var(--acc);font-weight:500}
-.finp.track::placeholder{color:var(--mut);font-weight:400}
-.wlist{display:flex;flex-direction:column;gap:1px}
-.wrow{display:flex;align-items:center;gap:8px;font-size:.65rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.023)}
-.wrow:last-child{border-bottom:none}
-.wt{color:var(--dim);font-variant-numeric:tabular-nums;min-width:34px;flex-shrink:0}
-.ws{flex:1}
-.ws.dest{color:var(--acc);font-weight:500}
-.wd{font-size:.58rem;flex-shrink:0;width:13px;text-align:center}
-.wd.passed{color:var(--ok)}.wd.next{color:var(--a2)}.wd.upcoming{color:var(--mut)}
-.nota{width:100%;background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'DM Mono',monospace;font-size:.68rem;padding:7px 9px;resize:vertical;min-height:58px;outline:none;transition:border-color .17s;line-height:1.65}
-.nota:focus{border-color:var(--acc)}
-.nota::placeholder{color:var(--mut);font-style:italic}
-.nfoot{display:flex;justify-content:space-between;margin-top:4px}
-.nts{font-size:.52rem;color:var(--mut)}
-.nok{font-size:.52rem;color:var(--ok);opacity:0;transition:opacity .22s}
-.nok.vis{opacity:1}
-.srow{font-size:.61rem;color:var(--dim);padding:7px 12px;border-top:1px solid var(--bdr);line-height:1.55;background:rgba(0,0,0,.1)}
-.srow.warn{color:#f87171}
-@media(max-width:460px){.twocol{grid-template-columns:1fr}.troute{max-width:65px}}
+.fwrap{background:var(--surf2);border:1px solid var(--bdr);padding:5px 8px}
+.finp{background:transparent;border:none;color:var(--txt);font-family:inherit;font-size:.68rem;width:100%}
+.nota{width:100%;background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:inherit;font-size:.68rem;padding:7px;min-height:60px}
+.foot{padding:8px 13px;border-top:1px solid var(--bdr);font-size:.53rem;color:var(--mut);display:flex;justify-content:space-between}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.lp{animation:pulse 1s infinite}
 </style>
 </head>
 <body>
@@ -114,364 +79,189 @@ body{background:var(--bg);color:var(--txt);font-family:'DM Mono',monospace;min-h
   </div>
   <div class="hdr-r">
     <div id="clock">--:--:--</div>
-    <button class="rbtn" id="rbtn" onclick="fetchAll()">Verifier arrivees</button>
+    <button class="rbtn" id="rbtn" onclick="fetchAll()">Verifier</button>
   </div>
 </div>
 
 <div class="sbar">
   <div class="sc"><div class="sl">Trains</div><div class="sv ac">6</div></div>
-  <div class="sc"><div class="sl">A l'heure</div><div class="sv ok" id="sumOk">--</div></div>
-  <div class="sc"><div class="sl">Retardes</div><div class="sv warn" id="sumLate">--</div></div>
-  <div class="sc"><div class="sl">Pax OK</div><div class="sv ok" id="sumPax">0/13</div></div>
+  <div class="sc"><div class="sl">Status</div><div class="sv ok" id="sumStatus">--</div></div>
+  <div class="sc"><div class="sl">Pax</div><div class="sv ok" id="sumPax">0/13</div></div>
   <div class="sc"><div class="sl">MaJ</div><div class="sv sm" id="sumTime">--</div></div>
 </div>
 
 <div class="src-bar">
-  <span>Source: SNCF via Claude</span>
-  <span id="src-status">--</span>
+  <span>Source: SNCF Real-Time</span>
+  <span id="src-status">Prêt</span>
 </div>
 
 <div id="tlist"></div>
 
 <div class="foot">
-  <span><span class="ldot"></span>Auto-refresh 5min</span>
-  <span id="fnote">Chargement...</span>
+  <span>Auto-refresh 5min</span>
+  <span id="fnote">--</span>
 </div>
 
 <script>
-var TRAINS = [
-  { id:"frec-6647",  type:"FRECCIAROSSA", badge:"b-frec", num:"6647",
-    from:"Paris Gare de Lyon", to:"Lyon Part-Dieu", arr:"11:26",
-    pax:["Kevin Sweeney","Sean Sweeney"], co:"Balhi", cars:"",
-    wp:[["10:00","Paris Gare de Lyon","o"],["11:26","Lyon Part-Dieu","d"]] },
-  { id:"ter-17769",  type:"TER", badge:"b-ter", num:"17769",
-    from:"Dijon", to:"Lyon Part-Dieu", arr:"12:44",
-    pax:["Kathryn Liebke","Patrick Liebke"], co:"Balhi / TSF", cars:"",
-    wp:[["07:34","Paris Gare de Lyon","w"],["10:26","Dijon","o"],["11:08","Macon","w"],
-        ["12:09","Villefranche-sur-Saone","w"],["12:20","St-Germain-au-Mont-d'Or","w"],["12:44","Lyon Part-Dieu","d"]] },
-  { id:"tgv-6611",   type:"TGV", badge:"b-tgv", num:"6611",
-    from:"Paris Gare de Lyon", to:"Lyon Part-Dieu", arr:"12:56",
-    pax:["Debra Nash","Larry Nash"], co:"Balhi", cars:"",
-    wp:[["11:00","Paris Gare de Lyon","o"],["12:56","Lyon Part-Dieu","d"]] },
-  { id:"tgv-12179",  type:"TGV", badge:"b-tgv", num:"12179",
-    from:"Mulhouse", to:"Lyon Part-Dieu", arr:"12:59",
-    pax:["Chester Brothers","Patricia Brothers"], co:"Balhi", cars:"",
-    wp:[["--","Mulhouse","o"],["12:59","Lyon Part-Dieu","d"]] },
-  { id:"ter-96562",  type:"TER", badge:"b-ter", num:"96562",
-    from:"Geneve Cornavin", to:"Lyon Part-Dieu", arr:"13:26",
-    pax:["Brian Johnston"], co:"Balhi", cars:"",
-    wp:[["11:28","Geneve Cornavin","o"],["12:01","Bellegarde","w"],["12:26","Culoz","w"],
-        ["12:34","Virieu-le-Grand","w"],["13:01","Amberieu-en-Bugey","w"],["13:26","Lyon Part-Dieu","d"]] },
-  { id:"tgv-6613",   type:"TGV", badge:"b-tgv", num:"6613",
-    from:"Paris Gare de Lyon", to:"Lyon Part-Dieu", arr:"13:56",
-    pax:["Nevia Schroder","Paul Schroder","Timothy Graham","Debra Peters"],
-    co:"Balhi", cars:"2 cars / 2 berlines",
-    wp:[["11:50","Paris Gare de Lyon","o"],["13:12","Le Creusot-Montceau TGV","w"],["13:56","Lyon Part-Dieu","d"]] }
+// --- CONFIG ---
+var STATION_UIC = "stop_area:SNCF:87722025"; // Lyon Part-Dieu
+var TARGET_DATE = "20260416";
+var API_URL = "https://api.sncf.com/v1/coverage/sncf/stop_areas/"+STATION_UIC+"/arrivals?datetime="+TARGET_DATE+"T080000&count=100";
+var LS_KEY = "ss-data-2026-04-16";
+
+var PROXIES = [
+  url => "https://corsproxy.io/?" + encodeURIComponent(url),
+  url => "https://api.allorigins.win/raw?url=" + encodeURIComponent(url),
+  url => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url)
 ];
 
-var TOTAL_PAX = TRAINS.reduce(function(a,t){ return a+t.pax.length; }, 0);
-var LS_KEY = "ss-v6-2026-04-16";
-var APP = (function(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; }catch(e){ return {}; } })();
-var STATUS = {};
+var TRAINS = [
+  { id:"6647",  type:"FRECCIA", badge:"b-frec", num:"6647", from:"Paris GDL", arr:"11:26", pax:["Kevin Sweeney","Sean Sweeney"], co:"Balhi" },
+  { id:"17769", type:"TER", badge:"b-ter", num:"17769", from:"Dijon", arr:"12:44", pax:["Kathryn Liebke","Patrick Liebke"], co:"Balhi/TSF" },
+  { id:"6611",  type:"TGV", badge:"b-tgv", num:"6611", from:"Paris GDL", arr:"12:56", pax:["Debra Nash","Larry Nash"], co:"Balhi" },
+  { id:"12179", type:"TGV", badge:"b-tgv", num:"12179", from:"Mulhouse", arr:"12:59", pax:["Chester Brothers","Patricia Brothers"], co:"Balhi" },
+  { id:"96562", type:"TER", badge:"b-ter", num:"96562", from:"Geneve", arr:"13:26", pax:["Brian Johnston"], co:"Balhi" },
+  { id:"6613",  type:"TGV", badge:"b-tgv", num:"6613", from:"Paris GDL", arr:"13:56", pax:["Nevia Schroder","Paul Schroder","Timothy Graham","Debra Peters"], co:"Balhi" }
+];
 
-function persist(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(APP)); }catch(e){} }
-function tstate(id){
-  if(!APP[id]) APP[id]={pax:{},driver:"",track:"",notes:"",noteTs:""};
-  return APP[id];
-}
+// --- APP STATE ---
+var APP = JSON.parse(localStorage.getItem(LS_KEY)) || {};
+var STATUS_MAP = {}; 
 
-function pad(n){ return String(n).padStart(2,"0"); }
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(APP)); }
+function getT(id){ if(!APP[id]) APP[id]={pax:{},track:"",notes:""}; return APP[id]; }
+
+// --- LOGIC ---
 function tick(){
   var n=new Date();
-  document.getElementById("clock").textContent=pad(n.getHours())+":"+pad(n.getMinutes())+":"+pad(n.getSeconds());
+  document.getElementById("clock").textContent=n.toTimeString().split(' ')[0];
 }
 setInterval(tick,1000); tick();
 
-function updateSummary(){
-  var ok=0,late=0,done=0;
-  TRAINS.forEach(function(t){
-    var s=STATUS[t.id]||{};
-    if(s.state==="on-time") ok++;
-    if(s.state==="delayed") late++;
-    done+=t.pax.filter(function(n){ return tstate(t.id).pax[n]; }).length;
+function buildUI(){
+  var list = document.getElementById("tlist");
+  list.innerHTML = "";
+  var okCount = 0;
+  var totalPaxDone = 0;
+  var totalPax = 0;
+
+  TRAINS.forEach(t => {
+    var state = STATUS_MAP[t.id] || { state: "loading", msg: "En attente..." };
+    var local = getT(t.id);
+    totalPax += t.pax.length;
+    
+    var card = document.createElement("div");
+    card.className = "card " + state.state;
+    if(t.pax.every(p => local.pax[p])) card.classList.add("all-done");
+
+    var paxHtml = t.pax.map(p => {
+      if(local.pax[p]) totalPaxDone++;
+      return `<label class="pitem ${local.pax[p]?'done':''}">
+        <input type="checkbox" class="pcb" ${local.pax[p]?'checked':''} onchange="togglePax('${t.id}','${p}')"> ${p}
+      </label>`;
+    }).join("");
+
+    card.innerHTML = `
+      <div class="chdr" onclick="this.parentElement.classList.toggle('expanded')">
+        <span class="tbadge ${t.badge}">${t.type}</span>
+        <span class="tnum">${t.num}</span>
+        <span class="troute">${t.from}</span>
+        <div class="ttimes">
+          ${local.track ? `<span class="vpill">Voie ${local.track}</span>`:''}
+          <span class="tarr">${state.realArr ? `<span class="orig">${t.arr}</span><span class="real">${state.realArr}</span>` : t.arr}</span>
+          <span class="db ${state.state=='on-time'?'d-ok':(state.state=='delayed'?'d-warn':'d-mut')}">${state.msg}</span>
+        </div>
+        <span class="chev">v</span>
+      </div>
+      <div class="cbody">
+        <div class="bsec"><div class="slbl">Passagers</div><div class="plist">${paxHtml}</div></div>
+        <div class="bsec">
+          <div class="twocol">
+            <div><div class="slbl">Co: ${t.co}</div><div class="fwrap"><input class="finp" placeholder="Chauffeur" value="${local.driver||''}" oninput="updateField('${t.id}','driver',this.value)"></div></div>
+            <div><div class="slbl">Voie</div><div class="fwrap"><input class="finp" placeholder="--" value="${local.track||''}" oninput="updateField('${t.id}','track',this.value)"></div></div>
+          </div>
+        </div>
+        <div class="bsec"><div class="slbl">Notes</div><textarea class="nota" oninput="updateField('${t.id}','notes',this.value)">${local.notes||''}</textarea></div>
+      </div>
+    `;
+    list.appendChild(card);
+    if(state.state === "on-time") okCount++;
   });
-  document.getElementById("sumOk").textContent=ok;
-  document.getElementById("sumLate").textContent=late;
-  document.getElementById("sumPax").textContent=done+"/"+TOTAL_PAX;
-  var any=TRAINS.some(function(t){ return STATUS[t.id]&&STATUS[t.id].state!=="loading"; });
-  if(any){ var n=new Date(); document.getElementById("sumTime").textContent=pad(n.getHours())+":"+pad(n.getMinutes()); }
+
+  document.getElementById("sumStatus").textContent = okCount + "/6";
+  document.getElementById("sumPax").textContent = totalPaxDone + "/" + totalPax;
 }
 
-function makeBadge(s){
-  var span=document.createElement("span");
-  span.className="db";
-  if(!s||s.state==="loading"){ span.classList.add("d-mut","lp"); span.textContent="..."; return span; }
-  if(s.state==="on-time"){        span.classList.add("d-ok");     span.textContent="A l'heure"; return span; }
-  if(s.state==="delayed"){        span.classList.add("d-warn");   span.textContent="+"+(s.delayMinutes||"?")+" min"; return span; }
-  if(s.state==="not-announced"){  span.classList.add("d-mut");    span.textContent="Non annonce"; return span; }
-  if(s.state==="disrupted"){      span.classList.add("d-warn");   span.textContent="Perturbe"; return span; }
-  if(s.state==="check"){          span.classList.add("d-purple"); span.textContent="Verifier"; return span; }
-  span.classList.add("d-mut"); span.textContent="--"; return span;
+function togglePax(tid, name){
+  var t = getT(tid);
+  t.pax[name] = !t.pax[name];
+  save(); buildUI();
 }
 
-function buildCard(train){
-  var s=STATUS[train.id]||{state:"loading"};
-  var st=tstate(train.id);
-  var allDone=train.pax.every(function(n){ return st.pax[n]; });
-  var nowM=(new Date()).getHours()*60+(new Date()).getMinutes();
-
-  var card=document.createElement("div");
-  card.className="card "+(s.state||"loading")+(allDone?" all-done":"");
-  card.id="card-"+train.id;
-
-  // HEADER
-  var hdr=document.createElement("div");
-  hdr.className="chdr";
-  hdr.addEventListener("click",function(){ card.classList.toggle("expanded"); });
-
-  var bdg=document.createElement("span"); bdg.className="tbadge "+train.badge; bdg.textContent=train.type;
-  var num=document.createElement("span"); num.className="tnum"; num.textContent=train.num;
-  var rte=document.createElement("span"); rte.className="troute"; rte.textContent=train.from+" > "+train.to;
-
-  var times=document.createElement("div"); times.className="ttimes";
-  if(st.track){ var pill=document.createElement("span"); pill.className="vpill"; pill.textContent="Voie "+st.track; times.appendChild(pill); }
-
-  var arrEl=document.createElement("span"); arrEl.className="tarr";
-  if(s.state==="delayed"&&s.realArrival){
-    var orig=document.createElement("span"); orig.className="orig"; orig.textContent=train.arr;
-    var real=document.createElement("span"); real.className="real"; real.textContent=s.realArrival;
-    arrEl.appendChild(orig); arrEl.appendChild(real);
-  } else { arrEl.textContent=train.arr; }
-  times.appendChild(arrEl);
-  times.appendChild(makeBadge(s));
-
-  var chev=document.createElement("span"); chev.className="chev"; chev.textContent="v";
-  hdr.appendChild(bdg); hdr.appendChild(num); hdr.appendChild(rte); hdr.appendChild(times); hdr.appendChild(chev);
-  card.appendChild(hdr);
-
-  // BODY
-  var body=document.createElement("div"); body.className="cbody";
-
-  // Pax
-  var ps=document.createElement("div"); ps.className="bsec";
-  var pl=document.createElement("div"); pl.className="slbl"; pl.textContent="Passagers";
-  var plist=document.createElement("div"); plist.className="plist";
-  train.pax.forEach(function(name){
-    var item=document.createElement("label"); item.className="pitem"+(st.pax[name]?" done":"");
-    var cb=document.createElement("input"); cb.type="checkbox"; cb.className="pcb"; cb.checked=!!st.pax[name];
-    cb.addEventListener("change",function(e){
-      e.stopPropagation();
-      tstate(train.id).pax[name]=cb.checked; persist();
-      item.className="pitem"+(cb.checked?" done":"");
-      updateSummary();
-      card.classList.toggle("all-done",train.pax.every(function(n){ return tstate(train.id).pax[n]; }));
-    });
-    var lbl=document.createElement("span"); lbl.className="plbl"; lbl.textContent=name;
-    var tag=document.createElement("span"); tag.className="ptag"; tag.textContent="collecte";
-    item.appendChild(cb); item.appendChild(lbl); item.appendChild(tag); plist.appendChild(item);
-  });
-  ps.appendChild(pl); ps.appendChild(plist); body.appendChild(ps);
-
-  // Driver + track
-  var ds=document.createElement("div"); ds.className="bsec";
-  var tc=document.createElement("div"); tc.className="twocol";
-
-  var dg=document.createElement("div"); dg.className="fgrp";
-  var dl=document.createElement("div"); dl.className="slbl"; dl.textContent="Chauffeur (soc: "+train.co+")";
-  var dw=document.createElement("div"); dw.className="fwrap";
-  var di=document.createElement("input"); di.className="finp"; di.type="text"; di.placeholder=train.co; di.value=st.driver||"";
-  di.addEventListener("click",function(e){ e.stopPropagation(); });
-  di.addEventListener("input",function(){ tstate(train.id).driver=di.value; persist(); });
-  dw.appendChild(di); dg.appendChild(dl); dg.appendChild(dw);
-
-  var tg=document.createElement("div"); tg.className="fgrp";
-  var tl=document.createElement("div"); tl.className="slbl"; tl.textContent="Voie / Quai";
-  var tw=document.createElement("div"); tw.className="fwrap";
-  var ti=document.createElement("input"); ti.className="finp track"; ti.type="text"; ti.placeholder="--"; ti.value=st.track||"";
-  ti.addEventListener("click",function(e){ e.stopPropagation(); });
-  ti.addEventListener("input",function(){
-    var v=ti.value.trim(); tstate(train.id).track=v; persist();
-    var ep=times.querySelector(".vpill");
-    if(v){ if(ep){ ep.textContent="Voie "+v; } else { var np=document.createElement("span"); np.className="vpill"; np.textContent="Voie "+v; times.insertBefore(np,times.firstChild); } }
-    else if(ep){ ep.remove(); }
-  });
-  tw.appendChild(ti); tg.appendChild(tl); tg.appendChild(tw);
-  tc.appendChild(dg); tc.appendChild(tg); ds.appendChild(tc);
-  if(train.cars){ var ce=document.createElement("div"); ce.style.cssText="margin-top:6px;font-size:.62rem;color:var(--a2)"; ce.textContent=train.cars; ds.appendChild(ce); }
-  body.appendChild(ds);
-
-  // Watchpoints
-  var ws=document.createElement("div"); ws.className="bsec";
-  var wl=document.createElement("div"); wl.className="slbl"; wl.textContent="Points de suivi";
-  var wlist=document.createElement("div"); wlist.className="wlist";
-  train.wp.forEach(function(wp){
-    var time=wp[0],stn=wp[1],type=wp[2];
-    var row=document.createElement("div"); row.className="wrow";
-    var wt=document.createElement("span"); wt.className="wt"; wt.textContent=time;
-    var wst=document.createElement("span"); wst.className="ws"+(type==="d"?" dest":""); wst.textContent=stn;
-    var wd=document.createElement("span");
-    var dc="upcoming",dch="o";
-    if(time!=="--"){ var p=time.split(":"); var wm=parseInt(p[0])*60+parseInt(p[1]); if(wm<nowM){dc="passed";dch="v";}else if(type!=="d"&&wm-nowM<25){dc="next";dch=">";} }
-    if(type==="d"){dch=">";dc="upcoming";}
-    wd.className="wd "+dc; wd.textContent=dch;
-    row.appendChild(wt); row.appendChild(wst); row.appendChild(wd); wlist.appendChild(row);
-  });
-  ws.appendChild(wl); ws.appendChild(wlist); body.appendChild(ws);
-
-  // Notes
-  var ns=document.createElement("div"); ns.className="bsec";
-  var nl=document.createElement("div"); nl.className="slbl"; nl.textContent="Notes terrain";
-  var ta=document.createElement("textarea"); ta.className="nota"; ta.placeholder="Infos temps reel, chauffeur, incident..."; ta.value=st.notes||"";
-  ta.addEventListener("click",function(e){ e.stopPropagation(); });
-  var nf=document.createElement("div"); nf.className="nfoot";
-  var nts=document.createElement("span"); nts.className="nts"; nts.textContent=st.noteTs?"Modif: "+st.noteTs:"";
-  var nok=document.createElement("span"); nok.className="nok"; nok.textContent="enregistre";
-  var ntimer=null;
-  ta.addEventListener("input",function(){
-    var s2=tstate(train.id); s2.notes=ta.value;
-    var n=new Date(); s2.noteTs=pad(n.getHours())+":"+pad(n.getMinutes()); persist();
-    nts.textContent="Modif: "+s2.noteTs; nok.classList.add("vis");
-    clearTimeout(ntimer); ntimer=setTimeout(function(){ nok.classList.remove("vis"); },1800);
-  });
-  nf.appendChild(nts); nf.appendChild(nok);
-  ns.appendChild(nl); ns.appendChild(ta); ns.appendChild(nf); body.appendChild(ns);
-
-  // Status message
-  if(s.message){ var sr=document.createElement("div"); sr.className="srow"+(s.warn?" warn":""); sr.textContent=s.message; body.appendChild(sr); }
-
-  card.appendChild(body);
-  return card;
+function updateField(tid, field, val){
+  getT(tid)[field] = val;
+  save();
+  if(field === 'track') buildUI(); // Refresh to show pill
 }
-
-function renderAll(){
-  var list=document.getElementById("tlist");
-  TRAINS.forEach(function(train){
-    var ex=document.getElementById("card-"+train.id);
-    var wasExp=ex&&ex.classList.contains("expanded");
-    var nc=buildCard(train);
-    if(wasExp) nc.classList.add("expanded");
-    if(ex){ list.replaceChild(nc,ex); } else { list.appendChild(nc); }
-  });
-  updateSummary();
-}
-
-// ── CLAUDE FETCH ───────────────────────────────
-// Claude acts as server-side proxy: browser -> Claude API -> SNCF -> back
-// Single call, returns all 6 trains as JSON
-
-async function fetchViaClaude(){
-  var srcEl=document.getElementById("src-status");
-  srcEl.textContent="Recherche..."; srcEl.className="";
-
-  var prompt = "You are a real-time train status assistant. Today is Thursday 16 April 2026.\n\n"
-    + "Use your web_search tool to check the current SNCF real-time status for these 6 trains arriving at Lyon Part-Dieu today:\n"
-    + "1. FRECCIAROSSA 6647 - Paris Gare de Lyon -> Lyon Part-Dieu - scheduled 11:26\n"
-    + "2. TER 17769 - Dijon -> Lyon Part-Dieu - scheduled 12:44\n"
-    + "3. TGV 6611 - Paris Gare de Lyon -> Lyon Part-Dieu - scheduled 12:56\n"
-    + "4. TGV 12179 - Mulhouse -> Lyon Part-Dieu - scheduled 12:59\n"
-    + "5. TER 96562 - Geneve Cornavin -> Lyon Part-Dieu - scheduled 13:26\n"
-    + "6. TGV 6613 - Paris Gare de Lyon -> Lyon Part-Dieu - scheduled 13:56\n\n"
-    + "Search for: SNCF perturbations 16 avril 2026, each train number, and any strikes or disruptions.\n\n"
-    + "Respond ONLY with a valid JSON array, no other text, no markdown:\n"
-    + "[{\"num\":\"6647\",\"state\":\"on-time\",\"delayMinutes\":null,\"realArrival\":null,\"message\":\"...\"},...]\n"
-    + "state must be one of: on-time, delayed, not-announced, disrupted, check\n"
-    + "message should be brief and in French. If no specific info found, use state 'not-announced' with message 'Aucune perturbation detectee'.";
-
-  try{
-    var resp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        messages: [{ role: "user", content: prompt }]
-      })
-    });
-
-    if(!resp.ok) throw new Error("HTTP "+resp.status);
-
-    var data = await resp.json();
-
-    // Extract the text block (after web search tool use)
-    var textBlock = null;
-    for(var i=0; i<data.content.length; i++){
-      if(data.content[i].type==="text"){ textBlock=data.content[i].text; }
-    }
-    if(!textBlock) throw new Error("No text in response");
-
-    // Strip any accidental markdown fences
-    var clean = textBlock.replace(/```json|```/g,"").trim();
-    // Find the JSON array
-    var start = clean.indexOf("[");
-    var end = clean.lastIndexOf("]");
-    if(start===-1||end===-1) throw new Error("No JSON array found");
-    var results = JSON.parse(clean.slice(start, end+1));
-
-    // Apply to STATUS
-    TRAINS.forEach(function(train){
-      var match = null;
-      for(var i=0; i<results.length; i++){
-        if(results[i].num===train.num){ match=results[i]; break; }
-      }
-      if(match){
-        STATUS[train.id] = {
-          state: match.state||"not-announced",
-          delayMinutes: match.delayMinutes||null,
-          realArrival: match.realArrival||null,
-          message: match.message||""
-        };
-      } else {
-        STATUS[train.id] = { state:"not-announced", message:"Aucune donnee retournee." };
-      }
-    });
-
-    srcEl.textContent="OK - SNCF via Claude"; srcEl.className="ok";
-    return true;
-
-  } catch(e){
-    console.error("Claude fetch error:", e);
-    TRAINS.forEach(function(t){
-      STATUS[t.id]={ state:"check", message:"Erreur: "+e.message, warn:true };
-    });
-    srcEl.textContent="Erreur API"; srcEl.className="warn";
-    return false;
-  }
-}
-
-var fetching=false;
-var autoTimer=null;
 
 async function fetchAll(){
-  if(fetching) return;
-  fetching=true;
-  if(autoTimer) clearTimeout(autoTimer);
+  var key = localStorage.getItem("sncf_api_key");
+  if(!key || key.length < 10){
+    key = prompt("Entrez votre clé API SNCF:");
+    if(key) localStorage.setItem("sncf_api_key", key);
+    else return;
+  }
 
-  var btn=document.getElementById("rbtn");
-  btn.disabled=true; btn.textContent="...";
+  var btn = document.getElementById("rbtn");
+  var status = document.getElementById("src-status");
+  btn.disabled = true; status.textContent = "Sync...";
 
-  TRAINS.forEach(function(t){ STATUS[t.id]={state:"loading"}; });
-  renderAll();
+  for(let proxyFn of PROXIES){
+    try {
+      let resp = await fetch(proxyFn(API_URL), { 
+        headers: { "Authorization": "Basic " + btoa(key + ":") },
+        signal: AbortSignal.timeout(15000)
+      });
+      if(!resp.ok) continue;
+      let data = await resp.json();
+      
+      data.arrivals.forEach(arrival => {
+        let trainNum = arrival.display_informations.headsign;
+        let tMatch = TRAINS.find(x => x.num == trainNum);
+        if(tMatch){
+          let sched = arrival.stop_date_time.arrival_date_time;
+          let real = arrival.stop_date_time.base_arrival_date_time;
+          let delay = 0;
+          
+          // Basic delay calc
+          let isDelayed = sched !== real;
+          let realClock = sched.substring(9,11) + ":" + sched.substring(11,13);
 
-  await fetchViaClaude();
-  renderAll();
+          STATUS_MAP[tMatch.id] = {
+            state: isDelayed ? "delayed" : "on-time",
+            msg: isDelayed ? "Retardé" : "A l'heure",
+            realArr: isDelayed ? realClock : null
+          };
+        }
+      });
+      
+      status.textContent = "OK"; status.className = "ok";
+      break; 
+    } catch(e) {
+      status.textContent = "Erreur Proxy..."; status.className = "warn";
+    }
+  }
 
-  btn.disabled=false; btn.textContent="Verifier arrivees";
-  fetching=false;
-
-  var n=new Date();
-  document.getElementById("fnote").textContent="MaJ "+pad(n.getHours())+":"+pad(n.getMinutes())+" - refresh dans 5min";
-  autoTimer=setTimeout(fetchAll,5*60*1000);
+  btn.disabled = false;
+  document.getElementById("sumTime").textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  buildUI();
 }
 
-document.addEventListener("DOMContentLoaded",function(){
-  TRAINS.forEach(function(t){ STATUS[t.id]={state:"loading"}; });
-  renderAll();
-  var first=document.getElementById("card-"+TRAINS[0].id);
-  if(first) first.classList.add("expanded");
+document.addEventListener("DOMContentLoaded", () => {
+  buildUI();
   fetchAll();
+  setInterval(fetchAll, 300000); // Auto 5min
 });
 </script>
-
 </body>
 </html>
