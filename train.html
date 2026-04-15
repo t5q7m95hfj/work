@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lyon Part-Dieu -- Scenic Sapphire 16/04</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="[https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap](https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap)" rel="stylesheet">
 <style>
 :root {
   --bg:#0b0f14; --surface:#131820; --surf2:#0f151c; --border:#1e2730;
@@ -17,121 +16,121 @@
 body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh}
 
 /* HEADER */
-.hdr{padding:18px 18px 14px;border-bottom:1px solid var(–border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.hdr h1{font-family:‘Syne’,sans-serif;font-weight:800;font-size:1rem;letter-spacing:.12em;text-transform:uppercase}
-.hdr .sub{font-size:.63rem;color:var(–dim);margin-top:4px;letter-spacing:.07em}
+.hdr{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.hdr h1{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.12em;text-transform:uppercase}
+.hdr .sub{font-size:.63rem;color:var(--dim);margin-top:4px;letter-spacing:.07em}
 .hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
-.clock{font-size:1.25rem;font-weight:500;color:var(–accent);font-variant-numeric:tabular-nums}
-.rbtn{background:transparent;border:1px solid var(–accent);color:var(–accent);font-family:‘DM Mono’,monospace;font-size:.6rem;letter-spacing:.08em;padding:5px 10px;cursor:pointer;transition:all .18s;text-transform:uppercase}
-.rbtn:hover:not(:disabled){background:var(–accent);color:var(–bg)}
+.clock{font-size:1.25rem;font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
+.rbtn{background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;padding:5px 10px;cursor:pointer;transition:all .18s;text-transform:uppercase}
+.rbtn:hover:not(:disabled){background:var(--accent);color:var(--bg)}
 .rbtn:disabled{opacity:.35;cursor:not-allowed}
 
 /* PROXY STATUS */
-.pbar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(–border);background:var(–surf2);font-size:.6rem;color:var(–dim)}
-.pbar a{color:var(–accent);text-decoration:none}
+.pbar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surf2);font-size:.6rem;color:var(--dim)}
+.pbar a{color:var(--accent);text-decoration:none}
 .pst{margin-left:auto;font-size:.57rem;flex-shrink:0}
-.pst.ok{color:var(–ok)} .pst.warn{color:var(–warn)} .pst.dim{color:var(–muted)}
+.pst.ok{color:var(--ok)} .pst.warn{color:var(--warn)} .pst.dim{color:var(--muted)}
 
 /* SUMMARY */
-.sbar{display:flex;border-bottom:1px solid var(–border);overflow-x:auto}
-.sc{flex:1;min-width:66px;padding:9px 12px;border-right:1px solid var(–border);display:flex;flex-direction:column;gap:2px}
+.sbar{display:flex;border-bottom:1px solid var(--border);overflow-x:auto}
+.sc{flex:1;min-width:66px;padding:9px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px}
 .sc:last-child{border-right:none}
-.sl{font-size:.52rem;color:var(–dim);text-transform:uppercase;letter-spacing:.08em}
+.sl{font-size:.52rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
 .sv{font-size:.92rem;font-weight:500;font-variant-numeric:tabular-nums}
-.sv.ok{color:var(–ok)} .sv.warn{color:var(–warn)} .sv.ac{color:var(–accent)} .sv.sm{font-size:.67rem;color:var(–text)}
+.sv.ok{color:var(--ok)} .sv.warn{color:var(--warn)} .sv.ac{color:var(--accent)} .sv.sm{font-size:.67rem;color:var(--text)}
 
 /* TRAINS */
 .tlist{padding:12px;display:flex;flex-direction:column;gap:8px}
 
-.card{background:var(–surface);border:1px solid var(–border);border-left:3px solid var(–muted);transition:border-left-color .3s,opacity .3s}
-.card.on-time{border-left-color:var(–ok)}
-.card.delayed{border-left-color:var(–warn)}
-.card.not-announced{border-left-color:var(–muted)}
-.card.board-only{border-left-color:var(–a2)}
+.card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--muted);transition:border-left-color .3s,opacity .3s}
+.card.on-time{border-left-color:var(--ok)}
+.card.delayed{border-left-color:var(--warn)}
+.card.not-announced{border-left-color:var(--muted)}
+.card.board-only{border-left-color:var(--a2)}
 .card.check{border-left-color:#a855f7}
-.card.loading{border-left-color:var(–muted)}
-.card.no-key{border-left-color:var(–muted)}
+.card.loading{border-left-color:var(--muted)}
+.card.no-key{border-left-color:var(--muted)}
 .card.all-done{opacity:.55}
 
 .chdr{display:flex;align-items:center;gap:8px;padding:10px 12px 9px;cursor:pointer;user-select:none}
 .chdr:hover{background:rgba(255,255,255,.014)}
 
 .tbadge{font-size:.56rem;font-weight:500;letter-spacing:.07em;padding:3px 6px;border-radius:2px;flex-shrink:0;text-transform:uppercase}
-.b-tgv{background:var(–tgv);color:#fff}
-.b-ter{background:var(–ter);color:#fff}
-.b-frec{background:var(–frec);color:#fff}
+.b-tgv{background:var(--tgv);color:#fff}
+.b-ter{background:var(--ter);color:#fff}
+.b-frec{background:var(--frec);color:#fff}
 
-.tnum{font-size:.66rem;color:var(–dim);flex-shrink:0;min-width:54px}
+.tnum{font-size:.66rem;color:var(--dim);flex-shrink:0;min-width:54px}
 .troute{flex:1;font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ttimes{display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
 .tarr{font-size:.84rem;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
 
-.voie-pill{font-size:.56rem;background:rgba(0,201,167,.11);color:var(–accent);border:1px solid rgba(0,201,167,.25);padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.voie-pill{font-size:.56rem;background:rgba(0,201,167,.11);color:var(--accent);border:1px solid rgba(0,201,167,.25);padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
 
 .db{font-size:.58rem;font-weight:500;padding:2px 6px;border-radius:2px;white-space:nowrap;flex-shrink:0}
-.d-ok{background:rgba(34,197,94,.12);color:var(–ok)}
-.d-warn{background:rgba(239,68,68,.12);color:var(–warn)}
-.d-amber{background:rgba(255,209,102,.1);color:var(–a2)}
+.d-ok{background:rgba(34,197,94,.12);color:var(--ok)}
+.d-warn{background:rgba(239,68,68,.12);color:var(--warn)}
+.d-amber{background:rgba(255,209,102,.1);color:var(--a2)}
 .d-purple{background:rgba(168,85,247,.1);color:#a855f7}
-.d-muted{background:rgba(74,85,104,.18);color:var(–muted);font-style:italic}
+.d-muted{background:rgba(74,85,104,.18);color:var(--muted);font-style:italic}
 
-.chev{color:var(–muted);font-size:.56rem;margin-left:2px;transition:transform .2s;flex-shrink:0}
+.chev{color:var(--muted);font-size:.56rem;margin-left:2px;transition:transform .2s;flex-shrink:0}
 .card.expanded .chev{transform:rotate(180deg)}
 
-.cbody{display:none;border-top:1px solid var(–border);background:rgba(0,0,0,.14)}
+.cbody{display:none;border-top:1px solid var(--border);background:rgba(0,0,0,.14)}
 .card.expanded .cbody{display:block}
 
-.bsec{padding:10px 12px;border-bottom:1px solid var(–border)}
+.bsec{padding:10px 12px;border-bottom:1px solid var(--border)}
 .bsec:last-child{border-bottom:none}
-.slbl{font-size:.52rem;color:var(–dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.slbl{font-size:.52rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
 
 /* PAX */
 .plist{display:flex;flex-direction:column;gap:5px}
 .pitem{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:2px 0}
-.pcb{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1px solid var(–muted);border-radius:2px;flex-shrink:0;cursor:pointer;position:relative;transition:background .14s,border-color .14s;background:transparent}
-.pcb:checked{background:var(–ok);border-color:var(–ok)}
-.pcb:checked::after{content:’’;position:absolute;left:3px;top:1px;width:5px;height:8px;border:2px solid #000;border-top:none;border-left:none;transform:rotate(45deg)}
-.plbl{font-size:.71rem;color:var(–text);transition:color .18s;flex:1}
-.pitem.done .plbl{color:var(–ok);text-decoration:line-through;text-decoration-color:rgba(34,197,94,.4)}
-.ptag{font-size:.51rem;color:var(–ok);opacity:0;transition:opacity .18s}
+.pcb{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1px solid var(--muted);border-radius:2px;flex-shrink:0;cursor:pointer;position:relative;transition:background .14s,border-color .14s;background:transparent}
+.pcb:checked{background:var(--ok);border-color:var(--ok)}
+.pcb:checked::after{content:'';position:absolute;left:3px;top:1px;width:5px;height:8px;border:2px solid #000;border-top:none;border-left:none;transform:rotate(45deg)}
+.plbl{font-size:.71rem;color:var(--text);transition:color .18s;flex:1}
+.pitem.done .plbl{color:var(--ok);text-decoration:line-through;text-decoration-color:rgba(34,197,94,.4)}
+.ptag{font-size:.51rem;color:var(--ok);opacity:0;transition:opacity .18s}
 .pitem.done .ptag{opacity:1}
 
 /* FIELDS */
 .twocol{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .fgrp{display:flex;flex-direction:column;gap:4px}
-.fwrap{display:flex;align-items:center;gap:6px;background:var(–surf2);border:1px solid var(–border);padding:5px 8px;transition:border-color .17s}
-.fwrap:focus-within{border-color:var(–accent)}
-.finp{background:transparent;border:none;outline:none;font-family:‘DM Mono’,monospace;font-size:.69rem;color:var(–text);width:100%;min-width:0}
-.finp::placeholder{color:var(–muted)}
-.finp.track{color:var(–accent);font-weight:500}
-.finp.track::placeholder{color:var(–muted);font-weight:400}
+.fwrap{display:flex;align-items:center;gap:6px;background:var(--surf2);border:1px solid var(--border);padding:5px 8px;transition:border-color .17s}
+.fwrap:focus-within{border-color:var(--accent)}
+.finp{background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:.69rem;color:var(--text);width:100%;min-width:0}
+.finp::placeholder{color:var(--muted)}
+.finp.track{color:var(--accent);font-weight:500}
+.finp.track::placeholder{color:var(--muted);font-weight:400}
 
 /* WATCHPOINTS */
 .wlist{display:flex;flex-direction:column;gap:1px}
 .wrow{display:flex;align-items:center;gap:8px;font-size:.66rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.025)}
 .wrow:last-child{border-bottom:none}
-.wt{color:var(–dim);font-variant-numeric:tabular-nums;min-width:34px;flex-shrink:0}
+.wt{color:var(--dim);font-variant-numeric:tabular-nums;min-width:34px;flex-shrink:0}
 .ws{flex:1}
-.ws.dest{color:var(–accent);font-weight:500}
+.ws.dest{color:var(--accent);font-weight:500}
 .wd{font-size:.59rem;flex-shrink:0;width:13px;text-align:center}
-.wd.passed{color:var(–ok)} .wd.next{color:var(–a2)} .wd.upcoming{color:var(–muted)}
+.wd.passed{color:var(--ok)} .wd.next{color:var(--a2)} .wd.upcoming{color:var(--muted)}
 
 /* NOTES */
-.nota{width:100%;background:var(–surf2);border:1px solid var(–border);color:var(–text);font-family:‘DM Mono’,monospace;font-size:.69rem;padding:7px 9px;resize:vertical;min-height:60px;outline:none;transition:border-color .17s;line-height:1.65}
-.nota:focus{border-color:var(–accent)}
-.nota::placeholder{color:var(–muted);font-style:italic}
+.nota{width:100%;background:var(--surf2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:.69rem;padding:7px 9px;resize:vertical;min-height:60px;outline:none;transition:border-color .17s;line-height:1.65}
+.nota:focus{border-color:var(--accent)}
+.nota::placeholder{color:var(--muted);font-style:italic}
 .nfoot{display:flex;justify-content:space-between;margin-top:4px}
-.nts{font-size:.53rem;color:var(–muted)}
-.nok{font-size:.53rem;color:var(–ok);opacity:0;transition:opacity .22s}
+.nts{font-size:.53rem;color:var(--muted)}
+.nok{font-size:.53rem;color:var(--ok);opacity:0;transition:opacity .22s}
 .nok.vis{opacity:1}
 
 /* STATUS ROW */
-.srow{font-size:.62rem;color:var(–dim);padding:7px 12px;border-top:1px solid var(–border);line-height:1.55;background:rgba(0,0,0,.1)}
+.srow{font-size:.62rem;color:var(--dim);padding:7px 12px;border-top:1px solid var(--border);line-height:1.55;background:rgba(0,0,0,.1)}
 .srow.warn{color:#f87171}
 
 /* FOOTER */
-.foot{padding:8px 13px;border-top:1px solid var(–border);font-size:.55rem;color:var(–muted);display:flex;justify-content:space-between;gap:8px}
-.ldot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(–ok);margin-right:4px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite}
+.foot{padding:8px 13px;border-top:1px solid var(--border);font-size:.55rem;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.ldot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ok);margin-right:4px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.28}}
 .lp{animation:pulse 1.1s ease-in-out infinite}
 
@@ -153,7 +152,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-
 </div>
 
 <div class="pbar">
-  <span>Proxy: <a href="https://corsproxy.io" target="_blank">corsproxy.io</a> &rarr; api.sncf.com</span>
+  <span>Proxy: <a href="[https://corsproxy.io](https://corsproxy.io)" target="_blank">corsproxy.io</a> &rarr; api.sncf.com</span>
   <span class="pst dim" id="pst">--</span>
 </div>
 
@@ -180,11 +179,11 @@ var SNCF_KEY = "3e6bafd5-b181-4de0-a577-f117428c46c5";
 
 // CORS proxies to try in order
 var PROXIES = [
-  function(url){ return "https://corsproxy.io/?" + encodeURIComponent(url); },
-  function(url){ return "https://api.allorigins.win/raw?url=" + encodeURIComponent(url); }
+  function(url){ return "[https://corsproxy.io/](https://corsproxy.io/)?" + encodeURIComponent(url); },
+  function(url){ return "[https://api.allorigins.win/raw?url=](https://api.allorigins.win/raw?url=)" + encodeURIComponent(url); }
 ];
 
-var BOARD_URL = "https://api.sncf.com/v1/coverage/sncf/stop_areas/stop_area:SNCF:87723197/arrivals"
+var BOARD_URL = "[https://api.sncf.com/v1/coverage/sncf/stop_areas/stop_area:SNCF:87723197/arrivals](https://api.sncf.com/v1/coverage/sncf/stop_areas/stop_area:SNCF:87723197/arrivals)"
               + "?from_datetime=20260416T100000&count=100";
 
 // =============================================
@@ -405,8 +404,6 @@ function renderAll(){
           +"<div class='slbl'>Notes terrain</div>"
           +"<textarea class='nota' placeholder='Infos temps reel, chauffeur confirme, incident...'"
             +" oninput=\"sn('"+train.id+"',this.value)\" onclick='event.stopPropagation()'>"+eh(st.notes)+"</textarea>"
-
-```
       +"<div class='nfoot'>"
         +"<span class='nts' id='nts-"+train.id+"'>"+(st.noteTs?"Modif: "+st.noteTs:"")+"</span>"
         +"<span class='nok' id='nok-"+train.id+"'>enregistre</span>"
@@ -415,211 +412,206 @@ function renderAll(){
     +smH
   +"</div>";
 
-if(ex){ex.className=cardCls;ex.innerHTML=html;}
-else{
-  var c=document.createElement("div");
-  c.className=cardCls; c.id="card-"+train.id; c.innerHTML=html;
-  container.appendChild(c);
-}
-```
+    if(ex){ex.className=cardCls;ex.innerHTML=html;}
+    else{
+      var c=document.createElement("div");
+      c.className=cardCls; c.id="card-"+train.id; c.innerHTML=html;
+      container.appendChild(c);
+    }
+  });
 
-});
-
-updateSummary();
+  updateSummary();
 }
 
 // =============================================
 // INTERACTIONS
 // =============================================
-function tog(id){var c=document.getElementById(“card-”+id);if(c)c.classList.toggle(“expanded”);}
+function tog(id){var c=document.getElementById("card-"+id);if(c)c.classList.toggle("expanded");}
 
 function tpax(tid,name,cb){
-event.stopPropagation();
-var st=ts(tid); st.pax[name]=cb.checked; save();
-var lbl=cb.closest(”.pitem”);
-if(lbl)lbl.className=“pitem”+(cb.checked?” done”:””);
-updateSummary();
-var train=TRAINS.find(function(t){return t.id===tid;});
-if(train){
-var ad=train.pax.every(function(n){return ts(tid).pax[n];});
-var card=document.getElementById(“card-”+tid);
-if(card)card.classList.toggle(“all-done”,ad);
-}
+  event.stopPropagation();
+  var st=ts(tid); st.pax[name]=cb.checked; save();
+  var lbl=cb.closest(".pitem");
+  if(lbl)lbl.className="pitem"+(cb.checked?" done":"");
+  updateSummary();
+  var train=TRAINS.find(function(t){return t.id===tid;});
+  if(train){
+    var ad=train.pax.every(function(n){return ts(tid).pax[n];});
+    var card=document.getElementById("card-"+tid);
+    if(card)card.classList.toggle("all-done",ad);
+  }
 }
 
 function sf(id,field,val){ts(id)[field]=val;save();}
 
 var trkT={};
 function str(id,val){
-ts(id).track=val; save();
-clearTimeout(trkT[id]);
-trkT[id]=setTimeout(function(){
-var card=document.getElementById(“card-”+id);
-if(!card)return;
-var pill=card.querySelector(”.voie-pill”);
-var times=card.querySelector(”.ttimes”);
-if(val){
-if(pill){pill.innerHTML=“Voie ”+eh(val);}
-else if(times){var p=document.createElement(“span”);p.className=“voie-pill”;p.innerHTML=“Voie ”+eh(val);times.insertBefore(p,times.firstChild);}
-} else if(pill){pill.remove();}
-},300);
+  ts(id).track=val; save();
+  clearTimeout(trkT[id]);
+  trkT[id]=setTimeout(function(){
+    var card=document.getElementById("card-"+id);
+    if(!card)return;
+    var pill=card.querySelector(".voie-pill");
+    var times=card.querySelector(".ttimes");
+    if(val){
+      if(pill){pill.innerHTML="Voie&nbsp;"+eh(val);}
+      else if(times){var p=document.createElement("span");p.className="voie-pill";p.innerHTML="Voie&nbsp;"+eh(val);times.insertBefore(p,times.firstChild);}
+    } else if(pill){pill.remove();}
+  },300);
 }
 
 var noteT={};
 function sn(id,val){
-var st=ts(id); st.notes=val;
-var n=new Date(); st.noteTs=pd(n.getHours())+”:”+pd(n.getMinutes());
-save();
-var el=document.getElementById(“nts-”+id); if(el)el.textContent=“Modif: “+st.noteTs;
-clearTimeout(noteT[id]);
-var ok=document.getElementById(“nok-”+id);
-if(ok){ok.classList.add(“vis”);noteT[id]=setTimeout(function(){ok.classList.remove(“vis”);},1800);}
+  var st=ts(id); st.notes=val;
+  var n=new Date(); st.noteTs=pd(n.getHours())+":"+pd(n.getMinutes());
+  save();
+  var el=document.getElementById("nts-"+id); if(el)el.textContent="Modif: "+st.noteTs;
+  clearTimeout(noteT[id]);
+  var ok=document.getElementById("nok-"+id);
+  if(ok){ok.classList.add("vis");noteT[id]=setTimeout(function(){ok.classList.remove("vis");},1800);}
 }
 
 // =============================================
-// SNCF FETCH – with CORS proxy fallback chain
+// SNCF FETCH - with CORS proxy fallback chain
 // =============================================
 var workingProxy=null;
 
 async function fetchBoard(){
-var authUrl=BOARD_URL+”&key=”+SNCF_KEY; // try key as param first
-var authHeader=“Basic “+btoa(SNCF_KEY+”:”);
+  var authUrl=BOARD_URL+"&key="+SNCF_KEY; // try key as param first
+  var authHeader="Basic "+btoa(SNCF_KEY+":");
 
-// Build list: try working proxy first, then others
-var proxiesToTry=PROXIES.slice();
-if(workingProxy!==null){
-proxiesToTry=[PROXIES[workingProxy]].concat(PROXIES.filter(function(_,i){return i!==workingProxy;}));
-}
-
-for(var pi=0;pi<proxiesToTry.length;pi++){
-var proxy=proxiesToTry[pi];
-// Try with Authorization header via proxy
-try{
-var proxyUrl=proxy(BOARD_URL);
-var resp=await fetch(proxyUrl,{
-headers:{“Authorization”:authHeader,“x-requested-with”:“XMLHttpRequest”},
-signal:AbortSignal.timeout(10000)
-});
-if(resp.ok){
-var data=await resp.json();
-if(data.arrivals){
-workingProxy=PROXIES.indexOf(proxy);
-document.getElementById(“pst”).textContent=“OK”;
-document.getElementById(“pst”).className=“pst ok”;
-return data.arrivals;
-}
-}
-}catch(e){}
-
-```
-// Also try key as query param (some proxies strip headers)
-try{
-  var proxyUrl2=proxy(BOARD_URL+"&key="+SNCF_KEY);
-  var resp2=await fetch(proxyUrl2,{signal:AbortSignal.timeout(10000)});
-  if(resp2.ok){
-    var data2=await resp2.json();
-    if(data2.arrivals){
-      workingProxy=PROXIES.indexOf(proxy);
-      document.getElementById("pst").textContent="OK (param)";
-      document.getElementById("pst").className="pst ok";
-      return data2.arrivals;
-    }
+  // Build list: try working proxy first, then others
+  var proxiesToTry=PROXIES.slice();
+  if(workingProxy!==null){
+    proxiesToTry=[PROXIES[workingProxy]].concat(PROXIES.filter(function(_,i){return i!==workingProxy;}));
   }
-}catch(e){}
-```
 
-}
+  for(var pi=0;pi<proxiesToTry.length;pi++){
+    var proxy=proxiesToTry[pi];
+    // Try with Authorization header via proxy
+    try{
+      var proxyUrl=proxy(BOARD_URL);
+      var resp=await fetch(proxyUrl,{
+        headers:{"Authorization":authHeader,"x-requested-with":"XMLHttpRequest"},
+        signal:AbortSignal.timeout(10000)
+      });
+      if(resp.ok){
+        var data=await resp.json();
+        if(data.arrivals){
+          workingProxy=PROXIES.indexOf(proxy);
+          document.getElementById("pst").textContent="OK";
+          document.getElementById("pst").className="pst ok";
+          return data.arrivals;
+        }
+      }
+    }catch(e){}
 
-document.getElementById(“pst”).textContent=“Echec proxy”;
-document.getElementById(“pst”).className=“pst warn”;
-return null;
+    // Also try key as query param (some proxies strip headers)
+    try{
+      var proxyUrl2=proxy(BOARD_URL+"&key="+SNCF_KEY);
+      var resp2=await fetch(proxyUrl2,{signal:AbortSignal.timeout(10000)});
+      if(resp2.ok){
+        var data2=await resp2.json();
+        if(data2.arrivals){
+          workingProxy=PROXIES.indexOf(proxy);
+          document.getElementById("pst").textContent="OK (param)";
+          document.getElementById("pst").className="pst ok";
+          return data2.arrivals;
+        }
+      }
+    }catch(e){}
+  }
+
+  document.getElementById("pst").textContent="Echec proxy";
+  document.getElementById("pst").className="pst warn";
+  return null;
 }
 
 function matchTrain(arrivals,num){
-return arrivals.find(function(a){
-var info=a.display_informations||{};
-var h=String(info.headsign||””).trim();
-var t=String(info.trip_short_name||””).trim();
-return h===num||t===num||h.endsWith(num)||t.endsWith(num);
-});
+  return arrivals.find(function(a){
+    var info=a.display_informations||{};
+    var h=String(info.headsign||"").trim();
+    var t=String(info.trip_short_name||"").trim();
+    return h===num||t===num||h.endsWith(num)||t.endsWith(num);
+  });
 }
 
 function parseMatch(match){
-var sdt=match.stop_date_time||{};
-var base=sdt.base_arrival_date_time||””;
-var real=sdt.arrival_date_time||””;
-var fresh=sdt.data_freshness||””;
-if(!base)return{state:“board-only”,message:“Present au tableau, horaire non confirme.”};
-function dtm(dt){return parseInt(dt.slice(9,11))*60+parseInt(dt.slice(11,13));}
-function hm(m){return pd(Math.floor(m/60)%24)+”:”+pd(m%60);}
-var bm=dtm(base),rm=real?dtm(real):bm,diff=rm-bm;
-if(diff<=1)return{state:“on-time”,message:“A l’heure”+(fresh?” [”+fresh+”]”:””)+” – SNCF Navitia”};
-return{state:“delayed”,delayMinutes:diff,realArrival:hm(rm),
-message:“Retard “+diff+” min – Prevue “+hm(rm)+(fresh?” [”+fresh+”]”:””)};
+  var sdt=match.stop_date_time||{};
+  var base=sdt.base_arrival_date_time||"";
+  var real=sdt.arrival_date_time||"";
+  var fresh=sdt.data_freshness||"";
+  if(!base)return{state:"board-only",message:"Present au tableau, horaire non confirme."};
+  function dtm(dt){return parseInt(dt.slice(9,11))*60+parseInt(dt.slice(11,13));}
+  function hm(m){return pd(Math.floor(m/60)%24)+":"+pd(m%60);}
+  var bm=dtm(base),rm=real?dtm(real):bm,diff=rm-bm;
+  if(diff<=1)return{state:"on-time",message:"A l'heure"+(fresh?" ["+fresh+"]":"")+" - SNCF Navitia"};
+  return{state:"delayed",delayMinutes:diff,realArrival:hm(rm),
+  message:"Retard "+diff+" min - Prevue "+hm(rm)+(fresh?" ["+fresh+"]":"")};
 }
 
 var fetching=false;
 var autoT=null;
 
 async function fetchAll(){
-if(fetching)return;
-fetching=true;
-if(autoT)clearTimeout(autoT);
+  if(fetching)return;
+  fetching=true;
+  if(autoT)clearTimeout(autoT);
 
-var btn=document.getElementById(“rbtn”);
-btn.disabled=true; btn.textContent=”…”;
+  var btn=document.getElementById("rbtn");
+  btn.disabled=true; btn.textContent="...";
 
-TRAINS.forEach(function(t){STATUS[t.id]={state:“loading”};});
-renderAll();
+  TRAINS.forEach(function(t){STATUS[t.id]={state:"loading"};});
+  renderAll();
 
-document.getElementById(“pst”).textContent=“Connexion…”;
-document.getElementById(“pst”).className=“pst dim”;
+  document.getElementById("pst").textContent="Connexion...";
+  document.getElementById("pst").className="pst dim";
 
-var arrivals=await fetchBoard();
+  var arrivals=await fetchBoard();
 
-if(!arrivals){
-TRAINS.forEach(function(t){
-STATUS[t.id]={
-state:“check”,
-message:“Proxy CORS indisponible. Verifier l’onglet Reseau (F12) pour details. “
-+“Statut manuel: SNCF.com > ‘Info Trafic’”,
-warn:true
-};
-});
-} else {
-TRAINS.forEach(function(train){
-var m=matchTrain(arrivals,train.num);
-if(!m){
-STATUS[train.id]={
-state:“not-announced”,
-message:“Pas encore annonce (”+arrivals.length+” arrivees visibles). Normal si > 2h avant arrivee.”
-};
-} else {
-STATUS[train.id]=parseMatch(m);
-}
-});
-}
+  if(!arrivals){
+    TRAINS.forEach(function(t){
+      STATUS[t.id]={
+        state:"check",
+        message:"Proxy CORS indisponible. Verifier l'onglet Reseau (F12) pour details. "
+        +"Statut manuel: SNCF.com > 'Info Trafic'",
+        warn:true
+      };
+    });
+  } else {
+    TRAINS.forEach(function(train){
+      var m=matchTrain(arrivals,train.num);
+      if(!m){
+        STATUS[train.id]={
+          state:"not-announced",
+          message:"Pas encore annonce ("+arrivals.length+" arrivees visibles). Normal si > 2h avant arrivee."
+        };
+      } else {
+        STATUS[train.id]=parseMatch(m);
+      }
+    });
+  }
 
-renderAll();
-btn.disabled=false; btn.textContent=“Verifier arrivees”;
-fetching=false;
+  renderAll();
+  btn.disabled=false; btn.textContent="Verifier arrivees";
+  fetching=false;
 
-var n=new Date();
-document.getElementById(“fnote”).textContent=“MaJ “+pd(n.getHours())+”:”+pd(n.getMinutes())+” – prochain refresh 5min”;
-autoT=setTimeout(fetchAll,5*60*1000);
+  var n=new Date();
+  document.getElementById("fnote").textContent="MaJ "+pd(n.getHours())+":"+pd(n.getMinutes())+" - prochain refresh 5min";
+  autoT=setTimeout(fetchAll,5*60*1000);
 }
 
 // =============================================
 // INIT
 // =============================================
-document.addEventListener(“DOMContentLoaded”,function(){
-TRAINS.forEach(function(t){STATUS[t.id]={state:“loading”};});
-renderAll();
-setTimeout(function(){
-var f=document.getElementById(“card-”+TRAINS[0].id);
-if(f)f.classList.add(“expanded”);
-},80);
-fetchAll();
+document.addEventListener("DOMContentLoaded",function(){
+  TRAINS.forEach(function(t){STATUS[t.id]={state:"loading"};});
+  renderAll();
+  setTimeout(function(){
+    var f=document.getElementById("card-"+TRAINS[0].id);
+    if(f)f.classList.add("expanded");
+  },80);
+  fetchAll();
 });
 </script>
 
