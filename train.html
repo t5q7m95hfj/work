@@ -304,7 +304,7 @@ function updateSummary(){
 // =============================================
 function badge(s){
   if(!s||s.state==="loading") return '<span class="db d-muted lp">...</span>';
-  if(s.state==="on-time")       return '<span class="db d-ok">A l\'heure</span>';
+  if(s.state==="on-time")       return "<span class='db d-ok'>A l'heure</span>";
   if(s.state==="delayed")       return '<span class="db d-warn">+'+( s.delayMinutes||"?")+'&nbsp;min</span>';
   if(s.state==="not-announced") return '<span class="db d-muted">Non annonce</span>';
   if(s.state==="board-only")    return '<span class="db d-amber">Tableau seul</span>';
