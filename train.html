@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lyon Part-Dieu -- Scenic Sapphire 16/04</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f14;
+    --surface: #131820;
+    --surface2: #0f151c;
+    --border: #1e2730;
+    --accent: #00c9a7;
+    --accent2: #ffd166;
+    --warn: #ef4444;
+    --ok: #22c55e;
+    --muted: #4a5568;
+    --text: #e2e8f0;
+    --text-dim: #718096;
+    --tgv: #003189;
+    --ter: #e05206;
+    --frecciarossa: #ce1126;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+  }
+
+/* HEADER */
+.header {
+padding: 20px 20px 16px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 12px;
+}
+.header-left h1 {
+font-family: ‘Syne’, sans-serif;
+font-weight: 800;
+font-size: 1rem;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+}
+.header-left .sub {
+font-size: 0.64rem;
+color: var(–text-dim);
+margin-top: 4px;
+letter-spacing: 0.08em;
+}
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.clock {
+font-size: 1.3rem;
+font-weight: 500;
+color: var(–accent);
+font-variant-numeric: tabular-nums;
+}
+
+/* API KEY BAR */
+.key-bar {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 9px 14px;
+border-bottom: 1px solid var(–border);
+background: var(–surface2);
+}
+.key-bar label {
+font-size: 0.58rem;
+color: var(–text-dim);
+letter-spacing: 0.08em;
+text-transform: uppercase;
+white-space: nowrap;
+flex-shrink: 0;
+}
+.key-input {
+flex: 1;
+background: var(–surface);
+border: 1px solid var(–border);
+color: var(–accent);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.66rem;
+padding: 5px 8px;
+outline: none;
+min-width: 0;
+transition: border-color 0.18s;
+}
+.key-input:focus { border-color: var(–accent); }
+.key-input::placeholder { color: var(–muted); font-size: 0.6rem; }
+.key-status {
+font-size: 0.58rem;
+flex-shrink: 0;
+white-space: nowrap;
+}
+.key-status.ok   { color: var(–ok); }
+.key-status.warn { color: var(–warn); }
+.key-status.dim  { color: var(–muted); }
+
+.refresh-btn {
+background: transparent;
+border: 1px solid var(–accent);
+color: var(–accent);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.08em;
+padding: 5px 11px;
+cursor: pointer;
+transition: all 0.18s;
+text-transform: uppercase;
+white-space: nowrap;
+flex-shrink: 0;
+}
+.refresh-btn:hover:not(:disabled) { background: var(–accent); color: var(–bg); }
+.refresh-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* SUMMARY BAR */
+.summary-bar {
+display: flex;
+border-bottom: 1px solid var(–border);
+overflow-x: auto;
+}
+.summary-cell {
+flex: 1;
+min-width: 68px;
+padding: 9px 13px;
+border-right: 1px solid var(–border);
+display: flex; flex-direction: column; gap: 2px;
+}
+.summary-cell:last-child { border-right: none; }
+.s-label { font-size: 0.53rem; color: var(–text-dim); letter-spacing: 0.09em; text-transform: uppercase; }
+.s-value { font-size: 0.95rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.s-value.ok     { color: var(–ok); }
+.s-value.warn   { color: var(–warn); }
+.s-value.accent { color: var(–accent); }
+.s-value.dim    { font-size: 0.68rem; color: var(–text); }
+
+/* TRAINS */
+.trains-list { padding: 13px; display: flex; flex-direction: column; gap: 8px; }
+
+.train-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-left: 3px solid var(–muted);
+transition: border-left-color 0.3s, opacity 0.3s;
+}
+.train-card.on-time      { border-left-color: var(–ok); }
+.train-card.delayed      { border-left-color: var(–warn); }
+.train-card.not-announced { border-left-color: var(–muted); }
+.train-card.board-only   { border-left-color: var(–accent2); }
+.train-card.check        { border-left-color: #a855f7; }
+.train-card.loading      { border-left-color: var(–muted); }
+.train-card.all-collected { opacity: 0.55; }
+
+.train-header {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 10px 13px 9px;
+cursor: pointer;
+user-select: none;
+}
+.train-header:hover { background: rgba(255,255,255,0.015); }
+
+.type-badge {
+font-size: 0.56rem;
+font-weight: 500;
+letter-spacing: 0.07em;
+padding: 3px 6px;
+border-radius: 2px;
+flex-shrink: 0;
+text-transform: uppercase;
+}
+.badge-tgv          { background: var(–tgv); color: #fff; }
+.badge-ter          { background: var(–ter); color: #fff; }
+.badge-frecciarossa { background: var(–frecciarossa); color: #fff; }
+
+.train-num   { font-size: 0.67rem; color: var(–text-dim); flex-shrink: 0; min-width: 56px; }
+.train-route { flex: 1; font-size: 0.71rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.train-times { display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+.sched-time  { font-size: 0.85rem; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.track-pill {
+font-size: 0.57rem;
+background: rgba(0,201,167,0.11);
+color: var(–accent);
+border: 1px solid rgba(0,201,167,0.26);
+padding: 2px 7px;
+border-radius: 10px;
+font-weight: 500;
+white-space: nowrap;
+}
+
+.delay-badge {
+font-size: 0.59rem;
+font-weight: 500;
+padding: 2px 6px;
+border-radius: 2px;
+white-space: nowrap;
+flex-shrink: 0;
+}
+.d-ok       { background: rgba(34,197,94,0.12);  color: var(–ok); }
+.d-warn     { background: rgba(239,68,68,0.12);  color: var(–warn); }
+.d-amber    { background: rgba(255,209,102,0.1); color: var(–accent2); }
+.d-purple   { background: rgba(168,85,247,0.1);  color: #a855f7; }
+.d-muted    { background: rgba(74,85,104,0.2);   color: var(–muted); font-style: italic; }
+
+.chevron { color: var(–muted); font-size: 0.57rem; margin-left: 2px; transition: transform 0.2s; flex-shrink: 0; }
+.train-card.expanded .chevron { transform: rotate(180deg); }
+
+/* BODY */
+.train-body { display: none; border-top: 1px solid var(–border); background: rgba(0,0,0,0.14); }
+.train-card.expanded .train-body { display: block; }
+
+.body-section { padding: 11px 13px; border-bottom: 1px solid var(–border); }
+.body-section:last-child { border-bottom: none; }
+.sec-label {
+font-size: 0.53rem;
+color: var(–text-dim);
+letter-spacing: 0.09em;
+text-transform: uppercase;
+margin-bottom: 7px;
+}
+
+/* PAX */
+.pax-list { display: flex; flex-direction: column; gap: 6px; }
+.pax-item { display: flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; padding: 2px 0; }
+.pax-cb {
+appearance: none;
+-webkit-appearance: none;
+width: 15px; height: 15px;
+border: 1px solid var(–muted);
+border-radius: 2px;
+flex-shrink: 0;
+cursor: pointer;
+position: relative;
+transition: background 0.14s, border-color 0.14s;
+background: transparent;
+}
+.pax-cb:checked { background: var(–ok); border-color: var(–ok); }
+.pax-cb:checked::after {
+content: ‘’;
+position: absolute;
+left: 3px; top: 1px;
+width: 5px; height: 8px;
+border: 2px solid #000;
+border-top: none; border-left: none;
+transform: rotate(45deg);
+}
+.pax-label { font-size: 0.72rem; color: var(–text); transition: color 0.18s; flex: 1; }
+.pax-item.done .pax-label { color: var(–ok); text-decoration: line-through; text-decoration-color: rgba(34,197,94,0.4); }
+.pax-tag { font-size: 0.52rem; color: var(–ok); opacity: 0; transition: opacity 0.18s; letter-spacing: 0.05em; }
+.pax-item.done .pax-tag { opacity: 1; }
+
+/* FIELDS */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-wrap {
+display: flex; align-items: center; gap: 6px;
+background: var(–surface2);
+border: 1px solid var(–border);
+padding: 6px 8px;
+transition: border-color 0.17s;
+}
+.field-wrap:focus-within { border-color: var(–accent); }
+.fi { font-size: 0.68rem; flex-shrink: 0; }
+.fi-input {
+background: transparent; border: none; outline: none;
+font-family: ‘DM Mono’, monospace;
+font-size: 0.7rem; color: var(–text); width: 100%; min-width: 0;
+}
+.fi-input::placeholder { color: var(–muted); }
+.fi-input.track { color: var(–accent); font-weight: 500; }
+.fi-input.track::placeholder { color: var(–muted); font-weight: 400; }
+
+/* WATCHPOINTS */
+.wp-list { display: flex; flex-direction: column; gap: 1px; }
+.wp-row { display: flex; align-items: center; gap: 9px; font-size: 0.67rem; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.025); }
+.wp-row:last-child { border-bottom: none; }
+.wp-t { color: var(–text-dim); font-variant-numeric: tabular-nums; min-width: 34px; flex-shrink: 0; }
+.wp-s { flex: 1; }
+.wp-s.dest { color: var(–accent); font-weight: 500; }
+.wp-d { font-size: 0.6rem; flex-shrink: 0; width: 14px; text-align: center; }
+.wp-d.passed   { color: var(–ok); }
+.wp-d.next     { color: var(–accent2); }
+.wp-d.upcoming { color: var(–muted); }
+
+/* NOTES */
+.notes-ta {
+width: 100%;
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–text);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.7rem;
+padding: 8px 10px;
+resize: vertical;
+min-height: 62px;
+outline: none;
+transition: border-color 0.17s;
+line-height: 1.65;
+}
+.notes-ta:focus { border-color: var(–accent); }
+.notes-ta::placeholder { color: var(–muted); font-style: italic; }
+.notes-foot { display: flex; justify-content: space-between; margin-top: 5px; }
+.notes-ts { font-size: 0.54rem; color: var(–muted); }
+.notes-ok { font-size: 0.54rem; color: var(–ok); opacity: 0; transition: opacity 0.22s; }
+.notes-ok.vis { opacity: 1; }
+
+/* STATUS */
+.status-row {
+font-size: 0.63rem; color: var(–text-dim);
+padding: 7px 13px;
+border-top: 1px solid var(–border);
+line-height: 1.55;
+background: rgba(0,0,0,0.1);
+}
+.status-row.warn { color: #f87171; }
+
+/* FOOTER */
+.footer {
+padding: 9px 14px; border-top: 1px solid var(–border);
+font-size: 0.56rem; color: var(–muted);
+display: flex; justify-content: space-between; gap: 8px;
+}
+.live-dot {
+display: inline-block; width: 5px; height: 5px;
+border-radius: 50%; background: var(–ok);
+margin-right: 4px; vertical-align: middle;
+animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.28} }
+.lp { animation: pulse 1.1s ease-in-out infinite; }
+
+@media(max-width:460px) {
+.two-col { grid-template-columns: 1fr; }
+.train-route { max-width: 75px; }
+.key-bar { flex-wrap: wrap; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Scenic Sapphire</h1>
+    <div class="sub">Lyon Part-Dieu &middot; Arrivees &middot; Jeu 16 Avril 2026</div>
+  </div>
+  <div class="header-right">
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</div>
+
+<!-- API KEY INPUT -->
+
+<div class="key-bar">
+  <label>Cle SNCF API</label>
+  <input class="key-input" id="apiKeyInput" type="password"
+    placeholder="Coller votre cle SNCF ici (stockee localement)"
+    oninput="onKeyInput(this.value)">
+  <span class="key-status dim" id="keyStatus">--</span>
+  <button class="refresh-btn" id="refreshBtn" onclick="fetchAllTrains()">Verifier arriv.</button>
+</div>
+
+<div class="summary-bar">
+  <div class="summary-cell">
+    <div class="s-label">Trains</div>
+    <div class="s-value accent">6</div>
+  </div>
+  <div class="summary-cell">
+    <div class="s-label">A l'heure</div>
+    <div class="s-value ok" id="sumOk">--</div>
+  </div>
+  <div class="summary-cell">
+    <div class="s-label">Retardes</div>
+    <div class="s-value warn" id="sumLate">--</div>
+  </div>
+  <div class="summary-cell">
+    <div class="s-label">Pax OK</div>
+    <div class="s-value ok" id="sumPax">0 / 13</div>
+  </div>
+  <div class="summary-cell">
+    <div class="s-label">Tableau MaJ</div>
+    <div class="s-value dim" id="sumTime">--</div>
+  </div>
+</div>
+
+<div class="trains-list" id="trainsList"></div>
+
+<div class="footer">
+  <span><span class="live-dot"></span>Tableau d'arrivees Part-Dieu &middot; refresh auto 5 min</span>
+  <span id="footerNote">Entrer la cle SNCF pour activer</span>
+</div>
+
+<script>
+// ================================================
+// TRAIN DATA
+// ================================================
+const TRAINS = [
+  {
+    id: "frecciarossa-6647",
+    type: "FRECCIAROSSA", badge: "badge-frecciarossa",
+    number: "6647",
+    from: "Paris Gare de Lyon", to: "Lyon Part-Dieu",
+    scheduledArrival: "11:26",
+    pax: ["Kevin Sweeney", "Sean Sweeney"],
+    driverCo: "Balhi",
+    baseNotes: "",
+    watchpoints: [
+      { time: "10:00", stn: "Paris Gare de Lyon", origin: true },
+      { time: "11:26", stn: "Lyon Part-Dieu", dest: true }
+    ]
+  },
+  {
+    id: "ter-17769",
+    type: "TER", badge: "badge-ter",
+    number: "17769",
+    from: "Dijon", to: "Lyon Part-Dieu",
+    scheduledArrival: "12:44",
+    pax: ["Kathryn Liebke", "Patrick Liebke"],
+    driverCo: "Balhi / TSF",
+    baseNotes: "Depart Paris 07:34 > Dijon 10:26",
+    watchpoints: [
+      { time: "07:34", stn: "Paris Gare de Lyon", watch: true },
+      { time: "10:26", stn: "Dijon", origin: true },
+      { time: "11:08", stn: "Macon", watch: true },
+      { time: "12:09", stn: "Villefranche-sur-Saone", watch: true },
+      { time: "12:20", stn: "St-Germain-au-Mont-d'Or", watch: true },
+      { time: "12:44", stn: "Lyon Part-Dieu", dest: true }
+    ]
+  },
+  {
+    id: "tgv-6611",
+    type: "TGV", badge: "badge-tgv",
+    number: "6611",
+    from: "Paris Gare de Lyon", to: "Lyon Part-Dieu",
+    scheduledArrival: "12:56",
+    pax: ["Debra Nash", "Larry Nash"],
+    driverCo: "Balhi",
+    baseNotes: "",
+    watchpoints: [
+      { time: "11:00", stn: "Paris Gare de Lyon", origin: true },
+      { time: "12:56", stn: "Lyon Part-Dieu", dest: true }
+    ]
+  },
+  {
+    id: "tgv-12179",
+    type: "TGV", badge: "badge-tgv",
+    number: "12179",
+    from: "Mulhouse", to: "Lyon Part-Dieu",
+    scheduledArrival: "12:59",
+    pax: ["Chester Brothers", "Patricia Brothers"],
+    driverCo: "Balhi",
+    baseNotes: "Statut officiel uniquement",
+    watchpoints: [
+      { time: "--", stn: "Mulhouse", origin: true },
+      { time: "12:59", stn: "Lyon Part-Dieu", dest: true }
+    ]
+  },
+  {
+    id: "ter-96562",
+    type: "TER", badge: "badge-ter",
+    number: "96562",
+    from: "Geneve Cornavin", to: "Lyon Part-Dieu",
+    scheduledArrival: "13:26",
+    pax: ["Brian Johnston"],
+    driverCo: "Balhi",
+    baseNotes: "International Geneve-Lyon",
+    watchpoints: [
+      { time: "11:28", stn: "Geneve Cornavin", origin: true },
+      { time: "12:01", stn: "Bellegarde", watch: true },
+      { time: "12:26", stn: "Culoz", watch: true },
+      { time: "12:34", stn: "Virieu-le-Grand", watch: true },
+      { time: "13:01", stn: "Amberieu-en-Bugey", watch: true },
+      { time: "13:26", stn: "Lyon Part-Dieu", dest: true }
+    ]
+  },
+  {
+    id: "tgv-6613",
+    type: "TGV", badge: "badge-tgv",
+    number: "6613",
+    from: "Paris Gare de Lyon", to: "Lyon Part-Dieu",
+    scheduledArrival: "13:56",
+    pax: ["Nevia Schroder", "Paul Schroder", "Timothy Graham", "Debra Peters"],
+    driverCo: "Balhi",
+    cars: "2 cars / 2 berlines",
+    baseNotes: "2 voitures -- 2 berlines",
+    watchpoints: [
+      { time: "11:50", stn: "Paris Gare de Lyon", origin: true },
+      { time: "13:12", stn: "Le Creusot-Montceau TGV", watch: true },
+      { time: "13:56", stn: "Lyon Part-Dieu", dest: true }
+    ]
+  }
+];
+
+const TOTAL_PAX = TRAINS.reduce((a, t) => a + t.pax.length, 0);
+
+// ================================================
+// PERSISTENT STATE
+// ================================================
+const LS_DATA  = "ss-trains-2026-04-16-v3";
+const LS_KEY   = "ss-sncf-api-key";
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(LS_DATA)) || {}; } catch { return {}; }
+}
+function persist() {
+  try { localStorage.setItem(LS_DATA, JSON.stringify(appState)); } catch {}
+}
+
+let appState = loadState();
+let apiKey   = localStorage.getItem(LS_KEY) || "";
+
+function trainState(id) {
+  if (!appState[id]) appState[id] = { pax: {}, driver: "", track: "", notes: "", noteTs: "" };
+  return appState[id];
+}
+
+// ================================================
+// CLOCK
+// ================================================
+function pad(n) { return String(n).padStart(2, "0"); }
+function tick() {
+  const n = new Date();
+  document.getElementById("clock").textContent =
+    pad(n.getHours()) + ":" + pad(n.getMinutes()) + ":" + pad(n.getSeconds());
+}
+setInterval(tick, 1000);
+tick();
+
+// ================================================
+// API KEY HANDLING
+// ================================================
+function onKeyInput(val) {
+  apiKey = val.trim();
+  try { localStorage.setItem(LS_KEY, apiKey); } catch {}
+  updateKeyStatus();
+}
+
+function updateKeyStatus() {
+  const el = document.getElementById("keyStatus");
+  if (!el) return;
+  if (!apiKey) {
+    el.textContent = "aucune cle";
+    el.className = "key-status dim";
+  } else if (apiKey.length === 36) {
+    el.textContent = "cle chargee";
+    el.className = "key-status ok";
+  } else {
+    el.textContent = "format invalide?";
+    el.className = "key-status warn";
+  }
+}
+
+// Pre-fill key from localStorage on load
+document.addEventListener("DOMContentLoaded", () => {
+  const inp = document.getElementById("apiKeyInput");
+  if (inp && apiKey) inp.value = apiKey;
+  updateKeyStatus();
+});
+
+// ================================================
+// LIVE STATUS STORE
+// ================================================
+const liveStatus = {};
+
+// ================================================
+// STATUS BADGE HELPER
+// ================================================
+// States: loading | on-time | delayed | not-announced | board-only | check | no-key
+function badgeHtml(status) {
+  if (!status || status.state === "loading") {
+    return '<span class="delay-badge d-muted lp">...</span>';
+  }
+  switch (status.state) {
+    case "on-time":
+      return '<span class="delay-badge d-ok">A l\'heure</span>';
+    case "delayed":
+      return '<span class="delay-badge d-warn">+' + (status.delayMinutes || "?") + ' min</span>';
+    case "not-announced":
+      return '<span class="delay-badge d-muted">Non annonce</span>';
+    case "board-only":
+      return '<span class="delay-badge d-amber">Tableau seul</span>';
+    case "check":
+      return '<span class="delay-badge d-purple">Verifier</span>';
+    case "no-key":
+      return '<span class="delay-badge d-muted">Cle requise</span>';
+    default:
+      return '<span class="delay-badge d-muted">' + (status.state || "--") + "</span>";
+  }
+}
+
+// ================================================
+// SUMMARY
+// ================================================
+function updateSummary() {
+  let ok = 0, late = 0, paxDone = 0;
+  TRAINS.forEach(t => {
+    const s = liveStatus[t.id] || {};
+    if (s.state === "on-time") ok++;
+    if (s.state === "delayed") late++;
+    paxDone += t.pax.filter(n => trainState(t.id).pax[n]).length;
+  });
+  document.getElementById("sumOk").textContent   = ok;
+  document.getElementById("sumLate").textContent = late;
+  document.getElementById("sumPax").textContent  = paxDone + " / " + TOTAL_PAX;
+  const checked = TRAINS.filter(t => liveStatus[t.id] && liveStatus[t.id].state !== "loading").length;
+  if (checked > 0) {
+    const n = new Date();
+    document.getElementById("sumTime").textContent = pad(n.getHours()) + ":" + pad(n.getMinutes());
+  }
+}
+
+// ================================================
+// RENDER
+// ================================================
+function renderAll() {
+  const container = document.getElementById("trainsList");
+
+  TRAINS.forEach(train => {
+    const existing   = document.getElementById("card-" + train.id);
+    const wasExpanded = existing && existing.classList.contains("expanded");
+    const status     = liveStatus[train.id] || { state: "loading" };
+    const state      = trainState(train.id);
+    const allDone    = train.pax.every(n => state.pax[n]);
+
+    // Arrival display
+    let arrHtml = train.scheduledArrival;
+    if (status.state === "delayed" && status.realArrival) {
+      arrHtml = "<span style='text-decoration:line-through;color:var(--muted);font-size:0.68rem'>"
+              + train.scheduledArrival
+              + "</span>&nbsp;<span style='color:var(--warn)'>"
+              + status.realArrival + "</span>";
+    }
+
+    // Track pill
+    const trackPill = state.track
+      ? "<span class='track-pill'>Voie&nbsp;" + escH(state.track) + "</span>"
+      : "";
+
+    // Pax rows
+    const paxRows = train.pax.map(name => {
+      const done = !!state.pax[name];
+      return "<label class='pax-item" + (done ? " done" : "") + "'>"
+        + "<input type='checkbox' class='pax-cb'" + (done ? " checked" : "")
+        + " onchange=\"togglePax('" + train.id + "','" + escJ(name) + "',this)\">"
+        + "<span class='pax-label'>" + escH(name) + "</span>"
+        + "<span class='pax-tag'>collecte</span>"
+        + "</label>";
+    }).join("");
+
+    // Watchpoints
+    const nowM = new Date().getHours() * 60 + new Date().getMinutes();
+    const wpRows = train.watchpoints.map(wp => {
+      let dotCls = "upcoming", dotCh = "o";
+      if (wp.time !== "--") {
+        const parts = wp.time.split(":");
+        const wm = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        if (wm < nowM) { dotCls = "passed"; dotCh = "v"; }
+        else if (!wp.dest && wm - nowM < 25) { dotCls = "next"; dotCh = ">"; }
+      }
+      if (wp.dest) { dotCls = "upcoming"; dotCh = ">"; }
+      return "<div class='wp-row'>"
+        + "<span class='wp-t'>" + wp.time + "</span>"
+        + "<span class='wp-s" + (wp.dest ? " dest" : "") + "'>" + escH(wp.stn) + "</span>"
+        + "<span class='wp-d " + dotCls + "'>" + dotCh + "</span>"
+        + "</div>";
+    }).join("");
+
+    // Status note
+    const statusHtml = status.message
+      ? "<div class='status-row" + (status.warn ? " warn" : "") + "'>" + escH(status.message) + "</div>"
+      : "";
+
+    // Card state class
+    const cardStateCls = allDone ? " all-collected" : "";
+    const expandCls = wasExpanded ? " expanded" : "";
+
+    const html =
+      "<div class='train-header' onclick=\"toggleCard('" + train.id + "')\">"
+        + "<span class='type-badge " + train.badge + "'>" + train.type + "</span>"
+        + "<span class='train-num'>" + train.number + "</span>"
+        + "<span class='train-route'>" + escH(train.from) + " > " + escH(train.to) + "</span>"
+        + "<div class='train-times'>"
+          + trackPill
+          + "<span class='sched-time'>" + arrHtml + "</span>"
+          + badgeHtml(status)
+        + "</div>"
+        + "<span class='chevron'>v</span>"
+      + "</div>"
+      + "<div class='train-body'>"
+
+        // PAX
+        + "<div class='body-section'>"
+          + "<div class='sec-label'>Passagers</div>"
+          + "<div class='pax-list'>" + paxRows + "</div>"
+        + "</div>"
+
+        // DRIVER + TRACK
+        + "<div class='body-section'>"
+          + "<div class='two-col'>"
+            + "<div class='field-group'>"
+              + "<div class='sec-label'>Chauffeur &middot; soc: " + escH(train.driverCo) + "</div>"
+              + "<div class='field-wrap'>"
+                + "<span class='fi'>&#x1F697;</span>"
+                + "<input class='fi-input' type='text'"
+                  + " placeholder='" + escH(train.driverCo) + "'"
+                  + " value='" + escA(state.driver) + "'"
+                  + " oninput=\"saveField('" + train.id + "','driver',this.value)\""
+                  + " onclick='event.stopPropagation()'>"
+              + "</div>"
+            + "</div>"
+            + "<div class='field-group'>"
+              + "<div class='sec-label'>Voie / Quai</div>"
+              + "<div class='field-wrap'>"
+                + "<span class='fi'>&#x1F6E4;</span>"
+                + "<input class='fi-input track' type='text'"
+                  + " placeholder='--'"
+                  + " value='" + escA(state.track) + "'"
+                  + " oninput=\"saveTrack('" + train.id + "',this.value)\""
+                  + " onclick='event.stopPropagation()'>"
+              + "</div>"
+            + "</div>"
+          + "</div>"
+          + (train.cars ? "<div style='margin-top:7px;font-size:0.64rem;color:var(--accent2)'>" + escH(train.cars) + "</div>" : "")
+        + "</div>"
+
+        // WATCHPOINTS
+        + "<div class='body-section'>"
+          + "<div class='sec-label'>Points de suivi</div>"
+          + "<div class='wp-list'>" + wpRows + "</div>"
+        + "</div>"
+
+        // NOTES
+        + "<div class='body-section'>"
+          + "<div class='sec-label'>Notes terrain</div>"
+          + "<textarea class='notes-ta'"
+            + " placeholder='Infos temps reel, changements, incidents...'"
+            + " oninput=\"saveNotes('" + train.id + "',this.value)\""
+            + " onclick='event.stopPropagation()'>" + escH(state.notes) + "</textarea>"
+
+```
+      + "<div class='notes-foot'>"
+        + "<span class='notes-ts' id='nts-" + train.id + "'>"
+          + (state.noteTs ? "Modif: " + state.noteTs : "") + "</span>"
+        + "<span class='notes-ok' id='nok-" + train.id + "'>enregistre</span>"
+      + "</div>"
+    + "</div>"
+
+    + statusHtml
+  + "</div>";
+
+if (existing) {
+  existing.className = "train-card " + status.state + cardStateCls + expandCls;
+  existing.innerHTML = html;
+} else {
+  const card = document.createElement("div");
+  card.className = "train-card " + (status.state || "loading") + cardStateCls;
+  card.id = "card-" + train.id;
+  card.innerHTML = html;
+  container.appendChild(card);
+}
+```
+
+});
+
+updateSummary();
+}
+
+// ================================================
+// INTERACTIONS
+// ================================================
+function toggleCard(id) {
+const c = document.getElementById(“card-” + id);
+if (c) c.classList.toggle(“expanded”);
+}
+
+function togglePax(trainId, name, cb) {
+event.stopPropagation();
+const state = trainState(trainId);
+state.pax[name] = cb.checked;
+persist();
+const label = cb.closest(”.pax-item”);
+if (label) label.className = “pax-item” + (cb.checked ? “ done” : “”);
+updateSummary();
+const train = TRAINS.find(t => t.id === trainId);
+if (train) {
+const allDone = train.pax.every(n => trainState(trainId).pax[n]);
+const card = document.getElementById(“card-” + trainId);
+if (card) card.classList.toggle(“all-collected”, allDone);
+}
+}
+
+function saveField(id, field, val) {
+trainState(id)[field] = val;
+persist();
+}
+
+const trackTimer = {};
+function saveTrack(id, val) {
+trainState(id).track = val;
+persist();
+clearTimeout(trackTimer[id]);
+trackTimer[id] = setTimeout(() => {
+const card = document.getElementById(“card-” + id);
+if (!card) return;
+let pill = card.querySelector(”.track-pill”);
+const times = card.querySelector(”.train-times”);
+if (val) {
+if (pill) { pill.innerHTML = “Voie ” + escH(val); }
+else if (times) {
+const p = document.createElement(“span”);
+p.className = “track-pill”;
+p.innerHTML = “Voie ” + escH(val);
+times.insertBefore(p, times.firstChild);
+}
+} else if (pill) { pill.remove(); }
+}, 300);
+}
+
+const noteTimer = {};
+function saveNotes(id, val) {
+const state = trainState(id);
+state.notes = val;
+const n = new Date();
+state.noteTs = pad(n.getHours()) + “:” + pad(n.getMinutes());
+persist();
+const tsEl = document.getElementById(“nts-” + id);
+if (tsEl) tsEl.textContent = “Modif: “ + state.noteTs;
+clearTimeout(noteTimer[id]);
+const okEl = document.getElementById(“nok-” + id);
+if (okEl) {
+okEl.classList.add(“vis”);
+noteTimer[id] = setTimeout(() => okEl.classList.remove(“vis”), 1800);
+}
+}
+
+function escH(s) {
+return String(s || “”)
+.replace(/&/g, “&”)
+.replace(/</g, “<”)
+.replace(/>/g, “>”)
+.replace(/”/g, “"”);
+}
+function escA(s) { // for attribute single-quote context
+return String(s || “”).replace(/’/g, “'”).replace(/”/g, “"”);
+}
+function escJ(s) { return String(s || “”).replace(/\/g, “\\”).replace(/’/g, “\’”); }
+
+// ================================================
+// SNCF API FETCH
+// ================================================
+async function fetchStatus(train) {
+if (!apiKey) {
+return { state: “no-key”, message: “Entrer la cle SNCF pour verifier le statut.” };
+}
+
+// Query Lyon Part-Dieu arrivals board from 10:00
+// Using count=100 to get all arrivals through the afternoon
+const url = “https://api.sncf.com/v1/coverage/sncf/stop_areas/stop_area:SNCF:87723197/arrivals”
++ “?from_datetime=20260416T100000&count=100”;
+
+let arrivals = null;
+try {
+const authHeader = “Basic “ + btoa(apiKey + “:”);
+const resp = await fetch(url, {
+headers: { “Authorization”: authHeader },
+signal: AbortSignal.timeout(10000)
+});
+
+```
+if (resp.status === 401) {
+  updateKeyStatus();
+  document.getElementById("keyStatus").textContent = "cle invalide";
+  document.getElementById("keyStatus").className = "key-status warn";
+  return { state: "check", message: "Cle SNCF rejetee (401). Verifier la cle.", warn: true };
+}
+
+if (resp.status === 403) {
+  return { state: "check", message: "Acces refuse (403). Probable restriction CORS -- voir note ci-dessous.", warn: true };
+}
+
+if (!resp.ok) {
+  return { state: "check", message: "Erreur API SNCF: HTTP " + resp.status, warn: true };
+}
+
+const data = await resp.json();
+arrivals = data.arrivals || [];
+```
+
+} catch (err) {
+const isCors = err instanceof TypeError && err.message.includes(“fetch”);
+if (isCors) {
+return {
+state: “check”,
+message: “Echec CORS: le navigateur bloque la requete vers api.sncf.com depuis un fichier local. “
++ “Solution: ouvrir ce fichier via un serveur local (python3 -m http.server).”,
+warn: true
+};
+}
+return { state: “check”, message: “Erreur reseau: “ + (err.message || err), warn: true };
+}
+
+// — Match train by number —
+const num = train.number.toString().trim();
+const match = arrivals.find(a => {
+const info = a.display_informations || {};
+const h = String(info.headsign || “”).trim();
+const t = String(info.trip_short_name || “”).trim();
+return h === num || t === num || h.endsWith(num) || t.endsWith(num);
+});
+
+if (!match && arrivals.length > 0) {
+// Board returned results but our train isn’t on it yet
+return {
+state: “not-announced”,
+message: “Tableau charge (” + arrivals.length + “ arrivees) – train “ + num + “ pas encore annonce. Normal si > 2h avant arrivee.”
+};
+}
+
+if (!match) {
+return { state: “not-announced”, message: “Aucune arrivee retournee par le tableau Part-Dieu.” };
+}
+
+const sdt  = match.stop_date_time || {};
+const base = sdt.base_arrival_date_time || “”;
+const real = sdt.arrival_date_time     || “”;
+const freshness = sdt.data_freshness   || “”;
+
+if (!base) {
+return { state: “board-only”, message: “Train present au tableau mais sans horaire base.” };
+}
+
+function dtMin(dt) {
+return parseInt(dt.slice(9, 11)) * 60 + parseInt(dt.slice(11, 13));
+}
+function toHM(m) {
+return pad(Math.floor(m / 60) % 24) + “:” + pad(m % 60);
+}
+
+const bMin = dtMin(base);
+const rMin = real ? dtMin(real) : bMin;
+const diff = rMin - bMin;
+
+if (diff <= 1) {
+return {
+state: “on-time”,
+message: “A l’heure” + (freshness ? “ (” + freshness + “)” : “”) + “ – Source: SNCF Navitia”
+};
+} else {
+return {
+state: “delayed”,
+delayMinutes: diff,
+realArrival: toHM(rMin),
+message: “Retard “ + diff + “ min – Arrivee prevue “ + toHM(rMin)
++ (freshness ? “ (” + freshness + “)” : “”)
+};
+}
+}
+
+// ================================================
+// MAIN FETCH LOOP
+// ================================================
+let fetching  = false;
+let autoTimer = null;
+
+async function fetchAllTrains() {
+if (fetching) return;
+fetching = true;
+if (autoTimer) clearTimeout(autoTimer);
+
+const btn = document.getElementById(“refreshBtn”);
+btn.disabled = true;
+btn.textContent = “…”;
+
+TRAINS.forEach(t => { liveStatus[t.id] = { state: “loading” }; });
+renderAll();
+
+// NOTE: All 6 trains share the same arrivals board call.
+// We make ONE API call and match all trains against it to avoid rate-limit issues.
+await fetchAllFromBoard();
+
+btn.disabled   = false;
+btn.textContent = “Verifier arriv.”;
+fetching = false;
+
+const n = new Date();
+document.getElementById(“footerNote”).textContent =
+“MaJ “ + pad(n.getHours()) + “:” + pad(n.getMinutes()) + “ – prochain refresh dans 5 min”;
+
+autoTimer = setTimeout(fetchAllTrains, 5 * 60 * 1000);
+}
+
+async function fetchAllFromBoard() {
+// Single board call, then match each train
+if (!apiKey) {
+TRAINS.forEach(t => { liveStatus[t.id] = { state: “no-key”, message: “Entrer la cle SNCF.” }; });
+renderAll();
+return;
+}
+
+const url = “https://api.sncf.com/v1/coverage/sncf/stop_areas/stop_area:SNCF:87723197/arrivals”
++ “?from_datetime=20260416T100000&count=100”;
+
+let arrivals = null;
+let boardError = null;
+
+try {
+const resp = await fetch(url, {
+headers: { “Authorization”: “Basic “ + btoa(apiKey + “:”) },
+signal: AbortSignal.timeout(12000)
+});
+
+```
+if (resp.status === 401) {
+  boardError = { state: "check", message: "Cle SNCF invalide (401).", warn: true };
+} else if (resp.status === 403) {
+  boardError = {
+    state: "check",
+    message: "CORS bloque (403). Si le fichier est ouvert directement (file://), "
+            + "lancer: python3 -m http.server 8080 puis ouvrir http://localhost:8080/train-tracker.html",
+    warn: true
+  };
+} else if (!resp.ok) {
+  boardError = { state: "check", message: "Erreur HTTP " + resp.status, warn: true };
+} else {
+  const data = await resp.json();
+  arrivals = data.arrivals || [];
+}
+```
+
+} catch (err) {
+boardError = {
+state: “check”,
+message: “Requete bloquee. Verifier: (1) cle valide, (2) fichier servi via http:// pas file://”,
+warn: true
+};
+}
+
+if (boardError) {
+TRAINS.forEach(t => { liveStatus[t.id] = boardError; });
+renderAll();
+return;
+}
+
+// Match each train against the arrivals list
+TRAINS.forEach(train => {
+const num = train.number.toString().trim();
+const match = arrivals.find(a => {
+const info = a.display_informations || {};
+const h = String(info.headsign || “”).trim();
+const t = String(info.trip_short_name || “”).trim();
+return h === num || t === num || h.endsWith(num) || t.endsWith(num);
+});
+
+```
+if (!match) {
+  liveStatus[train.id] = {
+    state: "not-announced",
+    message: "Pas encore annonce au tableau (" + arrivals.length + " arrivees visibles). Normal en debut de journee."
+  };
+  return;
+}
+
+const sdt  = match.stop_date_time || {};
+const base = sdt.base_arrival_date_time || "";
+const real = sdt.arrival_date_time     || "";
+const freshness = sdt.data_freshness   || "";
+
+if (!base) {
+  liveStatus[train.id] = { state: "board-only", message: "Present au tableau, horaire non confirme." };
+  return;
+}
+
+function dtMin(dt) {
+  return parseInt(dt.slice(9, 11)) * 60 + parseInt(dt.slice(11, 13));
+}
+function toHM(m) { return pad(Math.floor(m / 60) % 24) + ":" + pad(m % 60); }
+
+const bMin = dtMin(base);
+const rMin = real ? dtMin(real) : bMin;
+const diff = rMin - bMin;
+
+if (diff <= 1) {
+  liveStatus[train.id] = {
+    state: "on-time",
+    message: "A l'heure" + (freshness ? " [" + freshness + "]" : "") + " -- SNCF Navitia"
+  };
+} else {
+  liveStatus[train.id] = {
+    state: "delayed",
+    delayMinutes: diff,
+    realArrival: toHM(rMin),
+    message: "Retard " + diff + " min -- Prevue " + toHM(rMin) + (freshness ? " [" + freshness + "]" : "")
+  };
+}
+```
+
+});
+
+renderAll();
+}
+
+// ================================================
+// INIT
+// ================================================
+document.addEventListener(“DOMContentLoaded”, () => {
+const inp = document.getElementById(“apiKeyInput”);
+if (inp && apiKey) inp.value = apiKey;
+updateKeyStatus();
+
+TRAINS.forEach(t => { liveStatus[t.id] = { state: “loading” }; });
+renderAll();
+
+// Open first card by default
+setTimeout(() => {
+const first = document.getElementById(“card-” + TRAINS[0].id);
+if (first) first.classList.add(“expanded”);
+}, 80);
+
+// Auto-fetch if key is already stored
+if (apiKey) {
+fetchAllTrains();
+} else {
+TRAINS.forEach(t => { liveStatus[t.id] = { state: “no-key” }; });
+renderAll();
+}
+});
+</script>
+
+</body>
+</html>
