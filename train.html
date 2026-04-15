@@ -1,142 +1,109 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lyon Part-Dieu -- Scenic Sapphire 16/04</title>
-<link href="[https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap](https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap)" rel="stylesheet">
+<title>Scenic Sapphire - Lyon 16/04</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0b0f14; --surface:#131820; --surf2:#0f151c; --border:#1e2730;
-  --accent:#00c9a7; --a2:#ffd166; --warn:#ef4444; --ok:#22c55e;
-  --muted:#4a5568; --text:#e2e8f0; --dim:#718096;
-  --tgv:#003189; --ter:#e05206; --frec:#ce1126;
+:root{
+  --bg:#0b0f14;--surf:#131820;--surf2:#0f151c;--bdr:#1e2730;
+  --acc:#00c9a7;--a2:#ffd166;--warn:#ef4444;--ok:#22c55e;
+  --mut:#4a5568;--txt:#e2e8f0;--dim:#718096;
+  --tgv:#003189;--ter:#e05206;--frec:#ce1126;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh}
-
-/* HEADER */
-.hdr{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.hdr h1{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.12em;text-transform:uppercase}
-.hdr .sub{font-size:.63rem;color:var(--dim);margin-top:4px;letter-spacing:.07em}
+body{background:var(--bg);color:var(--txt);font-family:'DM Mono',monospace;min-height:100vh}
+.hdr{padding:18px 16px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.hdr h1{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.13em;text-transform:uppercase}
+.sub{font-size:.61rem;color:var(--dim);margin-top:4px;letter-spacing:.06em}
 .hdr-r{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
-.clock{font-size:1.25rem;font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
-.rbtn{background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;padding:5px 10px;cursor:pointer;transition:all .18s;text-transform:uppercase}
-.rbtn:hover:not(:disabled){background:var(--accent);color:var(--bg)}
+#clock{font-size:1.2rem;font-weight:500;color:var(--acc);font-variant-numeric:tabular-nums}
+.rbtn{background:transparent;border:1px solid var(--acc);color:var(--acc);font-family:'DM Mono',monospace;font-size:.59rem;letter-spacing:.08em;padding:5px 10px;cursor:pointer;text-transform:uppercase;transition:all .18s}
+.rbtn:hover:not(:disabled){background:var(--acc);color:var(--bg)}
 .rbtn:disabled{opacity:.35;cursor:not-allowed}
-
-/* PROXY STATUS */
-.pbar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surf2);font-size:.6rem;color:var(--dim)}
-.pbar a{color:var(--accent);text-decoration:none}
-.pst{margin-left:auto;font-size:.57rem;flex-shrink:0}
-.pst.ok{color:var(--ok)} .pst.warn{color:var(--warn)} .pst.dim{color:var(--muted)}
-
-/* SUMMARY */
-.sbar{display:flex;border-bottom:1px solid var(--border);overflow-x:auto}
-.sc{flex:1;min-width:66px;padding:9px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px}
+.sbar{display:flex;border-bottom:1px solid var(--bdr);overflow-x:auto}
+.sc{flex:1;min-width:64px;padding:9px 11px;border-right:1px solid var(--bdr);display:flex;flex-direction:column;gap:2px}
 .sc:last-child{border-right:none}
-.sl{font-size:.52rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
-.sv{font-size:.92rem;font-weight:500;font-variant-numeric:tabular-nums}
-.sv.ok{color:var(--ok)} .sv.warn{color:var(--warn)} .sv.ac{color:var(--accent)} .sv.sm{font-size:.67rem;color:var(--text)}
-
-/* TRAINS */
-.tlist{padding:12px;display:flex;flex-direction:column;gap:8px}
-
-.card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--muted);transition:border-left-color .3s,opacity .3s}
+.sl{font-size:.5rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.sv{font-size:.9rem;font-weight:500;font-variant-numeric:tabular-nums}
+.sv.ok{color:var(--ok)}.sv.warn{color:var(--warn)}.sv.ac{color:var(--acc)}.sv.sm{font-size:.65rem}
+.src-bar{padding:6px 14px;border-bottom:1px solid var(--bdr);background:var(--surf2);font-size:.55rem;color:var(--dim);display:flex;align-items:center;gap:6px}
+#src-status{margin-left:auto;font-size:.54rem}
+#src-status.ok{color:var(--ok)} #src-status.warn{color:var(--warn)} #src-status.live{color:var(--acc)}
+#tlist{padding:11px;display:flex;flex-direction:column;gap:7px}
+.foot{padding:8px 13px;border-top:1px solid var(--bdr);font-size:.53rem;color:var(--mut);display:flex;justify-content:space-between;gap:8px}
+.ldot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ok);margin-right:4px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.lp{animation:pulse 1.05s ease-in-out infinite}
+.card{background:var(--surf);border:1px solid var(--bdr);border-left:3px solid var(--mut);transition:border-left-color .3s,opacity .3s}
 .card.on-time{border-left-color:var(--ok)}
 .card.delayed{border-left-color:var(--warn)}
-.card.not-announced{border-left-color:var(--muted)}
-.card.board-only{border-left-color:var(--a2)}
+.card.not-announced,.card.loading{border-left-color:var(--mut)}
+.card.disrupted{border-left-color:var(--warn)}
 .card.check{border-left-color:#a855f7}
-.card.loading{border-left-color:var(--muted)}
-.card.no-key{border-left-color:var(--muted)}
 .card.all-done{opacity:.55}
-
-.chdr{display:flex;align-items:center;gap:8px;padding:10px 12px 9px;cursor:pointer;user-select:none}
-.chdr:hover{background:rgba(255,255,255,.014)}
-
-.tbadge{font-size:.56rem;font-weight:500;letter-spacing:.07em;padding:3px 6px;border-radius:2px;flex-shrink:0;text-transform:uppercase}
-.b-tgv{background:var(--tgv);color:#fff}
-.b-ter{background:var(--ter);color:#fff}
-.b-frec{background:var(--frec);color:#fff}
-
-.tnum{font-size:.66rem;color:var(--dim);flex-shrink:0;min-width:54px}
-.troute{flex:1;font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ttimes{display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
-.tarr{font-size:.84rem;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
-
-.voie-pill{font-size:.56rem;background:rgba(0,201,167,.11);color:var(--accent);border:1px solid rgba(0,201,167,.25);padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
-
-.db{font-size:.58rem;font-weight:500;padding:2px 6px;border-radius:2px;white-space:nowrap;flex-shrink:0}
+.chdr{display:flex;align-items:center;gap:7px;padding:10px 12px 9px;cursor:pointer;user-select:none}
+.chdr:hover{background:rgba(255,255,255,.013)}
+.tbadge{font-size:.54rem;font-weight:500;letter-spacing:.07em;padding:3px 6px;border-radius:2px;flex-shrink:0;text-transform:uppercase}
+.b-tgv{background:var(--tgv);color:#fff}.b-ter{background:var(--ter);color:#fff}.b-frec{background:var(--frec);color:#fff}
+.tnum{font-size:.64rem;color:var(--dim);flex-shrink:0;min-width:52px}
+.troute{flex:1;font-size:.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttimes{display:flex;align-items:center;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.tarr{font-size:.82rem;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tarr .orig{text-decoration:line-through;color:var(--mut);font-size:.68rem;margin-right:3px}
+.tarr .real{color:var(--warn)}
+.vpill{font-size:.54rem;background:rgba(0,201,167,.11);color:var(--acc);border:1px solid rgba(0,201,167,.24);padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.db{font-size:.57rem;font-weight:500;padding:2px 6px;border-radius:2px;white-space:nowrap;flex-shrink:0}
 .d-ok{background:rgba(34,197,94,.12);color:var(--ok)}
 .d-warn{background:rgba(239,68,68,.12);color:var(--warn)}
 .d-amber{background:rgba(255,209,102,.1);color:var(--a2)}
 .d-purple{background:rgba(168,85,247,.1);color:#a855f7}
-.d-muted{background:rgba(74,85,104,.18);color:var(--muted);font-style:italic}
-
-.chev{color:var(--muted);font-size:.56rem;margin-left:2px;transition:transform .2s;flex-shrink:0}
+.d-mut{background:rgba(74,85,104,.17);color:var(--mut);font-style:italic}
+.chev{color:var(--mut);font-size:.54rem;margin-left:2px;transition:transform .2s;flex-shrink:0}
 .card.expanded .chev{transform:rotate(180deg)}
-
-.cbody{display:none;border-top:1px solid var(--border);background:rgba(0,0,0,.14)}
+.cbody{display:none;border-top:1px solid var(--bdr);background:rgba(0,0,0,.13)}
 .card.expanded .cbody{display:block}
-
-.bsec{padding:10px 12px;border-bottom:1px solid var(--border)}
+.bsec{padding:10px 12px;border-bottom:1px solid var(--bdr)}
 .bsec:last-child{border-bottom:none}
-.slbl{font-size:.52rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-
-/* PAX */
+.slbl{font-size:.5rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
 .plist{display:flex;flex-direction:column;gap:5px}
-.pitem{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:2px 0}
-.pcb{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1px solid var(--muted);border-radius:2px;flex-shrink:0;cursor:pointer;position:relative;transition:background .14s,border-color .14s;background:transparent}
+.pitem{display:flex;align-items:center;gap:8px;padding:2px 0;cursor:pointer;user-select:none}
+.pcb{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1px solid var(--mut);border-radius:2px;flex-shrink:0;cursor:pointer;position:relative;transition:background .14s,border-color .14s;background:transparent}
 .pcb:checked{background:var(--ok);border-color:var(--ok)}
 .pcb:checked::after{content:'';position:absolute;left:3px;top:1px;width:5px;height:8px;border:2px solid #000;border-top:none;border-left:none;transform:rotate(45deg)}
-.plbl{font-size:.71rem;color:var(--text);transition:color .18s;flex:1}
-.pitem.done .plbl{color:var(--ok);text-decoration:line-through;text-decoration-color:rgba(34,197,94,.4)}
-.ptag{font-size:.51rem;color:var(--ok);opacity:0;transition:opacity .18s}
+.plbl{font-size:.7rem;color:var(--txt);flex:1;transition:color .18s}
+.pitem.done .plbl{color:var(--ok);text-decoration:line-through;text-decoration-color:rgba(34,197,94,.38)}
+.ptag{font-size:.5rem;color:var(--ok);opacity:0;transition:opacity .18s}
 .pitem.done .ptag{opacity:1}
-
-/* FIELDS */
 .twocol{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .fgrp{display:flex;flex-direction:column;gap:4px}
-.fwrap{display:flex;align-items:center;gap:6px;background:var(--surf2);border:1px solid var(--border);padding:5px 8px;transition:border-color .17s}
-.fwrap:focus-within{border-color:var(--accent)}
-.finp{background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:.69rem;color:var(--text);width:100%;min-width:0}
-.finp::placeholder{color:var(--muted)}
-.finp.track{color:var(--accent);font-weight:500}
-.finp.track::placeholder{color:var(--muted);font-weight:400}
-
-/* WATCHPOINTS */
+.fwrap{display:flex;align-items:center;gap:6px;background:var(--surf2);border:1px solid var(--bdr);padding:5px 8px;transition:border-color .17s}
+.fwrap:focus-within{border-color:var(--acc)}
+.finp{background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:.68rem;color:var(--txt);width:100%;min-width:0}
+.finp::placeholder{color:var(--mut)}
+.finp.track{color:var(--acc);font-weight:500}
+.finp.track::placeholder{color:var(--mut);font-weight:400}
 .wlist{display:flex;flex-direction:column;gap:1px}
-.wrow{display:flex;align-items:center;gap:8px;font-size:.66rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.025)}
+.wrow{display:flex;align-items:center;gap:8px;font-size:.65rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.023)}
 .wrow:last-child{border-bottom:none}
 .wt{color:var(--dim);font-variant-numeric:tabular-nums;min-width:34px;flex-shrink:0}
 .ws{flex:1}
-.ws.dest{color:var(--accent);font-weight:500}
-.wd{font-size:.59rem;flex-shrink:0;width:13px;text-align:center}
-.wd.passed{color:var(--ok)} .wd.next{color:var(--a2)} .wd.upcoming{color:var(--muted)}
-
-/* NOTES */
-.nota{width:100%;background:var(--surf2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:.69rem;padding:7px 9px;resize:vertical;min-height:60px;outline:none;transition:border-color .17s;line-height:1.65}
-.nota:focus{border-color:var(--accent)}
-.nota::placeholder{color:var(--muted);font-style:italic}
+.ws.dest{color:var(--acc);font-weight:500}
+.wd{font-size:.58rem;flex-shrink:0;width:13px;text-align:center}
+.wd.passed{color:var(--ok)}.wd.next{color:var(--a2)}.wd.upcoming{color:var(--mut)}
+.nota{width:100%;background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:'DM Mono',monospace;font-size:.68rem;padding:7px 9px;resize:vertical;min-height:58px;outline:none;transition:border-color .17s;line-height:1.65}
+.nota:focus{border-color:var(--acc)}
+.nota::placeholder{color:var(--mut);font-style:italic}
 .nfoot{display:flex;justify-content:space-between;margin-top:4px}
-.nts{font-size:.53rem;color:var(--muted)}
-.nok{font-size:.53rem;color:var(--ok);opacity:0;transition:opacity .22s}
+.nts{font-size:.52rem;color:var(--mut)}
+.nok{font-size:.52rem;color:var(--ok);opacity:0;transition:opacity .22s}
 .nok.vis{opacity:1}
-
-/* STATUS ROW */
-.srow{font-size:.62rem;color:var(--dim);padding:7px 12px;border-top:1px solid var(--border);line-height:1.55;background:rgba(0,0,0,.1)}
+.srow{font-size:.61rem;color:var(--dim);padding:7px 12px;border-top:1px solid var(--bdr);line-height:1.55;background:rgba(0,0,0,.1)}
 .srow.warn{color:#f87171}
-
-/* FOOTER */
-.foot{padding:8px 13px;border-top:1px solid var(--border);font-size:.55rem;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
-.ldot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ok);margin-right:4px;vertical-align:middle;animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.28}}
-.lp{animation:pulse 1.1s ease-in-out infinite}
-
-@media(max-width:460px){.twocol{grid-template-columns:1fr}.troute{max-width:70px}}
+@media(max-width:460px){.twocol{grid-template-columns:1fr}.troute{max-width:65px}}
 </style>
-
 </head>
 <body>
 
@@ -146,471 +113,362 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-
     <div class="sub">Lyon Part-Dieu &middot; Arrivees &middot; Jeu 16 Avril 2026</div>
   </div>
   <div class="hdr-r">
-    <div class="clock" id="clock">--:--:--</div>
+    <div id="clock">--:--:--</div>
     <button class="rbtn" id="rbtn" onclick="fetchAll()">Verifier arrivees</button>
   </div>
-</div>
-
-<div class="pbar">
-  <span>Proxy: <a href="[https://corsproxy.io](https://corsproxy.io)" target="_blank">corsproxy.io</a> &rarr; api.sncf.com</span>
-  <span class="pst dim" id="pst">--</span>
 </div>
 
 <div class="sbar">
   <div class="sc"><div class="sl">Trains</div><div class="sv ac">6</div></div>
   <div class="sc"><div class="sl">A l'heure</div><div class="sv ok" id="sumOk">--</div></div>
   <div class="sc"><div class="sl">Retardes</div><div class="sv warn" id="sumLate">--</div></div>
-  <div class="sc"><div class="sl">Pax OK</div><div class="sv ok" id="sumPax">0 / 13</div></div>
+  <div class="sc"><div class="sl">Pax OK</div><div class="sv ok" id="sumPax">0/13</div></div>
   <div class="sc"><div class="sl">MaJ</div><div class="sv sm" id="sumTime">--</div></div>
 </div>
 
-<div class="tlist" id="tlist"></div>
+<div class="src-bar">
+  <span>Source: SNCF via Claude</span>
+  <span id="src-status">--</span>
+</div>
+
+<div id="tlist"></div>
 
 <div class="foot">
-  <span><span class="ldot"></span>Tableau Part-Dieu &middot; auto-refresh 5min</span>
+  <span><span class="ldot"></span>Auto-refresh 5min</span>
   <span id="fnote">Chargement...</span>
 </div>
 
 <script>
-// =============================================
-// CONFIG
-// =============================================
-var SNCF_KEY = "3e6bafd5-b181-4de0-a577-f117428c46c5";
-
-// CORS proxies to try in order
-var PROXIES = [
-  function(url){ return "[https://corsproxy.io/](https://corsproxy.io/)?" + encodeURIComponent(url); },
-  function(url){ return "[https://api.allorigins.win/raw?url=](https://api.allorigins.win/raw?url=)" + encodeURIComponent(url); }
-];
-
-var BOARD_URL = "[https://api.sncf.com/v1/coverage/sncf/stop_areas/stop_area:SNCF:87723197/arrivals](https://api.sncf.com/v1/coverage/sncf/stop_areas/stop_area:SNCF:87723197/arrivals)"
-              + "?from_datetime=20260416T100000&count=100";
-
-// =============================================
-// TRAIN DATA
-// =============================================
 var TRAINS = [
-  {
-    id:"frec-6647", type:"FRECCIAROSSA", badge:"b-frec", num:"6647",
+  { id:"frec-6647",  type:"FRECCIAROSSA", badge:"b-frec", num:"6647",
     from:"Paris Gare de Lyon", to:"Lyon Part-Dieu", arr:"11:26",
     pax:["Kevin Sweeney","Sean Sweeney"], co:"Balhi", cars:"",
-    notes:"",
-    wp:[{t:"10:00",s:"Paris Gare de Lyon",o:true},{t:"11:26",s:"Lyon Part-Dieu",d:true}]
-  },
-  {
-    id:"ter-17769", type:"TER", badge:"b-ter", num:"17769",
+    wp:[["10:00","Paris Gare de Lyon","o"],["11:26","Lyon Part-Dieu","d"]] },
+  { id:"ter-17769",  type:"TER", badge:"b-ter", num:"17769",
     from:"Dijon", to:"Lyon Part-Dieu", arr:"12:44",
     pax:["Kathryn Liebke","Patrick Liebke"], co:"Balhi / TSF", cars:"",
-    notes:"Depart Paris 07:34 > Dijon 10:26",
-    wp:[
-      {t:"07:34",s:"Paris Gare de Lyon",w:true},
-      {t:"10:26",s:"Dijon",o:true},
-      {t:"11:08",s:"Macon",w:true},
-      {t:"12:09",s:"Villefranche-sur-Saone",w:true},
-      {t:"12:20",s:"St-Germain-au-Mont-d'Or",w:true},
-      {t:"12:44",s:"Lyon Part-Dieu",d:true}
-    ]
-  },
-  {
-    id:"tgv-6611", type:"TGV", badge:"b-tgv", num:"6611",
+    wp:[["07:34","Paris Gare de Lyon","w"],["10:26","Dijon","o"],["11:08","Macon","w"],
+        ["12:09","Villefranche-sur-Saone","w"],["12:20","St-Germain-au-Mont-d'Or","w"],["12:44","Lyon Part-Dieu","d"]] },
+  { id:"tgv-6611",   type:"TGV", badge:"b-tgv", num:"6611",
     from:"Paris Gare de Lyon", to:"Lyon Part-Dieu", arr:"12:56",
     pax:["Debra Nash","Larry Nash"], co:"Balhi", cars:"",
-    notes:"",
-    wp:[{t:"11:00",s:"Paris Gare de Lyon",o:true},{t:"12:56",s:"Lyon Part-Dieu",d:true}]
-  },
-  {
-    id:"tgv-12179", type:"TGV", badge:"b-tgv", num:"12179",
+    wp:[["11:00","Paris Gare de Lyon","o"],["12:56","Lyon Part-Dieu","d"]] },
+  { id:"tgv-12179",  type:"TGV", badge:"b-tgv", num:"12179",
     from:"Mulhouse", to:"Lyon Part-Dieu", arr:"12:59",
     pax:["Chester Brothers","Patricia Brothers"], co:"Balhi", cars:"",
-    notes:"Statut officiel uniquement",
-    wp:[{t:"--",s:"Mulhouse",o:true},{t:"12:59",s:"Lyon Part-Dieu",d:true}]
-  },
-  {
-    id:"ter-96562", type:"TER", badge:"b-ter", num:"96562",
+    wp:[["--","Mulhouse","o"],["12:59","Lyon Part-Dieu","d"]] },
+  { id:"ter-96562",  type:"TER", badge:"b-ter", num:"96562",
     from:"Geneve Cornavin", to:"Lyon Part-Dieu", arr:"13:26",
     pax:["Brian Johnston"], co:"Balhi", cars:"",
-    notes:"International Geneve-Lyon",
-    wp:[
-      {t:"11:28",s:"Geneve Cornavin",o:true},
-      {t:"12:01",s:"Bellegarde",w:true},
-      {t:"12:26",s:"Culoz",w:true},
-      {t:"12:34",s:"Virieu-le-Grand",w:true},
-      {t:"13:01",s:"Amberieu-en-Bugey",w:true},
-      {t:"13:26",s:"Lyon Part-Dieu",d:true}
-    ]
-  },
-  {
-    id:"tgv-6613", type:"TGV", badge:"b-tgv", num:"6613",
+    wp:[["11:28","Geneve Cornavin","o"],["12:01","Bellegarde","w"],["12:26","Culoz","w"],
+        ["12:34","Virieu-le-Grand","w"],["13:01","Amberieu-en-Bugey","w"],["13:26","Lyon Part-Dieu","d"]] },
+  { id:"tgv-6613",   type:"TGV", badge:"b-tgv", num:"6613",
     from:"Paris Gare de Lyon", to:"Lyon Part-Dieu", arr:"13:56",
     pax:["Nevia Schroder","Paul Schroder","Timothy Graham","Debra Peters"],
     co:"Balhi", cars:"2 cars / 2 berlines",
-    notes:"2 voitures -- 2 berlines",
-    wp:[
-      {t:"11:50",s:"Paris Gare de Lyon",o:true},
-      {t:"13:12",s:"Le Creusot-Montceau TGV",w:true},
-      {t:"13:56",s:"Lyon Part-Dieu",d:true}
-    ]
-  }
+    wp:[["11:50","Paris Gare de Lyon","o"],["13:12","Le Creusot-Montceau TGV","w"],["13:56","Lyon Part-Dieu","d"]] }
 ];
 
-var TOTAL_PAX = TRAINS.reduce(function(a,t){return a+t.pax.length;},0);
-
-// =============================================
-// STATE
-// =============================================
-var LS = "ss-2026-04-16-v4";
-function load(){try{return JSON.parse(localStorage.getItem(LS))||{};}catch(e){return {};}}
-function save(){try{localStorage.setItem(LS,JSON.stringify(APP));}catch(e){}}
-
-var APP = load();
+var TOTAL_PAX = TRAINS.reduce(function(a,t){ return a+t.pax.length; }, 0);
+var LS_KEY = "ss-v6-2026-04-16";
+var APP = (function(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; }catch(e){ return {}; } })();
 var STATUS = {};
 
-function ts(id){
+function persist(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(APP)); }catch(e){} }
+function tstate(id){
   if(!APP[id]) APP[id]={pax:{},driver:"",track:"",notes:"",noteTs:""};
   return APP[id];
 }
 
-// =============================================
-// CLOCK
-// =============================================
-function pd(n){return String(n).padStart(2,"0");}
+function pad(n){ return String(n).padStart(2,"0"); }
 function tick(){
   var n=new Date();
-  document.getElementById("clock").textContent=pd(n.getHours())+":"+pd(n.getMinutes())+":"+pd(n.getSeconds());
+  document.getElementById("clock").textContent=pad(n.getHours())+":"+pad(n.getMinutes())+":"+pad(n.getSeconds());
 }
 setInterval(tick,1000); tick();
 
-// =============================================
-// SUMMARY
-// =============================================
 function updateSummary(){
-  var ok=0,late=0,paxDone=0;
+  var ok=0,late=0,done=0;
   TRAINS.forEach(function(t){
     var s=STATUS[t.id]||{};
     if(s.state==="on-time") ok++;
     if(s.state==="delayed") late++;
-    paxDone+=t.pax.filter(function(n){return ts(t.id).pax[n];}).length;
+    done+=t.pax.filter(function(n){ return tstate(t.id).pax[n]; }).length;
   });
   document.getElementById("sumOk").textContent=ok;
   document.getElementById("sumLate").textContent=late;
-  document.getElementById("sumPax").textContent=paxDone+" / "+TOTAL_PAX;
-  var checked=TRAINS.filter(function(t){return STATUS[t.id]&&STATUS[t.id].state!=="loading";}).length;
-  if(checked>0){var n=new Date();document.getElementById("sumTime").textContent=pd(n.getHours())+":"+pd(n.getMinutes());}
+  document.getElementById("sumPax").textContent=done+"/"+TOTAL_PAX;
+  var any=TRAINS.some(function(t){ return STATUS[t.id]&&STATUS[t.id].state!=="loading"; });
+  if(any){ var n=new Date(); document.getElementById("sumTime").textContent=pad(n.getHours())+":"+pad(n.getMinutes()); }
 }
 
-// =============================================
-// BADGE HTML
-// =============================================
-function badge(s){
-  if(!s||s.state==="loading") return '<span class="db d-muted lp">...</span>';
-  if(s.state==="on-time")       return "<span class='db d-ok'>A l'heure</span>";
-  if(s.state==="delayed")       return '<span class="db d-warn">+'+( s.delayMinutes||"?")+'&nbsp;min</span>';
-  if(s.state==="not-announced") return '<span class="db d-muted">Non annonce</span>';
-  if(s.state==="board-only")    return '<span class="db d-amber">Tableau seul</span>';
-  if(s.state==="check")         return '<span class="db d-purple">Verifier</span>';
-  return '<span class="db d-muted">--</span>';
+function makeBadge(s){
+  var span=document.createElement("span");
+  span.className="db";
+  if(!s||s.state==="loading"){ span.classList.add("d-mut","lp"); span.textContent="..."; return span; }
+  if(s.state==="on-time"){        span.classList.add("d-ok");     span.textContent="A l'heure"; return span; }
+  if(s.state==="delayed"){        span.classList.add("d-warn");   span.textContent="+"+(s.delayMinutes||"?")+" min"; return span; }
+  if(s.state==="not-announced"){  span.classList.add("d-mut");    span.textContent="Non annonce"; return span; }
+  if(s.state==="disrupted"){      span.classList.add("d-warn");   span.textContent="Perturbe"; return span; }
+  if(s.state==="check"){          span.classList.add("d-purple"); span.textContent="Verifier"; return span; }
+  span.classList.add("d-mut"); span.textContent="--"; return span;
 }
 
-// =============================================
-// RENDER
-// =============================================
-function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function ea(s){return String(s||"").replace(/'/g,"&#39;").replace(/"/g,"&quot;");}
-function ej(s){return String(s||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'");}
-
-function renderAll(){
-  var container=document.getElementById("tlist");
+function buildCard(train){
+  var s=STATUS[train.id]||{state:"loading"};
+  var st=tstate(train.id);
+  var allDone=train.pax.every(function(n){ return st.pax[n]; });
   var nowM=(new Date()).getHours()*60+(new Date()).getMinutes();
 
+  var card=document.createElement("div");
+  card.className="card "+(s.state||"loading")+(allDone?" all-done":"");
+  card.id="card-"+train.id;
+
+  // HEADER
+  var hdr=document.createElement("div");
+  hdr.className="chdr";
+  hdr.addEventListener("click",function(){ card.classList.toggle("expanded"); });
+
+  var bdg=document.createElement("span"); bdg.className="tbadge "+train.badge; bdg.textContent=train.type;
+  var num=document.createElement("span"); num.className="tnum"; num.textContent=train.num;
+  var rte=document.createElement("span"); rte.className="troute"; rte.textContent=train.from+" > "+train.to;
+
+  var times=document.createElement("div"); times.className="ttimes";
+  if(st.track){ var pill=document.createElement("span"); pill.className="vpill"; pill.textContent="Voie "+st.track; times.appendChild(pill); }
+
+  var arrEl=document.createElement("span"); arrEl.className="tarr";
+  if(s.state==="delayed"&&s.realArrival){
+    var orig=document.createElement("span"); orig.className="orig"; orig.textContent=train.arr;
+    var real=document.createElement("span"); real.className="real"; real.textContent=s.realArrival;
+    arrEl.appendChild(orig); arrEl.appendChild(real);
+  } else { arrEl.textContent=train.arr; }
+  times.appendChild(arrEl);
+  times.appendChild(makeBadge(s));
+
+  var chev=document.createElement("span"); chev.className="chev"; chev.textContent="v";
+  hdr.appendChild(bdg); hdr.appendChild(num); hdr.appendChild(rte); hdr.appendChild(times); hdr.appendChild(chev);
+  card.appendChild(hdr);
+
+  // BODY
+  var body=document.createElement("div"); body.className="cbody";
+
+  // Pax
+  var ps=document.createElement("div"); ps.className="bsec";
+  var pl=document.createElement("div"); pl.className="slbl"; pl.textContent="Passagers";
+  var plist=document.createElement("div"); plist.className="plist";
+  train.pax.forEach(function(name){
+    var item=document.createElement("label"); item.className="pitem"+(st.pax[name]?" done":"");
+    var cb=document.createElement("input"); cb.type="checkbox"; cb.className="pcb"; cb.checked=!!st.pax[name];
+    cb.addEventListener("change",function(e){
+      e.stopPropagation();
+      tstate(train.id).pax[name]=cb.checked; persist();
+      item.className="pitem"+(cb.checked?" done":"");
+      updateSummary();
+      card.classList.toggle("all-done",train.pax.every(function(n){ return tstate(train.id).pax[n]; }));
+    });
+    var lbl=document.createElement("span"); lbl.className="plbl"; lbl.textContent=name;
+    var tag=document.createElement("span"); tag.className="ptag"; tag.textContent="collecte";
+    item.appendChild(cb); item.appendChild(lbl); item.appendChild(tag); plist.appendChild(item);
+  });
+  ps.appendChild(pl); ps.appendChild(plist); body.appendChild(ps);
+
+  // Driver + track
+  var ds=document.createElement("div"); ds.className="bsec";
+  var tc=document.createElement("div"); tc.className="twocol";
+
+  var dg=document.createElement("div"); dg.className="fgrp";
+  var dl=document.createElement("div"); dl.className="slbl"; dl.textContent="Chauffeur (soc: "+train.co+")";
+  var dw=document.createElement("div"); dw.className="fwrap";
+  var di=document.createElement("input"); di.className="finp"; di.type="text"; di.placeholder=train.co; di.value=st.driver||"";
+  di.addEventListener("click",function(e){ e.stopPropagation(); });
+  di.addEventListener("input",function(){ tstate(train.id).driver=di.value; persist(); });
+  dw.appendChild(di); dg.appendChild(dl); dg.appendChild(dw);
+
+  var tg=document.createElement("div"); tg.className="fgrp";
+  var tl=document.createElement("div"); tl.className="slbl"; tl.textContent="Voie / Quai";
+  var tw=document.createElement("div"); tw.className="fwrap";
+  var ti=document.createElement("input"); ti.className="finp track"; ti.type="text"; ti.placeholder="--"; ti.value=st.track||"";
+  ti.addEventListener("click",function(e){ e.stopPropagation(); });
+  ti.addEventListener("input",function(){
+    var v=ti.value.trim(); tstate(train.id).track=v; persist();
+    var ep=times.querySelector(".vpill");
+    if(v){ if(ep){ ep.textContent="Voie "+v; } else { var np=document.createElement("span"); np.className="vpill"; np.textContent="Voie "+v; times.insertBefore(np,times.firstChild); } }
+    else if(ep){ ep.remove(); }
+  });
+  tw.appendChild(ti); tg.appendChild(tl); tg.appendChild(tw);
+  tc.appendChild(dg); tc.appendChild(tg); ds.appendChild(tc);
+  if(train.cars){ var ce=document.createElement("div"); ce.style.cssText="margin-top:6px;font-size:.62rem;color:var(--a2)"; ce.textContent=train.cars; ds.appendChild(ce); }
+  body.appendChild(ds);
+
+  // Watchpoints
+  var ws=document.createElement("div"); ws.className="bsec";
+  var wl=document.createElement("div"); wl.className="slbl"; wl.textContent="Points de suivi";
+  var wlist=document.createElement("div"); wlist.className="wlist";
+  train.wp.forEach(function(wp){
+    var time=wp[0],stn=wp[1],type=wp[2];
+    var row=document.createElement("div"); row.className="wrow";
+    var wt=document.createElement("span"); wt.className="wt"; wt.textContent=time;
+    var wst=document.createElement("span"); wst.className="ws"+(type==="d"?" dest":""); wst.textContent=stn;
+    var wd=document.createElement("span");
+    var dc="upcoming",dch="o";
+    if(time!=="--"){ var p=time.split(":"); var wm=parseInt(p[0])*60+parseInt(p[1]); if(wm<nowM){dc="passed";dch="v";}else if(type!=="d"&&wm-nowM<25){dc="next";dch=">";} }
+    if(type==="d"){dch=">";dc="upcoming";}
+    wd.className="wd "+dc; wd.textContent=dch;
+    row.appendChild(wt); row.appendChild(wst); row.appendChild(wd); wlist.appendChild(row);
+  });
+  ws.appendChild(wl); ws.appendChild(wlist); body.appendChild(ws);
+
+  // Notes
+  var ns=document.createElement("div"); ns.className="bsec";
+  var nl=document.createElement("div"); nl.className="slbl"; nl.textContent="Notes terrain";
+  var ta=document.createElement("textarea"); ta.className="nota"; ta.placeholder="Infos temps reel, chauffeur, incident..."; ta.value=st.notes||"";
+  ta.addEventListener("click",function(e){ e.stopPropagation(); });
+  var nf=document.createElement("div"); nf.className="nfoot";
+  var nts=document.createElement("span"); nts.className="nts"; nts.textContent=st.noteTs?"Modif: "+st.noteTs:"";
+  var nok=document.createElement("span"); nok.className="nok"; nok.textContent="enregistre";
+  var ntimer=null;
+  ta.addEventListener("input",function(){
+    var s2=tstate(train.id); s2.notes=ta.value;
+    var n=new Date(); s2.noteTs=pad(n.getHours())+":"+pad(n.getMinutes()); persist();
+    nts.textContent="Modif: "+s2.noteTs; nok.classList.add("vis");
+    clearTimeout(ntimer); ntimer=setTimeout(function(){ nok.classList.remove("vis"); },1800);
+  });
+  nf.appendChild(nts); nf.appendChild(nok);
+  ns.appendChild(nl); ns.appendChild(ta); ns.appendChild(nf); body.appendChild(ns);
+
+  // Status message
+  if(s.message){ var sr=document.createElement("div"); sr.className="srow"+(s.warn?" warn":""); sr.textContent=s.message; body.appendChild(sr); }
+
+  card.appendChild(body);
+  return card;
+}
+
+function renderAll(){
+  var list=document.getElementById("tlist");
   TRAINS.forEach(function(train){
     var ex=document.getElementById("card-"+train.id);
     var wasExp=ex&&ex.classList.contains("expanded");
-    var s=STATUS[train.id]||{state:"loading"};
-    var st=ts(train.id);
-    var allDone=train.pax.every(function(n){return st.pax[n];});
-
-    // Arrival
-    var arrHtml=train.arr;
-    if(s.state==="delayed"&&s.realArrival){
-      arrHtml="<span style='text-decoration:line-through;color:var(--muted);font-size:.68rem'>"+train.arr+"</span>&nbsp;<span style='color:var(--warn)'>"+s.realArrival+"</span>";
-    }
-
-    // Track pill
-    var pill=st.track?"<span class='voie-pill'>Voie&nbsp;"+eh(st.track)+"</span>":"";
-
-    // Pax
-    var paxH=train.pax.map(function(name){
-      var done=!!st.pax[name];
-      return "<label class='pitem"+(done?" done":"")+"'>"
-        +"<input type='checkbox' class='pcb'"+(done?" checked":"")
-        +" onchange=\"tpax('"+train.id+"','"+ej(name)+"',this)\">"
-        +"<span class='plbl'>"+eh(name)+"</span>"
-        +"<span class='ptag'>collecte</span>"
-        +"</label>";
-    }).join("");
-
-    // Watchpoints
-    var wpH=train.wp.map(function(wp){
-      var dc="upcoming",dch="o";
-      if(wp.t!=="--"){
-        var p=wp.t.split(":");
-        var wm=parseInt(p[0])*60+parseInt(p[1]);
-        if(wm<nowM){dc="passed";dch="v";}
-        else if(!wp.d&&wm-nowM<25){dc="next";dch=">";}
-      }
-      if(wp.d){dc="upcoming";dch=">";}
-      return "<div class='wrow'><span class='wt'>"+wp.t+"</span>"
-        +"<span class='ws"+(wp.d?" dest":"")+"'>"+eh(wp.s)+"</span>"
-        +"<span class='wd "+dc+"'>"+dch+"</span></div>";
-    }).join("");
-
-    // Status msg
-    var smH=s.message
-      ?"<div class='srow"+(s.warn?" warn":"")+"'>"+eh(s.message)+"</div>":"";
-
-    var cardCls="card "+(s.state||"loading")+(allDone?" all-done":"")+(wasExp?" expanded":"");
-
-    var html=
-      "<div class='chdr' onclick=\"tog('"+train.id+"')\">"
-        +"<span class='tbadge "+train.badge+"'>"+train.type+"</span>"
-        +"<span class='tnum'>"+train.num+"</span>"
-        +"<span class='troute'>"+eh(train.from)+" &rsaquo; "+eh(train.to)+"</span>"
-        +"<div class='ttimes'>"+pill+"<span class='tarr'>"+arrHtml+"</span>"+badge(s)+"</div>"
-        +"<span class='chev'>v</span>"
-      +"</div>"
-      +"<div class='cbody'>"
-        +"<div class='bsec'><div class='slbl'>Passagers</div><div class='plist'>"+paxH+"</div></div>"
-        +"<div class='bsec'>"
-          +"<div class='twocol'>"
-            +"<div class='fgrp'>"
-              +"<div class='slbl'>Chauffeur &middot; soc: "+eh(train.co)+"</div>"
-              +"<div class='fwrap'><span style='font-size:.68rem'>&#x1F697;</span>"
-                +"<input class='finp' type='text' placeholder='"+ea(train.co)+"' value='"+ea(st.driver)+"'"
-                +" oninput=\"sf('"+train.id+"','driver',this.value)\" onclick='event.stopPropagation()'>"
-              +"</div>"
-            +"</div>"
-            +"<div class='fgrp'>"
-              +"<div class='slbl'>Voie / Quai</div>"
-              +"<div class='fwrap'><span style='font-size:.68rem'>&#x1F6E4;</span>"
-                +"<input class='finp track' type='text' placeholder='--' value='"+ea(st.track)+"'"
-                +" oninput=\"str('"+train.id+"',this.value)\" onclick='event.stopPropagation()'>"
-              +"</div>"
-            +"</div>"
-          +"</div>"
-          +(train.cars?"<div style='margin-top:6px;font-size:.63rem;color:var(--a2)'>"+eh(train.cars)+"</div>":"")
-        +"</div>"
-        +"<div class='bsec'><div class='slbl'>Points de suivi</div><div class='wlist'>"+wpH+"</div></div>"
-        +"<div class='bsec'>"
-          +"<div class='slbl'>Notes terrain</div>"
-          +"<textarea class='nota' placeholder='Infos temps reel, chauffeur confirme, incident...'"
-            +" oninput=\"sn('"+train.id+"',this.value)\" onclick='event.stopPropagation()'>"+eh(st.notes)+"</textarea>"
-      +"<div class='nfoot'>"
-        +"<span class='nts' id='nts-"+train.id+"'>"+(st.noteTs?"Modif: "+st.noteTs:"")+"</span>"
-        +"<span class='nok' id='nok-"+train.id+"'>enregistre</span>"
-      +"</div>"
-    +"</div>"
-    +smH
-  +"</div>";
-
-    if(ex){ex.className=cardCls;ex.innerHTML=html;}
-    else{
-      var c=document.createElement("div");
-      c.className=cardCls; c.id="card-"+train.id; c.innerHTML=html;
-      container.appendChild(c);
-    }
+    var nc=buildCard(train);
+    if(wasExp) nc.classList.add("expanded");
+    if(ex){ list.replaceChild(nc,ex); } else { list.appendChild(nc); }
   });
-
   updateSummary();
 }
 
-// =============================================
-// INTERACTIONS
-// =============================================
-function tog(id){var c=document.getElementById("card-"+id);if(c)c.classList.toggle("expanded");}
+// ── CLAUDE FETCH ───────────────────────────────
+// Claude acts as server-side proxy: browser -> Claude API -> SNCF -> back
+// Single call, returns all 6 trains as JSON
 
-function tpax(tid,name,cb){
-  event.stopPropagation();
-  var st=ts(tid); st.pax[name]=cb.checked; save();
-  var lbl=cb.closest(".pitem");
-  if(lbl)lbl.className="pitem"+(cb.checked?" done":"");
-  updateSummary();
-  var train=TRAINS.find(function(t){return t.id===tid;});
-  if(train){
-    var ad=train.pax.every(function(n){return ts(tid).pax[n];});
-    var card=document.getElementById("card-"+tid);
-    if(card)card.classList.toggle("all-done",ad);
-  }
-}
+async function fetchViaClaude(){
+  var srcEl=document.getElementById("src-status");
+  srcEl.textContent="Recherche..."; srcEl.className="";
 
-function sf(id,field,val){ts(id)[field]=val;save();}
+  var prompt = "You are a real-time train status assistant. Today is Thursday 16 April 2026.\n\n"
+    + "Use your web_search tool to check the current SNCF real-time status for these 6 trains arriving at Lyon Part-Dieu today:\n"
+    + "1. FRECCIAROSSA 6647 - Paris Gare de Lyon -> Lyon Part-Dieu - scheduled 11:26\n"
+    + "2. TER 17769 - Dijon -> Lyon Part-Dieu - scheduled 12:44\n"
+    + "3. TGV 6611 - Paris Gare de Lyon -> Lyon Part-Dieu - scheduled 12:56\n"
+    + "4. TGV 12179 - Mulhouse -> Lyon Part-Dieu - scheduled 12:59\n"
+    + "5. TER 96562 - Geneve Cornavin -> Lyon Part-Dieu - scheduled 13:26\n"
+    + "6. TGV 6613 - Paris Gare de Lyon -> Lyon Part-Dieu - scheduled 13:56\n\n"
+    + "Search for: SNCF perturbations 16 avril 2026, each train number, and any strikes or disruptions.\n\n"
+    + "Respond ONLY with a valid JSON array, no other text, no markdown:\n"
+    + "[{\"num\":\"6647\",\"state\":\"on-time\",\"delayMinutes\":null,\"realArrival\":null,\"message\":\"...\"},...]\n"
+    + "state must be one of: on-time, delayed, not-announced, disrupted, check\n"
+    + "message should be brief and in French. If no specific info found, use state 'not-announced' with message 'Aucune perturbation detectee'.";
 
-var trkT={};
-function str(id,val){
-  ts(id).track=val; save();
-  clearTimeout(trkT[id]);
-  trkT[id]=setTimeout(function(){
-    var card=document.getElementById("card-"+id);
-    if(!card)return;
-    var pill=card.querySelector(".voie-pill");
-    var times=card.querySelector(".ttimes");
-    if(val){
-      if(pill){pill.innerHTML="Voie&nbsp;"+eh(val);}
-      else if(times){var p=document.createElement("span");p.className="voie-pill";p.innerHTML="Voie&nbsp;"+eh(val);times.insertBefore(p,times.firstChild);}
-    } else if(pill){pill.remove();}
-  },300);
-}
+  try{
+    var resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
 
-var noteT={};
-function sn(id,val){
-  var st=ts(id); st.notes=val;
-  var n=new Date(); st.noteTs=pd(n.getHours())+":"+pd(n.getMinutes());
-  save();
-  var el=document.getElementById("nts-"+id); if(el)el.textContent="Modif: "+st.noteTs;
-  clearTimeout(noteT[id]);
-  var ok=document.getElementById("nok-"+id);
-  if(ok){ok.classList.add("vis");noteT[id]=setTimeout(function(){ok.classList.remove("vis");},1800);}
-}
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
 
-// =============================================
-// SNCF FETCH - with CORS proxy fallback chain
-// =============================================
-var workingProxy=null;
+    var data = await resp.json();
 
-async function fetchBoard(){
-  var authUrl=BOARD_URL+"&key="+SNCF_KEY; // try key as param first
-  var authHeader="Basic "+btoa(SNCF_KEY+":");
+    // Extract the text block (after web search tool use)
+    var textBlock = null;
+    for(var i=0; i<data.content.length; i++){
+      if(data.content[i].type==="text"){ textBlock=data.content[i].text; }
+    }
+    if(!textBlock) throw new Error("No text in response");
 
-  // Build list: try working proxy first, then others
-  var proxiesToTry=PROXIES.slice();
-  if(workingProxy!==null){
-    proxiesToTry=[PROXIES[workingProxy]].concat(PROXIES.filter(function(_,i){return i!==workingProxy;}));
-  }
+    // Strip any accidental markdown fences
+    var clean = textBlock.replace(/```json|```/g,"").trim();
+    // Find the JSON array
+    var start = clean.indexOf("[");
+    var end = clean.lastIndexOf("]");
+    if(start===-1||end===-1) throw new Error("No JSON array found");
+    var results = JSON.parse(clean.slice(start, end+1));
 
-  for(var pi=0;pi<proxiesToTry.length;pi++){
-    var proxy=proxiesToTry[pi];
-    // Try with Authorization header via proxy
-    try{
-      var proxyUrl=proxy(BOARD_URL);
-      var resp=await fetch(proxyUrl,{
-        headers:{"Authorization":authHeader,"x-requested-with":"XMLHttpRequest"},
-        signal:AbortSignal.timeout(10000)
-      });
-      if(resp.ok){
-        var data=await resp.json();
-        if(data.arrivals){
-          workingProxy=PROXIES.indexOf(proxy);
-          document.getElementById("pst").textContent="OK";
-          document.getElementById("pst").className="pst ok";
-          return data.arrivals;
-        }
+    // Apply to STATUS
+    TRAINS.forEach(function(train){
+      var match = null;
+      for(var i=0; i<results.length; i++){
+        if(results[i].num===train.num){ match=results[i]; break; }
       }
-    }catch(e){}
-
-    // Also try key as query param (some proxies strip headers)
-    try{
-      var proxyUrl2=proxy(BOARD_URL+"&key="+SNCF_KEY);
-      var resp2=await fetch(proxyUrl2,{signal:AbortSignal.timeout(10000)});
-      if(resp2.ok){
-        var data2=await resp2.json();
-        if(data2.arrivals){
-          workingProxy=PROXIES.indexOf(proxy);
-          document.getElementById("pst").textContent="OK (param)";
-          document.getElementById("pst").className="pst ok";
-          return data2.arrivals;
-        }
+      if(match){
+        STATUS[train.id] = {
+          state: match.state||"not-announced",
+          delayMinutes: match.delayMinutes||null,
+          realArrival: match.realArrival||null,
+          message: match.message||""
+        };
+      } else {
+        STATUS[train.id] = { state:"not-announced", message:"Aucune donnee retournee." };
       }
-    }catch(e){}
+    });
+
+    srcEl.textContent="OK - SNCF via Claude"; srcEl.className="ok";
+    return true;
+
+  } catch(e){
+    console.error("Claude fetch error:", e);
+    TRAINS.forEach(function(t){
+      STATUS[t.id]={ state:"check", message:"Erreur: "+e.message, warn:true };
+    });
+    srcEl.textContent="Erreur API"; srcEl.className="warn";
+    return false;
   }
-
-  document.getElementById("pst").textContent="Echec proxy";
-  document.getElementById("pst").className="pst warn";
-  return null;
-}
-
-function matchTrain(arrivals,num){
-  return arrivals.find(function(a){
-    var info=a.display_informations||{};
-    var h=String(info.headsign||"").trim();
-    var t=String(info.trip_short_name||"").trim();
-    return h===num||t===num||h.endsWith(num)||t.endsWith(num);
-  });
-}
-
-function parseMatch(match){
-  var sdt=match.stop_date_time||{};
-  var base=sdt.base_arrival_date_time||"";
-  var real=sdt.arrival_date_time||"";
-  var fresh=sdt.data_freshness||"";
-  if(!base)return{state:"board-only",message:"Present au tableau, horaire non confirme."};
-  function dtm(dt){return parseInt(dt.slice(9,11))*60+parseInt(dt.slice(11,13));}
-  function hm(m){return pd(Math.floor(m/60)%24)+":"+pd(m%60);}
-  var bm=dtm(base),rm=real?dtm(real):bm,diff=rm-bm;
-  if(diff<=1)return{state:"on-time",message:"A l'heure"+(fresh?" ["+fresh+"]":"")+" - SNCF Navitia"};
-  return{state:"delayed",delayMinutes:diff,realArrival:hm(rm),
-  message:"Retard "+diff+" min - Prevue "+hm(rm)+(fresh?" ["+fresh+"]":"")};
 }
 
 var fetching=false;
-var autoT=null;
+var autoTimer=null;
 
 async function fetchAll(){
-  if(fetching)return;
+  if(fetching) return;
   fetching=true;
-  if(autoT)clearTimeout(autoT);
+  if(autoTimer) clearTimeout(autoTimer);
 
   var btn=document.getElementById("rbtn");
   btn.disabled=true; btn.textContent="...";
 
-  TRAINS.forEach(function(t){STATUS[t.id]={state:"loading"};});
+  TRAINS.forEach(function(t){ STATUS[t.id]={state:"loading"}; });
   renderAll();
 
-  document.getElementById("pst").textContent="Connexion...";
-  document.getElementById("pst").className="pst dim";
-
-  var arrivals=await fetchBoard();
-
-  if(!arrivals){
-    TRAINS.forEach(function(t){
-      STATUS[t.id]={
-        state:"check",
-        message:"Proxy CORS indisponible. Verifier l'onglet Reseau (F12) pour details. "
-        +"Statut manuel: SNCF.com > 'Info Trafic'",
-        warn:true
-      };
-    });
-  } else {
-    TRAINS.forEach(function(train){
-      var m=matchTrain(arrivals,train.num);
-      if(!m){
-        STATUS[train.id]={
-          state:"not-announced",
-          message:"Pas encore annonce ("+arrivals.length+" arrivees visibles). Normal si > 2h avant arrivee."
-        };
-      } else {
-        STATUS[train.id]=parseMatch(m);
-      }
-    });
-  }
-
+  await fetchViaClaude();
   renderAll();
+
   btn.disabled=false; btn.textContent="Verifier arrivees";
   fetching=false;
 
   var n=new Date();
-  document.getElementById("fnote").textContent="MaJ "+pd(n.getHours())+":"+pd(n.getMinutes())+" - prochain refresh 5min";
-  autoT=setTimeout(fetchAll,5*60*1000);
+  document.getElementById("fnote").textContent="MaJ "+pad(n.getHours())+":"+pad(n.getMinutes())+" - refresh dans 5min";
+  autoTimer=setTimeout(fetchAll,5*60*1000);
 }
 
-// =============================================
-// INIT
-// =============================================
 document.addEventListener("DOMContentLoaded",function(){
-  TRAINS.forEach(function(t){STATUS[t.id]={state:"loading"};});
+  TRAINS.forEach(function(t){ STATUS[t.id]={state:"loading"}; });
   renderAll();
-  setTimeout(function(){
-    var f=document.getElementById("card-"+TRAINS[0].id);
-    if(f)f.classList.add("expanded");
-  },80);
+  var first=document.getElementById("card-"+TRAINS[0].id);
+  if(first) first.classList.add("expanded");
   fetchAll();
 });
 </script>
