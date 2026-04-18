@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -19,109 +18,109 @@ html.prelight body { background-color: #f4f1eb !important; }
 
 /* ── THEME VARIABLES ─────────────────────────────── */
 :root {
-–bg: #0e0e0e;
-–surface: #1a1a1a;
-–surface2: #222;
-–border: #2e2e2e;
-–accent: #e8d48b;
-–accent2: #7ec8a4;
-–danger: #e87c6b;
-–text: #ede9e0;
-–text2: #aaa;
-–muted: #5a5a5a;
-–done-bg: #1a241a;
-–done-border: #3a5a3a;
-–step-active-border: #e8d48b;
+  --bg: #0e0e0e;
+  --surface: #1a1a1a;
+  --surface2: #222;
+  --border: #2e2e2e;
+  --accent: #e8d48b;
+  --accent2: #7ec8a4;
+  --danger: #e87c6b;
+  --text: #ede9e0;
+  --text2: #aaa;
+  --muted: #5a5a5a;
+  --done-bg: #1a241a;
+  --done-border: #3a5a3a;
+  --step-active-border: #e8d48b;
 }
 body.light {
-–bg: #f4f1eb;
-–surface: #ffffff;
-–surface2: #f0ece3;
-–border: #d8d2c4;
-–accent: #7a5c00;
-–accent2: #2a7a52;
-–danger: #b03a28;
-–text: #1a1a1a;
-–text2: #555;
-–muted: #999;
-–done-bg: #eaf3ea;
-–done-border: #8ab88a;
-–step-active-border: #7a5c00;
+  --bg: #f4f1eb;
+  --surface: #ffffff;
+  --surface2: #f0ece3;
+  --border: #d8d2c4;
+  --accent: #7a5c00;
+  --accent2: #2a7a52;
+  --danger: #b03a28;
+  --text: #1a1a1a;
+  --text2: #555;
+  --muted: #999;
+  --done-bg: #eaf3ea;
+  --done-border: #8ab88a;
+  --step-active-border: #7a5c00;
 }
 
-- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html { font-size: 16px; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: 16px; }
 
 body {
-background: #0e0e0e;
-background: var(–bg);
-color: var(–text);
-font-family: ‘DM Mono’, monospace;
-min-height: 100vh;
-overscroll-behavior: none;
-transition: background 0.2s, color 0.2s;
+  background: #0e0e0e;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  overscroll-behavior: none;
+  transition: background 0.2s, color 0.2s;
 }
 
 /* ── HEADER ──────────────────────────────────────── */
 header {
-background: var(–surface);
-border-bottom: 2px solid var(–accent);
-padding: 13px 16px 11px;
-position: sticky; top: 0; z-index: 200;
-display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface);
+  border-bottom: 2px solid var(--accent);
+  padding: 13px 16px 11px;
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
 }
 .header-left {}
 .header-title {
-font-family: ‘Syne’, sans-serif;
-font-size: 20px; font-weight: 800;
-letter-spacing: -0.5px;
-color: var(–accent);
+  font-family: 'Syne', sans-serif;
+  font-size: 20px; font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--accent);
 }
-.header-sub { font-size: 11px; color: var(–text2); margin-top: 1px; }
+.header-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
 .header-right { display: flex; align-items: center; gap: 12px; }
-#clock { font-size: 22px; font-weight: 500; color: var(–text); letter-spacing: 0.06em; }
+#clock { font-size: 22px; font-weight: 500; color: var(--text); letter-spacing: 0.06em; }
 .theme-btn {
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 20px;
-color: var(–text2);
-font-size: 18px;
-width: 36px; height: 36px;
-display: flex; align-items: center; justify-content: center;
-cursor: pointer;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text2);
+  font-size: 18px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
 }
 
 /* ── PROGRESS ────────────────────────────────────── */
-.progress-bar { height: 3px; background: var(–border); position: sticky; top: 57px; z-index: 199; }
-.progress-fill { height: 100%; background: var(–accent); transition: width 0.4s ease; }
+.progress-bar { height: 3px; background: var(--border); position: sticky; top: 57px; z-index: 199; }
+.progress-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; }
 
 /* ── TABS ────────────────────────────────────────── */
 .tabs {
-display: flex;
-background: var(–surface);
-border-bottom: 1px solid var(–border);
-position: sticky; top: 60px; z-index: 198;
-overflow-x: auto;
--webkit-overflow-scrolling: touch;
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 60px; z-index: 198;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tab-btn {
-flex: 1;
-min-width: 70px;
-padding: 10px 4px;
-font-family: ‘DM Mono’, monospace;
-font-size: 11px;
-letter-spacing: 0.08em;
-text-transform: uppercase;
-color: var(–text2);
-background: none;
-border: none;
-border-bottom: 2px solid transparent;
-cursor: pointer;
-transition: color 0.15s, border-color 0.15s;
-white-space: nowrap;
+  flex: 1;
+  min-width: 70px;
+  padding: 10px 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
 }
-.tab-btn.active { color: var(–accent); border-bottom-color: var(–accent); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
 /* ── PANELS ──────────────────────────────────────── */
 .panel { display: none; padding: 12px 16px 100px; }
@@ -129,206 +128,205 @@ white-space: nowrap;
 
 /* ── SECTION LABEL ───────────────────────────────── */
 .section-label {
-font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-color: var(–muted); padding: 18px 0 8px;
-border-bottom: 1px solid var(–border); margin-bottom: 4px;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); padding: 18px 0 8px;
+  border-bottom: 1px solid var(--border); margin-bottom: 4px;
 }
 
 /* ── STEP CARDS ──────────────────────────────────── */
 .step {
-border: 1px solid var(–border);
-border-radius: 8px;
-margin: 7px 0;
-overflow: hidden;
-transition: border-color 0.2s, background 0.2s;
-background: var(–surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 7px 0;
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+  background: var(--surface);
 }
-.step.done { background: var(–done-bg); border-color: var(–done-border); opacity: 0.65; }
-.step.active-step { border-color: var(–step-active-border); }
+.step.done { background: var(--done-bg); border-color: var(--done-border); opacity: 0.65; }
+.step.active-step { border-color: var(--step-active-border); }
 
 .step-main { display: flex; align-items: stretch; min-height: 62px; cursor: pointer; }
 
 .step-check {
-width: 52px; flex-shrink: 0;
-display: flex; align-items: center; justify-content: center;
-background: var(–surface2); border-right: 1px solid var(–border);
-font-size: 20px; user-select: none;
-transition: background 0.2s;
+  width: 52px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2); border-right: 1px solid var(--border);
+  font-size: 20px; user-select: none;
+  transition: background 0.2s;
 }
-.step.done .step-check { color: var(–accent2); }
+.step.done .step-check { color: var(--accent2); }
 
 .step-info { flex: 1; padding: 11px 12px; display: flex; flex-direction: column; justify-content: center; gap: 3px; }
-.step-time { font-size: 12px; color: var(–accent); font-weight: 500; letter-spacing: 0.06em; }
-.step.done .step-time { color: var(–accent2); }
-.step-title { font-size: 16px; font-weight: 500; color: var(–text); line-height: 1.25; }
-.step.done .step-title { color: var(–muted); text-decoration: line-through; }
-.step-subtitle { font-size: 11px; color: var(–text2); margin-top: 2px; }
+.step-time { font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.06em; }
+.step.done .step-time { color: var(--accent2); }
+.step-title { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.25; }
+.step.done .step-title { color: var(--muted); text-decoration: line-through; }
+.step-subtitle { font-size: 11px; color: var(--text2); margin-top: 2px; }
 
 .step-toggle {
-width: 44px; flex-shrink: 0;
-display: flex; align-items: center; justify-content: center;
-color: var(–muted); font-size: 14px; cursor: pointer;
+  width: 44px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 14px; cursor: pointer;
 }
-.step-toggle.open { color: var(–accent); }
+.step-toggle.open { color: var(--accent); }
 
 /* ── EXPANDED ────────────────────────────────────── */
-.step-expanded { display: none; border-top: 1px solid var(–border); background: var(–bg); padding: 14px; gap: 10px; flex-direction: column; }
+.step-expanded { display: none; border-top: 1px solid var(--border); background: var(--bg); padding: 14px; gap: 10px; flex-direction: column; }
 .step-expanded.open { display: flex; }
 
 /* ── INFO BLOCKS ─────────────────────────────────── */
-.info-block { background: var(–surface); border: 1px solid var(–border); border-radius: 6px; padding: 11px 13px; }
-.info-block-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(–muted); margin-bottom: 8px; }
-.info-line { font-size: 13px; color: var(–text); line-height: 1.9; }
-.info-line span { color: var(–text2); }
+.info-block { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 11px 13px; }
+.info-block-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.info-line { font-size: 13px; color: var(--text); line-height: 1.9; }
+.info-line span { color: var(--text2); }
 
 /* ── WALK ────────────────────────────────────────── */
-.walk-stop { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(–border); align-items: flex-start; }
+.walk-stop { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
 .walk-stop:last-child { border-bottom: none; }
-.walk-num { color: var(–accent); font-weight: 500; font-size: 13px; min-width: 22px; margin-top: 1px; }
-.walk-text { font-size: 13px; line-height: 1.5; color: var(–text); }
-.walk-sub { font-size: 11px; color: var(–text2); margin-top: 2px; }
+.walk-num { color: var(--accent); font-weight: 500; font-size: 13px; min-width: 22px; margin-top: 1px; }
+.walk-text { font-size: 13px; line-height: 1.5; color: var(--text); }
+.walk-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
 
 /* ── RESTAURANTS ─────────────────────────────────── */
-.resto { padding: 8px 0; border-bottom: 1px solid var(–border); font-size: 13px; line-height: 1.55; }
+.resto { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.55; }
 .resto:last-child { border-bottom: none; }
-.resto strong { color: var(–accent); }
-.resto .resto-addr { color: var(–text2); font-size: 11px; }
+.resto strong { color: var(--accent); }
+.resto .resto-addr { color: var(--text2); font-size: 11px; }
 
 /* ── NOTES ───────────────────────────────────────── */
-.note-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(–muted); margin-bottom: 5px; }
+.note-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
 .note-area {
-background: var(–surface2); border: 1px solid var(–border); border-radius: 6px;
-color: var(–text); font-family: ‘DM Mono’, monospace; font-size: 14px;
-line-height: 1.6; padding: 10px 13px; width: 100%; resize: none;
-min-height: 72px; outline: none; transition: border-color 0.2s;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px;
+  line-height: 1.6; padding: 10px 13px; width: 100%; resize: none;
+  min-height: 72px; outline: none; transition: border-color 0.2s;
 }
-.note-area:focus { border-color: var(–accent); }
-.note-area::placeholder { color: var(–muted); }
+.note-area:focus { border-color: var(--accent); }
+.note-area::placeholder { color: var(--muted); }
 
 /* ── MAP BUTTON ──────────────────────────────────── */
 .map-btn {
-display: flex; align-items: center; justify-content: center; gap: 7px;
-background: var(–surface2); border: 1px solid var(–border); border-radius: 6px;
-color: var(–accent); font-family: ‘DM Mono’, monospace; font-size: 13px;
-padding: 10px 14px; text-decoration: none; cursor: pointer;
-transition: border-color 0.15s; letter-spacing: 0.03em;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--accent); font-family: 'DM Mono', monospace; font-size: 13px;
+  padding: 10px 14px; text-decoration: none; cursor: pointer;
+  transition: border-color 0.15s; letter-spacing: 0.03em;
 }
-.map-btn:active { border-color: var(–accent); }
+.map-btn:active { border-color: var(--accent); }
 
 /* ── ANECDOTES ───────────────────────────────────── */
 .anecdote {
-background: var(–done-bg); border: 1px solid var(–done-border); border-radius: 6px;
-padding: 11px 13px; font-size: 13px; line-height: 1.65; color: var(–text);
-margin-bottom: 6px;
+  background: var(--done-bg); border: 1px solid var(--done-border); border-radius: 6px;
+  padding: 11px 13px; font-size: 13px; line-height: 1.65; color: var(--text);
+  margin-bottom: 6px;
 }
 .anecdote:last-child { margin-bottom: 0; }
-.anecdote strong { color: var(–accent2); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+.anecdote strong { color: var(--accent2); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 4px; }
 
 /* ── HEAD COUNT ──────────────────────────────────── */
 .hcount {
-display: flex; align-items: center; justify-content: space-between;
-background: var(–surface); border: 1px solid var(–border); border-radius: 6px;
-padding: 12px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+  padding: 12px 14px;
 }
-.hcount-label { font-size: 10px; color: var(–muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
-.hcount-num { font-family: ‘Syne’, sans-serif; font-size: 36px; font-weight: 800; color: var(–accent); }
-.hcount-status { font-size: 12px; color: var(–text2); margin-top: 2px; }
-.hcount-ok { color: var(–accent2) !important; }
-.hcount-warn { color: var(–danger) !important; }
+.hcount-label { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+.hcount-num { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--accent); }
+.hcount-status { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.hcount-ok { color: var(--accent2) !important; }
+.hcount-warn { color: var(--danger) !important; }
 .hcount-btns { display: flex; gap: 10px; }
 .hcount-btn {
-width: 50px; height: 50px; border-radius: 6px;
-border: 1px solid var(–border); background: var(–surface2);
-color: var(–text); font-size: 26px;
-display: flex; align-items: center; justify-content: center;
-cursor: pointer; user-select: none; transition: border-color 0.15s;
+  width: 50px; height: 50px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text); font-size: 26px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; user-select: none; transition: border-color 0.15s;
 }
-.hcount-btn:active { border-color: var(–accent); background: var(–surface); }
+.hcount-btn:active { border-color: var(--accent); background: var(--surface); }
 
 /* ── SIGN CALLS ──────────────────────────────────── */
-.sign-item { padding: 8px 0; border-bottom: 1px solid var(–border); font-size: 13px; line-height: 1.5; }
+.sign-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.5; }
 .sign-item:last-child { border-bottom: none; }
-.sign-item strong { color: var(–accent); }
-.sign-item span { color: var(–text2); font-size: 12px; }
+.sign-item strong { color: var(--accent); }
+.sign-item span { color: var(--text2); font-size: 12px; }
 
 /* ── CONTACTS ────────────────────────────────────── */
-.contact { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(–border); }
+.contact { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .contact:last-child { border-bottom: none; }
-.contact-name { font-size: 14px; color: var(–text); font-weight: 500; }
-.contact-role { font-size: 11px; color: var(–text2); margin-top: 2px; }
+.contact-name { font-size: 14px; color: var(--text); font-weight: 500; }
+.contact-role { font-size: 11px; color: var(--text2); margin-top: 2px; }
 .contact-call {
-background: var(–done-bg); border: 1px solid var(–done-border); border-radius: 6px;
-color: var(–accent2); font-family: ‘DM Mono’, monospace; font-size: 12px;
-padding: 7px 12px; text-decoration: none; letter-spacing: 0.02em;
-flex-shrink: 0; white-space: nowrap;
+  background: var(--done-bg); border: 1px solid var(--done-border); border-radius: 6px;
+  color: var(--accent2); font-family: 'DM Mono', monospace; font-size: 12px;
+  padding: 7px 12px; text-decoration: none; letter-spacing: 0.02em;
+  flex-shrink: 0; white-space: nowrap;
 }
 
 /* ── LINK BUTTONS ────────────────────────────────── */
 .link-btn {
-display: flex; align-items: center; gap: 10px;
-background: var(–surface); border: 1px solid var(–border); border-radius: 8px;
-padding: 13px 15px; text-decoration: none; color: var(–text);
-margin-bottom: 8px; transition: border-color 0.15s;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 13px 15px; text-decoration: none; color: var(--text);
+  margin-bottom: 8px; transition: border-color 0.15s;
 }
-.link-btn:active { border-color: var(–accent); }
+.link-btn:active { border-color: var(--accent); }
 .link-btn-icon { font-size: 22px; flex-shrink: 0; }
 .link-btn-text { font-size: 14px; font-weight: 500; }
-.link-btn-sub { font-size: 11px; color: var(–text2); margin-top: 2px; }
+.link-btn-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
 
 /* ── QUIZ ────────────────────────────────────────── */
 .quiz-section { margin-bottom: 18px; }
 .quiz-section-title {
-font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-color: var(–muted); padding: 14px 0 8px;
-border-bottom: 1px solid var(–border); margin-bottom: 8px;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); padding: 14px 0 8px;
+  border-bottom: 1px solid var(--border); margin-bottom: 8px;
 }
 .quiz-q {
-display: flex; gap: 10px; align-items: flex-start;
-padding: 9px 0; border-bottom: 1px solid var(–border); font-size: 14px; line-height: 1.5;
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.5;
 }
 .quiz-q:last-child { border-bottom: none; }
-.quiz-num { color: var(–accent); min-width: 24px; font-size: 12px; margin-top: 2px; }
+.quiz-num { color: var(--accent); min-width: 24px; font-size: 12px; margin-top: 2px; }
 .quiz-ans {
-font-size: 11px; color: var(–accent2); background: var(–done-bg);
-border: 1px solid var(–done-border); border-radius: 4px; padding: 1px 7px;
-margin-left: 6px; white-space: nowrap; cursor: pointer; user-select: none;
-flex-shrink: 0; margin-top: 2px;
+  font-size: 11px; color: var(--accent2); background: var(--done-bg);
+  border: 1px solid var(--done-border); border-radius: 4px; padding: 1px 7px;
+  margin-left: 6px; white-space: nowrap; cursor: pointer; user-select: none;
+  flex-shrink: 0; margin-top: 2px;
 }
-.quiz-ans-text { display: none; font-size: 12px; color: var(–accent2); margin-top: 4px; }
+.quiz-ans-text { display: none; font-size: 12px; color: var(--accent2); margin-top: 4px; }
 .quiz-ans-text.show { display: block; }
-.quiz-word { font-size: 14px; color: var(–accent); }
-.quiz-meaning { font-size: 13px; color: var(–text2); margin-top: 2px; }
+.quiz-word { font-size: 14px; color: var(--accent); }
+.quiz-meaning { font-size: 13px; color: var(--text2); margin-top: 2px; }
 
 /* ── MAP PANEL ───────────────────────────────────── */
 .route-map {
-background: var(–surface); border: 1px solid var(–border); border-radius: 8px;
-padding: 16px; margin-bottom: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px; margin-bottom: 10px;
 }
-.route-map-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(–muted); margin-bottom: 12px; }
+.route-map-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
 svg.routesvg { width: 100%; height: auto; display: block; }
 
 .poi-card {
-background: var(–surface); border: 1px solid var(–border); border-radius: 8px;
-padding: 12px 14px; margin-bottom: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; margin-bottom: 8px;
 }
 .poi-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .poi-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-.poi-name { font-size: 15px; font-weight: 500; color: var(–text); }
-.poi-km { font-size: 11px; color: var(–text2); margin-left: auto; }
-.poi-side { font-size: 11px; color: var(–accent); margin-bottom: 4px; }
-.poi-desc { font-size: 12px; color: var(–text2); line-height: 1.55; }
+.poi-name { font-size: 15px; font-weight: 500; color: var(--text); }
+.poi-km { font-size: 11px; color: var(--text2); margin-left: auto; }
+.poi-side { font-size: 11px; color: var(--accent); margin-bottom: 4px; }
+.poi-desc { font-size: 12px; color: var(--text2); line-height: 1.55; }
 
 /* ── FOOTER ──────────────────────────────────────── */
 .footer-bar {
-position: fixed; bottom: 0; left: 0; right: 0;
-background: var(–surface); border-top: 1px solid var(–border);
-padding: 10px 16px;
-display: flex; align-items: center; justify-content: space-between;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.footer-step { font-size: 11px; color: var(–text2); }
-.footer-count { font-size: 15px; color: var(–accent); font-weight: 500; }
+.footer-step { font-size: 11px; color: var(--text2); }
+.footer-count { font-size: 15px; color: var(--accent); font-weight: 500; }
 </style>
-
 </head>
 <body>
 
@@ -353,11 +351,9 @@ display: flex; align-items: center; justify-content: space-between;
 </div>
 
 <!-- ═══════════ STEPS TAB ═══════════ -->
-
 <div class="panel active" id="tab-steps">
 
   <!-- STEP 0: Arrive at Buri -->
-
   <div class="section-label">Pre-mission</div>
   <div class="step" id="step-0">
     <div class="step-main" onclick="toggleCheck(0)">
@@ -376,7 +372,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 1: Luggage + headcount -->
-
   <div class="section-label">Lyon</div>
   <div class="step" id="step-1">
     <div class="step-main" onclick="toggleCheck(1)">
@@ -410,7 +405,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 2: Depart Lyon -->
-
   <div class="step" id="step-2">
     <div class="step-main" onclick="toggleCheck(2)">
       <div class="step-check" id="check-2">☐</div>
@@ -429,7 +423,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 3: Comfort stop Mâcon -->
-
   <div class="step" id="step-3">
     <div class="step-main" onclick="toggleCheck(3)">
       <div class="step-check" id="check-3">☐</div>
@@ -451,7 +444,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 4: Wine road -->
-
   <div class="step" id="step-4">
     <div class="step-main" onclick="toggleCheck(4)">
       <div class="step-check" id="check-4">☐</div>
@@ -469,7 +461,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 5: BEAUNE -->
-
   <div class="step active-step" id="step-5">
     <div class="step-main" onclick="toggleCheck(5)">
       <div class="step-check" id="check-5">☐</div>
@@ -513,7 +504,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 6: Depart Beaune -->
-
   <div class="section-label">Beaune → Basel</div>
   <div class="step" id="step-6">
     <div class="step-main" onclick="toggleCheck(6)">
@@ -540,7 +530,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 7: Quiz -->
-
   <div class="step" id="step-7">
     <div class="step-main" onclick="toggleCheck(7)">
       <div class="step-check" id="check-7">☐</div>
@@ -561,7 +550,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 8: Comfort stop -->
-
   <div class="step" id="step-8">
     <div class="step-main" onclick="toggleCheck(8)">
       <div class="step-check" id="check-8">☐</div>
@@ -583,7 +571,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- STEP 9: Arrive Basel -->
-
   <div class="section-label">Basel</div>
   <div class="step" id="step-9">
     <div class="step-main" onclick="toggleCheck(9)">
@@ -609,182 +596,371 @@ display: flex; align-items: center; justify-content: space-between;
 </div><!-- end steps panel -->
 
 <!-- ═══════════ ROUTE TAB ═══════════ -->
-
 <div class="panel" id="tab-map">
-  <div class="section-label" style="padding-top:10px">Visual route</div>
+  <div class="section-label" style="padding-top:10px">Route schematic · Lyon → Basel</div>
+  <div style="font-size:11px; color:var(--text2); margin-bottom:10px; padding: 0 2px;">Lyon at bottom · Basel at top · travelling north then northeast. Left/right callouts are from inside the coach facing forward.</div>
 
-  <div class="route-map">
-    <div class="route-map-title">Lyon → Beaune → Basel · A6/A36</div>
-    <!-- SVG schematic route -->
-    <svg class="routesvg" viewBox="0 0 340 620" xmlns="http://www.w3.org/2000/svg">
-      <!-- Route line -->
-      <path d="M170,30 C165,100 155,140 158,200 C161,260 175,290 172,340 C169,390 155,430 158,490 C160,530 168,570 168,590" stroke="#5a5a5a" stroke-width="3" fill="none" stroke-dasharray="6,4"/>
-      <!-- Accent highlight -->
-      <path d="M170,30 C165,100 155,140 158,200 C161,260 175,290 172,340 C169,390 155,430 158,490 C160,530 168,570 168,590" stroke="#e8d48b" stroke-width="1.5" fill="none" opacity="0.4"/>
+  <div class="route-map" style="padding:10px 6px;">
 
-```
-  <!-- LYON -->
-  <circle cx="170" cy="30" r="10" fill="#e8d48b"/>
-  <text x="188" y="34" fill="#e8d48b" font-size="14" font-family="DM Mono,monospace" font-weight="500">LYON</text>
-  <text x="188" y="48" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Viking Buri · 08:30</text>
+    <svg class="routesvg" viewBox="0 0 370 980" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+      <defs>
+        <!-- River gradient - Saône -->
+        <linearGradient id="riverGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3a6a8a" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#3a6a8a" stop-opacity="0.2"/>
+        </linearGradient>
+        <!-- Jura mountain fill -->
+        <pattern id="juraHatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="6" stroke="#4a5a3a" stroke-width="1.5" stroke-opacity="0.5"/>
+        </pattern>
+      </defs>
 
-  <!-- Bresse (right side callout) -->
-  <circle cx="158" cy="90" r="5" fill="#7ec8a4" opacity="0.8"/>
-  <line x1="158" y1="90" x2="210" y2="90" stroke="#3a5a3a" stroke-width="1"/>
-  <text x="214" y="94" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Bresse</text>
-  <text x="214" y="107" fill="#666" font-size="10" font-family="DM Mono,monospace">AOC chicken</text>
+      <!-- ── BACKGROUND GEOGRAPHY ── -->
 
-  <!-- Mâcon comfort stop -->
-  <circle cx="160" cy="148" r="7" fill="#2a2a2a" stroke="#e8d48b" stroke-width="1.5"/>
-  <text x="42" y="144" fill="#e8d48b" font-size="11" font-family="DM Mono,monospace" text-anchor="end">~10:15</text>
-  <text x="42" y="158" fill="#aaa" font-size="10" font-family="DM Mono,monospace" text-anchor="end">Mâcon</text>
-  <line x1="43" y1="148" x2="153" y2="148" stroke="#444" stroke-width="1" stroke-dasharray="3,3"/>
+      <!-- Saône river (runs parallel to A6, left/west side) -->
+      <path d="M88,940 C84,880 80,820 82,760 C84,700 88,650 86,600 C84,560 80,530 82,490 C84,460 86,440 84,400" stroke="#4a8aaa" stroke-width="5" fill="none" stroke-opacity="0.35" stroke-linecap="round"/>
+      <text x="68" y="820" fill="#4a8aaa" font-size="9" font-family="DM Mono,monospace" fill-opacity="0.6" transform="rotate(-90, 68, 820)">Saône river</text>
 
-  <!-- Chalon-Nord exit -->
-  <circle cx="161" cy="195" r="5" fill="#555"/>
-  <text x="175" y="199" fill="#888" font-size="10" font-family="DM Mono,monospace">Exit Chalon-Nord</text>
-  <text x="175" y="212" fill="#666" font-size="10" font-family="DM Mono,monospace">Route des Grands Crus</text>
+      <!-- Doubs river (appears after Beaune, curves around Besançon) -->
+      <path d="M100,390 C104,360 108,330 115,300 C122,270 130,250 140,230 C148,215 155,205 162,195" stroke="#4a8aaa" stroke-width="4" fill="none" stroke-opacity="0.3" stroke-linecap="round"/>
+      <text x="88" y="298" fill="#4a8aaa" font-size="9" font-family="DM Mono,monospace" fill-opacity="0.55" transform="rotate(-70, 88, 298)">Doubs</text>
 
-  <!-- BEAUNE -->
-  <circle cx="172" cy="260" r="12" fill="#e8d48b"/>
-  <text x="192" y="264" fill="#e8d48b" font-size="14" font-family="DM Mono,monospace" font-weight="500">BEAUNE</text>
-  <text x="192" y="279" fill="#aaa" font-size="10" font-family="DM Mono,monospace">11:30–13:30 · free time</text>
+      <!-- Rhine river (horizontal, near Basel) -->
+      <path d="M30,58 C70,52 110,48 160,45 C200,43 240,44 290,46 C320,47 345,50 365,54" stroke="#4a8aaa" stroke-width="6" fill="none" stroke-opacity="0.4" stroke-linecap="round"/>
+      <text x="290" y="38" fill="#4a8aaa" font-size="9" font-family="DM Mono,monospace" fill-opacity="0.7">Rhine →</text>
 
-  <!-- Dole -->
-  <circle cx="168" cy="330" r="5" fill="#7ec8a4" opacity="0.7"/>
-  <line x1="168" y1="330" x2="210" y2="330" stroke="#3a5a3a" stroke-width="1"/>
-  <text x="214" y="334" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Dole</text>
-  <text x="214" y="347" fill="#666" font-size="10" font-family="DM Mono,monospace">Pasteur's birthplace</text>
+      <!-- Jura mountain ridge (right/east side of route, from ~Beaune level down to Mulhouse) -->
+      <path d="M270,450 C278,420 282,390 285,360 C288,330 286,300 284,270 C282,240 280,210 278,180 C276,155 274,130 272,110" stroke="#4a5a3a" stroke-width="0" fill="none"/>
+      <!-- Jura as filled ridge shape -->
+      <path d="M265,460 L272,445 L268,438 L275,425 L270,418 L278,405 L274,398 L280,383 L276,375 L283,360 L278,352 L285,337 L280,328 L287,312 L282,303 L288,287 L283,278 L289,262 L284,253 L290,237 L285,228 L291,212 L286,202 L292,185 L288,175 L294,158 L290,148 L295,130 L291,118 L296,100 L315,100 L315,460 Z" fill="#2a3a1a" fill-opacity="0.4" stroke="#3a5a2a" stroke-width="0.5" stroke-opacity="0.6"/>
+      <text x="305" y="320" fill="#5a7a4a" font-size="10" font-family="DM Mono,monospace" font-style="italic" transform="rotate(90, 305, 320)">JURA MOUNTAINS</text>
 
-  <!-- Jura mountains (right) -->
-  <circle cx="165" cy="370" r="5" fill="#7ec8a4" opacity="0.7"/>
-  <line x1="165" y1="370" x2="210" y2="370" stroke="#3a5a3a" stroke-width="1"/>
-  <text x="214" y="374" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Jura</text>
-  <text x="214" y="387" fill="#666" font-size="10" font-family="DM Mono,monospace">right side · Comté</text>
+      <!-- Alsace plain (right side, after Mulhouse) -->
+      <rect x="268" y="100" width="40" height="70" fill="#2a3a18" fill-opacity="0.15" rx="2"/>
+      <text x="280" y="140" fill="#5a7a4a" font-size="8" font-family="DM Mono,monospace">Alsace</text>
 
-  <!-- Besançon comfort stop -->
-  <circle cx="160" cy="415" r="7" fill="#2a2a2a" stroke="#e8d48b" stroke-width="1.5"/>
-  <text x="42" y="411" fill="#e8d48b" font-size="11" font-family="DM Mono,monospace" text-anchor="end">~15:15</text>
-  <text x="42" y="425" fill="#aaa" font-size="10" font-family="DM Mono,monospace" text-anchor="end">Besançon</text>
-  <line x1="43" y1="415" x2="153" y2="415" stroke="#444" stroke-width="1" stroke-dasharray="3,3"/>
-  <text x="42" y="440" fill="#666" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Victor Hugo's</text>
-  <text x="42" y="452" fill="#666" font-size="9" font-family="DM Mono,monospace" text-anchor="end">hometown</text>
+      <!-- Bresse plain label (east/right of A6 between Lyon and Macon) -->
+      <text x="240" y="820" fill="#4a6a3a" font-size="10" font-family="DM Mono,monospace" font-style="italic" fill-opacity="0.7">Bresse</text>
+      <text x="240" y="833" fill="#4a6a3a" font-size="8" font-family="DM Mono,monospace" fill-opacity="0.6">plains →</text>
 
-  <!-- Montbéliard -->
-  <circle cx="160" cy="470" r="5" fill="#7ec8a4" opacity="0.7"/>
-  <line x1="160" y1="470" x2="210" y2="470" stroke="#3a5a3a" stroke-width="1"/>
-  <text x="214" y="474" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Montbéliard</text>
-  <text x="214" y="487" fill="#666" font-size="10" font-family="DM Mono,monospace">Peugeot founded 1810</text>
+      <!-- Burgundy wine region shading (between Macon and Beaune, left side) -->
+      <path d="M80,660 C78,640 76,620 78,600 C80,580 82,565 80,548 C78,532 76,518 78,505 C80,492 82,480 80,468 C78,456 76,444 80,432 C84,420 88,412 86,402 L102,402 C104,415 102,426 104,438 C106,450 108,462 106,475 C104,488 102,500 104,513 C106,526 108,540 106,555 C104,570 102,585 104,600 C106,615 108,630 106,648 C104,656 100,665 98,672 Z" fill="#5a2a6a" fill-opacity="0.12" stroke="#5a2a6a" stroke-width="0.5" stroke-opacity="0.3"/>
+      <text x="58" y="540" fill="#8a5aaa" font-size="9" font-family="DM Mono,monospace" font-style="italic" fill-opacity="0.7" transform="rotate(-90, 58, 540)">Côte d'Or / Burgundy</text>
 
-  <!-- Mulhouse -->
-  <circle cx="161" cy="515" r="5" fill="#7ec8a4" opacity="0.7"/>
-  <line x1="161" y1="515" x2="210" y2="515" stroke="#3a5a3a" stroke-width="1"/>
-  <text x="214" y="519" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Mulhouse</text>
-  <text x="214" y="532" fill="#666" font-size="10" font-family="DM Mono,monospace">Car museum (world's largest)</text>
+      <!-- ── MOTORWAY PATHS ── -->
 
-  <!-- BASEL -->
-  <circle cx="168" cy="590" r="12" fill="#7ec8a4"/>
-  <text x="188" y="594" fill="#7ec8a4" font-size="14" font-family="DM Mono,monospace" font-weight="500">BASEL</text>
-  <text x="188" y="609" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Viking Hlin · 17:00</text>
+      <!-- A6 leg: Lyon (bottom) → Beaune (mid) — runs roughly north, slight meander left -->
+      <!-- Uses 2 strokes: thick dark + thin accent for road look -->
+      <path id="routeA6" d="M160,940 C158,900 156,860 155,820 C154,790 153,765 152,740 C151,715 150,688 150,660 C150,630 151,605 152,578 C153,552 154,528 153,505 C152,483 150,462 150,445 C150,428 151,415 152,402" stroke="#333" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M160,940 C158,900 156,860 155,820 C154,790 153,765 152,740 C151,715 150,688 150,660 C150,630 151,605 152,578 C153,552 154,528 153,505 C152,483 150,462 150,445 C150,428 151,415 152,402" stroke="#e8d48b" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="12,5"/>
 
-  <!-- Legend -->
-  <circle cx="16" cy="570" r="7" fill="#2a2a2a" stroke="#e8d48b" stroke-width="1.5"/>
-  <text x="28" y="574" fill="#888" font-size="10" font-family="DM Mono,monospace">comfort stop</text>
-  <circle cx="16" cy="588" r="5" fill="#7ec8a4" opacity="0.8"/>
-  <text x="28" y="592" fill="#888" font-size="10" font-family="DM Mono,monospace">point of interest</text>
-</svg>
-```
+      <!-- Exit ramp at Chalon-Nord: branch right toward wine road -->
+      <path d="M152,402 C153,395 156,388 162,382 C168,376 176,372 182,368" stroke="#e8d48b" stroke-width="2" fill="none" stroke-opacity="0.6" stroke-dasharray="4,3"/>
 
+      <!-- Wine road: small squiggle into Beaune -->
+      <path d="M182,368 C188,360 192,352 192,344 C192,336 190,328 188,320 C186,312 184,304 184,295" stroke="#c8a840" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+      <text x="198" y="356" fill="#c8a840" font-size="9" font-family="DM Mono,monospace" fill-opacity="0.85">Route des Grands Crus</text>
+
+      <!-- A36 leg: Beaune → Basel — bends northeast, then east toward Basel -->
+      <path id="routeA36" d="M152,402 C151,390 150,375 150,362 C150,348 150,336 151,322 C152,308 154,294 155,278 C156,262 156,248 157,234 C158,220 160,208 162,195 C164,182 166,170 168,158 C170,146 172,133 174,120 C176,108 178,95 180,82 C182,70 184,60 185,50" stroke="#333" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M152,402 C151,390 150,375 150,362 C150,348 150,336 151,322 C152,308 154,294 155,278 C156,262 156,248 157,234 C158,220 160,208 162,195 C164,182 166,170 168,158 C170,146 172,133 174,120 C176,108 178,95 180,82 C182,70 184,60 185,50" stroke="#e8d48b" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="12,5"/>
+
+      <!-- ── MOTORWAY LABELS ── -->
+      <rect x="118" y="700" width="28" height="16" rx="3" fill="#003399" fill-opacity="0.8"/>
+      <text x="132" y="712" fill="white" font-size="10" font-family="DM Mono,monospace" font-weight="500" text-anchor="middle">A6</text>
+
+      <rect x="118" y="580" width="28" height="16" rx="3" fill="#003399" fill-opacity="0.8"/>
+      <text x="132" y="592" fill="white" font-size="10" font-family="DM Mono,monospace" font-weight="500" text-anchor="middle">A6</text>
+
+      <rect x="118" y="300" width="30" height="16" rx="3" fill="#003399" fill-opacity="0.8"/>
+      <text x="133" y="312" fill="white" font-size="10" font-family="DM Mono,monospace" font-weight="500" text-anchor="middle">A36</text>
+
+      <rect x="118" y="160" width="30" height="16" rx="3" fill="#003399" fill-opacity="0.8"/>
+      <text x="133" y="172" fill="white" font-size="10" font-family="DM Mono,monospace" font-weight="500" text-anchor="middle">A36</text>
+
+      <!-- ── NORTH ARROW ── -->
+      <g transform="translate(340,930)">
+        <circle cx="0" cy="0" r="18" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="1"/>
+        <polygon points="0,-13 -5,6 0,2 5,6" fill="#e8d48b"/>
+        <polygon points="0,-13 -5,6 0,2 5,6" fill="#555" transform="rotate(180)"/>
+        <text x="0" y="-16" fill="#e8d48b" font-size="9" font-family="DM Mono,monospace" text-anchor="middle">N</text>
+      </g>
+
+      <!-- ── SCALE BAR ── -->
+      <g transform="translate(22, 945)">
+        <line x1="0" y1="0" x2="60" y2="0" stroke="#666" stroke-width="1.5"/>
+        <line x1="0" y1="-4" x2="0" y2="4" stroke="#666" stroke-width="1.5"/>
+        <line x1="60" y1="-4" x2="60" y2="4" stroke="#666" stroke-width="1.5"/>
+        <text x="30" y="-7" fill="#666" font-size="9" font-family="DM Mono,monospace" text-anchor="middle">~50 km</text>
+      </g>
+
+      <!-- ══════════════════════════════ -->
+      <!-- ── STOPS & CITIES ── -->
+      <!-- ══════════════════════════════ -->
+
+      <!-- ── LYON (bottom) ── -->
+      <circle cx="160" cy="940" r="14" fill="#1a1a1a" stroke="#e8d48b" stroke-width="2.5"/>
+      <text x="160" y="944" fill="#e8d48b" font-size="11" font-family="DM Mono,monospace" font-weight="700" text-anchor="middle">LYN</text>
+      <text x="180" y="934" fill="#e8d48b" font-size="13" font-family="DM Mono,monospace" font-weight="700">LYON</text>
+      <text x="180" y="950" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Quai Claude Bernard</text>
+      <text x="180" y="963" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Viking Buri · 08:00</text>
+      <!-- Departure pin -->
+      <rect x="139" y="960" width="42" height="14" rx="3" fill="#2a2a0a" stroke="#e8d48b" stroke-width="1"/>
+      <text x="160" y="971" fill="#e8d48b" font-size="9" font-family="DM Mono,monospace" text-anchor="middle">DEPART 08:30</text>
+
+      <!-- ── Villefranche-sur-Saône (small town, A6, ~30km from Lyon) ── -->
+      <circle cx="153" cy="876" r="3" fill="#444"/>
+      <text x="100" y="874" fill="#555" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Villefranche</text>
+      <text x="100" y="885" fill="#444" font-size="8" font-family="DM Mono,monospace" text-anchor="end">s/Saône · 30km</text>
+      <line x1="101" y1="876" x2="150" y2="876" stroke="#333" stroke-width="0.5" stroke-dasharray="2,2"/>
+
+      <!-- ── Tournus (where Patrick starts) ── -->
+      <circle cx="151" cy="792" r="4" fill="#5a4a2a" stroke="#c8a840" stroke-width="1"/>
+      <text x="100" y="790" fill="#c8a840" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Tournus</text>
+      <text x="100" y="802" fill="#888" font-size="8" font-family="DM Mono,monospace" text-anchor="end">Patrick joins here</text>
+      <line x1="101" y1="792" x2="147" y2="792" stroke="#c8a840" stroke-width="0.5" stroke-dasharray="2,2" stroke-opacity="0.6"/>
+
+      <!-- ── MÂCON comfort stop ── -->
+      <circle cx="151" cy="748" r="9" fill="#1a1a1a" stroke="#e8d48b" stroke-width="2"/>
+      <text x="151" y="752" fill="#e8d48b" font-size="8" font-family="DM Mono,monospace" font-weight="700" text-anchor="middle">P</text>
+      <text x="100" y="742" fill="#e8d48b" font-size="11" font-family="DM Mono,monospace" font-weight="500" text-anchor="end">~10:15</text>
+      <text x="100" y="756" fill="#ccc" font-size="10" font-family="DM Mono,monospace" text-anchor="end">MÂCON</text>
+      <text x="100" y="769" fill="#888" font-size="9" font-family="DM Mono,monospace" text-anchor="end">La Salle/St-Ambreuil</text>
+      <text x="100" y="781" fill="#666" font-size="8" font-family="DM Mono,monospace" text-anchor="end">20 min stop · 75km</text>
+      <line x1="101" y1="748" x2="142" y2="748" stroke="#e8d48b" stroke-width="0.8" stroke-dasharray="3,2" stroke-opacity="0.5"/>
+
+      <!-- Bresse callout (east/right of Macon) -->
+      <line x1="160" y1="800" x2="228" y2="800" stroke="#3a5a3a" stroke-width="0.8"/>
+      <circle cx="160" cy="800" r="3" fill="#7ec8a4" opacity="0.6"/>
+      <text x="232" y="798" fill="#7ec8a4" font-size="10" font-family="DM Mono,monospace">▶ Bresse region</text>
+      <text x="232" y="810" fill="#5a8a6a" font-size="9" font-family="DM Mono,monospace">AOC chicken · right</text>
+
+      <!-- ── Chalon-sur-Saône (exit) ── -->
+      <circle cx="151" cy="688" r="4" fill="#444" stroke="#666" stroke-width="1"/>
+      <text x="100" y="686" fill="#777" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Chalon-sur-Saône</text>
+      <text x="100" y="698" fill="#555" font-size="8" font-family="DM Mono,monospace" text-anchor="end">Exit Chalon-Nord →</text>
+      <line x1="101" y1="688" x2="147" y2="688" stroke="#555" stroke-width="0.5" stroke-dasharray="2,2"/>
+      <!-- Exit arrow toward wine road -->
+      <path d="M154,688 C162,685 170,678 176,670" stroke="#c8a840" stroke-width="1.5" fill="none" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+
+      <!-- Côte de Beaune vineyards strip -->
+      <rect x="165" y="640" width="18" height="60" rx="3" fill="#5a2a6a" fill-opacity="0.2" stroke="#8a5aaa" stroke-width="0.5" stroke-opacity="0.4"/>
+      <text x="186" y="676" fill="#8a5aaa" font-size="8" font-family="DM Mono,monospace" fill-opacity="0.8">Côte de</text>
+      <text x="186" y="687" fill="#8a5aaa" font-size="8" font-family="DM Mono,monospace" fill-opacity="0.8">Beaune</text>
+
+      <!-- ── BEAUNE (main stop) ── -->
+      <circle cx="184" cy="610" r="14" fill="#1a1a1a" stroke="#e8d48b" stroke-width="2.5"/>
+      <text x="184" y="614" fill="#e8d48b" font-size="8" font-family="DM Mono,monospace" font-weight="700" text-anchor="middle">BKNE</text>
+      <text x="204" y="604" fill="#e8d48b" font-size="13" font-family="DM Mono,monospace" font-weight="700">BEAUNE</text>
+      <text x="204" y="618" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Parking Louis Very</text>
+      <text x="204" y="631" fill="#aaa" font-size="10" font-family="DM Mono,monospace">11:30 → 13:30</text>
+      <rect x="164" y="628" width="40" height="14" rx="3" fill="#2a2a0a" stroke="#e8d48b" stroke-width="1"/>
+      <text x="184" y="639" fill="#e8d48b" font-size="8" font-family="DM Mono,monospace" text-anchor="middle">FREE TIME</text>
+
+      <!-- Hôtel-Dieu icon indicator -->
+      <text x="204" y="652" fill="#8a5aaa" font-size="8" font-family="DM Mono,monospace">🏛 Hospices · Place Carnot</text>
+
+      <!-- ── Chalon-sur-Saône junction note (A6→A36) ── -->
+      <!-- Route kink where A6 continues north but we go A36 northeast -->
+      <circle cx="150" cy="505" r="4" fill="#3a3a1a" stroke="#c8a840" stroke-width="1.2"/>
+      <text x="100" y="503" fill="#888" font-size="9" font-family="DM Mono,monospace" text-anchor="end">A6 → A36</text>
+      <text x="100" y="515" fill="#666" font-size="8" font-family="DM Mono,monospace" text-anchor="end">junction · northeast</text>
+      <line x1="101" y1="505" x2="146" y2="505" stroke="#555" stroke-width="0.5" stroke-dasharray="2,2"/>
+
+      <!-- ── Dole ── -->
+      <circle cx="153" cy="452" r="5" fill="#2a2a1a" stroke="#7ec8a4" stroke-width="1.5"/>
+      <text x="100" y="450" fill="#7ec8a4" font-size="10" font-family="DM Mono,monospace" text-anchor="end">Dole</text>
+      <text x="100" y="462" fill="#5a8a6a" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Pasteur's birthplace</text>
+      <text x="100" y="474" fill="#555" font-size="8" font-family="DM Mono,monospace" text-anchor="end">left side · ~60km</text>
+      <line x1="101" y1="452" x2="148" y2="452" stroke="#3a5a3a" stroke-width="0.8" stroke-dasharray="2,2"/>
+
+      <!-- Jura mountains callout (right side visible) -->
+      <line x1="160" y1="420" x2="262" y2="420" stroke="#3a5a2a" stroke-width="0.8"/>
+      <circle cx="160" cy="420" r="3" fill="#5a7a4a" opacity="0.7"/>
+      <text x="265" y="418" fill="#5a8a4a" font-size="10" font-family="DM Mono,monospace">▶ Jura ridge</text>
+      <text x="265" y="430" fill="#4a6a3a" font-size="9" font-family="DM Mono,monospace">Jurassic-era limestone</text>
+      <text x="265" y="441" fill="#4a6a3a" font-size="9" font-family="DM Mono,monospace">Comté · vin jaune</text>
+
+      <!-- ── Poligny / Arbois wine area ── -->
+      <circle cx="157" cy="388" r="3" fill="#444"/>
+      <text x="100" y="390" fill="#555" font-size="8" font-family="DM Mono,monospace" text-anchor="end">Poligny / Arbois</text>
+      <text x="100" y="400" fill="#444" font-size="7" font-family="DM Mono,monospace" text-anchor="end">vin jaune country</text>
+      <line x1="101" y1="388" x2="154" y2="388" stroke="#333" stroke-width="0.5" stroke-dasharray="2,2"/>
+
+      <!-- ── BESANÇON comfort stop ── -->
+      <circle cx="158" cy="335" r="9" fill="#1a1a1a" stroke="#e8d48b" stroke-width="2"/>
+      <text x="158" y="339" fill="#e8d48b" font-size="8" font-family="DM Mono,monospace" font-weight="700" text-anchor="middle">P</text>
+      <text x="100" y="329" fill="#e8d48b" font-size="11" font-family="DM Mono,monospace" font-weight="500" text-anchor="end">~15:15</text>
+      <text x="100" y="343" fill="#ccc" font-size="10" font-family="DM Mono,monospace" text-anchor="end">BESANÇON</text>
+      <text x="100" y="356" fill="#888" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Aire d'Écot</text>
+      <text x="100" y="368" fill="#666" font-size="8" font-family="DM Mono,monospace" text-anchor="end">20 min · Victor Hugo</text>
+      <line x1="101" y1="335" x2="149" y2="335" stroke="#e8d48b" stroke-width="0.8" stroke-dasharray="3,2" stroke-opacity="0.5"/>
+      <!-- Vauban citadel note -->
+      <text x="176" y="330" fill="#7777aa" font-size="8" font-family="DM Mono,monospace">🏰 Vauban citadel</text>
+      <text x="176" y="340" fill="#6666aa" font-size="8" font-family="DM Mono,monospace">left · UNESCO</text>
+
+      <!-- ── Baume-les-Dames / small intermediate ── -->
+      <circle cx="161" cy="296" r="3" fill="#3a3a3a"/>
+      <text x="100" y="298" fill="#444" font-size="8" font-family="DM Mono,monospace" text-anchor="end">Baume-les-Dames</text>
+      <line x1="101" y1="296" x2="158" y2="296" stroke="#2a2a2a" stroke-width="0.5" stroke-dasharray="2,2"/>
+
+      <!-- ── Montbéliard ── -->
+      <circle cx="166" cy="248" r="5" fill="#2a2a1a" stroke="#7ec8a4" stroke-width="1.5"/>
+      <text x="100" y="246" fill="#7ec8a4" font-size="10" font-family="DM Mono,monospace" text-anchor="end">Montbéliard</text>
+      <text x="100" y="258" fill="#5a8a6a" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Peugeot · 1810</text>
+      <text x="100" y="270" fill="#555" font-size="8" font-family="DM Mono,monospace" text-anchor="end">left side · factory</text>
+      <line x1="101" y1="248" x2="161" y2="248" stroke="#3a5a3a" stroke-width="0.8" stroke-dasharray="2,2"/>
+
+      <!-- ── Belfort gap (geographic pass between Jura and Vosges) ── -->
+      <circle cx="168" cy="210" r="3" fill="#3a3a2a" stroke="#888" stroke-width="0.8"/>
+      <text x="182" y="208" fill="#666" font-size="8" font-family="DM Mono,monospace">Trouée de Belfort</text>
+      <text x="182" y="218" fill="#555" font-size="8" font-family="DM Mono,monospace">Jura ↔ Vosges gap</text>
+
+      <!-- Vosges mountains label (left side after Belfort) -->
+      <text x="45" y="215" fill="#4a4a5a" font-size="9" font-family="DM Mono,monospace" font-style="italic" fill-opacity="0.6" transform="rotate(-90, 45, 215)">Vosges</text>
+      <path d="M52,240 L52,185" stroke="#3a3a4a" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="3,3"/>
+
+      <!-- ── Mulhouse ── -->
+      <circle cx="172" cy="170" r="5" fill="#2a2a1a" stroke="#7ec8a4" stroke-width="1.5"/>
+      <text x="100" y="168" fill="#7ec8a4" font-size="10" font-family="DM Mono,monospace" text-anchor="end">Mulhouse</text>
+      <text x="100" y="180" fill="#5a8a6a" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Cité de l'Auto</text>
+      <text x="100" y="192" fill="#555" font-size="8" font-family="DM Mono,monospace" text-anchor="end">500+ cars · Bugatti</text>
+      <line x1="101" y1="170" x2="167" y2="170" stroke="#3a5a3a" stroke-width="0.8" stroke-dasharray="2,2"/>
+
+      <!-- ── Saint-Louis / border crossing zone ── -->
+      <circle cx="178" cy="120" r="3" fill="#3a3a3a" stroke="#666" stroke-width="0.8"/>
+      <text x="192" y="118" fill="#666" font-size="8" font-family="DM Mono,monospace">Saint-Louis</text>
+      <text x="192" y="128" fill="#555" font-size="8" font-family="DM Mono,monospace">FR/CH border zone</text>
+
+      <!-- Dreiländereck triangle indicator -->
+      <polygon points="185,68 178,80 192,80" fill="#7ec8a4" fill-opacity="0.7"/>
+      <text x="198" y="72" fill="#7ec8a4" font-size="9" font-family="DM Mono,monospace">Dreiländereck</text>
+      <text x="198" y="82" fill="#5a8a6a" font-size="8" font-family="DM Mono,monospace">FR · DE · CH</text>
+
+      <!-- ── BASEL (top) ── -->
+      <circle cx="185" cy="50" r="14" fill="#1a2a1a" stroke="#7ec8a4" stroke-width="2.5"/>
+      <text x="185" y="54" fill="#7ec8a4" font-size="9" font-family="DM Mono,monospace" font-weight="700" text-anchor="middle">BSL</text>
+      <text x="205" y="44" fill="#7ec8a4" font-size="13" font-family="DM Mono,monospace" font-weight="700">BASEL</text>
+      <text x="205" y="58" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Viking Hlin</text>
+      <text x="205" y="70" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Westquaistrasse 75</text>
+      <rect x="165" y="72" width="42" height="14" rx="3" fill="#0a1a0a" stroke="#7ec8a4" stroke-width="1"/>
+      <text x="186" y="83" fill="#7ec8a4" font-size="8" font-family="DM Mono,monospace" text-anchor="middle">ARRIVE 17:00</text>
+
+      <!-- ── LEGEND ── -->
+      <g transform="translate(10, 955)">
+        <!-- Box -->
+        <rect x="0" y="0" width="140" height="52" rx="4" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+        <!-- comfort stop -->
+        <circle cx="14" cy="12" r="7" fill="#1a1a1a" stroke="#e8d48b" stroke-width="1.8"/>
+        <text x="14" y="16" fill="#e8d48b" font-size="7" font-family="DM Mono,monospace" text-anchor="middle">P</text>
+        <text x="26" y="16" fill="#888" font-size="9" font-family="DM Mono,monospace">comfort stop</text>
+        <!-- city stop -->
+        <circle cx="14" cy="30" r="7" fill="#1a1a1a" stroke="#e8d48b" stroke-width="2"/>
+        <text x="26" y="34" fill="#888" font-size="9" font-family="DM Mono,monospace">main stop</text>
+        <!-- POI -->
+        <circle cx="14" cy="47" r="5" fill="#2a2a1a" stroke="#7ec8a4" stroke-width="1.5"/>
+        <text x="26" y="51" fill="#888" font-size="9" font-family="DM Mono,monospace">point of interest</text>
+      </g>
+
+    </svg>
   </div>
 
-  <div class="section-label">Points of interest</div>
+  <div class="section-label" style="margin-top:8px">Leg-by-leg guide</div>
 
   <div class="poi-card">
     <div class="poi-header">
       <div class="poi-dot" style="background:#e8d48b"></div>
       <div class="poi-name">Lyon → Mâcon</div>
-      <div class="poi-km">~75 km</div>
+      <div class="poi-km">~75 km · A6</div>
     </div>
-    <div class="poi-side">RIGHT side of coach</div>
-    <div class="poi-desc">Bresse region begins just east of the A6 — homeland of France's only AOC chicken. Flat plains, farming country.</div>
+    <div class="poi-side">RIGHT side → Bresse plains · LEFT side → Saône valley</div>
+    <div class="poi-desc">Flat agricultural corridor. Saône river visible on the left at times. East of the A6 begins Bresse — France's only AOC chicken territory (blue feet, white feathers, red comb). You'll also pass Villefranche-sur-Saône around the 30km mark — gateway to Beaujolais wine country.</div>
   </div>
 
   <div class="poi-card">
     <div class="poi-header">
       <div class="poi-dot" style="background:#e8d48b"></div>
-      <div class="poi-name">Chalon-Nord → Beaune</div>
-      <div class="poi-km">~25 km</div>
+      <div class="poi-name">Mâcon stop → Chalon-Nord exit</div>
+      <div class="poi-km">~25 km · A6</div>
     </div>
-    <div class="poi-side">BOTH sides — vineyards</div>
-    <div class="poi-desc">Route des Grands Crus. Côte de Beaune begins. Vineyard plots (climates) on the gentle slopes — some of the most valuable farmland on earth per square metre.</div>
+    <div class="poi-side">LEFT side → Côte d'Or slopes beginning</div>
+    <div class="poi-desc">Terrain shifts. The gentle slopes to the left are the start of the Côte d'Or — some of the world's most expensive farmland per square metre. Tournus (where Patrick boarded from) is just before Mâcon. Exit Chalon-Nord to join the Route des Grands Crus — a narrow wine road through the villages.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#e8d48b; border:2px solid #e8d48b"></div>
+      <div class="poi-name">Wine road → Beaune</div>
+      <div class="poi-km">~20 km · D974</div>
+    </div>
+    <div class="poi-side">BOTH sides → famous vineyard villages</div>
+    <div class="poi-desc">Passing through: Meursault, Puligny-Montrachet (world's finest whites), Pommard, Volnay, Nuits-Saint-Georges. Each village sign is a wine label you'd pay €30+ for in a restaurant. Hospices de Beaune visible as you enter town.</div>
   </div>
 
   <div class="poi-card">
     <div class="poi-header">
       <div class="poi-dot" style="background:#7ec8a4"></div>
-      <div class="poi-name">Dole</div>
-      <div class="poi-km">~60 km from Beaune</div>
+      <div class="poi-name">Beaune → Dole</div>
+      <div class="poi-km">~60 km · A36</div>
     </div>
-    <div class="poi-side">LEFT side</div>
-    <div class="poi-desc">Louis Pasteur's birthplace. Town on the Doubs. Quick mention as you pass the exit sign.</div>
+    <div class="poi-side">RIGHT side → Jura ridge appearing · LEFT → Doubs valley</div>
+    <div class="poi-desc">Route bends northeast on the A36. The Doubs river starts appearing on the left. The Jura ridge begins rising on the right — limestone mountains, folded by the same ancient collision that built the Alps. Dole exit sign on the left — Pasteur's birthplace, good moment to mention.</div>
   </div>
 
   <div class="poi-card">
     <div class="poi-header">
       <div class="poi-dot" style="background:#7ec8a4"></div>
-      <div class="poi-name">Jura Mountains</div>
-      <div class="poi-km">visible ~70–120 km from Beaune</div>
+      <div class="poi-name">Dole → Besançon</div>
+      <div class="poi-km">~40 km · A36</div>
     </div>
-    <div class="poi-side">RIGHT side of coach</div>
-    <div class="poi-desc">Mountains that gave the Jurassic period its name. Dinosaur-era limestone. Comté cheese and vin jaune come from up there. Good window moment — visible for a long stretch.</div>
+    <div class="poi-side">RIGHT → Jura peaks clearly visible · LEFT → Doubs bends</div>
+    <div class="poi-desc">Best Jura views in this stretch — the ridge is close and dramatic. The road follows the Doubs valley. Poligny and Arbois are in the Jura to the right — where vin jaune (yellow wine) is made, aged for 6 years minimum under a layer of yeast. Besançon citadel appears dramatically on a hill surrounded by the Doubs loop.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#e8d48b"></div>
+      <div class="poi-name">Besançon stop</div>
+      <div class="poi-km">Aire d'Écot · 20 min</div>
+    </div>
+    <div class="poi-side">LEFT → Vauban citadel on hill · UNESCO listed</div>
+    <div class="poi-desc">Victor Hugo born here 1802. The Vauban citadel (17th century) sits on a rocky spur almost entirely encircled by the river Doubs — visible from the bypass on a clear day. Remind pax ~1h45 to Basel from here.</div>
   </div>
 
   <div class="poi-card">
     <div class="poi-header">
       <div class="poi-dot" style="background:#7ec8a4"></div>
-      <div class="poi-name">Besançon</div>
-      <div class="poi-km">~100 km from Beaune</div>
+      <div class="poi-name">Besançon → Montbéliard</div>
+      <div class="poi-km">~45 km · A36</div>
     </div>
-    <div class="poi-side">LEFT — citadel visible from bypass</div>
-    <div class="poi-desc">Victor Hugo's birthplace. UNESCO Vauban citadel sits dramatically on a loop of the Doubs river — visible from the A36 bypass if clear weather.</div>
+    <div class="poi-side">RIGHT → Jura still visible · LEFT → widening plain</div>
+    <div class="poi-desc">Terrain opens out as the Jura begins to recede. Montbéliard exit on the left — Peugeot founded here in 1810 (started with clock springs and saw blades before pivoting to bikes then cars). The factory complex is still visible near the road. The town has an Alsatian feel — Protestant, historically a small German-speaking principality until 1793.</div>
   </div>
 
   <div class="poi-card">
     <div class="poi-header">
       <div class="poi-dot" style="background:#7ec8a4"></div>
-      <div class="poi-name">Montbéliard</div>
-      <div class="poi-km">~130 km from Beaune</div>
+      <div class="poi-name">Montbéliard → Mulhouse</div>
+      <div class="poi-km">~40 km · A36</div>
     </div>
-    <div class="poi-side">LEFT side</div>
-    <div class="poi-desc">Peugeot was founded here in 1810 — started making springs and saw blades. The factory is still here. Lion logo visible on some buildings near the exit.</div>
+    <div class="poi-side">LEFT → Vosges range appearing · RIGHT → Jura fading</div>
+    <div class="poi-desc">The Trouée de Belfort (Belfort Gap) — a flat corridor between the Jura to the south and the Vosges mountains to the north. Historically the only easy passage between the Rhine plain and France — armies, trade, and railways all used it. Alsace begins here. Architecture shifts: timber-frame houses, storks (sometimes on rooftops). Mulhouse signposted — Cité de l'Automobile, world's largest car museum (500+ vehicles, best Bugatti collection anywhere).</div>
   </div>
 
   <div class="poi-card">
     <div class="poi-header">
       <div class="poi-dot" style="background:#7ec8a4"></div>
-      <div class="poi-name">Mulhouse</div>
-      <div class="poi-km">~160 km from Beaune</div>
+      <div class="poi-name">Mulhouse → Basel</div>
+      <div class="poi-km">~35 km · A35/A2</div>
     </div>
-    <div class="poi-side">Pass-through</div>
-    <div class="poi-desc">Home of the Cité de l'Automobile — world's largest car museum, 500+ vehicles including the best Bugatti collection anywhere. Mention it in passing.</div>
+    <div class="poi-side">AHEAD → Rhine · Switzerland</div>
+    <div class="poi-desc">Final approach. Route passes Saint-Louis — last French town before the border. The Rhine appears ahead, wide and slow. Dreiländereck: France, Germany, Switzerland meet at a single point on the river. Viking Hlin docks on the Swiss bank at Westquaistrasse 75. Passports accessible — Swiss customs may board.</div>
   </div>
 
-  <div class="poi-card">
-    <div class="poi-header">
-      <div class="poi-dot" style="background:#7ec8a4"></div>
-      <div class="poi-name">Dreiländereck · Basel</div>
-      <div class="poi-km">destination</div>
-    </div>
-    <div class="poi-side">Rhine — AHEAD</div>
-    <div class="poi-desc">Three-country corner: France, Germany, Switzerland meet at the Rhine. The Viking Hlin docks right at Westquaistrasse 75 — Swiss side. Remind pax to have passports accessible.</div>
-  </div>
-
-<a class="map-btn" style="margin-top:10px" href="https://maps.google.com/?saddr=Lyon+Quai+Claude+Bernard&daddr=Beaune+Parking+Louis+Very+to:Basel+Westquaistrasse+75" target="_blank">↗ Full route in Google Maps</a>
-
+  <a class="map-btn" style="margin-top:10px" href="https://maps.google.com/?saddr=Lyon+Quai+Claude+Bernard&daddr=Beaune+Parking+Louis+Very+to:Basel+Westquaistrasse+75" target="_blank">↗ Full route in Google Maps</a>
 </div><!-- end map panel -->
 
 <!-- ═══════════ QUIZ TAB ═══════════ -->
-
 <div class="panel" id="tab-quiz">
 
   <div class="section-label" style="padding-top:10px">Quiz · Viking Lyon–Basel</div>
@@ -796,7 +972,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- SECTION A -->
-
   <div class="quiz-section">
     <div class="quiz-section-title">Section A — Yes or No · French Culture & Connections</div>
     <div class="quiz-q"><div class="quiz-num">1</div><div style="flex:1">Is Brie a type of French wine?<div class="quiz-ans-text" id="qa-A1">No — it's a cheese from the Brie region (Île-de-France).</div></div><div class="quiz-ans" onclick="revealAns('A1')">ANS</div></div>
@@ -814,7 +989,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- SECTION B -->
-
   <div class="quiz-section">
     <div class="quiz-section-title">Section B — Famous French Trivia</div>
     <div class="quiz-q"><div class="quiz-num">1</div><div style="flex:1">Who was the target in "Day of the Jackal"?<div class="quiz-ans-text" id="qa-B1">President Charles de Gaulle.</div></div><div class="quiz-ans" onclick="revealAns('B1')">ANS</div></div>
@@ -830,7 +1004,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- SECTION C -->
-
   <div class="quiz-section">
     <div class="quiz-section-title">Section C — Yes/No: French Origin?</div>
     <div class="quiz-q"><div class="quiz-num">1</div><div style="flex:1">Ballet<div class="quiz-ans-text" id="qa-C1">Yes — from French "ballet," rooted in Italian "balletto" but developed as an art form in France.</div></div><div class="quiz-ans" onclick="revealAns('C1')">ANS</div></div>
@@ -846,7 +1019,6 @@ display: flex; align-items: center; justify-content: space-between;
   </div>
 
   <!-- SECTION D -->
-
   <div class="quiz-section">
     <div class="quiz-section-title">Section D — Fake Friends · What do they really mean?</div>
     <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Préservatif</div><div class="quiz-ans-text" id="qa-D1">Condom (not preservative — that's "conservateur").</div></div><div class="quiz-ans" onclick="revealAns('D1')">ANS</div></div>
@@ -867,7 +1039,6 @@ display: flex; align-items: center; justify-content: space-between;
 </div><!-- end quiz panel -->
 
 <!-- ═══════════ CONTACTS TAB ═══════════ -->
-
 <div class="panel" id="tab-contacts">
 
   <div class="section-label" style="padding-top:10px">Guides</div>
@@ -1029,6 +1200,5 @@ if (!darkMode) { document.body.classList.add('light'); document.querySelector('.
 
 renderAll();
 </script>
-
 </body>
 </html>
