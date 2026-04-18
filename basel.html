@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Lyon → Basel · 19 APR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ── THEME VARIABLES ─────────────────────────────── */
+:root {
+  --bg: #0e0e0e;
+  --surface: #1a1a1a;
+  --surface2: #222;
+  --border: #2e2e2e;
+  --accent: #e8d48b;
+  --accent2: #7ec8a4;
+  --danger: #e87c6b;
+  --text: #ede9e0;
+  --text2: #aaa;
+  --muted: #5a5a5a;
+  --done-bg: #1a241a;
+  --done-border: #3a5a3a;
+  --step-active-border: #e8d48b;
+}
+body.light {
+  --bg: #f4f1eb;
+  --surface: #ffffff;
+  --surface2: #f0ece3;
+  --border: #d8d2c4;
+  --accent: #7a5c00;
+  --accent2: #2a7a52;
+  --danger: #b03a28;
+  --text: #1a1a1a;
+  --text2: #555;
+  --muted: #999;
+  --done-bg: #eaf3ea;
+  --done-border: #8ab88a;
+  --step-active-border: #7a5c00;
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { font-size: 16px; }
+
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘DM Mono’, monospace;
+min-height: 100vh;
+overscroll-behavior: none;
+transition: background 0.2s, color 0.2s;
+}
+
+/* ── HEADER ──────────────────────────────────────── */
+header {
+background: var(–surface);
+border-bottom: 2px solid var(–accent);
+padding: 13px 16px 11px;
+position: sticky; top: 0; z-index: 200;
+display: flex; align-items: center; justify-content: space-between;
+}
+.header-left {}
+.header-title {
+font-family: ‘Syne’, sans-serif;
+font-size: 20px; font-weight: 800;
+letter-spacing: -0.5px;
+color: var(–accent);
+}
+.header-sub { font-size: 11px; color: var(–text2); margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+#clock { font-size: 22px; font-weight: 500; color: var(–text); letter-spacing: 0.06em; }
+.theme-btn {
+background: var(–surface2);
+border: 1px solid var(–border);
+border-radius: 20px;
+color: var(–text2);
+font-size: 18px;
+width: 36px; height: 36px;
+display: flex; align-items: center; justify-content: center;
+cursor: pointer;
+}
+
+/* ── PROGRESS ────────────────────────────────────── */
+.progress-bar { height: 3px; background: var(–border); position: sticky; top: 57px; z-index: 199; }
+.progress-fill { height: 100%; background: var(–accent); transition: width 0.4s ease; }
+
+/* ── TABS ────────────────────────────────────────── */
+.tabs {
+display: flex;
+background: var(–surface);
+border-bottom: 1px solid var(–border);
+position: sticky; top: 60px; z-index: 198;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+flex: 1;
+min-width: 70px;
+padding: 10px 4px;
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: var(–text2);
+background: none;
+border: none;
+border-bottom: 2px solid transparent;
+cursor: pointer;
+transition: color 0.15s, border-color 0.15s;
+white-space: nowrap;
+}
+.tab-btn.active { color: var(–accent); border-bottom-color: var(–accent); }
+
+/* ── PANELS ──────────────────────────────────────── */
+.panel { display: none; padding: 12px 16px 100px; }
+.panel.active { display: block; }
+
+/* ── SECTION LABEL ───────────────────────────────── */
+.section-label {
+font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+color: var(–muted); padding: 18px 0 8px;
+border-bottom: 1px solid var(–border); margin-bottom: 4px;
+}
+
+/* ── STEP CARDS ──────────────────────────────────── */
+.step {
+border: 1px solid var(–border);
+border-radius: 8px;
+margin: 7px 0;
+overflow: hidden;
+transition: border-color 0.2s, background 0.2s;
+background: var(–surface);
+}
+.step.done { background: var(–done-bg); border-color: var(–done-border); opacity: 0.65; }
+.step.active-step { border-color: var(–step-active-border); }
+
+.step-main { display: flex; align-items: stretch; min-height: 62px; cursor: pointer; }
+
+.step-check {
+width: 52px; flex-shrink: 0;
+display: flex; align-items: center; justify-content: center;
+background: var(–surface2); border-right: 1px solid var(–border);
+font-size: 20px; user-select: none;
+transition: background 0.2s;
+}
+.step.done .step-check { color: var(–accent2); }
+
+.step-info { flex: 1; padding: 11px 12px; display: flex; flex-direction: column; justify-content: center; gap: 3px; }
+.step-time { font-size: 12px; color: var(–accent); font-weight: 500; letter-spacing: 0.06em; }
+.step.done .step-time { color: var(–accent2); }
+.step-title { font-size: 16px; font-weight: 500; color: var(–text); line-height: 1.25; }
+.step.done .step-title { color: var(–muted); text-decoration: line-through; }
+.step-subtitle { font-size: 11px; color: var(–text2); margin-top: 2px; }
+
+.step-toggle {
+width: 44px; flex-shrink: 0;
+display: flex; align-items: center; justify-content: center;
+color: var(–muted); font-size: 14px; cursor: pointer;
+}
+.step-toggle.open { color: var(–accent); }
+
+/* ── EXPANDED ────────────────────────────────────── */
+.step-expanded { display: none; border-top: 1px solid var(–border); background: var(–bg); padding: 14px; gap: 10px; flex-direction: column; }
+.step-expanded.open { display: flex; }
+
+/* ── INFO BLOCKS ─────────────────────────────────── */
+.info-block { background: var(–surface); border: 1px solid var(–border); border-radius: 6px; padding: 11px 13px; }
+.info-block-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(–muted); margin-bottom: 8px; }
+.info-line { font-size: 13px; color: var(–text); line-height: 1.9; }
+.info-line span { color: var(–text2); }
+
+/* ── WALK ────────────────────────────────────────── */
+.walk-stop { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(–border); align-items: flex-start; }
+.walk-stop:last-child { border-bottom: none; }
+.walk-num { color: var(–accent); font-weight: 500; font-size: 13px; min-width: 22px; margin-top: 1px; }
+.walk-text { font-size: 13px; line-height: 1.5; color: var(–text); }
+.walk-sub { font-size: 11px; color: var(–text2); margin-top: 2px; }
+
+/* ── RESTAURANTS ─────────────────────────────────── */
+.resto { padding: 8px 0; border-bottom: 1px solid var(–border); font-size: 13px; line-height: 1.55; }
+.resto:last-child { border-bottom: none; }
+.resto strong { color: var(–accent); }
+.resto .resto-addr { color: var(–text2); font-size: 11px; }
+
+/* ── NOTES ───────────────────────────────────────── */
+.note-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(–muted); margin-bottom: 5px; }
+.note-area {
+background: var(–surface2); border: 1px solid var(–border); border-radius: 6px;
+color: var(–text); font-family: ‘DM Mono’, monospace; font-size: 14px;
+line-height: 1.6; padding: 10px 13px; width: 100%; resize: none;
+min-height: 72px; outline: none; transition: border-color 0.2s;
+}
+.note-area:focus { border-color: var(–accent); }
+.note-area::placeholder { color: var(–muted); }
+
+/* ── MAP BUTTON ──────────────────────────────────── */
+.map-btn {
+display: flex; align-items: center; justify-content: center; gap: 7px;
+background: var(–surface2); border: 1px solid var(–border); border-radius: 6px;
+color: var(–accent); font-family: ‘DM Mono’, monospace; font-size: 13px;
+padding: 10px 14px; text-decoration: none; cursor: pointer;
+transition: border-color 0.15s; letter-spacing: 0.03em;
+}
+.map-btn:active { border-color: var(–accent); }
+
+/* ── ANECDOTES ───────────────────────────────────── */
+.anecdote {
+background: var(–done-bg); border: 1px solid var(–done-border); border-radius: 6px;
+padding: 11px 13px; font-size: 13px; line-height: 1.65; color: var(–text);
+margin-bottom: 6px;
+}
+.anecdote:last-child { margin-bottom: 0; }
+.anecdote strong { color: var(–accent2); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+
+/* ── HEAD COUNT ──────────────────────────────────── */
+.hcount {
+display: flex; align-items: center; justify-content: space-between;
+background: var(–surface); border: 1px solid var(–border); border-radius: 6px;
+padding: 12px 14px;
+}
+.hcount-label { font-size: 10px; color: var(–muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+.hcount-num { font-family: ‘Syne’, sans-serif; font-size: 36px; font-weight: 800; color: var(–accent); }
+.hcount-status { font-size: 12px; color: var(–text2); margin-top: 2px; }
+.hcount-ok { color: var(–accent2) !important; }
+.hcount-warn { color: var(–danger) !important; }
+.hcount-btns { display: flex; gap: 10px; }
+.hcount-btn {
+width: 50px; height: 50px; border-radius: 6px;
+border: 1px solid var(–border); background: var(–surface2);
+color: var(–text); font-size: 26px;
+display: flex; align-items: center; justify-content: center;
+cursor: pointer; user-select: none; transition: border-color 0.15s;
+}
+.hcount-btn:active { border-color: var(–accent); background: var(–surface); }
+
+/* ── SIGN CALLS ──────────────────────────────────── */
+.sign-item { padding: 8px 0; border-bottom: 1px solid var(–border); font-size: 13px; line-height: 1.5; }
+.sign-item:last-child { border-bottom: none; }
+.sign-item strong { color: var(–accent); }
+.sign-item span { color: var(–text2); font-size: 12px; }
+
+/* ── CONTACTS ────────────────────────────────────── */
+.contact { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(–border); }
+.contact:last-child { border-bottom: none; }
+.contact-name { font-size: 14px; color: var(–text); font-weight: 500; }
+.contact-role { font-size: 11px; color: var(–text2); margin-top: 2px; }
+.contact-call {
+background: var(–done-bg); border: 1px solid var(–done-border); border-radius: 6px;
+color: var(–accent2); font-family: ‘DM Mono’, monospace; font-size: 12px;
+padding: 7px 12px; text-decoration: none; letter-spacing: 0.02em;
+flex-shrink: 0; white-space: nowrap;
+}
+
+/* ── LINK BUTTONS ────────────────────────────────── */
+.link-btn {
+display: flex; align-items: center; gap: 10px;
+background: var(–surface); border: 1px solid var(–border); border-radius: 8px;
+padding: 13px 15px; text-decoration: none; color: var(–text);
+margin-bottom: 8px; transition: border-color 0.15s;
+}
+.link-btn:active { border-color: var(–accent); }
+.link-btn-icon { font-size: 22px; flex-shrink: 0; }
+.link-btn-text { font-size: 14px; font-weight: 500; }
+.link-btn-sub { font-size: 11px; color: var(–text2); margin-top: 2px; }
+
+/* ── QUIZ ────────────────────────────────────────── */
+.quiz-section { margin-bottom: 18px; }
+.quiz-section-title {
+font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+color: var(–muted); padding: 14px 0 8px;
+border-bottom: 1px solid var(–border); margin-bottom: 8px;
+}
+.quiz-q {
+display: flex; gap: 10px; align-items: flex-start;
+padding: 9px 0; border-bottom: 1px solid var(–border); font-size: 14px; line-height: 1.5;
+}
+.quiz-q:last-child { border-bottom: none; }
+.quiz-num { color: var(–accent); min-width: 24px; font-size: 12px; margin-top: 2px; }
+.quiz-ans {
+font-size: 11px; color: var(–accent2); background: var(–done-bg);
+border: 1px solid var(–done-border); border-radius: 4px; padding: 1px 7px;
+margin-left: 6px; white-space: nowrap; cursor: pointer; user-select: none;
+flex-shrink: 0; margin-top: 2px;
+}
+.quiz-ans-text { display: none; font-size: 12px; color: var(–accent2); margin-top: 4px; }
+.quiz-ans-text.show { display: block; }
+.quiz-word { font-size: 14px; color: var(–accent); }
+.quiz-meaning { font-size: 13px; color: var(–text2); margin-top: 2px; }
+
+/* ── MAP PANEL ───────────────────────────────────── */
+.route-map {
+background: var(–surface); border: 1px solid var(–border); border-radius: 8px;
+padding: 16px; margin-bottom: 10px;
+}
+.route-map-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(–muted); margin-bottom: 12px; }
+svg.routesvg { width: 100%; height: auto; display: block; }
+
+.poi-card {
+background: var(–surface); border: 1px solid var(–border); border-radius: 8px;
+padding: 12px 14px; margin-bottom: 8px;
+}
+.poi-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.poi-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.poi-name { font-size: 15px; font-weight: 500; color: var(–text); }
+.poi-km { font-size: 11px; color: var(–text2); margin-left: auto; }
+.poi-side { font-size: 11px; color: var(–accent); margin-bottom: 4px; }
+.poi-desc { font-size: 12px; color: var(–text2); line-height: 1.55; }
+
+/* ── FOOTER ──────────────────────────────────────── */
+.footer-bar {
+position: fixed; bottom: 0; left: 0; right: 0;
+background: var(–surface); border-top: 1px solid var(–border);
+padding: 10px 16px;
+display: flex; align-items: center; justify-content: space-between;
+}
+.footer-step { font-size: 11px; color: var(–text2); }
+.footer-count { font-size: 15px; color: var(–accent); font-weight: 500; }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="header-title">LYN → BSL</div>
+    <div class="header-sub">SUN 19 APR · BRI260412 · JOSEPH</div>
+  </div>
+  <div class="header-right">
+    <div id="clock">--:--</div>
+    <div class="theme-btn" onclick="toggleTheme()" title="Toggle light/dark">☀</div>
+  </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('steps')">Steps</button>
+  <button class="tab-btn" onclick="showTab('map')">Route</button>
+  <button class="tab-btn" onclick="showTab('quiz')">Quiz</button>
+  <button class="tab-btn" onclick="showTab('contacts')">Contacts</button>
+</div>
+
+<!-- ═══════════ STEPS TAB ═══════════ -->
+
+<div class="panel active" id="tab-steps">
+
+  <!-- STEP 0: Arrive at Buri -->
+
+  <div class="section-label">Pre-mission</div>
+  <div class="step" id="step-0">
+    <div class="step-main" onclick="toggleCheck(0)">
+      <div class="step-check" id="check-0">☐</div>
+      <div class="step-info">
+        <div class="step-time">BEFORE 08:00</div>
+        <div class="step-title">Arrive at Viking Buri</div>
+        <div class="step-subtitle">Quai Claude Bernard, Lyon</div>
+      </div>
+      <div class="step-toggle" id="toggle-0" onclick="ev(event); toggleExpand(0)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-0">
+      <a class="map-btn" href="https://maps.google.com/?q=24+Quai+Claude+Bernard+Lyon" target="_blank">↗ Open in Maps</a>
+      <div><div class="note-label">Notes</div><textarea class="note-area" id="note-0" placeholder="Parking, coach plate confirmed, meeting spot…" oninput="saveNote(0)"></textarea></div>
+    </div>
+  </div>
+
+  <!-- STEP 1: Luggage + headcount -->
+
+  <div class="section-label">Lyon</div>
+  <div class="step" id="step-1">
+    <div class="step-main" onclick="toggleCheck(1)">
+      <div class="step-check" id="check-1">☐</div>
+      <div class="step-info">
+        <div class="step-time">08:00</div>
+        <div class="step-title">Luggage load + head count</div>
+        <div class="step-subtitle">Descend quai — 38 pax max this coach</div>
+      </div>
+      <div class="step-toggle" id="toggle-1" onclick="ev(event); toggleExpand(1)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-1">
+      <div class="hcount">
+        <div>
+          <div class="hcount-label">Head count</div>
+          <div class="hcount-num" id="hcountNum">0</div>
+          <div class="hcount-status" id="hcountStatus">— / 38</div>
+        </div>
+        <div class="hcount-btns">
+          <div class="hcount-btn" onclick="adjustCount(-1)">−</div>
+          <div class="hcount-btn" onclick="adjustCount(1)">+</div>
+        </div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-label">Your coach</div>
+        <div class="info-line">Vehicle 2 · <strong>DZ-873-TR</strong></div>
+        <div class="info-line">48-seater Girardot · CONF48</div>
+      </div>
+      <div><div class="note-label">Notes</div><textarea class="note-area" id="note-1" placeholder="Driver confirmed, any pax issues, luggage notes…" oninput="saveNote(1)"></textarea></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Depart Lyon -->
+
+  <div class="step" id="step-2">
+    <div class="step-main" onclick="toggleCheck(2)">
+      <div class="step-check" id="check-2">☐</div>
+      <div class="step-info">
+        <div class="step-time">08:30</div>
+        <div class="step-title">Depart Lyon</div>
+        <div class="step-subtitle">A6 north toward Beaune</div>
+      </div>
+      <div class="step-toggle" id="toggle-2" onclick="ev(event); toggleExpand(2)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-2">
+      <div class="anecdote"><strong>🎙 Roman 30km rhythm</strong>Cities along the Saône were spaced at the distance a person walks in a day — a 2000-year-old logic still visible in how towns cluster along this corridor.</div>
+      <div class="anecdote"><strong>🎙 Poulet de Bresse</strong>Just east of the A6: the only chicken with an AOC. Tricolor bird — blue feet, white feathers, red comb. Wears a metal ID ring like a wine bottle.</div>
+      <div><div class="note-label">Notes</div><textarea class="note-area" id="note-2" placeholder="Actual departure time, any delays…" oninput="saveNote(2)"></textarea></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Comfort stop Mâcon -->
+
+  <div class="step" id="step-3">
+    <div class="step-main" onclick="toggleCheck(3)">
+      <div class="step-check" id="check-3">☐</div>
+      <div class="step-info">
+        <div class="step-time">~10:15</div>
+        <div class="step-title">Comfort stop — Mâcon</div>
+        <div class="step-subtitle">Mâcon La Salle / Saint-Ambreuil · 20 min</div>
+      </div>
+      <div class="step-toggle" id="toggle-3" onclick="ev(event); toggleExpand(3)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-3">
+      <div class="info-block">
+        <div class="info-block-label">Stop protocol</div>
+        <div class="info-line">Announce: duration · meeting point · return time</div>
+        <div class="info-line">Head count before re-boarding — say it out loud</div>
+      </div>
+      <div><div class="note-label">Return time + meeting point</div><textarea class="note-area" id="note-3" placeholder="e.g. Back at coach by 10:35 — front car park entrance" oninput="saveNote(3)"></textarea></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Wine road -->
+
+  <div class="step" id="step-4">
+    <div class="step-main" onclick="toggleCheck(4)">
+      <div class="step-check" id="check-4">☐</div>
+      <div class="step-info">
+        <div class="step-time">~11:00</div>
+        <div class="step-title">Exit Chalon-Nord</div>
+        <div class="step-subtitle">Route des Grands Crus — scenic approach to Beaune</div>
+      </div>
+      <div class="step-toggle" id="toggle-4" onclick="ev(event); toggleExpand(4)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-4">
+      <div class="anecdote"><strong>🎙 Burgundy in 90 sec</strong>Two grapes only: Pinot Noir (red) and Chardonnay (white). Unit isn't the producer — it's the <em>climat</em>, the plot. Same hillside, different owner, different wine. UNESCO 2015.</div>
+      <div class="anecdote"><strong>🎙 Époisses</strong>Banned from French public transit for its smell. Washed-rind, pungent. Made right in this area.</div>
+    </div>
+  </div>
+
+  <!-- STEP 5: BEAUNE -->
+
+  <div class="step active-step" id="step-5">
+    <div class="step-main" onclick="toggleCheck(5)">
+      <div class="step-check" id="check-5">☐</div>
+      <div class="step-info">
+        <div class="step-time">11:30 → 13:20</div>
+        <div class="step-title">Beaune — Free time + lunch</div>
+        <div class="step-subtitle">Parking Louis Very · coach departs 13:30 sharp</div>
+      </div>
+      <div class="step-toggle open" id="toggle-5" onclick="ev(event); toggleExpand(5)">▾</div>
+    </div>
+    <div class="step-expanded open" id="exp-5">
+      <a class="map-btn" href="https://maps.google.com/?q=Parking+Louis+Very+Beaune" target="_blank">↗ Parking Louis Very in Maps</a>
+      <div class="info-block">
+        <div class="info-block-label">Rally point</div>
+        <div class="info-line">Place Carnot — "If you get lost, find this square."</div>
+        <div class="info-line">Return to coach: <strong>13:20</strong> · Depart: <strong>13:30</strong></div>
+      </div>
+      <div><div class="note-label">Your notes / adjustments</div><textarea class="note-area" id="note-5" placeholder="Precise return time, pax info, last-minute changes…" oninput="saveNote(5)"></textarea></div>
+      <div class="info-block">
+        <div class="info-block-label">15-min walk</div>
+        <div class="walk-stop"><div class="walk-num">1</div><div><div class="walk-text">Hôtel-Dieu (Hospices de Beaune)</div><div class="walk-sub">Glazed roof. "Palace for the poor," 1443. Stand across the street for the full façade.</div></div></div>
+        <div class="walk-stop"><div class="walk-num">2</div><div><div class="walk-text">Place de la Halle</div><div class="walk-sub">Covered market, mustard shops, honey limestone.</div></div></div>
+        <div class="walk-stop"><div class="walk-num">3</div><div><div class="walk-text">Collégiale Notre-Dame</div><div class="walk-sub">12C Romanesque. Free entry. Tapestries of the Virgin inside.</div></div></div>
+        <div class="walk-stop"><div class="walk-num">4</div><div><div class="walk-text">Place Carnot</div><div class="walk-sub">Carousel, cafés. The rally point — tell pax to find this if lost.</div></div></div>
+        <div class="walk-stop"><div class="walk-num">5</div><div><div class="walk-text">Ramparts + bastions</div><div class="walk-sub">Defensive towers converted to wine cellars — constant temperature, still in use.</div></div></div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-label">Sunday lunch — open options</div>
+        <div class="resto"><strong>Bistrot Rosette</strong> — classic bistro · walk-in friendly<br><span class="resto-addr">34 Rue Carnot</span></div>
+        <div class="resto"><strong>Au Coq Bleu</strong> — Burgundian 4.9★ · call ahead: +33 3 45 63 58 98<br><span class="resto-addr">10 Rue Carnot</span></div>
+        <div class="resto"><strong>L'Alentour</strong> — modern sharing plates · open Sun<br><span class="resto-addr">10 Rue d'Alsace</span></div>
+        <div class="resto"><strong>La Ligne Et Cetera</strong> — seafood · open Sun<br><span class="resto-addr">39 Rue d'Alsace</span></div>
+        <div class="resto"><strong>Brasserie le Carnot</strong> — reliable tourist brasserie<br><span class="resto-addr">Place Carnot</span></div>
+        <div class="resto"><strong>La Casa</strong> — Italian, lighter option · open Sun<br><span class="resto-addr">24 Rue Victor Millot</span></div>
+      </div>
+      <div class="anecdote"><strong>🎙 Hospices glazed roof</strong>Tile pattern reserved for cathedrals and palaces. A statement: the poor deserve beauty.</div>
+      <div class="anecdote"><strong>🎙 Hospices wine auction</strong>3rd Sunday in November — world's most famous charity auction. Sets Burgundy prices globally for the year.</div>
+      <div class="anecdote"><strong>🎙 Maurice Drouhin · WWII</strong>Resistance figure. Escaped Gestapo through Beaune's cellars, hidden by the Mother Superior here for months. Donated vines in thanks — his <em>cuvée</em> is still auctioned every November.</div>
+      <div class="anecdote"><strong>🎙 Hiding wine from Nazis</strong>Bricked-up cellar walls, fake cobwebs, great wines relabelled cheap. Germans got the worst blends.</div>
+    </div>
+  </div>
+
+  <!-- STEP 6: Depart Beaune -->
+
+  <div class="section-label">Beaune → Basel</div>
+  <div class="step" id="step-6">
+    <div class="step-main" onclick="toggleCheck(6)">
+      <div class="step-check" id="check-6">☐</div>
+      <div class="step-info">
+        <div class="step-time">13:30</div>
+        <div class="step-title">Depart Beaune</div>
+        <div class="step-subtitle">A36 east — ~3.5 hrs to Basel</div>
+      </div>
+      <div class="step-toggle" id="toggle-6" onclick="ev(event); toggleExpand(6)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-6">
+      <div class="info-block">
+        <div class="info-block-label">Signs to call out</div>
+        <div class="sign-item"><strong>Dole</strong> <span>— Pasteur's birthplace</span></div>
+        <div class="sign-item"><strong>Besançon</strong> <span>— UNESCO Vauban citadel on the Doubs. Victor Hugo's hometown.</span></div>
+        <div class="sign-item"><strong>Jura</strong> <span>— right side. Comté, vin jaune, dinosaur-era limestone (Jurassic named after these mountains).</span></div>
+        <div class="sign-item"><strong>Montbéliard</strong> <span>— Peugeot founded here, 1810 — started with saw blades.</span></div>
+        <div class="sign-item"><strong>Mulhouse</strong> <span>— Cité de l'Automobile, world's largest car museum.</span></div>
+        <div class="sign-item"><strong>Basel approach</strong> <span>— Dreiländereck: France/Germany/Switzerland meet at the Rhine. Passports accessible.</span></div>
+      </div>
+      <div><div class="note-label">Notes</div><textarea class="note-area" id="note-6" placeholder="Actual departure time, all pax aboard…" oninput="saveNote(6)"></textarea></div>
+    </div>
+  </div>
+
+  <!-- STEP 7: Quiz -->
+
+  <div class="step" id="step-7">
+    <div class="step-main" onclick="toggleCheck(7)">
+      <div class="step-check" id="check-7">☐</div>
+      <div class="step-info">
+        <div class="step-time">~13:45</div>
+        <div class="step-title">Quiz — French Culture</div>
+        <div class="step-subtitle">After Beaune departure · ~30 min · see Quiz tab</div>
+      </div>
+      <div class="step-toggle" id="toggle-7" onclick="ev(event); toggleExpand(7)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-7">
+      <div class="info-block">
+        <div class="info-block-label">Format</div>
+        <div class="info-line">Sections A → D · estimated 30 min</div>
+        <div class="info-line">Prepared by another guide · open Quiz tab for full content</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 8: Comfort stop -->
+
+  <div class="step" id="step-8">
+    <div class="step-main" onclick="toggleCheck(8)">
+      <div class="step-check" id="check-8">☐</div>
+      <div class="step-info">
+        <div class="step-time">~15:15</div>
+        <div class="step-title">Comfort stop — Écot / Besançon</div>
+        <div class="step-subtitle">Aire d'Écot or Aire de Besançon · 20 min</div>
+      </div>
+      <div class="step-toggle" id="toggle-8" onclick="ev(event); toggleExpand(8)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-8">
+      <div class="info-block">
+        <div class="info-block-label">Stop protocol</div>
+        <div class="info-line">Announce: duration · meeting point · return time</div>
+        <div class="info-line">Head count before re-boarding — say it out loud</div>
+      </div>
+      <div><div class="note-label">Return time + meeting point</div><textarea class="note-area" id="note-8" placeholder="e.g. Back at coach by 15:35 — bus bay entrance" oninput="saveNote(8)"></textarea></div>
+    </div>
+  </div>
+
+  <!-- STEP 9: Arrive Basel -->
+
+  <div class="section-label">Basel</div>
+  <div class="step" id="step-9">
+    <div class="step-main" onclick="toggleCheck(9)">
+      <div class="step-check" id="check-9">☐</div>
+      <div class="step-info">
+        <div class="step-time">17:00</div>
+        <div class="step-title">Arrive Viking Hlin · Basel</div>
+        <div class="step-subtitle">Dreiländereckquai · Westquaistrasse 75 · 4057</div>
+      </div>
+      <div class="step-toggle" id="toggle-9" onclick="ev(event); toggleExpand(9)">▸</div>
+    </div>
+    <div class="step-expanded" id="exp-9">
+      <a class="map-btn" href="https://maps.google.com/?q=Westquaistrasse+75+4057+Basel" target="_blank">↗ Viking Hlin in Maps</a>
+      <div class="info-block">
+        <div class="info-block-label">End of service</div>
+        <div class="info-line">Hand pax to PD Hlin · confirm all luggage off coach</div>
+        <div class="info-line">Coach returns to Chalon depot — confirm with driver</div>
+      </div>
+      <div><div class="note-label">Arrival notes</div><textarea class="note-area" id="note-9" placeholder="Actual arrival time, handover notes, issues…" oninput="saveNote(9)"></textarea></div>
+    </div>
+  </div>
+
+</div><!-- end steps panel -->
+
+<!-- ═══════════ ROUTE TAB ═══════════ -->
+
+<div class="panel" id="tab-map">
+  <div class="section-label" style="padding-top:10px">Visual route</div>
+
+  <div class="route-map">
+    <div class="route-map-title">Lyon → Beaune → Basel · A6/A36</div>
+    <!-- SVG schematic route -->
+    <svg class="routesvg" viewBox="0 0 340 620" xmlns="http://www.w3.org/2000/svg">
+      <!-- Route line -->
+      <path d="M170,30 C165,100 155,140 158,200 C161,260 175,290 172,340 C169,390 155,430 158,490 C160,530 168,570 168,590" stroke="#5a5a5a" stroke-width="3" fill="none" stroke-dasharray="6,4"/>
+      <!-- Accent highlight -->
+      <path d="M170,30 C165,100 155,140 158,200 C161,260 175,290 172,340 C169,390 155,430 158,490 C160,530 168,570 168,590" stroke="#e8d48b" stroke-width="1.5" fill="none" opacity="0.4"/>
+
+```
+  <!-- LYON -->
+  <circle cx="170" cy="30" r="10" fill="#e8d48b"/>
+  <text x="188" y="34" fill="#e8d48b" font-size="14" font-family="DM Mono,monospace" font-weight="500">LYON</text>
+  <text x="188" y="48" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Viking Buri · 08:30</text>
+
+  <!-- Bresse (right side callout) -->
+  <circle cx="158" cy="90" r="5" fill="#7ec8a4" opacity="0.8"/>
+  <line x1="158" y1="90" x2="210" y2="90" stroke="#3a5a3a" stroke-width="1"/>
+  <text x="214" y="94" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Bresse</text>
+  <text x="214" y="107" fill="#666" font-size="10" font-family="DM Mono,monospace">AOC chicken</text>
+
+  <!-- Mâcon comfort stop -->
+  <circle cx="160" cy="148" r="7" fill="#2a2a2a" stroke="#e8d48b" stroke-width="1.5"/>
+  <text x="42" y="144" fill="#e8d48b" font-size="11" font-family="DM Mono,monospace" text-anchor="end">~10:15</text>
+  <text x="42" y="158" fill="#aaa" font-size="10" font-family="DM Mono,monospace" text-anchor="end">Mâcon</text>
+  <line x1="43" y1="148" x2="153" y2="148" stroke="#444" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- Chalon-Nord exit -->
+  <circle cx="161" cy="195" r="5" fill="#555"/>
+  <text x="175" y="199" fill="#888" font-size="10" font-family="DM Mono,monospace">Exit Chalon-Nord</text>
+  <text x="175" y="212" fill="#666" font-size="10" font-family="DM Mono,monospace">Route des Grands Crus</text>
+
+  <!-- BEAUNE -->
+  <circle cx="172" cy="260" r="12" fill="#e8d48b"/>
+  <text x="192" y="264" fill="#e8d48b" font-size="14" font-family="DM Mono,monospace" font-weight="500">BEAUNE</text>
+  <text x="192" y="279" fill="#aaa" font-size="10" font-family="DM Mono,monospace">11:30–13:30 · free time</text>
+
+  <!-- Dole -->
+  <circle cx="168" cy="330" r="5" fill="#7ec8a4" opacity="0.7"/>
+  <line x1="168" y1="330" x2="210" y2="330" stroke="#3a5a3a" stroke-width="1"/>
+  <text x="214" y="334" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Dole</text>
+  <text x="214" y="347" fill="#666" font-size="10" font-family="DM Mono,monospace">Pasteur's birthplace</text>
+
+  <!-- Jura mountains (right) -->
+  <circle cx="165" cy="370" r="5" fill="#7ec8a4" opacity="0.7"/>
+  <line x1="165" y1="370" x2="210" y2="370" stroke="#3a5a3a" stroke-width="1"/>
+  <text x="214" y="374" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Jura</text>
+  <text x="214" y="387" fill="#666" font-size="10" font-family="DM Mono,monospace">right side · Comté</text>
+
+  <!-- Besançon comfort stop -->
+  <circle cx="160" cy="415" r="7" fill="#2a2a2a" stroke="#e8d48b" stroke-width="1.5"/>
+  <text x="42" y="411" fill="#e8d48b" font-size="11" font-family="DM Mono,monospace" text-anchor="end">~15:15</text>
+  <text x="42" y="425" fill="#aaa" font-size="10" font-family="DM Mono,monospace" text-anchor="end">Besançon</text>
+  <line x1="43" y1="415" x2="153" y2="415" stroke="#444" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="42" y="440" fill="#666" font-size="9" font-family="DM Mono,monospace" text-anchor="end">Victor Hugo's</text>
+  <text x="42" y="452" fill="#666" font-size="9" font-family="DM Mono,monospace" text-anchor="end">hometown</text>
+
+  <!-- Montbéliard -->
+  <circle cx="160" cy="470" r="5" fill="#7ec8a4" opacity="0.7"/>
+  <line x1="160" y1="470" x2="210" y2="470" stroke="#3a5a3a" stroke-width="1"/>
+  <text x="214" y="474" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Montbéliard</text>
+  <text x="214" y="487" fill="#666" font-size="10" font-family="DM Mono,monospace">Peugeot founded 1810</text>
+
+  <!-- Mulhouse -->
+  <circle cx="161" cy="515" r="5" fill="#7ec8a4" opacity="0.7"/>
+  <line x1="161" y1="515" x2="210" y2="515" stroke="#3a5a3a" stroke-width="1"/>
+  <text x="214" y="519" fill="#7ec8a4" font-size="11" font-family="DM Mono,monospace">▶ Mulhouse</text>
+  <text x="214" y="532" fill="#666" font-size="10" font-family="DM Mono,monospace">Car museum (world's largest)</text>
+
+  <!-- BASEL -->
+  <circle cx="168" cy="590" r="12" fill="#7ec8a4"/>
+  <text x="188" y="594" fill="#7ec8a4" font-size="14" font-family="DM Mono,monospace" font-weight="500">BASEL</text>
+  <text x="188" y="609" fill="#aaa" font-size="10" font-family="DM Mono,monospace">Viking Hlin · 17:00</text>
+
+  <!-- Legend -->
+  <circle cx="16" cy="570" r="7" fill="#2a2a2a" stroke="#e8d48b" stroke-width="1.5"/>
+  <text x="28" y="574" fill="#888" font-size="10" font-family="DM Mono,monospace">comfort stop</text>
+  <circle cx="16" cy="588" r="5" fill="#7ec8a4" opacity="0.8"/>
+  <text x="28" y="592" fill="#888" font-size="10" font-family="DM Mono,monospace">point of interest</text>
+</svg>
+```
+
+  </div>
+
+  <div class="section-label">Points of interest</div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#e8d48b"></div>
+      <div class="poi-name">Lyon → Mâcon</div>
+      <div class="poi-km">~75 km</div>
+    </div>
+    <div class="poi-side">RIGHT side of coach</div>
+    <div class="poi-desc">Bresse region begins just east of the A6 — homeland of France's only AOC chicken. Flat plains, farming country.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#e8d48b"></div>
+      <div class="poi-name">Chalon-Nord → Beaune</div>
+      <div class="poi-km">~25 km</div>
+    </div>
+    <div class="poi-side">BOTH sides — vineyards</div>
+    <div class="poi-desc">Route des Grands Crus. Côte de Beaune begins. Vineyard plots (climates) on the gentle slopes — some of the most valuable farmland on earth per square metre.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#7ec8a4"></div>
+      <div class="poi-name">Dole</div>
+      <div class="poi-km">~60 km from Beaune</div>
+    </div>
+    <div class="poi-side">LEFT side</div>
+    <div class="poi-desc">Louis Pasteur's birthplace. Town on the Doubs. Quick mention as you pass the exit sign.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#7ec8a4"></div>
+      <div class="poi-name">Jura Mountains</div>
+      <div class="poi-km">visible ~70–120 km from Beaune</div>
+    </div>
+    <div class="poi-side">RIGHT side of coach</div>
+    <div class="poi-desc">Mountains that gave the Jurassic period its name. Dinosaur-era limestone. Comté cheese and vin jaune come from up there. Good window moment — visible for a long stretch.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#7ec8a4"></div>
+      <div class="poi-name">Besançon</div>
+      <div class="poi-km">~100 km from Beaune</div>
+    </div>
+    <div class="poi-side">LEFT — citadel visible from bypass</div>
+    <div class="poi-desc">Victor Hugo's birthplace. UNESCO Vauban citadel sits dramatically on a loop of the Doubs river — visible from the A36 bypass if clear weather.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#7ec8a4"></div>
+      <div class="poi-name">Montbéliard</div>
+      <div class="poi-km">~130 km from Beaune</div>
+    </div>
+    <div class="poi-side">LEFT side</div>
+    <div class="poi-desc">Peugeot was founded here in 1810 — started making springs and saw blades. The factory is still here. Lion logo visible on some buildings near the exit.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#7ec8a4"></div>
+      <div class="poi-name">Mulhouse</div>
+      <div class="poi-km">~160 km from Beaune</div>
+    </div>
+    <div class="poi-side">Pass-through</div>
+    <div class="poi-desc">Home of the Cité de l'Automobile — world's largest car museum, 500+ vehicles including the best Bugatti collection anywhere. Mention it in passing.</div>
+  </div>
+
+  <div class="poi-card">
+    <div class="poi-header">
+      <div class="poi-dot" style="background:#7ec8a4"></div>
+      <div class="poi-name">Dreiländereck · Basel</div>
+      <div class="poi-km">destination</div>
+    </div>
+    <div class="poi-side">Rhine — AHEAD</div>
+    <div class="poi-desc">Three-country corner: France, Germany, Switzerland meet at the Rhine. The Viking Hlin docks right at Westquaistrasse 75 — Swiss side. Remind pax to have passports accessible.</div>
+  </div>
+
+<a class="map-btn" style="margin-top:10px" href="https://maps.google.com/?saddr=Lyon+Quai+Claude+Bernard&daddr=Beaune+Parking+Louis+Very+to:Basel+Westquaistrasse+75" target="_blank">↗ Full route in Google Maps</a>
+
+</div><!-- end map panel -->
+
+<!-- ═══════════ QUIZ TAB ═══════════ -->
+
+<div class="panel" id="tab-quiz">
+
+  <div class="section-label" style="padding-top:10px">Quiz · Viking Lyon–Basel</div>
+
+  <div class="info-block" style="margin-bottom:12px">
+    <div class="info-block-label">Format</div>
+    <div class="info-line">4 sections · ~30 min · run after Beaune departure ~13:45</div>
+    <div class="info-line" style="margin-top:4px; color:var(--text2); font-size:12px">Tap <span style="color:var(--accent2)">ANS</span> on any question to reveal the answer.</div>
+  </div>
+
+  <!-- SECTION A -->
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">Section A — Yes or No · French Culture & Connections</div>
+    <div class="quiz-q"><div class="quiz-num">1</div><div style="flex:1">Is Brie a type of French wine?<div class="quiz-ans-text" id="qa-A1">No — it's a cheese from the Brie region (Île-de-France).</div></div><div class="quiz-ans" onclick="revealAns('A1')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">2</div><div style="flex:1">Did Napoleon die in France?<div class="quiz-ans-text" id="qa-A2">No — he died in exile on Saint Helena island, 1821.</div></div><div class="quiz-ans" onclick="revealAns('A2')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">3</div><div style="flex:1">Is the Eiffel Tower taller than the Empire State Building?<div class="quiz-ans-text" id="qa-A3">No — Empire State Building is ~443m (to roof), Eiffel Tower ~330m.</div></div><div class="quiz-ans" onclick="revealAns('A3')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">4</div><div style="flex:1">Is French the second most spoken language in the world?<div class="quiz-ans-text" id="qa-A4">No — Spanish and Mandarin both rank above French. French is around 5th by native speakers.</div></div><div class="quiz-ans" onclick="revealAns('A4')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">5</div><div style="flex:1">Is "Française" the French word for "French woman"?<div class="quiz-ans-text" id="qa-A5">Yes — Française (f) / Français (m).</div></div><div class="quiz-ans" onclick="revealAns('A5')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">6</div><div style="flex:1">Is Paris the most visited city in the world?<div class="quiz-ans-text" id="qa-A6">It regularly ranks in the top 3, but Bangkok and London often compete for #1. Debatable — accept yes with discussion.</div></div><div class="quiz-ans" onclick="revealAns('A6')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">7</div><div style="flex:1">Is croissant originally from France?<div class="quiz-ans-text" id="qa-A7">No — it originates from Austria (the kipferl). Marie Antoinette is said to have brought it to France.</div></div><div class="quiz-ans" onclick="revealAns('A7')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">8</div><div style="flex:1">Did Coco Chanel invent high heels?<div class="quiz-ans-text" id="qa-A8">No — high heels date back to 16th-century Persia. Chanel actually popularised flat shoes for women.</div></div><div class="quiz-ans" onclick="revealAns('A8')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">9</div><div style="flex:1">Is Marseille on the Atlantic coast?<div class="quiz-ans-text" id="qa-A9">No — Mediterranean coast, south of France.</div></div><div class="quiz-ans" onclick="revealAns('A9')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">10</div><div style="flex:1">Did Edith Piaf sing "Non, je ne regrette rien"?<div class="quiz-ans-text" id="qa-A10">Yes — 1960, one of her most iconic recordings.</div></div><div class="quiz-ans" onclick="revealAns('A10')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">11</div><div style="flex:1">Is the Louvre the largest art museum in the world?<div class="quiz-ans-text" id="qa-A11">Yes — by floor area (72,735 m²), the Louvre is the world's largest art museum.</div></div><div class="quiz-ans" onclick="revealAns('A11')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">12</div><div style="flex:1">Did the French Revolution happen before the American Revolution?<div class="quiz-ans-text" id="qa-A12">No — American Revolution 1775–1783, French Revolution 1789–1799.</div></div><div class="quiz-ans" onclick="revealAns('A12')">ANS</div></div>
+  </div>
+
+  <!-- SECTION B -->
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">Section B — Famous French Trivia</div>
+    <div class="quiz-q"><div class="quiz-num">1</div><div style="flex:1">Who was the target in "Day of the Jackal"?<div class="quiz-ans-text" id="qa-B1">President Charles de Gaulle.</div></div><div class="quiz-ans" onclick="revealAns('B1')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">2</div><div style="flex:1">Which president's wife was French and what was her maiden name?<div class="quiz-ans-text" id="qa-B2">JFK — Jacqueline Bouvier (Jackie Kennedy). Her family was of French descent.</div></div><div class="quiz-ans" onclick="revealAns('B2')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">3</div><div style="flex:1">Who is the artist of the Statue of Liberty?<div class="quiz-ans-text" id="qa-B3">Frédéric Auguste Bartholdi (sculptor) — Gustave Eiffel engineered the interior structure.</div></div><div class="quiz-ans" onclick="revealAns('B3')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">4</div><div style="flex:1">Which French movie star & singer had a fling with Marilyn Monroe?<div class="quiz-ans-text" id="qa-B4">Yves Montand.</div></div><div class="quiz-ans" onclick="revealAns('B4')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">5</div><div style="flex:1">Which singer was named "French singer of the century"?<div class="quiz-ans-text" id="qa-B5">Edith Piaf — voted singer of the century in a 1998 French poll.</div></div><div class="quiz-ans" onclick="revealAns('B5')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">6</div><div style="flex:1">Which designer popularised the "little black dress"?<div class="quiz-ans-text" id="qa-B6">Coco Chanel — introduced it in 1926.</div></div><div class="quiz-ans" onclick="revealAns('B6')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">7</div><div style="flex:1">Which American jazz musician found adoration in Paris in the 20th century?<div class="quiz-ans-text" id="qa-B7">Many — most notably Miles Davis and Sidney Bechet. Accept any major jazz figure who lived in Paris (Josephine Baker is also a great answer).</div></div><div class="quiz-ans" onclick="revealAns('B7')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">8</div><div style="flex:1">Who wrote and produced all the French "Taxi" movies?<div class="quiz-ans-text" id="qa-B8">Luc Besson (writer/producer). Directed by Gérard Krawczyk.</div></div><div class="quiz-ans" onclick="revealAns('B8')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">9</div><div style="flex:1">Which famous American popular artist is buried in Père Lachaise?<div class="quiz-ans-text" id="qa-B9">Jim Morrison (The Doors) — most visited grave there. Also Oscar Wilde, Édith Piaf, Chopin.</div></div><div class="quiz-ans" onclick="revealAns('B9')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">10</div><div style="flex:1">Why is a croissant called a croissant?<div class="quiz-ans-text" id="qa-B10">Croissant = "crescent" in French — named for its curved crescent moon shape.</div></div><div class="quiz-ans" onclick="revealAns('B10')">ANS</div></div>
+  </div>
+
+  <!-- SECTION C -->
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">Section C — Yes/No: French Origin?</div>
+    <div class="quiz-q"><div class="quiz-num">1</div><div style="flex:1">Ballet<div class="quiz-ans-text" id="qa-C1">Yes — from French "ballet," rooted in Italian "balletto" but developed as an art form in France.</div></div><div class="quiz-ans" onclick="revealAns('C1')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">2</div><div style="flex:1">Mortgage<div class="quiz-ans-text" id="qa-C2">Yes — from Old French "mort gage" = dead pledge.</div></div><div class="quiz-ans" onclick="revealAns('C2')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">3</div><div style="flex:1">Budget<div class="quiz-ans-text" id="qa-C3">Yes — from Old French "bougette" (little bag/pouch).</div></div><div class="quiz-ans" onclick="revealAns('C3')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">4</div><div style="flex:1">To flirt<div class="quiz-ans-text" id="qa-C4">Yes — from French "fleureter" (to say sweet nothings, touch lightly like a flower).</div></div><div class="quiz-ans" onclick="revealAns('C4')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">5</div><div style="flex:1">Chef<div class="quiz-ans-text" id="qa-C5">Yes — from French "chef" meaning "head" or "chief." Chef de cuisine = head of kitchen.</div></div><div class="quiz-ans" onclick="revealAns('C5')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">6</div><div style="flex:1">Parade<div class="quiz-ans-text" id="qa-C6">Yes — from French "parade," from "parer" (to prepare/display).</div></div><div class="quiz-ans" onclick="revealAns('C6')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">7</div><div style="flex:1">Tunnel<div class="quiz-ans-text" id="qa-C7">Yes — from Old French "tonnelle" (barrel vault, tun).</div></div><div class="quiz-ans" onclick="revealAns('C7')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">8</div><div style="flex:1">Sabotage<div class="quiz-ans-text" id="qa-C8">Yes — from French "saboter": to clatter with sabots (wooden clogs), workers disrupting machinery.</div></div><div class="quiz-ans" onclick="revealAns('C8')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">9</div><div style="flex:1">Leisure<div class="quiz-ans-text" id="qa-C9">Yes — from Old French "leisir" (to be permitted, from Latin licere).</div></div><div class="quiz-ans" onclick="revealAns('C9')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">10</div><div style="flex:1">Vintage<div class="quiz-ans-text" id="qa-C10">Yes — from Old French "vendange" (grape harvest), from Latin vindemia.</div></div><div class="quiz-ans" onclick="revealAns('C10')">ANS</div></div>
+  </div>
+
+  <!-- SECTION D -->
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">Section D — Fake Friends · What do they really mean?</div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Préservatif</div><div class="quiz-ans-text" id="qa-D1">Condom (not preservative — that's "conservateur").</div></div><div class="quiz-ans" onclick="revealAns('D1')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Chair</div><div class="quiz-ans-text" id="qa-D2">Flesh/meat (not a chair — that's "chaise").</div></div><div class="quiz-ans" onclick="revealAns('D2')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Coin</div><div class="quiz-ans-text" id="qa-D3">Corner/nook (not a coin — that's "pièce de monnaie").</div></div><div class="quiz-ans" onclick="revealAns('D3')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Pain</div><div class="quiz-ans-text" id="qa-D4">Bread (not pain — that's "douleur").</div></div><div class="quiz-ans" onclick="revealAns('D4')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Location</div><div class="quiz-ans-text" id="qa-D5">Rental/hire (not location — that's "emplacement" or "lieu").</div></div><div class="quiz-ans" onclick="revealAns('D5')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Affaire</div><div class="quiz-ans-text" id="qa-D6">Matter/business/scandal — context-dependent, can mean a deal or a scandal.</div></div><div class="quiz-ans" onclick="revealAns('D6')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Cave</div><div class="quiz-ans-text" id="qa-D7">Wine cellar (not a cave — that's "grotte").</div></div><div class="quiz-ans" onclick="revealAns('D7')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Douche</div><div class="quiz-ans-text" id="qa-D8">Shower (not an insult — that's "imbécile" etc.).</div></div><div class="quiz-ans" onclick="revealAns('D8')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Envie</div><div class="quiz-ans-text" id="qa-D9">Desire/craving (not envy — that's "jalousie").</div></div><div class="quiz-ans" onclick="revealAns('D9')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Figure</div><div class="quiz-ans-text" id="qa-D10">Face (not figure/shape — that's "silhouette" or "chiffre").</div></div><div class="quiz-ans" onclick="revealAns('D10')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Journée</div><div class="quiz-ans-text" id="qa-D11">The day / daytime (not journey — that's "voyage").</div></div><div class="quiz-ans" onclick="revealAns('D11')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Pile</div><div class="quiz-ans-text" id="qa-D12">Battery / stack / pile of things (not a pile as in messy heap — though close!).</div></div><div class="quiz-ans" onclick="revealAns('D12')">ANS</div></div>
+    <div class="quiz-q"><div class="quiz-num">–</div><div style="flex:1"><div class="quiz-word">Sale</div><div class="quiz-ans-text" id="qa-D13">Dirty (not a sale/discount — that's "solde" or "promotion").</div></div><div class="quiz-ans" onclick="revealAns('D13')">ANS</div></div>
+  </div>
+
+</div><!-- end quiz panel -->
+
+<!-- ═══════════ CONTACTS TAB ═══════════ -->
+
+<div class="panel" id="tab-contacts">
+
+  <div class="section-label" style="padding-top:10px">Guides</div>
+  <div class="info-block">
+    <div class="contact"><div><div class="contact-name">Patrick Piot</div><div class="contact-role">Lead guide · Bus 1</div></div><a class="contact-call" href="tel:+33604022569">📞 Call</a></div>
+    <div class="contact"><div><div class="contact-name">Alexandra Iafisco</div><div class="contact-role">Shadow guide</div></div><a class="contact-call" href="tel:+33628953354">📞 Call</a></div>
+  </div>
+
+  <div class="section-label">Program Directors</div>
+  <div class="info-block">
+    <div class="contact"><div><div class="contact-name">PD Buri · Lyon</div><div class="contact-role">Departure · Viking Buri</div></div><a class="contact-call" href="tel:+4915222538135">📞 Call</a></div>
+    <div class="contact"><div><div class="contact-name">PD Hlin · Basel</div><div class="contact-role">Arrival · Viking Hlin</div></div><a class="contact-call" href="tel:+4915222538133">📞 Call</a></div>
+  </div>
+
+  <div class="section-label">Drivers — Bus 1 (EB-486-DS)</div>
+  <div class="info-block">
+    <div class="contact"><div><div class="contact-name">Minatchy Marie-Béatrice</div><div class="contact-role">Girardot · Bus 1</div></div><a class="contact-call" href="tel:+33661542045">📞 Call</a></div>
+    <div class="contact"><div><div class="contact-name">Spaicher Jean</div><div class="contact-role">Girardot · Bus 1</div></div><a class="contact-call" href="tel:+33634186799">📞 Call</a></div>
+  </div>
+
+  <div class="section-label">Drivers — Bus 2 (DZ-873-TR) · Your coach</div>
+  <div class="info-block">
+    <div class="contact"><div><div class="contact-name">Karp Jocelyne</div><div class="contact-role">Girardot · Bus 2</div></div><a class="contact-call" href="tel:+33676610590">📞 Call</a></div>
+    <div class="contact"><div><div class="contact-name">Kahya Said</div><div class="contact-role">Girardot · Bus 2</div></div><a class="contact-call" href="tel:+33760116416">📞 Call</a></div>
+  </div>
+
+  <div class="section-label">Documents</div>
+  <a class="link-btn" href="https://drive.google.com/drive/folders/1fkFft_J0ZGTnDIu1Rm8_48hXnbJKHgq4" target="_blank">
+    <div class="link-btn-icon">📁</div>
+    <div><div class="link-btn-text">Mission Documents</div><div class="link-btn-sub">Google Drive · Study guide, cheat sheet, manifests</div></div>
+  </a>
+
+  <div class="section-label">Vehicle reference</div>
+  <div class="info-block">
+    <div class="info-block-label">Bus 1</div>
+    <div class="info-line">EB-486-DS · CONF48 · 48 seats</div>
+    <div class="info-line" style="margin-top:6px; font-size:11px; color:var(--text2)">Drivers: Minatchy / Spaicher</div>
+  </div>
+  <div class="info-block" style="margin-top:8px; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent)18;">
+    <div class="info-block-label" style="color:var(--accent)">Bus 2 — Your coach</div>
+    <div class="info-line">DZ-873-TR · CONF48 · 48 seats</div>
+    <div class="info-line" style="margin-top:6px; font-size:11px; color:var(--text2)">Drivers: Karp / Kahya</div>
+  </div>
+
+</div><!-- end contacts panel -->
+
+<div class="footer-bar">
+  <div class="footer-step" id="footerStep">0 / 10 steps done</div>
+  <div class="footer-count" id="footerCount">0 / 38 pax</div>
+</div>
+
+<script>
+const TOTAL = 10;
+let checked = new Array(TOTAL).fill(false);
+let expanded = new Array(TOTAL).fill(false);
+let headCount = 0;
+let darkMode = true;
+
+// Restore state
+try {
+  const s = JSON.parse(localStorage.getItem('bsl2_state') || '{}');
+  if (s.checked) checked = s.checked;
+  if (s.expanded) expanded = s.expanded;
+  if (s.headCount !== undefined) headCount = s.headCount;
+  if (s.darkMode !== undefined) darkMode = s.darkMode;
+  for (let i = 0; i < TOTAL; i++) {
+    const n = document.getElementById('note-' + i);
+    if (n && s['note_' + i]) n.value = s['note_' + i];
+  }
+} catch(e) {}
+
+// Beaune pre-expanded
+expanded[5] = true;
+
+function persist() {
+  try {
+    const s = { checked, expanded, headCount, darkMode };
+    for (let i = 0; i < TOTAL; i++) {
+      const n = document.getElementById('note-' + i);
+      if (n) s['note_' + i] = n.value;
+    }
+    localStorage.setItem('bsl2_state', JSON.stringify(s));
+  } catch(e) {}
+}
+
+function ev(e) { e.stopPropagation(); }
+
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function renderAll() {
+  let done = 0;
+  for (let i = 0; i < TOTAL; i++) {
+    const step = document.getElementById('step-' + i);
+    const chk = document.getElementById('check-' + i);
+    const tog = document.getElementById('toggle-' + i);
+    const exp = document.getElementById('exp-' + i);
+    if (!step) continue;
+    if (checked[i]) {
+      step.classList.add('done'); step.classList.remove('active-step');
+      chk.textContent = '✓'; done++;
+    } else {
+      step.classList.remove('done');
+      chk.textContent = '☐';
+    }
+    if (exp) { exp.classList.toggle('open', expanded[i]); }
+    if (tog) {
+      tog.textContent = expanded[i] ? '▾' : '▸';
+      tog.classList.toggle('open', expanded[i]);
+    }
+  }
+  const pct = (done / TOTAL) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('footerStep').textContent = done + ' / ' + TOTAL + ' steps done';
+
+  // Head count
+  const num = document.getElementById('hcountNum');
+  const status = document.getElementById('hcountStatus');
+  if (num) num.textContent = headCount;
+  if (status) {
+    if (headCount === 38) { status.textContent = '✓ 38 / 38 — all aboard'; status.className = 'hcount-status hcount-ok'; }
+    else if (headCount > 38) { status.textContent = '⚠ ' + headCount + ' / 38 — OVER'; status.className = 'hcount-status hcount-warn'; }
+    else { status.textContent = headCount + ' / 38'; status.className = 'hcount-status'; }
+  }
+  document.getElementById('footerCount').textContent = headCount + ' / 38 pax';
+}
+
+function toggleCheck(i) { checked[i] = !checked[i]; persist(); renderAll(); }
+function toggleExpand(i) { expanded[i] = !expanded[i]; persist(); renderAll(); }
+function adjustCount(d) { headCount = Math.max(0, headCount + d); persist(); renderAll(); }
+function saveNote(i) { persist(); }
+
+function toggleTheme() {
+  darkMode = !darkMode;
+  document.body.classList.toggle('light', !darkMode);
+  document.querySelector('.theme-btn').textContent = darkMode ? '☀' : '🌙';
+  persist();
+}
+
+function revealAns(id) {
+  const el = document.getElementById('qa-' + id);
+  if (el) el.classList.toggle('show');
+}
+
+// Clock
+function tick() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+tick(); setInterval(tick, 10000);
+
+// Apply saved theme
+if (!darkMode) { document.body.classList.add('light'); document.querySelector('.theme-btn').textContent = '🌙'; }
+
+renderAll();
+</script>
+
+</body>
+</html>
