@@ -7,43 +7,53 @@
 <title>Lyon → Basel · 19 APR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script>
+// Apply theme before page renders to prevent white flash
+try {
+  var s = JSON.parse(localStorage.getItem('bsl2_state') || '{}');
+  if (s.darkMode === false) document.documentElement.classList.add('prelight');
+} catch(e) {}
+</script>
 <style>
+html.prelight body { background-color: #f4f1eb !important; }
+
 /* ── THEME VARIABLES ─────────────────────────────── */
 :root {
-  --bg: #0e0e0e;
-  --surface: #1a1a1a;
-  --surface2: #222;
-  --border: #2e2e2e;
-  --accent: #e8d48b;
-  --accent2: #7ec8a4;
-  --danger: #e87c6b;
-  --text: #ede9e0;
-  --text2: #aaa;
-  --muted: #5a5a5a;
-  --done-bg: #1a241a;
-  --done-border: #3a5a3a;
-  --step-active-border: #e8d48b;
+–bg: #0e0e0e;
+–surface: #1a1a1a;
+–surface2: #222;
+–border: #2e2e2e;
+–accent: #e8d48b;
+–accent2: #7ec8a4;
+–danger: #e87c6b;
+–text: #ede9e0;
+–text2: #aaa;
+–muted: #5a5a5a;
+–done-bg: #1a241a;
+–done-border: #3a5a3a;
+–step-active-border: #e8d48b;
 }
 body.light {
-  --bg: #f4f1eb;
-  --surface: #ffffff;
-  --surface2: #f0ece3;
-  --border: #d8d2c4;
-  --accent: #7a5c00;
-  --accent2: #2a7a52;
-  --danger: #b03a28;
-  --text: #1a1a1a;
-  --text2: #555;
-  --muted: #999;
-  --done-bg: #eaf3ea;
-  --done-border: #8ab88a;
-  --step-active-border: #7a5c00;
+–bg: #f4f1eb;
+–surface: #ffffff;
+–surface2: #f0ece3;
+–border: #d8d2c4;
+–accent: #7a5c00;
+–accent2: #2a7a52;
+–danger: #b03a28;
+–text: #1a1a1a;
+–text2: #555;
+–muted: #999;
+–done-bg: #eaf3ea;
+–done-border: #8ab88a;
+–step-active-border: #7a5c00;
 }
 
 - { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html { font-size: 16px; }
 
 body {
+background: #0e0e0e;
 background: var(–bg);
 color: var(–text);
 font-family: ‘DM Mono’, monospace;
