@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Journal Migration · MC V3</title>
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surf: #1a1a1a;
+    --surf2: #222;
+    --bdr: #2a2a2a;
+    --txt: #e8e8e8;
+    --txt2: #999;
+    --acc: #58a6ff;
+    --green: #3fb950;
+    --amber: #f0a500;
+    --red: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--txt);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    font-size: 14px;
+    padding: 24px 16px 60px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .sub { color: var(--txt2); font-size: 12px; margin-bottom: 24px; }
+  .card {
+    background: var(--surf);
+    border: 1px solid var(--bdr);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .card-title { font-size: 11px; font-weight: 600; color: var(--txt2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+  .stat-row { display: flex; gap: 16px; margin-bottom: 12px; }
+  .stat { flex: 1; }
+  .stat-val { font-size: 28px; font-weight: 700; color: var(--acc); }
+  .stat-lbl { font-size: 11px; color: var(--txt2); }
+  .btn {
+    display: block; width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: opacity .15s;
+  }
+  .btn:active { opacity: .7; }
+  .btn-primary { background: var(--acc); color: #000; }
+  .btn-secondary { background: var(--surf2); color: var(--txt); border: 1px solid var(--bdr); }
+  .btn-danger { background: var(--red); color: #000; }
+  .btn-success { background: var(--green); color: #000; }
+  textarea {
+    width: 100%;
+    background: var(--surf2);
+    border: 1px solid var(--bdr);
+    border-radius: 8px;
+    color: var(--txt);
+    font-family: "SF Mono", "Fira Code", monospace;
+    font-size: 11px;
+    padding: 12px;
+    resize: vertical;
+    min-height: 180px;
+    line-height: 1.5;
+    margin-top: 8px;
+  }
+  textarea:focus { outline: none; border-color: var(--acc); }
+  .entry-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .entry {
+    background: var(--surf2);
+    border: 1px solid var(--bdr);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .entry-hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .entry-date { font-size: 12px; font-weight: 600; color: var(--acc); }
+  .entry-meta { font-size: 11px; color: var(--txt2); }
+  .entry-scores { display: flex; gap: 8px; margin-top: 4px; }
+  .score { font-size: 11px; background: var(--bdr); border-radius: 4px; padding: 2px 7px; }
+  .entry-note { font-size: 12px; color: var(--txt2); margin-top: 6px; font-style: italic; }
+  .step { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--bdr); }
+  .step:last-child { border-bottom: none; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--acc); color: #000; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-num.done { background: var(--green); }
+  .step-text { font-size: 13px; line-height: 1.5; }
+  .step-text strong { display: block; margin-bottom: 2px; }
+  .step-text .hint { font-size: 11px; color: var(--txt2); margin-top: 2px; }
+  .alert { border-radius: 8px; padding: 12px 14px; font-size: 13px; margin-bottom: 12px; }
+  .alert-warn { background: rgba(240,165,0,.1); border: 1px solid rgba(240,165,0,.3); color: var(--amber); }
+  .alert-ok { background: rgba(63,185,80,.1); border: 1px solid rgba(63,185,80,.3); color: var(--green); }
+  .alert-err { background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.3); color: var(--red); }
+  .hidden { display: none; }
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: #000; font-weight: 600;
+    padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; opacity: 0; transition: opacity .3s;
+    pointer-events: none; white-space: nowrap;
+  }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<h1>Journal Migration</h1>
+<div class="sub">Mission Control V3 · Étape 2B</div>
+
+<!-- STATUS -->
+<div class="card" id="statusCard">
+  <div class="card-title">État localStorage</div>
+  <div class="stat-row">
+    <div class="stat">
+      <div class="stat-val" id="entryCount">—</div>
+      <div class="stat-lbl">Entrées trouvées</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="entryYear">—</div>
+      <div class="stat-lbl">Cette année</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="entrySize">—</div>
+      <div class="stat-lbl">Taille</div>
+    </div>
+  </div>
+  <div id="statusAlert"></div>
+</div>
+
+<!-- STEPS -->
+<div class="card">
+  <div class="card-title">Marche à suivre</div>
+  <div class="step">
+    <div class="step-num done" id="s1num">1</div>
+    <div class="step-text">
+      <strong>Scan localStorage</strong>
+      Cette page a déjà lu tes données automatiquement.
+      <div class="hint">Vérifie le nombre d'entrées ci-dessus.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" id="s2num">2</div>
+    <div class="step-text">
+      <strong>Générer le JSON</strong>
+      Appuie sur "Générer JSON" pour formater les données.
+      <div class="hint">Le JSON apparaît dans la zone de texte.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" id="s3num">3</div>
+    <div class="step-text">
+      <strong>Copier le JSON</strong>
+      Appuie sur "Copier" puis colle dans GAS.
+      <div class="hint">Dans GAS : colle dans JOURNAL_MIGRATION_DATA puis run v3Step2_importJournalData()</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num" id="s4num">4</div>
+    <div class="step-text">
+      <strong>Vider localStorage (optionnel)</strong>
+      Après import confirmé dans le sheet.
+      <div class="hint">Ne pas faire avant d'avoir vérifié les données dans Google Sheets.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIONS -->
+<div class="card">
+  <div class="card-title">Actions</div>
+  <button class="btn btn-primary" onclick="generateJSON()">📋 Générer JSON</button>
+  <button class="btn btn-secondary hidden" id="copyBtn" onclick="copyJSON()">📋 Copier JSON</button>
+  <button class="btn btn-secondary" onclick="showEntries()">👁 Voir les entrées</button>
+  <button class="btn btn-danger hidden" id="clearBtn" onclick="confirmClear()">🗑 Vider localStorage (après import)</button>
+</div>
+
+<!-- JSON OUTPUT -->
+<div class="card hidden" id="jsonCard">
+  <div class="card-title">JSON à coller dans GAS</div>
+  <div style="font-size:11px;color:var(--txt2);margin-bottom:6px;">
+    Copie tout le contenu ci-dessous et colle-le dans<br>
+    <code style="color:var(--acc)">JOURNAL_MIGRATION_DATA</code> dans v3_step2_migration.gs
+  </div>
+  <textarea id="jsonOutput" readonly onclick="this.select()"></textarea>
+  <button class="btn btn-success" style="margin-top:10px" onclick="copyJSON()">📋 Tout copier</button>
+</div>
+
+<!-- ENTRY PREVIEW -->
+<div class="card hidden" id="entriesCard">
+  <div class="card-title">Aperçu des entrées</div>
+  <div class="entry-list" id="entryList"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var DAYS = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"];
+var MOS  = ["Jan","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Déc"];
+var entries = [];
+var jsonStr = "";
+
+// ── INIT ─────────────────────────────────────────────────────
+(function init() {
+  try {
+    var raw = localStorage.getItem("mc_journal");
+    if (!raw) {
+      showAlert("statusAlert", "warn", "⚠️ Aucune donnée mc_journal dans localStorage. Assure-toi d'ouvrir cette page depuis le même navigateur que ton dashboard.");
+      document.getElementById("entryCount").textContent = "0";
+      document.getElementById("entryYear").textContent = "0";
+      document.getElementById("entrySize").textContent = "0 ko";
+      return;
+    }
+
+    entries = JSON.parse(raw);
+    var cy = new Date().getFullYear();
+    var yearEntries = entries.filter(function(e) {
+      return e.date && e.date.startsWith(String(cy));
+    });
+
+    document.getElementById("entryCount").textContent = entries.length;
+    document.getElementById("entryYear").textContent = yearEntries.length;
+    document.getElementById("entrySize").textContent = Math.round(raw.length / 1024 * 10) / 10 + " ko";
+
+    if (entries.length > 0) {
+      showAlert("statusAlert", "ok", "✅ " + entries.length + " entrées trouvées. Prêt à exporter.");
+      document.getElementById("clearBtn").classList.remove("hidden");
+      document.getElementById("s2num").style.background = "var(--acc)";
+    } else {
+      showAlert("statusAlert", "warn", "Aucune entrée journal dans localStorage.");
+    }
+  } catch(e) {
+    showAlert("statusAlert", "err", "Erreur: " + e.message);
+    document.getElementById("entryCount").textContent = "Err";
+  }
+})();
+
+// ── GENERATE JSON ─────────────────────────────────────────────
+function generateJSON() {
+  if (!entries.length) {
+    toast("Aucune entrée à exporter");
+    return;
+  }
+
+  // Map localStorage format → V3 Journal tab format
+  var v3Entries = entries.map(function(e, idx) {
+    var dateVal = e.date || "";
+    var suffix  = String(idx).padStart(3, "0");
+    var entryId = dateVal ? dateVal.slice(0, 10) + "T" + suffix : "ls-" + idx;
+
+    var mood   = parseInt(e.mood)   || 0;
+    var energy = parseInt(e.energy) || 0;
+
+    var flagRaw = (e.flag || "").toString();
+    var include = flagRaw === "🟢" || flagRaw === "true";
+
+    // Map type/context fields
+    var context = e.context || "Après mission";
+    var kind    = e.type    || "Note";
+    // Clean up kind — localStorage stores "Décompression" in context, not type
+    if (kind === "Décompression") { context = "Décompression"; kind = "Note"; }
+
+    return {
+      entryId:   entryId,
+      date:      dateVal,
+      missionId: e.mid     || "",
+      client:    e.client  || "",
+      context:   context,
+      kind:      kind,
+      mood:      mood,
+      energy:    energy,
+      text:      e.note    || "",
+      include:   include,
+      createdAt: dateVal
+    };
+  });
+
+  jsonStr = JSON.stringify(v3Entries, null, 2);
+  document.getElementById("jsonOutput").value = jsonStr;
+  document.getElementById("jsonCard").classList.remove("hidden");
+  document.getElementById("copyBtn").classList.remove("hidden");
+  document.getElementById("s3num").style.background = "var(--acc)";
+
+  // Scroll to JSON
+  document.getElementById("jsonCard").scrollIntoView({ behavior: "smooth" });
+  toast("✅ JSON généré — " + v3Entries.length + " entrées");
+}
+
+// ── COPY JSON ─────────────────────────────────────────────────
+function copyJSON() {
+  if (!jsonStr) { toast("Génère d'abord le JSON"); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(jsonStr).then(function() {
+      toast("✅ Copié dans le presse-papier");
+      document.getElementById("s3num").style.background = "var(--green)";
+      document.getElementById("s3num").classList.add("done");
+    }).catch(function() {
+      selectTextarea();
+    });
+  } else {
+    selectTextarea();
+  }
+}
+
+function selectTextarea() {
+  var ta = document.getElementById("jsonOutput");
+  ta.select();
+  try { document.execCommand("copy"); toast("✅ Sélectionné — Cmd+C pour copier"); }
+  catch(e) { toast("Appuie longuement sur la zone et sélectionne Tout"); }
+}
+
+// ── SHOW ENTRIES ──────────────────────────────────────────────
+function showEntries() {
+  var card = document.getElementById("entriesCard");
+  var list = document.getElementById("entryList");
+
+  if (!card.classList.contains("hidden")) {
+    card.classList.add("hidden");
+    return;
+  }
+
+  if (!entries.length) { toast("Aucune entrée"); return; }
+
+  var sorted = entries.slice().sort(function(a, b) {
+    return (b.date || "").localeCompare(a.date || "");
+  });
+
+  list.innerHTML = sorted.map(function(e) {
+    var d = e.date ? new Date(e.date + "T12:00:00") : null;
+    var dateStr = d ? DAYS[d.getDay()] + " " + d.getDate() + " " + MOS[d.getMonth()] : e.date || "—";
+    var mood   = parseInt(e.mood)   || 0;
+    var energy = parseInt(e.energy) || 0;
+    var moodEmoji   = ["—","😫","😔","😐","🙂","😊"][mood]   || "—";
+    var energyEmoji = ["—","🪫","😴","⚡","💪","🔥"][energy] || "—";
+
+    return '<div class="entry">' +
+      '<div class="entry-hdr">' +
+        '<div class="entry-date">' + dateStr + '</div>' +
+        '<div class="entry-meta">' + (e.context || "—") + '</div>' +
+      '</div>' +
+      '<div class="entry-meta">' + (e.client || "") + (e.mid ? " · " + e.mid : "") + '</div>' +
+      '<div class="entry-scores">' +
+        (mood   ? '<span class="score">😊 ' + moodEmoji   + ' ' + mood   + '</span>' : '') +
+        (energy ? '<span class="score">⚡ ' + energyEmoji + ' ' + energy + '</span>' : '') +
+        (e.flag ? '<span class="score">' + e.flag + '</span>' : '') +
+      '</div>' +
+      (e.note ? '<div class="entry-note">' + e.note.slice(0, 120) + (e.note.length > 120 ? "…" : "") + '</div>' : '') +
+    '</div>';
+  }).join("");
+
+  card.classList.remove("hidden");
+  card.scrollIntoView({ behavior: "smooth" });
+}
+
+// ── CLEAR LOCALSTORAGE ────────────────────────────────────────
+function confirmClear() {
+  var confirmed = confirm(
+    "⚠️ Supprimer mc_journal du localStorage ?\n\n" +
+    "Ne fais ceci QUE si tu as vérifié que les entrées sont bien dans Google Sheets.\n\n" +
+    "Cette action est irréversible."
+  );
+  if (confirmed) {
+    localStorage.removeItem("mc_journal");
+    toast("✅ localStorage vidé");
+    document.getElementById("s4num").style.background = "var(--green)";
+    document.getElementById("clearBtn").classList.add("hidden");
+    setTimeout(function() { location.reload(); }, 1500);
+  }
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function showAlert(id, type, msg) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var cls = { warn: "alert-warn", ok: "alert-ok", err: "alert-err" }[type] || "alert-warn";
+  el.innerHTML = '<div class="alert ' + cls + '">' + msg + '</div>';
+}
+
+var _toastTimer = null;
+function toast(msg) {
+  var el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { el.classList.remove("show"); }, 3000);
+}
+</script>
+
+</body>
+</html>
