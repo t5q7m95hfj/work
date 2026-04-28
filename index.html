@@ -736,28 +736,34 @@ async function refresh() {
   await loadData(true);
 }
 
-// ═══════════════════════════════════════════════════════
-// NORMALISE — handles 1899-epoch time bug
-// ═══════════════════════════════════════════════════════
+ 
 function safeTime(v) {
-  // FIXES the 1899 date display bug
-  // Sheets returns time cells as Date objects with 1899-12-30 epoch
-  // or as decimal fraction strings (0.354... = 08:30)
-  if (!v && v!==0) return "";
-  if (typeof v === "string") {
-    // Already HH:MM
-    if (/^\d{1,2}:\d{2}$/.test(v.trim())) return v.trim();
-    // Decimal fraction
-    const n = parseFloat(v);
-    if (!isNaN(n) && n >= 0 && n < 1) {
-      const min = Math.round(n*1440);
-      return p2(Math.floor(min/60))+":"+p2(min%60);
-    }
-    // ISO string — extract time part
-    const m = v.match(/(\d{2}):(\d{2})/);
-    if (m) return m[1]+":"+m[2];
-    return "";
+  if (v === null || v === undefined || v === "") return "";
+  const s = String(v).trim();
+ 
+  // Already clean HH:MM or H:MM
+  if (/^\d{1,2}:\d{2}$/.test(s)) return s;
+ 
+  // ISO string (from JSON-serialised Date objects)
+  // e.g. "1899-12-30T07:30:00.000Z" or "2026-04-22T06:00:00.000Z"
+  const iso = s.match(/T(\d{2}):(\d{2})/);
+  if (iso) {
+    // Sanity check: ignore midnight (00:00) from empty date cells
+    if (iso[1] === "00" && iso[2] === "00") return "";
+    return iso[1] + ":" + iso[2];
   }
+ 
+  // Decimal fraction (0.354166... = 08:30)
+  const n = parseFloat(s);
+  if (!isNaN(n) && n > 0 && n < 1) {
+    const min = Math.round(n * 1440);
+    return p2(Math.floor(min / 60)) + ":" + p2(min % 60);
+  }
+ 
+  // Formatted time string "08 h 30" or "08:30:00"
+  const hms = s.match(/^(\d{1,2})[h:\s](\d{2})/i);
+  if (hms) return p2(parseInt(hms[1])) + ":" + p2(parseInt(hms[2]));
+ 
   return "";
 }
 
