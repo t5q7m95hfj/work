@@ -1,1083 +1,1629 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>Mission Control V3.1</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>Mission Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-/* ============================================================
-   MISSION CONTROL V3.1
-   Calm / complete / onsite-friendly dashboard
-   ============================================================ */
+/* ═══════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════ */
 :root {
-  --bg: #090a0d;
-  --surface: #121419;
-  --surface-2: #191d24;
-  --surface-3: #222733;
-  --border: rgba(255,255,255,.09);
-  --border-strong: rgba(255,255,255,.16);
-  --text: #f5f1e8;
-  --text-soft: #c7c0b5;
-  --text-muted: #8b857d;
-  --text-faint: #5d5852;
-  --gold: #e8c97a;
-  --blue: #6ea7ff;
-  --green: #60c08b;
-  --amber: #e7a25c;
-  --red: #ee6b6b;
-  --purple: #b49cff;
-  --radius: 16px;
-  --radius-sm: 10px;
-  --tap: 48px;
-  --shadow: 0 14px 44px rgba(0,0,0,.28);
-  --font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-}
-body.light {
-  --bg: #f4f0e8;
-  --surface: #fffaf2;
-  --surface-2: #eee7dc;
-  --surface-3: #e2d9ca;
-  --border: rgba(30,24,16,.11);
-  --border-strong: rgba(30,24,16,.2);
-  --text: #181713;
-  --text-soft: #484238;
-  --text-muted: #766f64;
-  --text-faint: #aaa197;
-  --gold: #8a6200;
-  --blue: #175fd6;
-  --green: #27764f;
-  --amber: #a95f1f;
-  --red: #b23535;
-  --purple: #6b4bd3;
-  --shadow: 0 12px 28px rgba(70,55,35,.13);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { min-height: 100%; overscroll-behavior: none; }
-body {
-  background: radial-gradient(circle at 50% -12%, rgba(232,201,122,.10), transparent 30%), var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 15px;
-  line-height: 1.48;
-  letter-spacing: -.01em;
-}
-button, input, select, textarea { font: inherit; }
-button { border: 0; background: none; color: inherit; cursor: pointer; }
-a { color: inherit; text-decoration: none; }
-input, textarea, select { color: var(--text); }
+  --bg:      #080810;
+  --s1:      #10101c;
+  --s2:      #181826;
+  --s3:      #202030;
+  --s4:      #282840;
+  --bdr:     rgba(255,255,255,.06);
+  --bdr2:    rgba(255,255,255,.11);
+  --txt0:    #f4f2ee;
+  --txt1:    #c8c4bc;
+  --txt2:    #8a8680;
+  --txt3:    #504c48;
+  --gold:    #e8c97a;
+  --gold2:   #c8a840;
+  --blue:    #5b9cf6;
+  --green:   #52c47c;
+  --amber:   #f0a040;
+  --red:     #e85858;
+  --purple:  #a87cf4;
+  --r:       12px;
+  --r-sm:    7px;
+  --r-xs:    4px;
+  --sans: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
 
-/* Header */
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 16px 10px;
+  /* Client colours */
+  --c-phil: #52c47c;
+  --c-gcs:  #5b9cf6;
+  --c-ftfw: #a87cf4;
+  --c-umb:  #f0a040;
 }
-.header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 760px; margin: 0 auto; }
-.brand { min-width: 0; }
-.brand-title { font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--gold); }
-.brand-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 52vw; }
-.header-actions { display: flex; align-items: center; gap: 8px; }
-.clock { font-family: var(--mono); font-size: 19px; font-weight: 600; letter-spacing: .03em; }
-.icon-btn {
-  width: 40px; height: 40px; border-radius: 999px;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--surface-2); border: 1px solid var(--border);
-  color: var(--text-soft); font-size: 17px;
+.light {
+  --bg:   #f0ede6;
+  --s1:   #ffffff;
+  --s2:   #e8e4dc;
+  --s3:   #ddd8cf;
+  --s4:   #d0cbc0;
+  --bdr:  rgba(0,0,0,.07);
+  --bdr2: rgba(0,0,0,.13);
+  --txt0: #1a1814;
+  --txt1: #4a4640;
+  --txt2: #7a7670;
+  --txt3: #b0aba4;
+  --gold: #7a5800;
+  --gold2:#a07000;
+  --blue: #1a50d0;
+  --green:#1a8040;
+  --amber:#b06010;
+  --red:  #b02020;
+  --purple:#6030c0;
 }
-.icon-btn:active { transform: scale(.97); background: var(--surface-3); }
 
-/* Top nav */
-.top-nav-wrap {
-  position: sticky;
-  top: 64px;
-  z-index: 45;
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border);
-  padding: 9px 12px;
+/* ═══════════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overscroll-behavior:none;}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt0);font-size:14px;line-height:1.5;transition:background .2s,color .2s;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+select{font-family:inherit;}
+textarea{font-family:inherit;}
+input{font-family:inherit;}
+
+/* ═══════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════ */
+.app{display:flex;flex-direction:column;height:100vh;}
+.hdr{
+  flex-shrink:0;
+  padding:12px 16px 10px;
+  background:var(--bg);
+  border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;
 }
-.top-nav {
-  max-width: 760px; margin: 0 auto;
-  display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 7px;
+.nav{
+  flex-shrink:0;
+  display:flex;
+  background:var(--bg);
+  border-bottom:1px solid var(--bdr);
+  /* CRITICAL: centered on mobile */
+  justify-content:center;
 }
-.nav-btn {
-  min-height: 42px;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  border-radius: 999px;
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .02em;
-  text-transform: uppercase;
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.inner{padding:14px 15px 100px;max-width:520px;margin:0 auto;}
+
+/* ═══════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════ */
+.brand{display:flex;flex-direction:column;gap:1px;}
+.brand-name{
+  font-family:var(--sans);font-weight:800;font-size:17px;
+  letter-spacing:-.2px;color:var(--gold);
+  text-transform:uppercase;letter-spacing:.5px;
 }
-.nav-btn.active { background: rgba(232,201,122,.12); border-color: color-mix(in srgb, var(--gold) 48%, transparent); color: var(--gold); }
-
-/* Layout */
-.main { max-width: 760px; margin: 0 auto; padding: 14px 14px 92px; }
-.section-title {
-  margin: 18px 2px 8px;
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: .08em;
+.brand-sub{font-size:10px;color:var(--txt3);letter-spacing:.3px;font-weight:400;}
+.hdr-r{display:flex;align-items:center;gap:10px;}
+.clock{
+  font-family:var(--mono);font-size:19px;font-weight:400;
+  color:var(--txt0);letter-spacing:.04em;
 }
-.section-title:first-child { margin-top: 4px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
-.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
-@media (max-width: 430px) { .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); } .brand-sub { max-width: 48vw; } }
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 11px;
-  min-height: 70px;
+.hdr-wx{font-size:12px;color:var(--txt2);display:flex;align-items:center;gap:3px;}
+.hdr-btn{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--s2);border:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;color:var(--txt2);transition:background .12s;
 }
-.stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-.stat-value { margin-top: 3px; font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -.04em; }
-.stat-note { margin-top: 1px; font-size: 11px; color: var(--text-faint); }
+.hdr-btn:active{background:var(--s3);}
 
-/* Cards */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
+/* ═══════════════════════════════════════════════════
+   NAV — centered, evenly spaced
+═══════════════════════════════════════════════════ */
+.nb{
+  flex:1;max-width:140px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;
+  color:var(--txt2);
+  padding:11px 6px;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+  white-space:nowrap;
 }
-.mission-card {
-  position: relative;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 14px 13px 16px;
-  margin-bottom: 9px;
-  overflow: hidden;
+.nb.on{color:var(--gold);border-bottom-color:var(--gold);}
+.nb-icon{font-size:13px;}
+
+/* ═══════════════════════════════════════════════════
+   SUB-NAV
+═══════════════════════════════════════════════════ */
+.sub-nav{display:flex;gap:6px;margin-bottom:14px;}
+.sn-btn{
+  padding:6px 16px;border-radius:20px;
+  font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  background:var(--s2);border:1px solid var(--bdr);color:var(--txt2);
+  transition:background .12s,color .12s,border-color .12s;
 }
-.mission-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--client-color, var(--gold)); }
-.mission-card.done { opacity: .55; }
-.mission-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-.mission-meta { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
-.client-tag { color: var(--client-color, var(--gold)); font-weight: 900; font-size: 12px; letter-spacing: .03em; }
-.time-tag { font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--text-soft); }
-.date-tag { font-size: 12px; color: var(--text-faint); }
-.mission-title { font-size: 18px; font-weight: 850; line-height: 1.16; letter-spacing: -.03em; }
-.mission-sub { margin-top: 4px; font-size: 13px; color: var(--text-muted); }
-.pill-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-.pill { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 4px 8px; font-size: 12px; font-weight: 700; background: var(--surface-2); color: var(--text-soft); border: 1px solid var(--border); }
-.pill.green { color: var(--green); background: rgba(96,192,139,.1); }
-.pill.blue { color: var(--blue); background: rgba(110,167,255,.1); }
-.pill.amber { color: var(--amber); background: rgba(231,162,92,.1); }
-.pill.red { color: var(--red); background: rgba(238,107,107,.1); }
-.status-stack { display: flex; align-items: flex-end; flex-direction: column; gap: 6px; min-width: 76px; }
-.status-badge { border-radius: 999px; padding: 4px 8px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; background: var(--surface-2); color: var(--text-muted); }
-.status-badge.green { color: var(--green); background: rgba(96,192,139,.12); }
-.status-badge.blue { color: var(--blue); background: rgba(110,167,255,.12); }
-.status-badge.amber { color: var(--amber); background: rgba(231,162,92,.12); }
-.status-badge.red { color: var(--red); background: rgba(238,107,107,.12); }
-.completeness { height: 7px; width: 54px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
-.completeness > span { display: block; height: 100%; width: 0%; background: var(--green); transition: width .2s; }
+.sn-btn.on{background:rgba(232,201,122,.12);border-color:var(--gold);color:var(--gold);}
 
-/* Detail */
-.back-btn { min-height: var(--tap); display: inline-flex; align-items: center; gap: 8px; color: var(--gold); font-weight: 850; font-size: 14px; margin-bottom: 8px; }
-.detail-hero { padding: 18px 17px 16px; border-bottom: 1px solid var(--border); position: relative; }
-.detail-hero::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: var(--client-color, var(--gold)); }
-.detail-client { color: var(--client-color, var(--gold)); font-size: 12px; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; }
-.detail-title { margin-top: 4px; font-size: 25px; font-weight: 900; line-height: 1.08; letter-spacing: -.05em; }
-.detail-sub { margin-top: 6px; color: var(--text-muted); font-size: 14px; }
-.detail-section { padding: 15px 16px; border-top: 1px solid var(--border); }
-.detail-section:first-of-type { border-top: 0; }
-.detail-section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
-.info-row { display: grid; grid-template-columns: 116px minmax(0,1fr); gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
-.info-row:last-child { border-bottom: 0; }
-.info-label { color: var(--text-muted); font-size: 13px; }
-.info-value { color: var(--text); font-size: 15px; font-weight: 550; word-break: break-word; }
-.info-value.mono { font-family: var(--mono); }
-
-/* Actions */
-.action-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
-.action-btn {
-  min-height: 48px; border-radius: var(--radius-sm); padding: 10px 11px;
-  background: var(--surface-2); border: 1px solid var(--border);
-  color: var(--text-soft); font-weight: 800; font-size: 14px;
-  display: flex; align-items: center; justify-content: center; gap: 7px; text-align: center;
+/* ═══════════════════════════════════════════════════
+   SECTION LABELS
+═══════════════════════════════════════════════════ */
+.slbl{
+  font-size:9px;font-weight:700;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--txt3);
+  padding:16px 0 7px;
 }
-.action-btn.primary { background: var(--gold); color: #12100b; border-color: var(--gold); }
-.action-btn.green { color: var(--green); border-color: rgba(96,192,139,.35); }
-.action-btn.amber { color: var(--amber); border-color: rgba(231,162,92,.35); }
-.action-btn.red { color: var(--red); border-color: rgba(238,107,107,.35); }
-.action-btn.blue { color: var(--blue); border-color: rgba(110,167,255,.35); }
-.action-btn:active { transform: scale(.985); }
+.slbl:first-child{padding-top:2px;}
 
-/* Preparation checklist */
-.checklist { display: grid; gap: 7px; }
-.check-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--radius-sm); background: var(--surface-2); border: 1px solid var(--border); }
-.check-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
-.check-icon { width: 23px; height: 23px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; background: var(--surface-3); color: var(--text-muted); flex: 0 0 auto; }
-.check-icon.ok { background: rgba(96,192,139,.14); color: var(--green); }
-.check-icon.warn { background: rgba(231,162,92,.14); color: var(--amber); }
-.check-icon.bad { background: rgba(238,107,107,.14); color: var(--red); }
-.check-main { font-weight: 750; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.check-sub { color: var(--text-muted); font-size: 12px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.check-status { font-family: var(--mono); font-size: 12px; color: var(--text-muted); flex: 0 0 auto; }
-
-/* Forms */
-.form-grid { display: grid; gap: 9px; }
-.field { display: grid; gap: 5px; }
-.field label { color: var(--text-muted); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
-.input, .select, .textarea {
-  width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border-strong);
-  background: var(--surface-2); color: var(--text); padding: 11px 12px;
-  outline: 0; font-size: 16px;
+/* ═══════════════════════════════════════════════════
+   DATE HEADERS
+═══════════════════════════════════════════════════ */
+.dhdr{
+  font-size:11px;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--txt2);
+  padding:12px 0 6px;
+  display:flex;align-items:center;gap:7px;
 }
-.textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
-.input:focus, .select:focus, .textarea:focus { border-color: var(--gold); }
-.inline-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-
-/* Collapsible */
-.collapsible { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); margin-top: 9px; }
-.coll-head { min-height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 13px; background: var(--surface-2); }
-.coll-title { font-weight: 850; font-size: 14px; }
-.coll-sub { color: var(--text-muted); font-size: 12px; margin-top: 1px; }
-.coll-body { display: none; padding: 13px; border-top: 1px solid var(--border); }
-.coll-body.open { display: block; }
-.chev { color: var(--text-muted); transition: transform .2s; }
-.chev.open { transform: rotate(180deg); }
-
-/* Passenger list */
-.pax-list { max-height: 320px; overflow: auto; display: grid; gap: 6px; }
-.pax-item { display: flex; gap: 9px; align-items: flex-start; padding: 9px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface-2); }
-.pax-box { width: 23px; height: 23px; border-radius: 7px; border: 1.5px solid var(--border-strong); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; font-weight: 900; color: #fff; }
-.pax-box.checked { background: var(--green); border-color: var(--green); }
-.pax-name { font-size: 14px; color: var(--text-soft); line-height: 1.35; }
-.pax-name.checked { text-decoration: line-through; color: var(--text-faint); }
-.progress { height: 8px; border-radius: 999px; background: var(--surface-3); overflow: hidden; margin-bottom: 10px; }
-.progress span { display: block; height: 100%; background: var(--green); width: 0%; }
-
-/* Timeline */
-.timeline { display: grid; gap: 0; }
-.timeline-row { display: grid; grid-template-columns: 64px minmax(0,1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); }
-.timeline-row:last-child { border-bottom: 0; }
-.timeline-time { font-family: var(--mono); color: var(--gold); font-weight: 700; font-size: 13px; }
-.timeline-main { font-size: 14px; font-weight: 760; }
-.timeline-sub { color: var(--text-muted); font-size: 12px; margin-top: 1px; }
-
-/* Toast / empty / loader */
-.loader, .empty { padding: 40px 20px; text-align: center; color: var(--text-muted); }
-.loader .spin { display: inline-block; animation: spin .8s linear infinite; margin-right: 8px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.empty-icon { font-size: 34px; opacity: .55; margin-bottom: 8px; }
-.empty-title { font-size: 18px; font-weight: 850; color: var(--text-soft); }
-.empty-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
-.toast {
-  position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(12px);
-  max-width: calc(100vw - 28px); opacity: 0; pointer-events: none; z-index: 100;
-  background: var(--surface-3); color: var(--text); border: 1px solid var(--border-strong);
-  border-radius: 999px; padding: 11px 17px; font-size: 14px; font-weight: 800; box-shadow: var(--shadow);
-  transition: opacity .2s, transform .2s;
+.dhdr.today{color:var(--gold);}
+.dhdr.tmrw{color:var(--green);}
+.d-pill{
+  font-size:8px;padding:2px 7px;border-radius:3px;font-weight:700;
+  background:rgba(232,201,122,.12);color:var(--gold);
 }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.ok { color: var(--green); border-color: rgba(96,192,139,.45); }
-.toast.err { color: var(--red); border-color: rgba(238,107,107,.45); }
 
-/* Debug/system */
-.kv { display: grid; grid-template-columns: 140px 1fr; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.kv:last-child { border-bottom: 0; }
-.kv-key { color: var(--text-muted); }
-.kv-val { color: var(--text-soft); font-family: var(--mono); word-break: break-word; }
-
-@media (min-width: 720px) {
-  .detail-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 10px; align-items: start; }
+/* ═══════════════════════════════════════════════════
+   SUMMARY CARDS
+═══════════════════════════════════════════════════ */
+.sum-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:2px;}
+.sum-card{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:10px 10px 8px;
 }
+.sum-lbl{font-size:7px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;}
+.sum-val{font-family:var(--sans);font-size:20px;font-weight:700;line-height:1;color:var(--txt0);}
+.sum-val.gold{color:var(--gold);}
+.sum-val.green{color:var(--green);}
+.sum-val.amber{color:var(--amber);}
+
+/* ═══════════════════════════════════════════════════
+   MISSION CARD — the key element
+═══════════════════════════════════════════════════ */
+.mc{
+  background:var(--s1);
+  border:1px solid var(--bdr);
+  border-radius:var(--r);
+  margin-bottom:7px;
+  cursor:pointer;
+  overflow:hidden;
+  position:relative;
+  transition:transform .08s,box-shadow .12s;
+  user-select:none;
+}
+.mc:active{transform:scale(.983);}
+.mc.dim{opacity:.38;}
+/* Left accent bar */
+.mc-bar{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:var(--r) 0 0 var(--r);}
+/* Main content */
+.mc-body{padding:11px 13px 11px 17px;}
+.mc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.mc-left{flex:1;min-width:0;}
+.mc-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+/* Header row */
+.mc-head{display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap;}
+.mc-tag{font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;}
+.mc-time{font-family:var(--mono);font-size:12px;color:var(--txt1);font-weight:400;}
+.mc-ds{font-size:9px;color:var(--txt3);}
+/* Main title */
+.mc-title{font-size:15px;font-weight:700;color:var(--txt0);line-height:1.2;letter-spacing:-.1px;}
+.mc-sub{font-size:11px;color:var(--txt2);margin-top:2px;}
+/* Pills */
+.mc-pills{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap;}
+.pill{font-size:9px;padding:2px 8px;border-radius:3px;font-weight:600;letter-spacing:.2px;}
+.p-loc{background:rgba(82,196,124,.1);color:var(--green);}
+.p-pax{background:rgba(91,156,246,.09);color:var(--blue);}
+.p-ship{background:rgba(168,124,244,.09);color:var(--purple);}
+.p-note{background:rgba(232,201,122,.09);color:var(--gold);}
+/* Badge */
+.bdg{font-size:8px;padding:3px 8px;border-radius:3px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;}
+.b-brouillon{background:rgba(138,134,128,.1);color:var(--txt2);}
+.b-planifie{background:rgba(91,156,246,.1);color:var(--blue);}
+.b-confirme{background:rgba(82,196,124,.1);color:var(--green);}
+.b-termine{background:rgba(82,196,124,.1);color:var(--green);}
+.b-facgen{background:rgba(232,201,122,.1);color:var(--gold);}
+.b-facenv{background:rgba(240,160,64,.1);color:var(--amber);}
+.b-paye{background:rgba(168,124,244,.1);color:var(--purple);}
+.b-cxl{background:rgba(232,88,88,.1);color:var(--red);}
+/* Completeness dot */
+.cmp{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cmp-g{background:var(--green);}
+.cmp-a{background:var(--amber);}
+.cmp-r{background:var(--red);}
+
+/* ═══════════════════════════════════════════════════
+   UPCOMING (compact)
+═══════════════════════════════════════════════════ */
+.upcoming{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;}
+.up-row{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 13px;border-bottom:1px solid var(--bdr);
+  cursor:pointer;transition:background .1s;
+}
+.up-row:last-child{border-bottom:none;}
+.up-row:active{background:var(--s2);}
+.up-date{font-size:10px;color:var(--txt2);width:65px;flex-shrink:0;font-weight:500;}
+.up-desc{font-size:12px;color:var(--txt1);flex:1;}
+.up-tag{font-size:9px;font-weight:700;letter-spacing:.5px;}
+
+/* ═══════════════════════════════════════════════════
+   DETAIL VIEW
+═══════════════════════════════════════════════════ */
+.back{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  color:var(--gold);padding:8px 0 12px;cursor:pointer;
+  min-height:44px;
+}
+/* Hero card */
+.hero{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  overflow:hidden;margin-bottom:8px;
+}
+.hero-top{height:4px;}
+.hero-body{padding:14px 15px 12px;}
+.hero-client{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px;}
+.hero-title{font-size:22px;font-weight:800;color:var(--txt0);line-height:1.1;letter-spacing:-.3px;}
+.hero-sub{font-size:12px;color:var(--txt2);margin-top:4px;}
+.hero-pills{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;align-items:center;}
+/* Completeness detail */
+.cmp-detail{font-size:9px;color:var(--amber);display:flex;align-items:center;gap:4px;}
+
+/* Sections */
+.sec{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  overflow:hidden;margin-bottom:8px;
+}
+.sec-title{
+  font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--txt3);padding:10px 14px 6px;
+  border-bottom:1px solid var(--bdr);
+}
+.sec-body{padding:2px 14px 8px;}
+
+/* Info rows */
+.ir{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--bdr);}
+.ir:last-child{border-bottom:none;}
+.ir-l{font-size:10px;color:var(--txt2);width:90px;flex-shrink:0;padding-top:1px;font-weight:400;}
+.ir-v{font-size:12px;color:var(--txt0);flex:1;word-break:break-word;font-weight:500;}
+.ir-v a{color:var(--blue);}
+
+/* Contact blocks */
+.cb{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--bdr);
+}
+.cb:last-child{border-bottom:none;}
+.cb-r{font-size:9px;color:var(--txt3);margin-bottom:2px;letter-spacing:.2px;}
+.cb-n{font-size:13px;font-weight:600;color:var(--txt0);}
+.cb-p{font-size:11px;color:var(--txt2);margin-top:1px;font-family:var(--mono);}
+.call-btn{
+  background:rgba(82,196,124,.1);border:1px solid rgba(82,196,124,.2);
+  border-radius:var(--r-sm);padding:7px 13px;
+  font-size:12px;font-weight:600;color:var(--green);
+  min-height:36px;display:flex;align-items:center;gap:4px;
+  transition:background .12s;
+}
+.call-btn:active{background:rgba(82,196,124,.2);}
+
+/* ═══════════════════════════════════════════════════
+   PAX CHECKLIST
+═══════════════════════════════════════════════════ */
+.pax-prog{height:3px;background:var(--s3);border-radius:2px;margin:8px 0;}
+.pax-fill{height:100%;background:var(--green);border-radius:2px;transition:width .3s;}
+.pax-list{max-height:280px;overflow-y:auto;}
+.pax-row{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px solid var(--bdr);}
+.pax-row:last-child{border-bottom:none;}
+.pax-box{
+  width:19px;height:19px;border-radius:4px;
+  border:1.5px solid var(--bdr2);background:var(--s2);
+  flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;cursor:pointer;
+  transition:background .1s,border-color .1s;
+}
+.pax-box.ck{background:var(--green);border-color:var(--green);color:#fff;}
+.pax-name{font-size:12px;color:var(--txt0);flex:1;line-height:1.4;font-weight:400;}
+.pax-name.ck{color:var(--txt3);text-decoration:line-through;}
+
+/* ═══════════════════════════════════════════════════
+   EDIT CONTROLS
+═══════════════════════════════════════════════════ */
+.edit-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bdr);}
+.edit-row:last-child{border-bottom:none;}
+.edit-l{font-size:10px;color:var(--txt2);width:72px;flex-shrink:0;font-weight:400;}
+.edit-inp{
+  flex:1;background:var(--s2);border:1px solid var(--bdr2);
+  border-radius:var(--r-sm);padding:7px 10px;
+  font-size:12px;color:var(--txt0);outline:none;
+  transition:border-color .15s;font-family:var(--mono);
+}
+.edit-inp:focus{border-color:var(--gold);}
+.edit-sel{
+  flex:1;background:var(--s2);border:1px solid var(--bdr2);
+  border-radius:var(--r-sm);padding:7px 10px;
+  font-size:12px;color:var(--txt0);outline:none;
+  -webkit-appearance:none;
+}
+.save-btn{
+  background:var(--gold);color:#000;
+  border-radius:var(--r-sm);padding:6px 13px;
+  font-size:11px;font-weight:700;letter-spacing:.3px;
+  min-height:33px;flex-shrink:0;
+  transition:opacity .12s;
+}
+.save-btn:active{opacity:.8;}
+.notes-ta{
+  width:100%;background:var(--s2);border:1px solid var(--bdr);
+  border-radius:var(--r-sm);padding:9px 11px;
+  font-size:12px;color:var(--txt0);
+  resize:vertical;min-height:70px;outline:none;line-height:1.6;
+  transition:border-color .15s;margin-top:4px;
+}
+.notes-ta:focus{border-color:var(--gold);}
+.save-row{display:flex;justify-content:flex-end;margin-top:5px;}
+
+/* ═══════════════════════════════════════════════════
+   COLLAPSIBLE — FIXED
+═══════════════════════════════════════════════════ */
+.coll{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-top:8px;}
+.coll-h{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;cursor:pointer;background:var(--s2);
+  transition:background .1s;
+}
+.coll-h:active{background:var(--s3);}
+.coll-htitle{font-size:11px;font-weight:600;color:var(--txt1);letter-spacing:.2px;}
+.coll-hsub{font-size:9px;color:var(--txt3);margin-top:1px;}
+.coll-chev{font-size:11px;color:var(--txt3);transition:transform .18s;flex-shrink:0;}
+/* KEY FIX: body starts hidden, open class reveals */
+.coll-body{display:none;padding:10px 14px;border-top:1px solid var(--bdr);}
+.coll-body.open{display:block;}
+.coll-chev.open{transform:rotate(180deg);}
+
+/* ═══════════════════════════════════════════════════
+   INVOICE
+═══════════════════════════════════════════════════ */
+.inv-btn{
+  display:flex;align-items:center;gap:9px;
+  background:var(--s2);border:1px solid var(--bdr2);
+  border-radius:var(--r);padding:11px 13px;width:100%;
+  font-size:12px;color:var(--txt0);font-weight:500;
+  margin-top:6px;transition:background .12s;
+}
+.inv-btn:active{background:var(--s3);}
+.inv-btn:first-child{margin-top:0;}
+.inv-ico{font-size:17px;flex-shrink:0;}
+.inv-r{margin-left:auto;font-size:10px;color:var(--txt3);}
+
+/* ═══════════════════════════════════════════════════
+   SNCF PANEL
+═══════════════════════════════════════════════════ */
+.sncf-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bdr);}
+.sncf-row:last-child{border-bottom:none;}
+.sncf-train{font-size:11px;font-weight:500;color:var(--txt0);}
+.sncf-t{font-family:var(--mono);font-size:11px;color:var(--txt1);}
+.sncf-b{font-size:9px;padding:2px 7px;border-radius:3px;font-weight:700;}
+.s-ok{background:rgba(82,196,124,.1);color:var(--green);}
+.s-late{background:rgba(232,88,88,.1);color:var(--red);}
+.s-mut{background:rgba(138,134,128,.1);color:var(--txt2);}
+.sncf-refresh{font-size:10px;color:var(--blue);cursor:pointer;padding:0 4px;}
+
+/* ═══════════════════════════════════════════════════
+   MONTH / FINANCE
+═══════════════════════════════════════════════════ */
+.mo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px;}
+.mo-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r-sm);padding:9px 10px;}
+.mo-lbl{font-size:7px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;}
+.mo-val{font-size:18px;font-weight:700;color:var(--txt0);line-height:1;}
+
+/* Finance */
+.fin-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:8px;overflow:hidden;}
+.fin-title{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3);padding:10px 14px 8px;border-bottom:1px solid var(--bdr);}
+.fin-body{padding:4px 14px 8px;}
+.fr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bdr);}
+.fr:last-child{border-bottom:none;}
+.fr-l{font-size:12px;color:var(--txt1);font-weight:400;}
+.fr-l.bold{font-weight:600;color:var(--txt0);}
+.fr-v{font-size:13px;font-weight:700;color:var(--txt0);font-family:var(--mono);}
+.fr-v.g{color:var(--green);}
+.fr-v.a{color:var(--amber);}
+.fr-v.r{color:var(--red);}
+.fr-v.p{color:var(--purple);}
+/* Mission finance rows */
+.fmr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bdr);cursor:pointer;}
+.fmr:last-child{border-bottom:none;}
+.fmr:active{background:var(--s2);}
+.fmr-l{flex:1;min-width:0;}
+.fmr-desc{font-size:11px;color:var(--txt0);font-weight:500;}
+.fmr-meta{font-size:9px;color:var(--txt3);margin-top:1px;}
+.fmr-r{text-align:right;flex-shrink:0;padding-left:8px;}
+.fmr-base{font-size:12px;font-weight:700;color:var(--txt0);font-family:var(--mono);}
+.fmr-net{font-size:9px;color:var(--txt2);margin-top:1px;font-family:var(--mono);}
+.owed{font-size:8px;padding:1px 5px;border-radius:2px;background:rgba(232,88,88,.1);color:var(--red);font-weight:700;margin-left:5px;}
+
+/* ═══════════════════════════════════════════════════
+   CANCELLED SECTION
+═══════════════════════════════════════════════════ */
+.cxl-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;border-bottom:1px solid var(--bdr);
+}
+.cxl-row:last-child{border-bottom:none;}
+.cxl-name{font-size:11px;color:var(--txt3);}
+.cxl-date{font-size:9px;color:var(--txt3);margin-top:1px;}
+
+/* ═══════════════════════════════════════════════════
+   JOURNAL
+═══════════════════════════════════════════════════ */
+.j-stats{display:flex;gap:7px;margin-bottom:10px;}
+.j-stat{flex:1;background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r-sm);padding:9px 10px;}
+.j-stat-v{font-size:16px;font-weight:700;color:var(--txt0);line-height:1;}
+.j-stat-l{font-size:8px;color:var(--txt3);margin-top:3px;letter-spacing:.4px;text-transform:uppercase;}
+.jrow{display:flex;flex-direction:column;padding:8px 0;border-bottom:1px solid var(--bdr);}
+.jrow:last-child{border-bottom:none;}
+.jrow-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.jrow-date{font-size:11px;font-weight:600;color:var(--gold);}
+.jrow-ctx{font-size:9px;color:var(--txt3);}
+.jrow-sc{display:flex;gap:5px;margin-top:4px;}
+.jsc{font-size:9px;background:var(--s3);border-radius:3px;padding:2px 7px;color:var(--txt2);}
+.jrow-note{font-size:11px;color:var(--txt2);margin-top:5px;font-style:italic;line-height:1.5;}
+
+/* ═══════════════════════════════════════════════════
+   PMF
+═══════════════════════════════════════════════════ */
+.pmf{padding:2px 0 6px;}
+.pmf-hdr{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.pmf-num{width:24px;height:24px;border-radius:50%;background:var(--gold);color:#000;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pmf-title{font-size:15px;font-weight:700;color:var(--txt0);}
+.time-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.time-b{flex:1;}
+.time-lbl{font-size:9px;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;}
+.time-inp{
+  width:100%;background:var(--s2);border:1px solid var(--bdr2);
+  border-radius:var(--r-sm);padding:9px 10px;
+  font-family:var(--mono);font-size:18px;color:var(--txt0);
+  text-align:center;outline:none;transition:border-color .15s;
+}
+.time-inp:focus{border-color:var(--gold);}
+.time-arr{font-size:20px;color:var(--txt3);flex-shrink:0;}
+.dur{text-align:center;font-size:12px;color:var(--txt2);margin-bottom:12px;min-height:20px;}
+.tpl-row{display:flex;gap:6px;margin-bottom:10px;}
+.tpl-btn{
+  flex:1;padding:9px 4px;border-radius:var(--r-sm);
+  font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  background:var(--s2);border:1px solid var(--bdr);color:var(--txt2);
+  transition:all .12s;
+}
+.tpl-btn.on{background:rgba(232,201,122,.1);border-color:var(--gold);color:var(--gold);}
+.mood-row{display:flex;gap:6px;margin-bottom:12px;}
+.mood-btn{
+  flex:1;padding:9px 2px;border-radius:var(--r-sm);
+  font-size:18px;
+  background:var(--s2);border:1px solid var(--bdr);
+  transition:all .1s;
+}
+.mood-btn.on{background:rgba(232,201,122,.08);border-color:var(--gold);}
+.pbtn{
+  width:100%;padding:13px;border-radius:var(--r);
+  font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.3px;
+  background:var(--gold);color:#000;
+  margin-bottom:9px;transition:opacity .12s;
+}
+.pbtn:active{opacity:.8;}
+.pbtn-sec{background:var(--s2);color:var(--txt1);border:1px solid var(--bdr);}
+.pback{
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--txt3);padding:8px;cursor:pointer;
+  min-height:40px;
+}
+.rpt-out{
+  background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r-sm);
+  padding:11px 13px;font-size:11px;color:var(--txt1);line-height:1.8;
+  white-space:pre-wrap;margin-bottom:8px;
+}
+.rpt-acts{display:flex;gap:6px;margin-bottom:8px;}
+.rpt-act{
+  flex:1;padding:8px 4px;border-radius:var(--r-sm);
+  font-size:10px;font-weight:600;letter-spacing:.3px;
+  background:var(--s2);border:1px solid var(--bdr);color:var(--txt1);
+}
+.rpt-ed{
+  width:100%;background:var(--s2);border:1px solid var(--bdr);
+  border-radius:var(--r-sm);padding:9px 11px;
+  font-family:var(--mono);font-size:11px;color:var(--txt0);
+  resize:vertical;min-height:90px;outline:none;margin-bottom:8px;
+  line-height:1.6;
+}
+.spin{display:inline-block;animation:_s .7s linear infinite;}
+@keyframes _s{to{transform:rotate(360deg);}}
+.done-wrap{text-align:center;padding:20px 0;}
+.done-ico{font-size:36px;margin-bottom:10px;}
+.done-title{font-size:17px;font-weight:800;color:var(--txt0);margin-bottom:4px;}
+.done-sub{font-size:12px;color:var(--txt2);margin-bottom:14px;}
+.decomp-link{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--s2);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:10px 18px;
+  font-size:12px;color:var(--txt1);font-weight:500;
+}
+
+/* ═══════════════════════════════════════════════════
+   DECOMPRESSION
+═══════════════════════════════════════════════════ */
+.dc{min-height:55vh;display:flex;flex-direction:column;justify-content:center;padding:10px 0;}
+.dc-ey{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3);margin-bottom:6px;}
+.dc-title{font-size:28px;font-weight:800;color:var(--txt0);letter-spacing:-.3px;margin-bottom:4px;}
+.dc-sub{font-size:12px;color:var(--txt2);margin-bottom:18px;}
+.dc-ta{
+  width:100%;background:var(--s1);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:13px 15px;
+  font-family:var(--sans);font-size:13px;color:var(--txt0);
+  resize:none;min-height:150px;outline:none;line-height:1.7;
+  transition:border-color .15s;
+}
+.dc-ta:focus{border-color:var(--gold);}
+.dc-row{display:flex;gap:8px;margin-top:10px;}
+.dc-save{flex:1;padding:13px;border-radius:var(--r);background:var(--green);color:#fff;font-size:13px;font-weight:700;letter-spacing:.3px;}
+.dc-back{padding:13px 18px;border-radius:var(--r);background:var(--s2);border:1px solid var(--bdr);font-size:12px;color:var(--txt2);}
+
+/* ═══════════════════════════════════════════════════
+   EMPTY
+═══════════════════════════════════════════════════ */
+.empty{text-align:center;padding:50px 20px;}
+.empty-ico{font-size:40px;opacity:.35;margin-bottom:10px;}
+.empty-title{font-size:15px;font-weight:700;color:var(--txt2);margin-bottom:4px;}
+.empty-sub{font-size:11px;color:var(--txt3);}
+
+/* ═══════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════ */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  background:var(--s3);border:1px solid var(--bdr2);
+  color:var(--txt0);font-size:12px;font-weight:600;letter-spacing:.3px;
+  padding:9px 20px;border-radius:24px;
+  opacity:0;transition:opacity .22s;
+  pointer-events:none;white-space:nowrap;z-index:999;
+}
+#toast.show{opacity:1;}
+#toast.ok{background:rgba(82,196,124,.18);border-color:var(--green);color:var(--green);}
+#toast.err{background:rgba(232,88,88,.18);border-color:var(--red);color:var(--red);}
+
+/* ═══════════════════════════════════════════════════
+   REF BOX
+═══════════════════════════════════════════════════ */
+.ref-box{
+  background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:12px 14px;font-size:10px;color:var(--txt3);line-height:2.1;
+  font-family:var(--mono);letter-spacing:.1px;
+}
+
+.loader{display:flex;align-items:center;justify-content:center;gap:8px;padding:40px 0;color:var(--txt3);font-size:12px;}
 </style>
 </head>
 <body>
-<header class="app-header">
-  <div class="header-row">
+<div class="app">
+  <div class="hdr">
     <div class="brand">
-      <div class="brand-title">Mission Control</div>
-      <div class="brand-sub" id="headerSub">Chargement des missions…</div>
+      <div class="brand-name">Mission Control</div>
+      <div class="brand-sub" id="hdr-sub">Chargement…</div>
     </div>
-    <div class="header-actions">
+    <div class="hdr-r">
+      <div class="hdr-wx" id="hdr-wx"></div>
       <div class="clock" id="clock">--:--</div>
-      <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Thème">☀</button>
-      <button class="icon-btn" onclick="refreshData()" title="Actualiser">↻</button>
+      <button class="hdr-btn" onclick="toggleLight()" id="theme-btn">☀</button>
+      <button class="hdr-btn" onclick="refresh()" title="Refresh">↻</button>
     </div>
   </div>
-</header>
 
-<div class="top-nav-wrap">
-  <nav class="top-nav" aria-label="Navigation principale">
-    <button class="nav-btn active" id="nav-day" onclick="go('day')">Jour</button>
-    <button class="nav-btn" id="nav-month" onclick="go('month')">Mois</button>
-    <button class="nav-btn" id="nav-validation" onclick="go('validation')">Validation</button>
-    <button class="nav-btn" id="nav-admin" onclick="go('admin')">Admin</button>
+  <nav class="nav">
+    <button class="nb on" id="nb-today"   onclick="go('today')">
+      <span class="nb-icon">☀</span>Aujourd'hui
+    </button>
+    <button class="nb"    id="nb-month"   onclick="go('month')">
+      <span class="nb-icon">📅</span><span id="m-lbl">Mois</span>
+    </button>
+    <button class="nb"    id="nb-finance" onclick="go('finance')">
+      <span class="nb-icon">💶</span>Admin
+    </button>
   </nav>
+
+  <div class="scroll">
+    <div class="inner" id="content">
+      <div class="loader"><span class="spin">↻</span> Chargement…</div>
+    </div>
+  </div>
 </div>
 
-<main class="main" id="app">
-  <div class="loader"><span class="spin">↻</span>Chargement…</div>
-</main>
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
 <script>
-/* ============================================================
-   CONFIG
-   ============================================================ */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
-const SNCF_WORKER = "https://fragrant-hall-c33b.t5q7m95hfj.workers.dev/";
-const TAX_RATE = 0.212;
-const NET_MULT = 1 - TAX_RATE;
-const CACHE_KEY = "mc_v31_cache";
-const PAX_KEY = "mc_v31_pax_checks";
-const THEME_KEY = "mc_v31_light";
-const DAYS = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
-const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-const MONTHS_SHORT = ["jan", "fév", "mar", "avr", "mai", "jun", "jul", "aoû", "sep", "oct", "nov", "déc"];
-const CLIENTS = {
-  "philibert": { tag: "PHIL", color: "#60c08b" },
-  "go côte saône": { tag: "GCS", color: "#6ea7ff" },
-  "go cote saone": { tag: "GCS", color: "#6ea7ff" },
-  "feel the french way": { tag: "FTFW", color: "#b49cff" },
-  "un monde bleu": { tag: "UMB", color: "#e7a25c" }
-};
-const TRAVEL = {
-  "PERRACHE":45, "PART-DIEU":45, "PART DIEU":45, "BELLECOUR":45,
-  "LYS":52, "AEROPORT":52, "AÉROPORT":52, "SAINT-EXUPERY":52, "SAINT EXUPERY":52,
-  "QUAI CLAUDE BERNARD":45, "QUAI RAMBAUD":60, "CONFLUENCE":60,
-  "VIENNE":105, "STE-COLOMBE":105, "CHALON":120, "ST JEAN DE LOSNE":150,
-  "GENEVE":180, "GENÈVE":180, "BASEL":300, "BALE":300, "BÂLE":300
+// ═══════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════
+const GAS   = "https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
+const SNCF  = "https://fragrant-hall-c33b.t5q7m95hfj.workers.dev/";
+const TAX   = 0.212;
+
+const DAYS  = ["dim","lun","mar","mer","jeu","ven","sam"];
+const MOL   = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const MOS   = ["jan","fév","mar","avr","mai","jun","jul","aoû","sep","oct","nov","déc"];
+const ME    = ["😫","😔","😐","🙂","😊"];
+const EE    = ["🪫","😴","⚡","💪","🔥"];
+
+const META = {
+  "Philibert Tourisme":  { tag:"PHIL",  hex:"#52c47c" },
+  "Go Côte Saône":       { tag:"GCS",   hex:"#5b9cf6" },
+  "Feel The French Way": { tag:"FTFW",  hex:"#a87cf4" },
+  "Un Monde Bleu":       { tag:"UMB",   hex:"#f0a040" },
 };
 
-/* ============================================================
-   STATE
-   ============================================================ */
-let state = {
-  tab: "day",
-  missions: [],
-  staging: [],
-  journal: [],
-  detailId: null,
-  lastSync: null,
-  online: true,
-  systemError: "",
-  sncf: {},
-  pmf: null,
-  pmfStep: 0
-};
-let paxChecks = readJSON(PAX_KEY, {});
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let missions=[], journal=[];
+let tab="today", sv="today", detail=null, pmf=null, pmfStep=0;
+let light = localStorage.getItem("mc_light")==="1";
+let pax = {};  // pax check state (session only)
 
-/* ============================================================
-   INIT
-   ============================================================ */
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
 window.addEventListener("load", () => {
-  if (localStorage.getItem(THEME_KEY) === "1") document.body.classList.add("light");
-  updateThemeIcon();
-  tick(); setInterval(tick, 30000);
+  if (light) document.body.classList.add("light");
+  updateThemeBtn();
+  tick(); setInterval(tick, 20000);
+  document.getElementById("m-lbl").textContent = MOL[new Date().getMonth()];
   loadData();
+  loadWx();
 });
+
 function tick() {
   const d = new Date();
-  $("clock").textContent = pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+  document.getElementById("clock").textContent = p2(d.getHours())+":"+p2(d.getMinutes());
 }
-function toggleTheme() {
-  const light = !document.body.classList.contains("light");
-  document.body.classList.toggle("light", light);
-  localStorage.setItem(THEME_KEY, light ? "1" : "0");
-  updateThemeIcon();
+function toggleLight() {
+  light=!light; document.body.classList.toggle("light",light);
+  localStorage.setItem("mc_light",light?"1":"0"); updateThemeBtn();
 }
-function updateThemeIcon() { $("themeBtn").textContent = document.body.classList.contains("light") ? "🌙" : "☀"; }
+function updateThemeBtn() { document.getElementById("theme-btn").textContent = light ? "🌙" : "☀"; }
 
-/* ============================================================
-   DATA
-   ============================================================ */
-async function loadData() {
-  const cached = readJSON(CACHE_KEY, null);
-  if (cached && cached.missions) {
-    state.missions = cached.missions.map(normMission);
-    state.staging = (cached.staging || []).map(normMission);
-    state.journal = cached.journal || [];
-    state.lastSync = cached.lastSync || null;
-    state.online = false;
-    updateHeader(); render();
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+async function loadData(force) {
+  if (!force) {
+    const c = localStorage.getItem("mc_v3_cache");
+    if (c) {
+      try { const d=JSON.parse(c); missions=d.m.map(norm); journal=d.j||[]; render(); } catch(e){}
+    }
   }
   try {
-    const res = await fetch(GAS_URL + "?action=all", { signal: AbortSignal.timeout(25000) });
-    const data = await res.json();
-    if (!data || !Array.isArray(data.missions)) throw new Error(data && data.error ? data.error : "Réponse API invalide");
-    state.missions = data.missions.map(normMission);
-    state.staging = (data.staging || []).map(normMission);
-    state.journal = data.journal || [];
-    state.lastSync = new Date().toISOString();
-    state.online = true;
-    state.systemError = "";
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ missions: data.missions, staging: data.staging || [], journal: data.journal || [], lastSync: state.lastSync }));
-  } catch (e) {
-    state.online = false;
-    state.systemError = e.message || String(e);
+    const r = await fetch(GAS+"?action=all",{signal:AbortSignal.timeout(25000)});
+    const d = await r.json();
+    if (d?.missions) {
+      missions = d.missions.map(norm);
+      journal  = d.journal || [];
+      localStorage.setItem("mc_v3_cache", JSON.stringify({m:d.missions,j:d.journal}));
+      // Update sub-header
+      const tm = missions.filter(m => m.date===tday()&&!isCxl(m));
+      document.getElementById("hdr-sub").textContent = tm.length
+        ? tm.length+" mission"+(tm.length>1?"s":"")+" aujourd'hui"
+        : "Aucune mission aujourd'hui";
+      render();
+    }
+  } catch(e) { if(!missions.length) render(); }
+}
+async function refresh() {
+  localStorage.removeItem("mc_v3_cache");
+  missions=[]; journal=[];
+  document.getElementById("content").innerHTML='<div class="loader"><span class="spin">↻</span> Actualisation…</div>';
+  await loadData(true);
+}
+
+// ═══════════════════════════════════════════════════════
+// NORMALISE — handles 1899-epoch time bug
+// ═══════════════════════════════════════════════════════
+function safeTime(v) {
+  // FIXES the 1899 date display bug
+  // Sheets returns time cells as Date objects with 1899-12-30 epoch
+  // or as decimal fraction strings (0.354... = 08:30)
+  if (!v && v!==0) return "";
+  if (typeof v === "string") {
+    // Already HH:MM
+    if (/^\d{1,2}:\d{2}$/.test(v.trim())) return v.trim();
+    // Decimal fraction
+    const n = parseFloat(v);
+    if (!isNaN(n) && n >= 0 && n < 1) {
+      const min = Math.round(n*1440);
+      return p2(Math.floor(min/60))+":"+p2(min%60);
+    }
+    // ISO string — extract time part
+    const m = v.match(/(\d{2}):(\d{2})/);
+    if (m) return m[1]+":"+m[2];
+    return "";
   }
-  updateHeader(); render();
-}
-async function refreshData() {
-  state.detailId = null;
-  localStorage.removeItem(CACHE_KEY);
-  $("app").innerHTML = '<div class="loader"><span class="spin">↻</span>Actualisation…</div>';
-  await loadData();
-}
-function updateHeader() {
-  const today = isoToday();
-  const todays = state.missions.filter(m => m.date === today && !isCancelled(m));
-  const stale = state.online ? "" : " · hors ligne";
-  const sync = state.lastSync ? " · sync " + timeFromISO(state.lastSync) : "";
-  $("headerSub").textContent = todays.length ? `${todays.length} mission${todays.length>1?"s":""} aujourd’hui${sync}${stale}` : `Aucune mission aujourd’hui${sync}${stale}`;
-}
-function normMission(raw) {
-  if (raw._v31) return raw;
-  const m = { ...raw, _v31: true };
-  m.mid = pick(raw, ["Mission ID", "mission_id", "id"]);
-  m.date = normalizeDate(pick(raw, ["Date mission", "Date", "date"]));
-  m.client = pick(raw, ["Client", "client"]);
-  m.type = pick(raw, ["Type", "type"]);
-  m.sens = pick(raw, ["Sens", "sens"]);
-  m.desc = pick(raw, ["Description", "Référence", "Reference", "description"]);
-  m.heures = cleanNumber(pick(raw, ["Heures", "heures"]));
-  m.base = money(pick(raw, ["Base (HT)", "Base HT", "Base", "base"]));
-  m.hs = money(pick(raw, ["HS", "Heures supp", "Heures supplémentaires"]));
-  m.supp = money(pick(raw, ["Supp", "Suppléments", "Supp."]));
-  m.sousTotal = money(pick(raw, ["Sous-total", "Sous total", "Subtotal"]));
-  m.debours = money(pick(raw, ["Débours", "Debours", "Expenses"]));
-  m.totalBrut = money(pick(raw, ["Total brut", "Brut"]));
-  m.totalNet = money(pick(raw, ["Total net", "Net", "net"]));
-  m.facture = pick(raw, ["Facture #", "Facture#", "Facture", "facture"]);
-  m.ndb = pick(raw, ["NDB #", "NDB#", "NDB", "ndb"]);
-  m.dateEnvoi = normalizeDate(pick(raw, ["Date envoi", "Date d’envoi"]));
-  m.datePaiement = normalizeDate(pick(raw, ["Date paiement", "Date de paiement"]));
-  m.montantRecu = money(pick(raw, ["Montant reçu", "Montant recu", "Reçu", "Recu"]));
-  m.statut = pick(raw, ["Statut", "Status", "statut"]);
-  m.notes = pick(raw, ["Notes", "notes"]);
-  m.deboursType = pick(raw, ["Débours type", "Debours type"]);
-  m.debut = normalizeTime(pick(raw, ["Début", "Debut", "Start", "start"]));
-  m.endroit = pick(raw, ["Endroit", "Lieu", "Location"]);
-  m.voyage = cleanNumber(pick(raw, ["Voyage (min)", "Voyage", "Travel"]));
-  m.calEvent = pick(raw, ["Cal event", "Calendar event"]);
-  m.importLink = pick(raw, ["Import link", "Source link"]);
-  m.importKey = pick(raw, ["Import key", "Source message id", "Source Email Message"]);
-  m.docs = pick(raw, ["Docs", "Documents", "Drive"]);
-  m.ops = raw.ops || {};
-  m.opsSummary = pick(m.ops, ["Ops Summary", "Résumé opérationnel"]) || pick(raw, ["Ops Summary"]);
-  m.paxRaw = pick(m.ops, ["Passenger Raw", "Passenger Checklist"]) || pick(raw, ["Passenger Raw", "Passenger Checklist"]);
-  m.paxCount = pick(m.ops, ["Pax Count"]) || pick(raw, ["Pax Count", "Pax", "Passagers"]);
-  m.shipName = pick(m.ops, ["Ship Name"]) || pick(raw, ["Ship Name", "Navire"]);
-  m.dock = pick(m.ops, ["Dock / Terminal"]) || pick(raw, ["Dock / Terminal", "Quai", "Terminal"]);
-  m.meetingPoint = pick(m.ops, ["Meeting Point"]) || pick(raw, ["Meeting Point", "RDV"]);
-  m.transportRef = pick(m.ops, ["Transport Ref", "External Ref"]) || pick(raw, ["Transport Ref", "External Ref"]);
-  m.sourcePDF = pick(m.ops, ["Source PDF"]) || pick(raw, ["Source PDF"]);
-  m.sourceEmail = pick(m.ops, ["Source Email", "Source Email Msg", "Source Email Message"]) || pick(raw, ["Source Email", "Source Email Message"]);
-  m.lastUpdated = pick(m.ops, ["Last Updated"]) || pick(raw, ["Last Updated", "Imported at"]);
-  m.clientMeta = getClientMeta(m.client);
-  m.modules = detectModules(m);
-  m.completeness = computeCompleteness(m);
-  return m;
+  return "";
 }
 
-/* ============================================================
-   RENDER ROOT
-   ============================================================ */
-function go(tab) {
-  state.tab = tab;
-  state.detailId = null;
-  state.pmf = null; state.pmfStep = 0;
-  ["day","month","validation","admin"].forEach(t => $("nav-"+t).classList.toggle("active", t === tab));
-  render(); window.scrollTo(0,0);
+function safeNum(v) {
+  if (v===null||v===undefined||v==="") return 0;
+  const n = parseFloat(String(v).replace(",","."));
+  return isNaN(n) ? 0 : n;
 }
-function render() {
-  const m = state.detailId ? findMission(state.detailId) : null;
-  if (m) return renderDetail(m);
-  if (state.tab === "day") return renderDay();
-  if (state.tab === "month") return renderMonth();
-  if (state.tab === "validation") return renderValidation();
-  return renderAdmin();
-}
-function openMission(mid) { state.detailId = mid; state.pmf = null; state.pmfStep = 0; render(); window.scrollTo(0,0); }
-function closeDetail() { state.detailId = null; render(); }
 
-/* ============================================================
-   DAY
-   ============================================================ */
-function renderDay() {
-  const today = isoToday();
-  const tomorrow = isoOffset(1);
-  const todays = sortByTime(state.missions.filter(m => m.date === today && !isCancelled(m)));
-  const tomorrows = sortByTime(state.missions.filter(m => m.date === tomorrow && !isCancelled(m)));
-  const week = state.missions.filter(m => m.date >= today && m.date <= isoOffset(7) && !isCancelled(m));
-  const done = todays.filter(isDone).length;
-  const estimatedNet = sum(todays, m => estimatedNetFor(m));
-  let html = "";
-  html += `<div class="grid-4">
-    ${stat("Aujourd’hui", todays.length)}
-    ${stat("Terminées", done, "", "green")}
-    ${stat("À faire", Math.max(0, todays.length - done), "", "amber")}
-    ${stat("Net estimé", euro(estimatedNet), "", "gold")}
-  </div>`;
-  if (!state.online && state.systemError) html += warningCard("Données hors ligne", `Dernière version en cache. Erreur API: ${esc(state.systemError)}`);
-  html += `<div class="section-title">Aujourd’hui · ${longDate(today)}</div>`;
-  html += todays.length ? todays.map(missionCard).join("") : empty("☀️", "Pas de mission aujourd’hui", tomorrows.length ? `${tomorrows.length} mission${tomorrows.length>1?"s":""} demain` : "Respiration administrative.");
-  if (tomorrows.length) {
-    html += `<div class="section-title">Demain · ${longDate(tomorrow)}</div>` + tomorrows.map(missionCard).join("");
+function norm(m) {
+  if (m._n) return m;
+  const o = {...m}; o._n=1;
+  o.mid    = o["Mission ID"] || "";
+  o.date   = (o["Date mission"]||o["Date"]||"").slice(0,10);
+  o.client = o["Client"] || "";
+  o.type   = o["Type"] || "";
+  o.sens   = o["Sens"] || "";
+  o.desc   = o["Description"] || "";
+  o.heures = o["Heures"] || "";
+  // Time: use safeTime — handles 1899-epoch
+  o.debut  = safeTime(o["Début"] || o["Debut"] || "");
+  // FINANCE: use formula result values directly from API
+  o.base      = safeNum(o["Base HT"]);
+  o.hs        = safeNum(o["HS"]);
+  o.sousTotal = safeNum(o["Sous-total"]);
+  o.debours   = safeNum(o["Débours"]);
+  o.totalNet  = safeNum(o["Total net"]);
+  o.montant   = safeNum(o["Montant reçu"]);
+  o.endroit   = o["Endroit"] || "";
+  o.statut    = o["Statut"] || "";
+  o.notes     = o["Notes"] || "";
+  o.facture   = o["Facture#"] || "";
+  o.ndb       = o["NDB#"] || "";
+  o.rapport   = o["Rapport"]||o["Rapport ✓"]||"";
+  o.docs      = o["Docs"] || "";
+  o.ops       = o.ops || {};
+  o.cmp       = o.completeness || null;
+  // Ops shortcuts
+  o.paxRaw   = o.ops["Passenger Raw"] || "";
+  o.paxCount = o.ops["Pax Count"] || "";
+  o.shipName = o.ops["Ship Name"] || "";
+  o.extRef   = o.ops["External Ref"] || "";
+  o.meetPt   = o.ops["Meeting Point"] || "";
+  o.dock     = o.ops["Dock / Terminal"] || "";
+  o.transRef = o.ops["Transport Ref"] || "";
+  o.opsSum   = o.ops["Ops Summary"] || "";
+  return o;
+}
+
+const isDone = m => { const s=(m.statut||"").toLowerCase(); return s==="terminé"||s.includes("envoy")||s==="payé"||s.includes("générée"); };
+const isCxl  = m => (m.statut||"").toLowerCase().includes("annul");
+
+function getMeta(c) {
+  if (!c) return {tag:"?",hex:"#666"};
+  for (const [k,v] of Object.entries(META))
+    if (c.toLowerCase().includes(k.split(" ")[0].toLowerCase())) return v;
+  return {tag:c.slice(0,4).toUpperCase(),hex:"#888"};
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function p2(n){return String(n).padStart(2,"0");}
+function tday(){return new Date().toISOString().slice(0,10);}
+function tmrw(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);}
+function fds(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return DAYS[d.getDay()]+" "+d.getDate()+" "+MOS[d.getMonth()];}
+function fdl(iso){if(!iso)return"";const d=new Date(iso+"T12:00:00");return DAYS[d.getDay()]+" "+d.getDate()+" "+MOL[d.getMonth()];}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function nowt(){const d=new Date();return p2(d.getHours())+":"+p2(d.getMinutes());}
+function durS(s,e){
+  if(!s||!e)return"";
+  const[sh,sm]=s.split(":").map(Number),[eh,em]=e.split(":").map(Number);
+  let d=(eh*60+em)-(sh*60+sm);if(d<=0)return"";
+  d=Math.round(d/15)*15;
+  return Math.floor(d/60)+"h"+(d%60>0?p2(d%60):"");
+}
+function fmt€(n){return n?n.toFixed(2).replace(".",",")+"\u00A0€":"—";}
+
+// ═══════════════════════════════════════════════════════
+// BADGE + COMPLETENESS
+// ═══════════════════════════════════════════════════════
+function badge(m){
+  const s=(m.statut||"").toLowerCase();
+  if(isCxl(m))               return`<span class="bdg b-cxl">Annulé</span>`;
+  if(s==="payé")             return`<span class="bdg b-paye">Payé</span>`;
+  if(s.includes("envoyée")) return`<span class="bdg b-facenv">Fac. envoyée</span>`;
+  if(s.includes("générée")) return`<span class="bdg b-facgen">Fac. générée</span>`;
+  if(s==="terminé")         return`<span class="bdg b-termine">✓ Terminé</span>`;
+  if(s==="confirmé")        return`<span class="bdg b-confirme">Confirmé</span>`;
+  if(s==="planifié")        return`<span class="bdg b-planifie">Planifié</span>`;
+  return`<span class="bdg b-brouillon">${esc(m.statut||"Brouillon")}</span>`;
+}
+function cmpDot(m){
+  const c=m.cmp; if(!c||typeof c!=="object") return "";
+  const s=c.score||0;
+  const cl=s>=100?"cmp-g":s>=70?"cmp-a":"cmp-r";
+  return`<div class="cmp ${cl}" title="${c.missing?.slice(0,3).join(", ")||"Complet"}"></div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// MISSION CARD
+// ═══════════════════════════════════════════════════════
+function mcard(m, compact){
+  const mt=getMeta(m.client), done=isDone(m), cxl=isCxl(m);
+  const pills=[];
+  if(!compact){
+    const loc=m.endroit?m.endroit.split(/[,→]/)[0].trim():"";
+    if(m.shipName)   pills.push(`<span class="pill p-ship">🚢 ${esc(m.shipName)}</span>`);
+    else if(loc)     pills.push(`<span class="pill p-loc">${esc(loc)}</span>`);
+    if(m.paxCount)   pills.push(`<span class="pill p-pax">👥 ${esc(m.paxCount)}</span>`);
+    if(m.extRef&&m.extRef.length<12) pills.push(`<span class="pill p-note">${esc(m.extRef)}</span>`);
   }
-  const upcoming = week.filter(m => m.date > tomorrow).slice(0, 8);
-  if (upcoming.length) html += `<div class="section-title">7 jours</div>` + upcoming.map(missionCard).join("");
-  $("app").innerHTML = html;
-}
-
-/* ============================================================
-   MONTH
-   ============================================================ */
-function renderMonth() {
-  const now = new Date();
-  const y = now.getFullYear();
-  const month = pad2(now.getMonth()+1);
-  const all = state.missions.filter(m => m.date && m.date.slice(0,7) === `${y}-${month}`);
-  const active = all.filter(m => !isCancelled(m));
-  const done = active.filter(isDone);
-  const st = financeStats(active);
-  const groups = groupBy(active.sort((a,b) => a.date.localeCompare(b.date) || (a.debut||"99").localeCompare(b.debut||"99")), m => m.date);
-  let html = `<div class="section-title">${MONTHS[now.getMonth()]} ${y}</div>
-  <div class="grid-4">
-    ${stat("Missions", active.length)}
-    ${stat("Terminées", done.length, "", "green")}
-    ${stat("Sous-total", euro(st.sousTotal), "", "gold")}
-    ${stat("Net", euro(st.net), "", "green")}
-  </div>`;
-  html += `<div class="section-title">Calendrier</div>`;
-  if (!active.length) html += empty("📅", "Aucune mission ce mois", "");
-  Object.entries(groups).forEach(([date, ms]) => {
-    html += `<div class="section-title">${longDate(date)}</div>` + ms.map(missionCard).join("");
-  });
-  const cancelled = all.filter(isCancelled);
-  if (cancelled.length) html += collapsible("cxl", `Annulées (${cancelled.length})`, "Référence / suivi client", cancelled.map(missionCard).join(""));
-  $("app").innerHTML = html;
-}
-
-/* ============================================================
-   VALIDATION
-   ============================================================ */
-function renderValidation() {
-  const needsReview = state.staging.length ? state.staging : state.missions.filter(m => /brouillon|proposition|à confirmer|a confirmer/i.test(m.statut || ""));
-  let html = `<div class="section-title">Validation</div>
-  <div class="grid-3">
-    ${stat("À valider", needsReview.length, "", "amber")}
-    ${stat("Docs manquants", state.missions.filter(m => !m.docs && !m.sourcePDF).length)}
-    ${stat("Infos incomplètes", state.missions.filter(m => m.completeness.score < 75 && !isCancelled(m)).length)}
-  </div>`;
-  html += `<div class="section-title">Missions à vérifier</div>`;
-  html += needsReview.length ? needsReview.map(missionCard).join("") : empty("✅", "Rien à valider", "La file est propre.");
-  html += `<div class="section-title">Incomplètes</div>`;
-  const incomplete = state.missions.filter(m => m.completeness.score < 75 && !isCancelled(m)).slice(0, 12);
-  html += incomplete.length ? incomplete.map(missionCard).join("") : empty("🧼", "Pas d’anomalie visible", "Les données essentielles semblent présentes.");
-  $("app").innerHTML = html;
-}
-
-/* ============================================================
-   ADMIN
-   ============================================================ */
-function renderAdmin() {
-  const now = new Date();
-  const month = `${now.getFullYear()}-${pad2(now.getMonth()+1)}`;
-  const mms = state.missions.filter(m => m.date && m.date.slice(0,7) === month && !isCancelled(m));
-  const st = financeStats(mms);
-  const toInvoice = mms.filter(m => isDone(m) && !m.facture);
-  const generated = mms.filter(m => m.facture && !/envoy|pay|payé/i.test(m.statut || ""));
-  const sent = mms.filter(m => m.facture && /envoy/i.test(m.statut || ""));
-  const unpaid = mms.filter(m => m.totalNet > 0 && m.montantRecu <= 0 && (m.facture || isDone(m)));
-  let html = `<div class="section-title">Admin · ${MONTHS[now.getMonth()]}</div>
-  <div class="grid-4">
-    ${stat("Sous-total", euro(st.sousTotal), "", "gold")}
-    ${stat("Débours", euro(st.debours), "", "blue")}
-    ${stat("Net", euro(st.net), "", "green")}
-    ${stat("Reçu", euro(st.recu), "", "purple")}
+  return`<div class="mc${done||cxl?" dim":""}" onclick="openD('${m.mid}')">
+  <div class="mc-bar" style="background:${mt.hex}"></div>
+  <div class="mc-body">
+    <div class="mc-top">
+      <div class="mc-left">
+        <div class="mc-head">
+          <span class="mc-tag" style="color:${mt.hex}">${mt.tag}</span>
+          ${m.debut?`<span class="mc-time">${esc(m.debut)}</span>`:""}
+          ${!compact?`<span class="mc-ds">${fds(m.date)}</span>`:""}
+        </div>
+        <div class="mc-title">${esc(m.type||"—")}${m.sens&&m.sens!=="—"?" · "+esc(m.sens):""}</div>
+        ${m.endroit&&!m.shipName?`<div class="mc-sub">${esc(m.endroit.split(/[,→]/)[0].trim())}</div>`:""}
+        ${pills.length?`<div class="mc-pills">${pills.join("")}</div>`:""}
+      </div>
+      <div class="mc-right">
+        ${cmpDot(m)}
+        ${badge(m)}
+      </div>
+    </div>
   </div>
-  <div class="section-title">Actions</div>
-  <div class="grid-4">
-    ${stat("À facturer", toInvoice.length, "", "amber")}
-    ${stat("Générées", generated.length)}
-    ${stat("Envoyées", sent.length, "", "blue")}
-    ${stat("Non reçu", euro(Math.max(0, st.net - st.recu)), "", "red")}
-  </div>`;
-  html += `<div class="section-title">À facturer</div>` + (toInvoice.length ? toInvoice.map(missionCard).join("") : empty("🧾", "Aucune facture en attente", ""));
-  html += `<div class="section-title">Paiements / suivi</div>` + (unpaid.length ? unpaid.map(missionCard).join("") : empty("💶", "Rien d’urgent côté paiement", ""));
-  html += collapsible("system", "Santé système", "Cache / API / données", systemHealthHTML());
-  $("app").innerHTML = html;
+</div>`;
 }
 
-/* ============================================================
-   MISSION CARD
-   ============================================================ */
-function missionCard(m) {
-  const mt = m.clientMeta || getClientMeta(m.client);
-  const status = statusBadge(m);
-  const done = isDone(m) || isCancelled(m);
-  const score = m.completeness ? m.completeness.score : 0;
-  const loc = m.shipName || m.endroit || m.meetingPoint || "";
-  const pills = [];
-  if (m.shipName) pills.push(`<span class="pill blue">🚢 ${esc(m.shipName)}</span>`);
-  if (m.paxCount) pills.push(`<span class="pill blue">👥 ${esc(m.paxCount)}</span>`);
-  if (m.modules.includes("basel")) pills.push(`<span class="pill amber">🚌 Basel</span>`);
-  if (m.modules.includes("train")) pills.push(`<span class="pill green">🚉 Train</span>`);
-  if (m.modules.includes("airport")) pills.push(`<span class="pill blue">✈️ Aéroport</span>`);
-  if (m.completeness && m.completeness.missing.length) pills.push(`<span class="pill amber">⚠ ${m.completeness.missing.length} manque</span>`);
-  return `<article class="mission-card ${done ? "done" : ""}" style="--client-color:${mt.color}" onclick="openMission('${js(m.mid)}')">
-    <div class="mission-top">
-      <div style="min-width:0;flex:1">
-        <div class="mission-meta"><span class="client-tag">${mt.tag}</span>${m.debut ? `<span class="time-tag">${esc(m.debut)}</span>` : `<span class="time-tag">TBD</span>`}<span class="date-tag">${shortDate(m.date)}</span></div>
-        <div class="mission-title">${esc(m.type || "Mission")}${m.sens && m.sens !== "—" ? " · " + esc(m.sens) : ""}</div>
-        ${loc ? `<div class="mission-sub">${esc(String(loc).split("\n")[0])}</div>` : ""}
-        ${pills.length ? `<div class="pill-row">${pills.join("")}</div>` : ""}
-      </div>
-      <div class="status-stack">
-        ${status}
-        <div class="completeness" title="${score}%"><span style="width:${score}%"></span></div>
-      </div>
-    </div>
-  </article>`;
-}
-function statusBadge(m) {
-  const s = (m.statut || "").toLowerCase();
-  if (isCancelled(m)) return `<span class="status-badge red">Annulé</span>`;
-  if (/pay|payé/.test(s)) return `<span class="status-badge green">Payé</span>`;
-  if (/envoy/.test(s)) return `<span class="status-badge blue">Envoyée</span>`;
-  if (/générée|generee|facture/.test(s)) return `<span class="status-badge amber">Fac.</span>`;
-  if (/rapport en attente/.test(s)) return `<span class="status-badge amber">Rapport 9h</span>`;
-  if (isDone(m)) return `<span class="status-badge green">Terminé</span>`;
-  if (/confirm/.test(s)) return `<span class="status-badge green">Confirmé</span>`;
-  if (/plan/.test(s)) return `<span class="status-badge blue">Planifié</span>`;
-  return `<span class="status-badge">${esc(m.statut || "Brouillon")}</span>`;
-}
-
-/* ============================================================
-   DETAIL
-   ============================================================ */
-function renderDetail(m) {
-  const mt = m.clientMeta;
-  let html = `<button class="back-btn" onclick="closeDetail()">← Retour</button>
-  <article class="card" style="--client-color:${mt.color}">
-    <div class="detail-hero">
-      <div class="detail-client">${esc(m.client || mt.tag)}</div>
-      <div class="detail-title">${esc(m.type || "Mission")}${m.sens && m.sens !== "—" ? " · " + esc(m.sens) : ""}</div>
-      <div class="detail-sub">${longDate(m.date)} · ${esc(m.debut || "TBD")} ${m.endroit ? "· " + esc(m.endroit) : ""}</div>
-      <div class="pill-row">${statusBadge(m)}<span class="pill ${m.completeness.score >= 85 ? "green" : m.completeness.score >= 65 ? "amber" : "red"}">Données ${m.completeness.score}%</span>${m.desc ? `<span class="pill">${esc(m.desc)}</span>` : ""}</div>
-    </div>`;
-  html += `<div class="detail-grid"><div>`;
-  html += prepSection(m);
-  html += missionInfoSection(m);
-  html += contactsSection(m);
-  html += passengerSection(m);
-  html += dynamicModules(m);
-  html += `</div><div>`;
-  html += lifecycleSection(m);
-  html += rapportSection(m);
-  html += invoiceSection(m);
-  html += notesSection(m);
-  html += docsSection(m);
-  html += `</div></div>`;
-  html += `</article>`;
-  $("app").innerHTML = html;
-}
-function prepSection(m) {
-  const checks = m.completeness.items;
-  const leave = departureTime(m);
-  return `<section class="detail-section">
-    <div class="detail-section-title"><span>Préparation</span><span>${m.completeness.score}%</span></div>
-    <div class="checklist">
-      ${checkRow("Départ maison", leave ? `~${leave} (${travelMinutes(m)} min)` : "à estimer", !!leave)}
-      ${checks.map(c => checkRow(c.label, c.detail, c.ok, c.warn)).join("")}
-    </div>
-  </section>`;
-}
-function missionInfoSection(m) {
-  let rows = "";
-  rows += info("Mission ID", m.mid, true);
-  if (m.desc) rows += info("Référence", m.desc, true);
-  if (m.debut) rows += info("Début", m.debut, true);
-  if (m.heures) rows += info("Durée", `${m.heures}h`);
-  if (m.endroit) rows += info("Endroit", m.endroit);
-  if (m.meetingPoint) rows += info("RDV", m.meetingPoint);
-  if (m.transportRef) rows += info("Transport", m.transportRef, true);
-  if (m.shipName) rows += info("Navire", m.shipName);
-  if (m.dock) rows += info("Quai/terminal", m.dock);
-  if (m.opsSummary) rows += info("Résumé", m.opsSummary);
-  return `<section class="detail-section"><div class="detail-section-title">Mission</div>${rows || `<div class="empty-sub">Aucune donnée mission.</div>`}</section>`;
-}
-function contactsSection(m) {
-  const contacts = getContacts(m);
-  if (!contacts.length) return "";
-  return `<section class="detail-section"><div class="detail-section-title">Contacts</div><div class="checklist">${contacts.map(c => `<div class="check-row"><div class="check-left"><div class="check-icon ok">☎</div><div style="min-width:0"><div class="check-main">${esc(c.name)}</div><div class="check-sub">${esc(c.role)}${c.phone ? " · " + esc(c.phone) : ""}</div></div></div>${c.phone ? `<a class="action-btn green" style="width:auto;min-height:38px;padding:7px 11px" href="tel:${esc(c.phone)}" onclick="event.stopPropagation()">Appeler</a>` : ""}</div>`).join("")}</div></section>`;
-}
-function passengerSection(m) {
-  const pax = parsePax(m.paxRaw);
-  if (!pax.length && !m.paxCount) return "";
-  const checked = paxChecks[m.mid] || {};
-  const count = Object.values(checked).filter(Boolean).length;
-  const pct = pax.length ? Math.round(count / pax.length * 100) : 0;
-  return `<section class="detail-section">
-    <div class="detail-section-title"><span>Passagers${m.paxCount ? " · " + esc(m.paxCount) : ""}</span><span>${pax.length ? `${count}/${pax.length}` : ""}</span></div>
-    ${pax.length ? `<div class="progress"><span id="paxProg" style="width:${pct}%"></span></div><div class="pax-list">${pax.map((p,i) => paxItem(m.mid, i, p, !!checked[i])).join("")}</div>` : `<div class="empty-sub">Pax count: ${esc(m.paxCount)}</div>`}
-  </section>`;
-}
-function dynamicModules(m) {
-  let html = "";
-  if (m.modules.includes("basel")) html += baselModule(m);
-  if (m.modules.includes("train")) html += trainModule(m);
-  if (m.modules.includes("airport")) html += airportModule(m);
-  html += mapModule(m);
-  return html;
-}
-function baselModule(m) {
-  const timeline = [
-    [m.debut || "08:00", "Départ / prise en charge", m.endroit || "Quai Claude Bernard"],
-    ["~10:15", "Pause confort possible", "Mâcon / Beaune selon circulation"],
-    ["~11:30", "Beaune", "Temps libre / repères centre-ville"],
-    ["~13:30", "Départ Beaune", "Reprise route vers Basel"],
-    ["~17:00", "Arrivée Basel", "Vérifier quai / navire"]
-  ];
-  return `<section class="detail-section">${collapsible("basel-"+m.mid, "Module Basel", "Route / timing / commentaire", `<div class="timeline">${timeline.map(t => timelineRow(t[0],t[1],t[2])).join("")}</div><div class="pill-row"><span class="pill amber">Astuce: garder commentaires en capsules</span><span class="pill">Beaune · Bourgogne · Saône/Rhône</span></div>`)}</section>`;
-}
-function trainModule(m) {
-  const id = "sncf-" + safeId(m.mid);
-  return `<section class="detail-section">${collapsible(id, "Module train", m.transportRef ? `Ref ${esc(m.transportRef)}` : "SNCF / quai", `<div class="checklist"><div class="check-row"><div><div class="check-main">Quai / voie</div><div class="check-sub">Souvent affiché ~15 min avant</div></div><button class="action-btn blue" style="width:auto;min-height:38px" onclick="fetchTrain('${js(m.mid)}')">Live</button></div><div id="train-${safeId(m.mid)}" class="empty-sub">Appuie sur Live pour charger.</div></div>`)}</section>`;
-}
-function airportModule(m) {
-  const flights = extractFlights(m);
-  const body = flights.length ? `<div class="timeline">${flights.map(f => timelineRow(f.time || "—", f.ref, f.detail)).join("")}</div>` : `<div class="checklist">${checkRow("Terminal", m.dock || "à vérifier", !!m.dock)}${checkRow("Vols", m.transportRef || "à vérifier", !!m.transportRef)}${checkRow("Chauffeur", pick(m.ops,["Chauffeur"]), !!pick(m.ops,["Chauffeur"]))}</div>`;
-  return `<section class="detail-section">${collapsible("airport-"+m.mid, "Module aéroport", "Vols / terminal / chauffeur", body)}</section>`;
-}
-function mapModule(m) {
-  const q = encodeURIComponent(m.endroit || m.meetingPoint || m.dock || "Lyon");
-  if (!q) return "";
-  const url = `https://www.google.com/maps/search/?api=1&query=${q}`;
-  return `<section class="detail-section">${collapsible("map-"+m.mid, "Carte / trajet", "Lien rapide Google Maps", `<a class="action-btn blue" href="${url}" target="_blank" onclick="event.stopPropagation()">Ouvrir la carte</a><div class="empty-sub" style="margin-top:8px">Carte intégrée volontairement évitée par défaut: plus lisible onsite, moins lourd.</div>`)}</section>`;
-}
-
-/* ============================================================
-   LIFECYCLE / RAPPORT / INVOICE
-   ============================================================ */
-function lifecycleSection(m) {
-  return `<section class="detail-section"><div class="detail-section-title">Contrôle mission</div>
-    <div class="action-grid">
-      <button class="action-btn green" onclick="saveField('${js(m.mid)}','statut','Confirmé')">✓ Confirmée</button>
-      <button class="action-btn blue" onclick="saveField('${js(m.mid)}','statut','En cours')">▶ En cours</button>
-      <button class="action-btn primary" onclick="startCloseFlow('${js(m.mid)}')">Clôturer</button>
-      <button class="action-btn red" onclick="saveField('${js(m.mid)}','statut','Annulé')">Annuler</button>
-    </div>
-    ${state.pmf && state.pmf.mid === m.mid ? closeFlowHTML(m) : ""}
-    <div class="form-grid" style="margin-top:10px">
-      <div class="inline-fields">
-        <div class="field"><label>Début</label><input class="input" type="time" id="editStart" value="${esc(m.debut || "")}"></div>
-        <div class="field"><label>Heures</label><input class="input" type="number" step="0.25" id="editHours" value="${esc(m.heures || "")}"></div>
-      </div>
-      <button class="action-btn" onclick="saveTiming('${js(m.mid)}')">Enregistrer horaires</button>
-    </div>
-  </section>`;
-}
-function startCloseFlow(mid) {
-  const m = findMission(mid);
-  const end = calcEnd(m.debut, m.heures) || currentTime();
-  state.pmf = { mid, start: m.debut || "", end, rapportChoice: "skip", note: "", mood: 0, energy: 0 };
-  state.pmfStep = 1; render();
-}
-function closeFlowHTML(m) {
-  const p = state.pmf;
-  return `<div class="collapsible" style="margin-top:12px"><div class="coll-head"><div><div class="coll-title">Clôture rapide</div><div class="coll-sub">Heures · rapport optionnel · journal</div></div></div><div style="padding:13px" class="form-grid">
-    <div class="inline-fields"><div class="field"><label>Début réel</label><input class="input" type="time" id="pmfStart" value="${esc(p.start)}"></div><div class="field"><label>Fin réelle</label><input class="input" type="time" id="pmfEnd" value="${esc(p.end)}"></div></div>
-    <div class="field"><label>Rapport</label><select class="select" id="pmfRapport"><option value="skip" selected>Ignorer le rapport</option><option value="RAS">Générer RAS</option><option value="INCIDENT">Générer incident</option><option value="ANOMALIE">Générer anomalie</option><option value="ANNULATION">Rapport annulation</option></select></div>
-    <div class="field"><label>Note privée / terrain</label><textarea class="textarea" id="pmfNote" placeholder="Ce qui mérite d’être retenu…"></textarea></div>
-    <button class="action-btn primary" onclick="finishMission('${js(m.mid)}')">Terminer la mission</button>
-  </div></div>`;
-}
-async function finishMission(mid) {
-  const s = $("pmfStart")?.value || "";
-  const e = $("pmfEnd")?.value || "";
-  const choice = $("pmfRapport")?.value || "skip";
-  const note = $("pmfNote")?.value || "";
-  const hours = decimalHours(s, e);
-  if (hours) await saveField(mid, "heures", hours, false);
-  if (note) await saveField(mid, "notes", note, false);
-  await saveField(mid, choice === "skip" ? "statut" : "statut", choice === "skip" ? "Terminé · Rapport ignoré" : "Terminé", false);
-  if (choice !== "skip") await generateRapport(mid, choice);
-  toast(choice === "skip" ? "✅ Mission clôturée · rapport ignoré" : "✅ Mission clôturée · rapport généré", "ok");
-  state.pmf = null; state.pmfStep = 0; await loadData();
-}
-function rapportSection(m) {
-  const skipped = /rapport ignoré|rapport ignore/i.test(m.statut || "") || /rapport ignoré|rapport ignore/i.test(m.notes || "");
-  return `<section class="detail-section"><div class="detail-section-title">Rapport</div>
-    <div class="action-grid">
-      <button class="action-btn blue" onclick="generateRapport('${js(m.mid)}','RAS')">RAS</button>
-      <button class="action-btn amber" onclick="generateRapport('${js(m.mid)}','INCIDENT')">Incident</button>
-      <button class="action-btn" onclick="scheduleRapport('${js(m.mid)}')">Planifier 9h</button>
-      <button class="action-btn red" onclick="skipRapport('${js(m.mid)}')">Ignorer</button>
-    </div>
-    ${skipped ? `<div class="pill-row"><span class="pill amber">Rapport ignoré</span></div>` : ""}
-    <textarea class="textarea" id="rapportText" placeholder="Le rapport généré apparaîtra ici…" style="margin-top:10px;min-height:120px"></textarea>
-  </section>`;
-}
-async function skipRapport(mid) { await saveField(mid, "statut", "Terminé · Rapport ignoré"); toast("Rapport ignoré", "ok"); }
-async function generateRapport(mid, template) {
-  const m = findMission(mid);
-  const prompt = buildRapportPrompt(m, template);
-  toast("Génération rapport…");
-  try {
-    const r = await fetch(GAS_URL + "?action=genRapport&prompt=" + encodeURIComponent(prompt), { signal: AbortSignal.timeout(25000) });
-    const d = await r.json();
-    const text = d.text || d.rapport || d.message || "";
-    const el = $("rapportText"); if (el) el.value = text;
-    toast(text ? "Rapport généré" : "Réponse vide", text ? "ok" : "err");
-  } catch(e) { toast("Erreur rapport: " + e.message.slice(0,50), "err"); }
-}
-async function scheduleRapport(mid) {
-  const text = $("rapportText")?.value.trim();
-  if (!text) return toast("Génère ou colle un rapport d’abord", "err");
-  try {
-    const r = await fetch(GAS_URL + "?action=scheduleRapport&id=" + encodeURIComponent(mid) + "&rapport=" + encodeURIComponent(text) + "&template=MANUAL", { signal: AbortSignal.timeout(15000) });
-    const d = await r.json();
-    if (d.ok) toast("Rapport planifié / brouillon créé", "ok"); else toast(d.msg || "Erreur planification", "err");
-  } catch(e) { toast("Erreur: " + e.message.slice(0,50), "err"); }
-}
-function invoiceSection(m) {
-  return `<section class="detail-section"><div class="detail-section-title">Facturation</div>
-    ${info("Base HT", euro(m.base))}${info("HS", euro(m.hs))}${info("Supp.", euro(m.supp))}${info("Sous-total", euro(valueSousTotal(m)))}${info("Débours", euro(m.debours))}${info("Net estimé", euro(estimatedNetFor(m)))}
-    ${m.facture ? info("Facture", m.facture, true) : ""}${m.ndb ? info("NDB", m.ndb, true) : ""}
-    <div class="action-grid" style="margin-top:12px">
-      <button class="action-btn primary" onclick="genFacture('${js(m.mid)}')">Générer facture</button>
-      <button class="action-btn" onclick="genDebours('${js(m.mid)}')">Générer NDB</button>
-      <button class="action-btn blue" onclick="saveField('${js(m.mid)}','statut','Fac. envoyée')">Marquer envoyée</button>
-      <button class="action-btn green" onclick="markPaid('${js(m.mid)}')">Marquer payée</button>
-    </div>
-  </section>`;
-}
-async function genFacture(mid) { await apiAction("genFacture", { id: mid }, "Facture générée"); }
-async function genDebours(mid) { await apiAction("genDebours", { id: mid }, "NDB générée"); }
-async function markPaid(mid) {
-  const m = findMission(mid);
-  await saveField(mid, "montant_recu", estimatedNetFor(m), false);
-  await saveField(mid, "date_paiement", isoToday(), false);
-  await saveField(mid, "statut", "Payé", true);
-}
-function notesSection(m) {
-  return `<section class="detail-section"><div class="detail-section-title">Notes</div>
-    <textarea class="textarea" id="notesEdit">${esc(m.notes || "")}</textarea>
-    <button class="action-btn" style="margin-top:8px" onclick="saveField('${js(m.mid)}','notes',document.getElementById('notesEdit').value)">Enregistrer notes</button>
-    ${m.opsSummary ? collapsible("opsnotes-"+m.mid, "Résumé opérationnel", "Source manifest/email", `<div class="empty-sub">${esc(m.opsSummary)}</div>`) : ""}
-  </section>`;
-}
-function docsSection(m) {
-  const links = [];
-  if (m.docs) links.push(`<a class="action-btn blue" href="${escAttr(m.docs)}" target="_blank">Dossier Drive</a>`);
-  if (m.sourcePDF) links.push(`<a class="action-btn blue" href="${escAttr(m.sourcePDF)}" target="_blank">PDF source</a>`);
-  if (m.sourceEmail) links.push(collapsible("email-"+m.mid, "Email source", "Extrait", `<div class="empty-sub" style="white-space:pre-wrap">${esc(String(m.sourceEmail).slice(0,1200))}</div>`));
-  return `<section class="detail-section"><div class="detail-section-title">Documents</div>${links.length ? `<div class="form-grid">${links.join("")}</div>` : `<div class="empty-sub">Aucun document lié.</div>`}</section>`;
-}
-
-/* ============================================================
-   API ACTIONS
-   ============================================================ */
-async function saveTiming(mid) {
-  const start = $("editStart")?.value || "";
-  const hours = $("editHours")?.value || "";
-  if (start) await saveField(mid, "debut", start, false);
-  if (hours) await saveField(mid, "heures", hours, true);
-}
-async function saveField(mid, field, value, reload = true) {
-  try {
-    const url = GAS_URL + "?action=update&id=" + encodeURIComponent(mid) + "&field=" + encodeURIComponent(field) + "&value=" + encodeURIComponent(value);
-    const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
-    const d = await r.json();
-    if (!d || d.ok === false) throw new Error(d && d.msg ? d.msg : "Update échoué");
-    const m = findMission(mid);
-    if (m) applyLocalField(m, field, value);
-    toast("Enregistré", "ok");
-    if (reload) await loadData(); else render();
-    return true;
-  } catch(e) { toast("Erreur: " + e.message.slice(0,60), "err"); return false; }
-}
-async function apiAction(action, params, successMsg) {
-  try {
-    const qs = Object.entries(params).map(([k,v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join("&");
-    const r = await fetch(GAS_URL + `?action=${encodeURIComponent(action)}&${qs}`, { signal: AbortSignal.timeout(25000) });
-    const d = await r.json();
-    if (!d || d.ok === false) throw new Error(d && (d.msg || d.error) ? (d.msg || d.error) : "Action échouée");
-    toast(successMsg || "OK", "ok");
-    await loadData();
-  } catch(e) { toast("Erreur: " + e.message.slice(0,60), "err"); }
-}
-function applyLocalField(m, field, value) {
-  if (field === "statut") m.statut = value;
-  if (field === "notes") m.notes = value;
-  if (field === "heures") m.heures = value;
-  if (field === "debut") m.debut = value;
-  if (field === "montant_recu") m.montantRecu = money(value);
-}
-
-/* ============================================================
-   SNCF
-   ============================================================ */
-async function fetchTrain(mid) {
-  const m = findMission(mid);
-  const el = $("train-" + safeId(mid));
-  if (!el) return;
-  el.textContent = "Chargement SNCF…";
-  try {
-    const r = await fetch(SNCF_WORKER, { signal: AbortSignal.timeout(12000) });
-    const d = await r.json();
-    const ref = (m.transportRef || m.desc || "").trim();
-    const arrivals = d.arrivals || [];
-    const match = ref ? arrivals.filter(a => {
-      const info = a.display_informations || {};
-      const h = String(info.headsign || "");
-      const t = String(info.trip_short_name || "");
-      return h.includes(ref) || t.includes(ref) || ref.includes(h) || ref.includes(t);
-    }) : [];
-    if (!match.length) { el.textContent = ref ? `Aucun résultat pour ${ref}. ${arrivals.length} trains chargés.` : "Aucune référence train."; return; }
-    el.innerHTML = `<div class="timeline">${match.slice(0,4).map(a => {
-      const info = a.display_informations || {};
-      const sdt = a.stop_date_time || {};
-      const base = sdt.base_arrival_date_time || sdt.base_departure_date_time || "";
-      const real = sdt.arrival_date_time || sdt.departure_date_time || base;
-      const diff = sncfDelay(base, real);
-      return timelineRow(sncfTime(base), info.headsign || info.trip_short_name || ref, diff > 1 ? `Retard +${diff} min` : "À l’heure / non signalé");
-    }).join("")}</div>`;
-  } catch(e) { el.textContent = "Erreur SNCF: " + e.message; }
-}
-
-/* ============================================================
-   HELPERS: UI
-   ============================================================ */
-function stat(label, value, note = "", color = "") { return `<div class="stat-card"><div class="stat-label">${esc(label)}</div><div class="stat-value" style="${colorVar(color)}">${esc(value)}</div>${note ? `<div class="stat-note">${esc(note)}</div>` : ""}</div>`; }
-function colorVar(c) { return c ? `color:var(--${c})` : ""; }
-function empty(icon, title, sub) { return `<div class="empty"><div class="empty-icon">${icon}</div><div class="empty-title">${esc(title)}</div>${sub ? `<div class="empty-sub">${esc(sub)}</div>` : ""}</div>`; }
-function warningCard(title, body) { return `<div class="collapsible" style="border-color:rgba(231,162,92,.35);margin-top:10px"><div class="coll-head"><div><div class="coll-title" style="color:var(--amber)">${esc(title)}</div><div class="coll-sub">${body}</div></div></div></div>`; }
-function info(label, val, mono=false) { if (val === undefined || val === null || val === "") return ""; return `<div class="info-row"><div class="info-label">${esc(label)}</div><div class="info-value ${mono ? "mono" : ""}">${esc(val)}</div></div>`; }
-function checkRow(label, detail, ok, warn=false) { const cls = ok ? "ok" : warn ? "warn" : "bad"; const icon = ok ? "✓" : warn ? "!" : "×"; return `<div class="check-row"><div class="check-left"><div class="check-icon ${cls}">${icon}</div><div style="min-width:0"><div class="check-main">${esc(label)}</div><div class="check-sub">${esc(detail || (ok ? "présent" : "à compléter"))}</div></div></div><div class="check-status">${ok ? "OK" : warn ? "À voir" : "Manque"}</div></div>`; }
-function collapsible(id, title, sub, body) { const sid = safeId(id); return `<div class="collapsible"><button class="coll-head" onclick="toggleColl('${sid}')"><div style="text-align:left"><div class="coll-title">${esc(title)}</div>${sub ? `<div class="coll-sub">${esc(sub)}</div>` : ""}</div><span class="chev" id="chev-${sid}">⌄</span></button><div class="coll-body" id="${sid}">${body}</div></div>`; }
-function toggleColl(id) { const b = $(id); const c = $("chev-"+id); if (!b) return; const open = b.classList.toggle("open"); if (c) c.classList.toggle("open", open); }
-function paxItem(mid, idx, name, checked) { return `<div class="pax-item"><button class="pax-box ${checked ? "checked" : ""}" onclick="togglePax('${js(mid)}',${idx})">${checked ? "✓" : ""}</button><div class="pax-name ${checked ? "checked" : ""}">${esc(name)}</div></div>`; }
-function timelineRow(time, main, sub) { return `<div class="timeline-row"><div class="timeline-time">${esc(time)}</div><div><div class="timeline-main">${esc(main)}</div>${sub ? `<div class="timeline-sub">${esc(sub)}</div>` : ""}</div></div>`; }
-function systemHealthHTML() { return `<div>${kv("API", state.online ? "OK" : "Hors ligne / cache")}${kv("Dernière sync", state.lastSync ? new Date(state.lastSync).toLocaleString("fr-FR") : "—")}${kv("Missions", String(state.missions.length))}${kv("Staging", String(state.staging.length))}${kv("Erreur", state.systemError || "—")}${kv("Cache", localStorage.getItem(CACHE_KEY) ? "présent" : "vide")}</div>`; }
-function kv(k,v) { return `<div class="kv"><div class="kv-key">${esc(k)}</div><div class="kv-val">${esc(v)}</div></div>`; }
-
-/* ============================================================
-   HELPERS: BUSINESS LOGIC
-   ============================================================ */
-function computeCompleteness(m) {
-  const items = [
-    { label:"Date", ok:!!m.date, detail:m.date || "manquante" },
-    { label:"Heure", ok:!!m.debut, detail:m.debut || "TBD", warn:!m.debut },
-    { label:"Lieu", ok:!!(m.endroit || m.meetingPoint || m.dock), detail:m.endroit || m.meetingPoint || m.dock || "à compléter" },
-    { label:"Contact", ok:getContacts(m).length>0, detail:getContacts(m).length ? `${getContacts(m).length} contact(s)` : "aucun contact" },
-    { label:"Pax / ref", ok:!!(m.paxRaw || m.paxCount || m.transportRef || m.desc), detail:m.paxCount || m.transportRef || m.desc || "à vérifier", warn:!!m.desc },
-    { label:"Source", ok:!!(m.docs || m.sourcePDF || m.importKey), detail:m.docs || m.sourcePDF ? "document lié" : m.importKey ? "email lié" : "source absente" },
-    { label:"Tarif", ok:valueSousTotal(m)>0 || m.base>0, detail:valueSousTotal(m)>0 ? euro(valueSousTotal(m)) : "à calculer" }
-  ];
-  const ok = items.filter(i => i.ok).length;
-  return { score: Math.round(ok / items.length * 100), missing: items.filter(i => !i.ok).map(i => i.label), items };
-}
-function detectModules(m) {
-  const text = `${m.client} ${m.type} ${m.desc} ${m.endroit} ${m.transportRef}`.toLowerCase();
-  const mods = ["prep", "contacts", "finance", "rapport"];
-  if (/basel|bale|bâle|viking|lyon - bale|lyon - bâle/.test(text)) mods.push("basel");
-  if (/gare|sncf|tgv|ter|train|part-dieu|perrache/.test(text)) mods.push("train");
-  if (/aeroport|aéroport|airport|lys|vol|flight|terminal/.test(text)) mods.push("airport");
-  return mods;
-}
-function getContacts(m) {
-  const o = m.ops || {};
-  const contacts = [];
-  if (pick(o,["Contact Client"])) contacts.push({ role:"Contact client", name:pick(o,["Contact Client"]), phone:pick(o,["Client Phone"]) });
-  if (pick(o,["Cruise Manager"])) contacts.push({ role:"Cruise manager", name:pick(o,["Cruise Manager"]), phone:pick(o,["Cruise Phone"]) });
-  if (pick(o,["Chauffeur"])) contacts.push({ role:"Chauffeur", name:pick(o,["Chauffeur"]), phone:pick(o,["Tél Chauffeur", "Tel Chauffeur"]) });
-  if (pick(o,["Colleague"])) contacts.push({ role:pick(o,["Colleague Role"]) || "Collègue", name:pick(o,["Colleague"]), phone:pick(o,["Colleague Phone"]) });
-  if (pick(o,["Emergency Contact"])) contacts.push({ role:"Urgence", name:pick(o,["Emergency Contact"]), phone:"" });
-  return contacts.filter(c => c.name);
-}
-function parsePax(raw) { return String(raw || "").split(/\n+/).map(s => s.trim()).filter(Boolean); }
-function togglePax(mid, idx) {
-  if (!paxChecks[mid]) paxChecks[mid] = {};
-  paxChecks[mid][idx] = !paxChecks[mid][idx];
-  localStorage.setItem(PAX_KEY, JSON.stringify(paxChecks));
+// ═══════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════
+function go(t){
+  tab=t; if(t==="today")sv="today"; detail=null; pmf=null; pmfStep=0;
+  ["today","month","finance"].forEach(id=>document.getElementById("nb-"+id).classList.toggle("on",id===t));
   render();
 }
-function extractFlights(m) {
-  const text = [m.transportRef, m.paxRaw, m.opsSummary, m.notes].filter(Boolean).join("\n");
-  const lines = text.split(/\n+/).map(s => s.trim()).filter(Boolean);
-  return lines.map(line => {
-    const flight = line.match(/\b[A-Z]{2}\d{2,4}(?:\/[A-Z]{2}\d{2,4})?/);
-    const time = line.match(/\b(\d{1,2})h(\d{2})\b|\b(\d{1,2}:\d{2})\b/);
-    if (!flight) return null;
-    return { ref: flight[0], time: time ? (time[3] || `${pad2(time[1])}:${time[2]}`) : "", detail: line.slice(0,120) };
-  }).filter(Boolean).slice(0,12);
+function render(){
+  const el=document.getElementById("content"); if(!el)return;
+  if(detail&&(tab==="today"||tab==="month")){el.innerHTML=rdDetail(detail);return;}
+  if(tab==="today")   el.innerHTML=rdToday();
+  else if(tab==="month")   el.innerHTML=rdMonth();
+  else if(tab==="finance") el.innerHTML=rdFinance();
 }
-function buildRapportPrompt(m, template) { return `Rédige un rapport de mission court en français pour Joseph Markman. Ton direct, chaleureux, professionnel, tutoiement si le client est familier. Type: ${template}. Mission: ${m.type}. Date: ${m.date}. Ref: ${m.desc}. Heures: ${m.debut || ""} / ${m.heures || ""}h. Notes: ${m.notes || "RAS"}. Retourne uniquement le texte de l'email.`; }
-function valueSousTotal(m) { return m.sousTotal || (m.base + m.hs + m.supp) || 0; }
-function estimatedNetFor(m) { return m.totalNet || Math.round((valueSousTotal(m) * NET_MULT + m.debours) * 100) / 100; }
-function financeStats(list) { return { sousTotal: sum(list, valueSousTotal), debours: sum(list, m => m.debours), net: sum(list, estimatedNetFor), recu: sum(list, m => m.montantRecu) }; }
-function isDone(m) { return /termin|heures confirm|rapport|fac|envoy|pay|payé/i.test(m.statut || ""); }
-function isCancelled(m) { return /annul|cancel/i.test(m.statut || ""); }
-function travelMinutes(m) { if (m.voyage) return parseFloat(m.voyage); const text = `${m.endroit} ${m.meetingPoint} ${m.dock}`.toUpperCase(); for (const [k,v] of Object.entries(TRAVEL)) if (text.includes(k)) return v; return 0; }
-function departureTime(m) { const mins = travelMinutes(m); if (!m.debut || !mins) return ""; return addMinutes(m.debut, -(mins + 10)); }
-function calcEnd(start, hours) { if (!start || !hours) return ""; return addMinutes(start, Math.round(parseFloat(hours) * 60)); }
-function decimalHours(start, end) { if (!start || !end) return ""; const [sh,sm]=start.split(":").map(Number); const [eh,em]=end.split(":").map(Number); let d=(eh*60+em)-(sh*60+sm); if (d<=0) return ""; return (Math.round(d/15)*15/60).toFixed(2); }
+function openD(mid){
+  detail=missions.find(m=>m.mid===mid)||null;
+  pmf=null;pmfStep=0;render();window.scrollTo(0,0);
+}
+function closeD(){detail=null;render();}
 
-/* ============================================================
-   HELPERS: GENERIC
-   ============================================================ */
-function $(id) { return document.getElementById(id); }
-function readJSON(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch(e) { return fallback; } }
-function pick(obj, keys) { if (!obj) return ""; if (!Array.isArray(keys)) keys = [keys]; for (const k of keys) if (obj[k] !== undefined && obj[k] !== null && String(obj[k]).trim() !== "") return String(obj[k]).trim(); return ""; }
-function money(v) { if (v === undefined || v === null || v === "") return 0; const n = parseFloat(String(v).replace(/\s/g,"").replace("€","").replace(",",".")); return isNaN(n) ? 0 : n; }
-function cleanNumber(v) { if (v === undefined || v === null || v === "") return ""; const s = String(v).replace(",", ".").trim(); const n = parseFloat(s); return isNaN(n) ? s : String(n); }
-function sum(arr, fn) { return Math.round(arr.reduce((s,x) => s + (parseFloat(fn(x)) || 0), 0) * 100) / 100; }
-function euro(n) { const v = parseFloat(n) || 0; return v ? v.toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + " €" : "—"; }
-function pad2(n) { return String(Math.floor(Number(n))).padStart(2,"0"); }
-function isoToday() { return new Date().toISOString().slice(0,10); }
-function isoOffset(days) { const d = new Date(); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
-function normalizeDate(v) { if (!v) return ""; const s = String(v).trim(); if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; const fr = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if (fr) return `${fr[3]}-${pad2(fr[2])}-${pad2(fr[1])}`; const d = new Date(s); return isNaN(d) ? s : d.toISOString().slice(0,10); }
-function normalizeTime(v) {
-  if (v === undefined || v === null || v === "") return "";
-  const s = String(v).trim();
-  if (!s || s === "—") return "";
-  let m = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/); if (m) return `${pad2(m[1])}:${m[2]}`;
-  m = s.match(/(\d{1,2})h(\d{2})/i); if (m) return `${pad2(m[1])}:${m[2]}`;
-  m = s.match(/1899.*?(\d{1,2}):(\d{2}):\d{2}/); if (m) return `${pad2(m[1])}:${m[2]}`;
-  if (/^0?\.\d+$/.test(s)) { const f = parseFloat(s); if (f >= 0 && f < 1) { const total = Math.round(f * 24 * 60); return `${pad2(total/60)}:${pad2(total%60)}`; } }
-  return s.includes("1899") ? "" : s.slice(0,5);
+// ═══════════════════════════════════════════════════════
+// TODAY
+// ═══════════════════════════════════════════════════════
+function rdToday(){
+  let h=`<div class="sub-nav">
+    <button class="sn-btn${sv==="today"?" on":""}" onclick="sv='today';render()">Aujourd'hui</button>
+    <button class="sn-btn${sv==="week"?" on":""}" onclick="sv='week';render()">7 jours</button>
+  </div>`;
+  if(sv==="week") return h+rdWeek();
+
+  const t=tday(),tm=tmrw();
+  const t1=missions.filter(m=>m.date===t&&!isCxl(m)).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
+  const t2=missions.filter(m=>m.date===tm&&!isCxl(m)).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
+  const up=missions.filter(m=>m.date>tm&&!isCxl(m)).sort((a,b)=>a.date.localeCompare(b.date));
+
+  // Summary bar
+  if(t1.length||t2.length){
+    const all=missions.filter(m=>m.date===t);
+    const done=all.filter(isDone).length;
+    const bSum=all.reduce((s,m)=>s+m.sousTotal,0);
+    const nSum=all.reduce((s,m)=>s+m.totalNet,0);
+    h+=`<div class="sum-grid">
+      <div class="sum-card"><div class="sum-lbl">Missions</div><div class="sum-val">${all.length||"—"}</div></div>
+      <div class="sum-card"><div class="sum-lbl">Faites</div><div class="sum-val green">${done||"—"}</div></div>
+      <div class="sum-card"><div class="sum-lbl">Sous-total</div><div class="sum-val gold">${bSum?bSum.toFixed(0)+"€":"—"}</div></div>
+      <div class="sum-card"><div class="sum-lbl">Net</div><div class="sum-val amber">${nSum?nSum.toFixed(0)+"€":"—"}</div></div>
+    </div>`;
+  }
+
+  if(t1.length){
+    h+=`<div class="slbl">Aujourd'hui</div>`+t1.map(m=>mcard(m,false)).join("");
+  } else {
+    h+=`<div class="empty">
+      <div class="empty-ico">☀️</div>
+      <div class="empty-title">Pas de mission aujourd'hui</div>
+      ${t2.length?`<div class="empty-sub">${t2.length} mission${t2.length>1?"s":""} demain</div>`:""}
+    </div>`;
+  }
+  if(t2.length) h+=`<div class="slbl">Demain · ${fds(tm).toUpperCase()}</div>`+t2.map(m=>mcard(m,true)).join("");
+  if(up.length){
+    h+=`<div class="slbl">À venir</div><div class="upcoming">`;
+    up.slice(0,7).forEach(m=>{
+      const mt=getMeta(m.client);
+      h+=`<div class="up-row" onclick="openD('${m.mid}')">
+        <div class="up-date">${fds(m.date)}</div>
+        <div class="up-desc">${esc(m.type||"—")}${m.sens&&m.sens!=="—"?" · "+esc(m.sens):""}</div>
+        <span class="up-tag" style="color:${mt.hex}">${mt.tag}</span>
+      </div>`;
+    });
+    h+="</div>";
+  }
+  return h;
 }
-function addMinutes(hhmm, mins) { const [h,m]=hhmm.split(":").map(Number); let total = h*60+m+mins; while(total<0) total += 1440; total %= 1440; return `${pad2(total/60)}:${pad2(total%60)}`; }
-function currentTime() { const d = new Date(); return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
-function shortDate(iso) { if (!iso) return ""; const d = new Date(iso + "T12:00:00"); return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`; }
-function longDate(iso) { if (!iso) return ""; const d = new Date(iso + "T12:00:00"); return `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`; }
-function timeFromISO(iso) { const d = new Date(iso); return isNaN(d) ? "—" : `${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
-function sortByTime(arr) { return [...arr].sort((a,b) => (a.debut || "99:99").localeCompare(b.debut || "99:99")); }
-function groupBy(arr, fn) { return arr.reduce((o,x) => { const k=fn(x); (o[k]=o[k]||[]).push(x); return o; }, {}); }
-function findMission(mid) { return state.missions.find(m => m.mid === mid) || state.staging.find(m => m.mid === mid) || null; }
-function getClientMeta(client) { const c = String(client || "").toLowerCase(); for (const [k,v] of Object.entries(CLIENTS)) if (c.includes(k)) return v; return { tag: (client || "?").slice(0,4).toUpperCase(), color: "#8b857d" }; }
-function esc(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function escAttr(s) { return esc(s).replace(/'/g,"&#39;"); }
-function js(s) { return String(s ?? "").replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/\n/g," "); }
-function safeId(s) { return String(s).replace(/[^a-zA-Z0-9_-]/g,"_"); }
-function toast(msg, type="") { const el = $("toast"); el.textContent = msg; el.className = "toast show" + (type ? " " + type : ""); clearTimeout(window.__toast); window.__toast = setTimeout(() => el.className = "toast" + (type ? " " + type : ""), 3200); }
-function sncfTime(s) { if (!s) return "—"; const m = String(s).match(/T?(\d{2})(\d{2})(\d{2})$/) || String(s).match(/(\d{2}):(\d{2})/); return m ? `${m[1]}:${m[2]}` : "—"; }
-function sncfDelay(base, real) { const b = sncfTime(base), r = sncfTime(real); if (b === "—" || r === "—") return 0; const [bh,bm]=b.split(":").map(Number), [rh,rm]=r.split(":").map(Number); return (rh*60+rm)-(bh*60+bm); }
+
+function rdWeek(){
+  const now=new Date(); let h="";
+  let any=false;
+  for(let d=0;d<7;d++){
+    const dt=new Date(now.getTime()+d*86400000);
+    const ds=dt.toISOString().slice(0,10);
+    const dm=missions.filter(m=>m.date===ds&&!isCxl(m)).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
+    if(!dm.length)continue;
+    const isT=ds===tday(),isTm=ds===tmrw();
+    h+=`<div class="dhdr${isT?" today":isTm?" tmrw":""}">
+      ${fdl(ds).toUpperCase()}
+      ${isT?'<span class="d-pill">Aujourd\'hui</span>':""}
+    </div>`+dm.map(m=>mcard(m,false)).join("");
+    any=true;
+  }
+  if(!any) h=`<div class="empty"><div class="empty-ico">📅</div><div class="empty-title">Semaine libre</div></div>`;
+  return h;
+}
+
+// ═══════════════════════════════════════════════════════
+// MONTH
+// ═══════════════════════════════════════════════════════
+function rdMonth(){
+  const now=new Date(),cm=p2(now.getMonth()+1);
+  const t=tday(),tm=tmrw();
+  const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm).sort((a,b)=>a.date.localeCompare(b.date));
+  const active=mms.filter(m=>!isCxl(m));
+  const done=active.filter(isDone);
+  // V3: use formula values directly
+  const tST=active.reduce((s,m)=>s+m.sousTotal,0);
+  const tN =active.reduce((s,m)=>s+m.totalNet, 0);
+
+  let h=`<div class="slbl">${MOL[now.getMonth()].toUpperCase()}</div>
+  <div class="mo-grid">
+    <div class="mo-card"><div class="mo-lbl">Total</div><div class="mo-val">${active.length}</div></div>
+    <div class="mo-card"><div class="mo-lbl">Faites</div><div class="mo-val" style="color:var(--green)">${done.length}</div></div>
+    <div class="mo-card"><div class="mo-lbl">Sous-total</div><div class="mo-val" style="color:var(--gold)">${tST?tST.toFixed(0)+"€":"—"}</div></div>
+    <div class="mo-card"><div class="mo-lbl">Net</div><div class="mo-val" style="color:var(--amber)">${tN?tN.toFixed(0)+"€":"—"}</div></div>
+  </div>`;
+
+  const gr={};
+  active.forEach(m=>{(gr[m.date]=gr[m.date]||[]).push(m);});
+  Object.entries(gr).sort(([a],[b])=>a.localeCompare(b)).forEach(([date,ms])=>{
+    const isT=date===t,isTm=date===tm;
+    h+=`<div class="dhdr${isT?" today":isTm?" tmrw":""}">
+      ${fdl(date).toUpperCase()}
+      ${isT?'<span class="d-pill">Aujourd\'hui</span>':""}
+    </div>`+ms.map(m=>mcard(m,false)).join("");
+  });
+
+  // Cancelled — collapsed at bottom
+  const cxls=mms.filter(isCxl);
+  if(cxls.length){
+    h+=`<div class="coll" style="margin-top:14px">
+      <div class="coll-h" onclick="tColl('cxl-mo')">
+        <div><div class="coll-htitle">Annulées (${cxls.length})</div><div class="coll-hsub">Référence fiabilité clients</div></div>
+        <div class="coll-chev" id="chev-cxl-mo">▾</div>
+      </div>
+      <div class="coll-body" id="cxl-mo" style="padding:0 14px;">
+        ${cxls.map(m=>`<div class="cxl-row">
+          <div>
+            <div class="cxl-name">${getMeta(m.client).tag} · ${esc(m.type||"—")}</div>
+            <div class="cxl-date">${fds(m.date)}${m.notes?" · "+esc(m.notes.slice(0,35)):""}</div>
+          </div>
+          <span class="bdg b-cxl">Annulé</span>
+        </div>`).join("")}
+      </div>
+    </div>`;
+  }
+  if(!active.length) h+=`<div class="empty"><div class="empty-ico">📅</div><div class="empty-title">Aucune mission ce mois</div></div>`;
+
+  h+=rdJournal();
+  h+=`<div class="slbl">Références</div>
+  <div class="ref-box">
+    SIRET · 92815905200010<br>
+    IBAN · FR76 2823 3000 0177 6267 3414 414<br>
+    BIC · REVOFRP2 (Revolut)
+  </div>`;
+  return h;
+}
+
+// ═══════════════════════════════════════════════════════
+// FINANCE — uses only API formula values
+// ═══════════════════════════════════════════════════════
+function rdFinance(){
+  const now=new Date(),cm=p2(now.getMonth()+1);
+  const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm&&!isCxl(m)).sort((a,b)=>a.date.localeCompare(b.date));
+  const done=mms.filter(isDone);
+
+  // ALL VALUES from API — no JS recomputation
+  const tST   = mms.reduce((s,m)=>s+m.sousTotal, 0);
+  const tDeb  = mms.reduce((s,m)=>s+m.debours,   0);
+  const tN    = mms.reduce((s,m)=>s+m.totalNet,   0);
+  const tRecu = mms.reduce((s,m)=>s+m.montant,    0);
+  // Charges = sous-total × TAX (since totalNet = sousTotal × 0.788 + debours, and debours is pass-through)
+  const tBase = mms.reduce((s,m)=>s+m.base, 0);
+  const tChg  = tBase * TAX;
+  const tOwed = tN - tRecu;
+
+  let h=`<div class="slbl">${MOL[now.getMonth()].toUpperCase()} — Finances</div>
+  <div class="fin-card">
+    <div class="fin-title">Récapitulatif mensuel</div>
+    <div class="fin-body">
+      <div class="fr"><span class="fr-l">Missions</span><span class="fr-v">${mms.length}</span></div>
+      <div class="fr"><span class="fr-l">Base HT (avant charges)</span><span class="fr-v">${fmt€(tBase)}</span></div>
+      ${tDeb?`<div class="fr"><span class="fr-l" style="padding-left:12px">dont débours</span><span class="fr-v" style="font-size:11px;color:var(--txt2)">${fmt€(tDeb)}</span></div>`:""}
+      <div class="fr"><span class="fr-l">Charges URSSAF (21.2%)</span><span class="fr-v r">− ${fmt€(tChg)}</span></div>
+      <div class="fr"><span class="fr-l bold">Net estimé</span><span class="fr-v g">${fmt€(tN)}</span></div>
+      <div class="fr"><span class="fr-l">Reçu</span><span class="fr-v ${tRecu>=tN?"g":"a"}">${fmt€(tRecu)}</span></div>
+      ${tOwed>0.01?`<div class="fr"><span class="fr-l">À recevoir</span><span class="fr-v a">${fmt€(tOwed)}</span></div>`:""}
+    </div>
+  </div>`;
+
+  if(mms.length){
+    h+=`<div class="fin-card">
+      <div class="fin-title">Détail — ${mms.length} missions</div>
+      <div class="fin-body">`;
+    mms.forEach(m=>{
+      const owed=m.totalNet>0.01&&m.montant<0.01&&isDone(m);
+      h+=`<div class="fmr" onclick="openD('${m.mid}')">
+        <div class="fmr-l">
+          <div class="fmr-desc">${getMeta(m.client).tag} · ${esc(m.type||"—")}${m.extRef?" · "+esc(m.extRef):""}</div>
+          <div class="fmr-meta">${fds(m.date)} · ${badge(m)}${owed?'<span class="owed">En attente</span>':""}</div>
+        </div>
+        <div class="fmr-r">
+          <div class="fmr-base">${m.sousTotal?m.sousTotal.toFixed(0)+"€":"—"}</div>
+          ${m.totalNet?`<div class="fmr-net">net ${m.totalNet.toFixed(0)}€</div>`:""}
+        </div>
+      </div>`;
+    });
+    h+="</div></div>";
+  }
+  if(!mms.length) h+=`<div class="empty"><div class="empty-ico">💶</div><div class="empty-title">Aucune mission ce mois</div></div>`;
+  return h;
+}
+
+// ═══════════════════════════════════════════════════════
+// JOURNAL — reads from API (no localStorage)
+// ═══════════════════════════════════════════════════════
+function rdJournal(){
+  const cy=String(new Date().getFullYear());
+  const yl=journal.filter(e=>e.date&&e.date.startsWith(cy));
+  if(!yl.length) return`<div class="slbl" style="margin-top:8px">Bien-être</div><div style="font-size:11px;color:var(--txt3);padding:4px 0">Aucune entrée — clôture des missions pour alimenter le journal.</div>`;
+
+  const wm=yl.filter(e=>e.mood>0);
+  const we=yl.filter(e=>e.energy>0);
+  const am=wm.length?wm.reduce((s,e)=>s+e.mood,0)/wm.length:0;
+  const ae=we.length?we.reduce((s,e)=>s+e.energy,0)/we.length:0;
+
+  let h=`<div class="slbl" style="margin-top:8px">Bien-être · ${cy}</div>
+  <div class="j-stats">
+    <div class="j-stat"><div class="j-stat-v">${yl.length}</div><div class="j-stat-l">Entrées</div></div>
+    <div class="j-stat"><div class="j-stat-v">${am?ME[Math.round(am)-1]+" "+am.toFixed(1):"—"}</div><div class="j-stat-l">Humeur moy.</div></div>
+    <div class="j-stat"><div class="j-stat-v">${ae?EE[Math.round(ae)-1]+" "+ae.toFixed(1):"—"}</div><div class="j-stat-l">Énergie moy.</div></div>
+  </div>`;
+
+  const recent=[...yl].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
+  h+=`<div class="coll">
+    <div class="coll-h" onclick="tColl('j-log')">
+      <div><div class="coll-htitle">Journal privé</div><div class="coll-hsub">${yl.length} entrées</div></div>
+      <div class="coll-chev" id="chev-j-log">▾</div>
+    </div>
+    <div class="coll-body" id="j-log">`;
+  recent.forEach(e=>{
+    h+=`<div class="jrow">
+      <div class="jrow-top">
+        <div><div class="jrow-date">${fds(e.date)}</div><div class="jrow-ctx">${esc(e.context||"—")} · ${esc(e.client||"")}</div></div>
+      </div>
+      <div class="jrow-sc">
+        ${e.mood>0?`<span class="jsc">${ME[e.mood-1]} ${e.mood}</span>`:""}
+        ${e.energy>0?`<span class="jsc">${EE[e.energy-1]} ${e.energy}</span>`:""}
+      </div>
+      ${e.text?`<div class="jrow-note">${esc(e.text.slice(0,90))}${e.text.length>90?"…":""}</div>`:""}
+    </div>`;
+  });
+  h+=`</div></div>`;
+  return h;
+}
+
+// ═══════════════════════════════════════════════════════
+// COLLAPSIBLE — BUG FIXED
+// body starts display:none; open class toggles it
+// chevron derives state from DOM, never stored separately
+// ═══════════════════════════════════════════════════════
+function tColl(id){
+  const body=document.getElementById(id);
+  const chev=document.getElementById("chev-"+id);
+  if(!body)return;
+  const open=body.classList.toggle("open");
+  if(chev)chev.classList.toggle("open",open);
+}
+
+// ═══════════════════════════════════════════════════════
+// DETAIL VIEW
+// ═══════════════════════════════════════════════════════
+function rdDetail(m){
+  const mt=getMeta(m.client);
+  let h=`<div class="back" onclick="closeD()">← Retour</div>
+  <div class="hero">
+    <div class="hero-top" style="background:${mt.hex}"></div>
+    <div class="hero-body">
+      <div class="hero-client" style="color:${mt.hex}">${esc(m.client||"—")}</div>
+      <div class="hero-title">${esc(m.type||"—")}${m.sens&&m.sens!=="—"?" · "+esc(m.sens):""}</div>
+      <div class="hero-sub">${fdl(m.date)} ${m.debut?" · "+esc(m.debut):""} ${m.endroit?" · "+esc(m.endroit.split(/[,→]/)[0]):""}</div>
+      <div class="hero-pills">
+        ${badge(m)}
+        ${m.cmp&&typeof m.cmp==="object"?`<div class="cmp-detail">${cmpDot(m)} ${m.cmp.score}% complet${m.cmp.missing?.length?" · manque: "+m.cmp.missing.slice(0,2).map(esc).join(", "):""}</div>`:""}
+      </div>
+    </div>
+  </div>`;
+
+  // ── Mission info ─────────────────────────────────
+  h+=sec("Mission", ()=>{
+    let s="";
+    if(m.extRef)    s+=ir("Réf",esc(m.extRef));
+    if(m.debut)     s+=ir("Départ",esc(m.debut));
+    if(m.ops["Mission Start Time"]) s+=ir("Début mission",esc(m.ops["Mission Start Time"]));
+    const dur=m.ops["Mission Duration (h)"]||m.heures;
+    if(dur)         s+=ir("Durée",esc(dur)+"h");
+    if(m.endroit)   s+=ir("Endroit",esc(m.endroit));
+    if(m.meetPt)    s+=ir("RDV",esc(m.meetPt));
+    if(m.transRef)  s+=ir("Réf transport",esc(m.transRef));
+    if(m.shipName)  s+=ir("Navire",esc(m.shipName));
+    if(m.dock)      s+=ir("Quai / Terminal",esc(m.dock));
+    if(m.ops["Vehicle Info"]) s+=ir("Véhicule",esc(m.ops["Vehicle Info"]));
+    return s;
+  });
+
+  // ── Contacts ─────────────────────────────────────
+  const clist=[];
+  if(m.ops["Contact Client"])  clist.push({r:"Contact client", n:m.ops["Contact Client"],  p:m.ops["Client Phone"]||""});
+  if(m.ops["Cruise Manager"])  clist.push({r:"Cruise Manager", n:m.ops["Cruise Manager"],  p:m.ops["Cruise Phone"]||""});
+  if(m.ops["Chauffeur"])       clist.push({r:"Chauffeur",      n:m.ops["Chauffeur"],        p:m.ops["Tél Chauffeur"]||""});
+  if(m.ops["Colleague"]){
+    clist.push({r:"Collègue"+(m.ops["Colleague Role"]?" · "+m.ops["Colleague Role"]:""), n:m.ops["Colleague"], p:m.ops["Colleague Phone"]||""});
+  }
+  if(m.ops["Emergency Contact"]) clist.push({r:"Urgence",n:m.ops["Emergency Contact"],p:""});
+  if(clist.length) h+=sec("Contacts",()=>clist.map(c=>`
+    <div class="cb">
+      <div>
+        <div class="cb-r">${esc(c.r)}</div>
+        <div class="cb-n">${esc(c.n)}</div>
+        ${c.p?`<div class="cb-p">${esc(c.p)}</div>`:""}
+      </div>
+      ${c.p?`<a href="tel:${esc(c.p)}" class="call-btn" onclick="event.stopPropagation()">📞 Appeler</a>`:""}
+    </div>`).join(""));
+
+  // ── Passengers ───────────────────────────────────
+  if(m.paxRaw||m.paxCount){
+    h+=sec(`Passagers${m.paxCount?" ("+esc(m.paxCount)+")":""}`,()=>{
+      if(!m.paxRaw) return`<div style="font-size:12px;color:var(--txt2)">${esc(m.paxCount)} pax — liste non disponible</div>`;
+      const pl=m.paxRaw.split("\n").map(s=>s.trim()).filter(Boolean);
+      const state=pax[m.mid]||{};
+      const ck=Object.values(state).filter(Boolean).length;
+      const pct=pl.length?Math.round(ck/pl.length*100):0;
+      return`<div class="pax-prog"><div class="pax-fill" id="pp-${m.mid}" style="width:${pct}%"></div></div>
+      <div class="pax-list">${pl.map((p,i)=>{
+        const on=!!state[i];
+        return`<div class="pax-row">
+          <div class="pax-box${on?" ck":""}" onclick="tPax('${m.mid}',${i},${!on})">${on?"✓":""}</div>
+          <div class="pax-name${on?" ck":""}">${esc(p)}</div>
+        </div>`;
+      }).join("")}</div>`;
+    });
+  }
+
+  // ── Ops summary ───────────────────────────────────
+  if(m.opsSum) h+=sec("Résumé opérationnel",()=>`<div style="font-size:12px;color:var(--txt1);line-height:1.7">${esc(m.opsSum)}</div>`);
+
+  // ── SNCF (Gare missions only) ─────────────────────
+  if((m.type||"").toLowerCase()==="gare"&&m.transRef) h+=rdSNCF(m);
+
+  // ── Edit ─────────────────────────────────────────
+  h+=sec("Modifier",()=>{
+    const opts=["Brouillon","Planifié","Confirmé","Terminé","Fac. générée","Fac. envoyée","Payé","Annulé"];
+    return`<div class="edit-row">
+      <div class="edit-l">Statut</div>
+      <select class="edit-sel" onchange="saveF('${m.mid}','statut',this.value)">
+        ${opts.map(o=>`<option${m.statut===o?" selected":""}>${o}</option>`).join("")}
+      </select>
+    </div>
+    <div class="edit-row">
+      <div class="edit-l">Début</div>
+      <input class="edit-inp" type="time" id="ef-debut-${m.mid}" value="${esc(m.debut||"")}"/>
+      <button class="save-btn" onclick="saveF('${m.mid}','debut',document.getElementById('ef-debut-${m.mid}').value)">✓</button>
+    </div>
+    <div class="edit-row">
+      <div class="edit-l">Heures</div>
+      <input class="edit-inp" type="number" step="0.5" id="ef-h-${m.mid}" value="${esc(String(m.heures||""))}"/>
+      <button class="save-btn" onclick="saveF('${m.mid}','heures',document.getElementById('ef-h-${m.mid}').value)">✓</button>
+    </div>
+    <div class="edit-row">
+      <div class="edit-l">Base HT</div>
+      <input class="edit-inp" type="number" step="1" id="ef-b-${m.mid}" value="${esc(String(m.base||""))}"/>
+      <button class="save-btn" onclick="saveF('${m.mid}','base',document.getElementById('ef-b-${m.mid}').value)">✓</button>
+    </div>
+    <div style="padding:7px 0">
+      <div class="edit-l" style="margin-bottom:4px">Notes</div>
+      <textarea class="notes-ta" id="ef-n-${m.mid}" rows="3">${esc(m.notes||"")}</textarea>
+      <div class="save-row"><button class="save-btn" onclick="saveF('${m.mid}','notes',document.getElementById('ef-n-${m.mid}').value)">Enregistrer</button></div>
+    </div>`;
+  });
+
+  // ── Invoice ───────────────────────────────────────
+  h+=rdInvoice(m);
+
+  // ── Documents ─────────────────────────────────────
+  if(m.docs||m.ops["Source PDF"]){
+    h+=sec("Documents",()=>{
+      let s="";
+      if(m.docs) s+=`<a href="${esc(m.docs)}" target="_blank" class="inv-btn" onclick="event.stopPropagation()"><span class="inv-ico">📁</span><span style="flex:1">Dossier Drive</span><span class="inv-r">↗</span></a>`;
+      if(m.ops["Source PDF"]) s+=`<a href="${esc(m.ops["Source PDF"])}" target="_blank" class="inv-btn" onclick="event.stopPropagation()"><span class="inv-ico">📄</span><span style="flex:1">Manifeste PDF</span><span class="inv-r">↗</span></a>`;
+      return s;
+    });
+  }
+
+  // ── Notes / Email (collapsible) ───────────────────
+  if(m.ops["Raw Notes"]||m.ops["Source Email Msg"]){
+    h+=`<div style="margin-bottom:8px">`;
+    if(m.ops["Raw Notes"]) h+=coll("notes-"+m.mid,"Notes opérationelles",`<div style="font-size:11px;color:var(--txt2);white-space:pre-wrap;line-height:1.6">${esc(m.ops["Raw Notes"])}</div>`);
+    if(m.ops["Source Email Msg"]) h+=coll("email-"+m.mid,"Email source",`<div style="font-size:10px;color:var(--txt3);white-space:pre-wrap;line-height:1.6;font-family:var(--mono)">${esc(m.ops["Source Email Msg"].slice(0,1200))}</div>`,m.ops["Source Email"]||"");
+    h+="</div>";
+  }
+
+  // ── PMF ───────────────────────────────────────────
+  h+=rdPMF(m);
+  return h;
+}
+
+function sec(title, bodyFn){
+  const body=bodyFn();
+  if(!body) return "";
+  return`<div class="sec"><div class="sec-title">${title}</div><div class="sec-body">${body}</div></div>`;
+}
+function ir(l,v){return`<div class="ir"><div class="ir-l">${l}</div><div class="ir-v">${v}</div></div>`;}
+function coll(id,title,body,sub){
+  return`<div class="coll">
+    <div class="coll-h" onclick="tColl('${id}')">
+      <div><div class="coll-htitle">${title}</div>${sub?`<div class="coll-hsub">${esc(sub)}</div>`:""}</div>
+      <div class="coll-chev" id="chev-${id}">▾</div>
+    </div>
+    <div class="coll-body" id="${id}">${body}</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// PAX
+// ═══════════════════════════════════════════════════════
+function tPax(mid,idx,on){
+  if(!pax[mid])pax[mid]={};
+  pax[mid][idx]=on;
+  const box=document.querySelector(`[onclick="tPax('${mid}',${idx},${!on})"]`);
+  const nm=box?.nextElementSibling;
+  if(box){box.classList.toggle("ck",on);box.textContent=on?"✓":"";box.setAttribute("onclick",`tPax('${mid}',${idx},${!on})`);}
+  if(nm) nm.classList.toggle("ck",on);
+  const state=pax[mid];
+  const m=missions.find(x=>x.mid===mid);
+  const total=m?m.paxRaw.split("\n").filter(s=>s.trim()).length:0;
+  const done=Object.values(state).filter(Boolean).length;
+  const pp=document.getElementById("pp-"+mid);
+  if(pp) pp.style.width=(total?Math.round(done/total*100):0)+"%";
+}
+
+// ═══════════════════════════════════════════════════════
+// EDIT + SAVE
+// ═══════════════════════════════════════════════════════
+async function saveF(mid,field,value){
+  const ok=await apiCall(`action=update&id=${encodeURIComponent(mid)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`);
+  if(ok){
+    const m=missions.find(x=>x.mid===mid);
+    if(m){
+      if(field==="statut") m.statut=value;
+      else if(field==="notes") m.notes=value;
+      else if(field==="heures") m.heures=value;
+      else if(field==="base") m.base=parseFloat(value)||0;
+      else if(field==="debut") m.debut=value;
+    }
+    if(detail?.mid===mid) detail=m;
+    toast("✓ Mis à jour","ok");
+  }
+}
+async function apiCall(qs){
+  try{
+    const r=await fetch(GAS+"?"+qs,{signal:AbortSignal.timeout(12000)});
+    const d=await r.json();
+    if(d?.ok===false){toast("❌ "+(d.msg||"Erreur"),"err");return false;}
+    return true;
+  }catch(e){toast("❌ "+e.message.slice(0,40),"err");return false;}
+}
+
+// ═══════════════════════════════════════════════════════
+// INVOICE
+// ═══════════════════════════════════════════════════════
+function rdInvoice(m){
+  const s=(m.statut||"").toLowerCase();
+  let inner="";
+  if(m.facture) inner+=`<div style="font-size:12px;color:var(--txt1);margin-bottom:8px;font-family:var(--mono)">📄 ${esc(m.facture)}${m.montant?` · <span style='color:var(--green)'>${fmt€(m.montant)} reçu</span>`:""}</div>`;
+  if(s==="terminé"&&!m.facture) inner+=`<button class="inv-btn" onclick="genFacture('${m.mid}')"><span class="inv-ico">🧾</span><span style="flex:1;font-weight:500">Générer la facture</span><span class="inv-r">PDF → Drive</span></button>`;
+  if(s.includes("générée"))      inner+=`<button class="inv-btn" style="border-color:rgba(240,160,64,.3);color:var(--amber)" onclick="saveF('${m.mid}','statut','Fac. envoyée')"><span class="inv-ico">📤</span><span style="flex:1;font-weight:500">Marquer comme envoyée</span></button>`;
+  if(m.debours>0.01&&!m.ndb)    inner+=`<button class="inv-btn" style="margin-top:0" onclick="genDebours('${m.mid}')"><span class="inv-ico">📄</span><span style="flex:1;font-weight:500">Note de débours</span><span class="inv-r">${fmt€(m.debours)}</span></button>`;
+  if(!inner) return "";
+  return`<div class="sec"><div class="sec-title">Facturation</div><div class="sec-body" style="padding-top:8px">${inner}</div></div>`;
+}
+
+async function genFacture(mid){
+  toast("⏳ Génération…","");
+  try{
+    const r=await fetch(GAS+"?action=genFacture&id="+encodeURIComponent(mid));
+    const d=await r.json();
+    if(d?.ok){
+      const m=missions.find(x=>x.mid===mid);
+      if(m){m.facture=d.factureNum;m.statut="Fac. générée";}
+      if(detail?.mid===mid){detail.facture=d.factureNum;detail.statut="Fac. générée";}
+      toast("✅ "+d.factureNum,"ok");render();
+    } else toast("❌ "+(d?.msg||"Erreur"),"err");
+  }catch(e){toast("❌ "+e.message.slice(0,40),"err");}
+}
+async function genDebours(mid){
+  toast("⏳ Débours…","");
+  try{
+    const r=await fetch(GAS+"?action=genDebours&id="+encodeURIComponent(mid));
+    const d=await r.json();
+    if(d?.ok){
+      const m=missions.find(x=>x.mid===mid);
+      if(m)m.ndb=d.ndbNum;
+      toast("✅ "+d.ndbNum,"ok");render();
+    } else toast("❌ "+(d?.msg||"Erreur"),"err");
+  }catch(e){toast("❌ "+e.message.slice(0,40),"err");}
+}
+
+// ═══════════════════════════════════════════════════════
+// SNCF PANEL
+// ═══════════════════════════════════════════════════════
+function rdSNCF(m){
+  return coll("sncf-"+m.mid,"🚉 Trains en direct",
+    `<div style="font-size:11px;color:var(--txt3);margin-bottom:8px">Réf: ${esc(m.transRef)} <span class="sncf-refresh" onclick="fetchSNCF('${m.mid}','${esc(m.transRef)}')">Actualiser</span></div>
+     <div id="sncf-d-${m.mid}" style="font-size:11px;color:var(--txt2)">Appuie sur Actualiser.</div>`,
+    "SNCF live · Cloudflare Worker");
+}
+async function fetchSNCF(mid,ref){
+  const el=document.getElementById("sncf-d-"+mid);
+  if(!el)return; el.textContent="Chargement…";
+  try{
+    const r=await fetch(SNCF,{signal:AbortSignal.timeout(12000)});
+    const d=await r.json();
+    const arr=d.arrivals||[];
+    const match=arr.filter(a=>{
+      const info=a.display_informations||{};
+      const hs=String(info.headsign||"").trim();
+      const ts=String(info.trip_short_name||"").trim();
+      return hs===ref||ts===ref||hs.endsWith(ref)||ts.endsWith(ref);
+    });
+    if(!match.length){el.textContent="Train "+ref+" pas encore annoncé ("+arr.length+" trains chargés).";return;}
+    el.innerHTML=match.map(a=>{
+      const sdt=a.stop_date_time||{};
+      const base=sdt.base_arrival_date_time||"";
+      const real=sdt.arrival_date_time||base;
+      const bm=base?parseInt(base.slice(9,11))*60+parseInt(base.slice(11,13)):0;
+      const rm=real?parseInt(real.slice(9,11))*60+parseInt(real.slice(11,13)):bm;
+      const diff=rm-bm;
+      const info=a.display_informations||{};
+      const tn=info.headsign||info.trip_short_name||ref;
+      const ts=base?p2(Math.floor(bm/60))+":"+p2(bm%60):"—";
+      const cls=diff<=1?"s-ok":"s-late";
+      const st=diff<=1?"À l'heure":"+"+diff+" min";
+      return`<div class="sncf-row"><div class="sncf-train">${esc(tn)}</div><div class="sncf-t">${ts}</div><span class="sncf-b ${cls}">${st}</span></div>`;
+    }).join("");
+  }catch(e){el.textContent="Erreur: "+e.message;}
+}
+
+// ═══════════════════════════════════════════════════════
+// PMF
+// ═══════════════════════════════════════════════════════
+function rdPMF(m){
+  if(isDone(m)) return`<div class="sec"><div class="sec-body" style="padding:10px 0;text-align:center">
+    <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:10px">✓ Mission clôturée</div>
+    <button class="decomp-link" onclick="goPause()">🌿 Décompresser</button>
+  </div></div>`;
+  if(!pmf||pmf.mid!==m.mid) return`<div class="sec"><div class="sec-body" style="padding:8px 0">
+    <button class="pbtn" onclick="sPMF('${m.mid}')">✅ Clôturer la mission</button>
+  </div></div>`;
+  return`<div class="sec"><div class="sec-body"><div class="pmf">${pmfHTML(m)}</div></div></div>`;
+}
+
+function sPMF(mid){
+  const m=missions.find(x=>x.mid===mid)||{};
+  let end=nowt();
+  if(m.debut&&m.heures){
+    const ph=parseFloat(m.heures);
+    if(ph>0){const[h,mn]=m.debut.split(":").map(Number);const em=h*60+mn+Math.round(ph*60);if(Math.floor(em/60)<24)end=p2(Math.floor(em/60))+":"+p2(em%60);}
+  }
+  pmf={mid,start:m.debut||"",end,tpl:"RAS",rpt:"",rptLoading:false,dMood:0,dEnergy:0,dNote:""};
+  pmfStep=1;render();
+}
+function pmfHTML(m){return pmfStep===1?pmfH1(m):pmfStep===2?pmfH2(m):pmfStep===3?pmfH3(m):pmfStep===4?pmfH4():"";}
+function pmfH1(m){
+  const du=pmf.start&&pmf.end?durS(pmf.start,pmf.end):"";
+  return`<div class="pmf-hdr"><div class="pmf-num">1</div><div class="pmf-title">Heures réelles</div></div>
+  <div class="time-row">
+    <div class="time-b"><div class="time-lbl">Début</div><input class="time-inp" type="time" id="ps" value="${pmf.start||""}" onchange="pmf.start=this.value;uDur()"/></div>
+    <div class="time-arr">→</div>
+    <div class="time-b"><div class="time-lbl">Fin</div><input class="time-inp" type="time" id="pe" value="${pmf.end||""}" onchange="pmf.end=this.value;uDur()"/></div>
+  </div>
+  <div class="dur" id="pd">${du?"⏱ "+du:""}</div>
+  <button class="pbtn" onclick="pmfGo(2)">Suivant → Rapport</button>
+  <span class="pback" onclick="pmf=null;pmfStep=0;render()">Annuler</span>`;
+}
+function pmfH2(m){
+  const acts=pmf.rpt?`<div class="rpt-acts">
+    <button class="rpt-act" onclick="genRpt('${m.mid}')">↻ Régénérer</button>
+    <button class="rpt-act" style="color:var(--green)" onclick="schedRpt('${m.mid}')">📅 Planifier 9h</button>
+  </div>
+  <textarea class="rpt-ed" id="rpt-ed-${m.mid}">${esc(pmf.rpt)}</textarea>
+  <button class="pbtn" onclick="pmfGo(3)">Continuer →</button>`
+  :`<button class="pbtn" onclick="genRpt('${m.mid}')">✨ Générer le rapport</button>`;
+  return`<div class="pmf-hdr"><div class="pmf-num">2</div><div class="pmf-title">Rapport</div></div>
+  <div class="tpl-row">
+    <button class="tpl-btn${pmf.tpl==="RAS"?" on":""}" onclick="pmf.tpl='RAS';pmf.rpt='';render()">📝 RAS</button>
+    <button class="tpl-btn${pmf.tpl==="INCIDENT"?" on":""}" onclick="pmf.tpl='INCIDENT';pmf.rpt='';render()">⚠️ Incident</button>
+    <button class="tpl-btn${pmf.tpl==="ANNULATION"?" on":""}" onclick="pmf.tpl='ANNULATION';pmf.rpt='';render()">🚫 Annulation</button>
+  </div>
+  ${pmf.rptLoading?'<div style="text-align:center;padding:14px;color:var(--txt2)"><span class="spin">↻</span> Rédaction…</div>':pmf.rpt?`<div class="rpt-out">${esc(pmf.rpt)}</div>`+acts:acts}
+  <span class="pback" onclick="pmfStep=1;render()">← Retour</span>`;
+}
+function pmfH3(m){
+  const mv=[1,2,3,4,5];
+  return`<div class="pmf-hdr"><div class="pmf-num">3</div><div class="pmf-title">État de fin</div></div>
+  <div style="font-size:9px;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Humeur</div>
+  <div class="mood-row">${mv.map(v=>`<button class="mood-btn${pmf.dMood===v?" on":""}" onclick="pmf.dMood=${v};render()">${ME[v-1]}</button>`).join("")}</div>
+  <div style="font-size:9px;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Énergie</div>
+  <div class="mood-row">${mv.map(v=>`<button class="mood-btn${pmf.dEnergy===v?" on":""}" onclick="pmf.dEnergy=${v};render()">${EE[v-1]}</button>`).join("")}</div>
+  <textarea class="notes-ta" id="pmf-db" rows="3" placeholder="Note privée…">${esc(pmf.dNote||"")}</textarea>
+  <button class="pbtn" style="margin-top:9px" onclick="pmfFin('${m.mid}')">Clôturer</button>
+  <span class="pback" onclick="pmfStep=2;render()">← Retour</span>`;
+}
+function pmfH4(){
+  return`<div class="done-wrap">
+    <div class="done-ico">✅</div>
+    <div class="done-title">Mission clôturée</div>
+    <div class="done-sub">Heures et journal enregistrés.</div>
+    <button class="decomp-link" onclick="goPause()">🌿 Décompresser</button>
+    <div style="margin-top:10px"><span class="pback" onclick="closeD()">← Retour</span></div>
+  </div>`;
+}
+function pmfGo(step){
+  if(step===2){const s=document.getElementById("ps"),e=document.getElementById("pe");if(s)pmf.start=s.value;if(e)pmf.end=e.value;}
+  pmfStep=step;render();
+}
+function uDur(){
+  const s=document.getElementById("ps"),e=document.getElementById("pe"),d=document.getElementById("pd");
+  if(s&&e&&d){const du=durS(s.value,e.value);d.textContent=du?"⏱ "+du:"";}
+}
+async function genRpt(mid){
+  const m=missions.find(x=>x.mid===mid);if(!m)return;
+  pmf.rptLoading=true;render();
+  if(pmf.tpl==="RAS"){
+    pmf.rpt="Bonjour,\n\nVoici le récap du service "+(m.desc||m.mid)+". Rien à signaler, tout s'est bien déroulé.\n\nMerci et bonne journée,\nJoseph";
+    pmf.rptLoading=false;render();return;
+  }
+  try{
+    const r=await fetch(GAS+"?action=genRapport&id="+encodeURIComponent(mid)+"&template="+encodeURIComponent(pmf.tpl)+"&start="+encodeURIComponent(pmf.start)+"&end="+encodeURIComponent(pmf.end));
+    const d=await r.json();
+    pmf.rpt=d?.text||"Erreur génération.";
+  }catch(e){pmf.rpt="Erreur: "+e.message;}
+  pmf.rptLoading=false;render();
+}
+async function schedRpt(mid){
+  const ed=document.getElementById("rpt-ed-"+mid);
+  const rpt=ed?ed.value:pmf.rpt;
+  const ok=await apiCall("action=scheduleRapport&id="+encodeURIComponent(mid)+"&rapport="+encodeURIComponent(rpt)+"&template="+encodeURIComponent(pmf.tpl));
+  if(ok) toast("📅 Rapport planifié 9h","ok");
+}
+async function pmfFin(mid){
+  const db=document.getElementById("pmf-db");
+  if(db)pmf.dNote=db.value;
+  const s=pmf.start,e=pmf.end;
+  const he=s&&e?(()=>{const[sh,sm]=s.split(":").map(Number),[eh,em]=e.split(":").map(Number);const d=(eh*60+em)-(sh*60+sm);return d>0?(d/60).toFixed(2):""})():"";
+  if(he) await apiCall("action=update&id="+encodeURIComponent(mid)+"&field=heures&value="+encodeURIComponent(he));
+  await apiCall("action=update&id="+encodeURIComponent(mid)+"&field=statut&value=Termin%C3%A9");
+  const m=missions.find(x=>x.mid===mid)||{};
+  // Save journal — no localStorage, direct to API
+  try{
+    const flag=pmf.dMood<=2||pmf.dEnergy<=2?"🔴":pmf.dMood<=3||pmf.dEnergy<=3?"🟡":"🟢";
+    await fetch(GAS+"?action=saveJournal"
+      +"&date="+encodeURIComponent(m.date||tday())
+      +"&mid="+encodeURIComponent(mid)
+      +"&mood="+pmf.dMood+"&energy="+pmf.dEnergy
+      +"&client="+encodeURIComponent(m.client||"")
+      +"&context=Apr%C3%A8s%20mission&kind=Note"
+      +"&note="+encodeURIComponent((pmf.dNote||"").slice(0,500))
+      +"&include="+(flag==="🟢"?"true":"false"),
+      {signal:AbortSignal.timeout(8000)});
+  }catch(e){}
+  const i=missions.findIndex(x=>x.mid===mid);
+  if(i>-1){missions[i].heures=he;missions[i].statut="Terminé";}
+  if(detail?.mid===mid){detail.heures=he;detail.statut="Terminé";}
+  toast("✅ Clôturée","ok");pmfStep=4;render();
+}
+
+// ═══════════════════════════════════════════════════════
+// DECOMPRESSION
+// ═══════════════════════════════════════════════════════
+function goPause(){
+  document.getElementById("content").innerHTML=`<div class="dc">
+    <div class="dc-ey">Décompression</div>
+    <div class="dc-title">Pause rapide</div>
+    <div class="dc-sub">Un espace simple pour relâcher ce qui reste.</div>
+    <textarea class="dc-ta" id="dc-t" rows="6" placeholder="Écrire ici pour toi seulement…"></textarea>
+    <div class="dc-row">
+      <button class="dc-save" onclick="saveDC()">Enregistrer</button>
+      <button class="dc-back" onclick="render()">Retour</button>
+    </div>
+  </div>`;
+}
+async function saveDC(){
+  const ta=document.getElementById("dc-t");
+  const txt=ta?.value.trim();
+  if(txt){
+    try{
+      await fetch(GAS+"?action=saveJournal"
+        +"&date="+encodeURIComponent(tday())
+        +"&mid="+encodeURIComponent(detail?.mid||"")
+        +"&context=D%C3%A9compression&kind=Note&mood=0&energy=0"
+        +"&client="+encodeURIComponent(detail?.client||"")
+        +"&note="+encodeURIComponent(txt.slice(0,500))+"&include=false",
+        {signal:AbortSignal.timeout(8000)});
+    }catch(e){}
+  }
+  toast("✅ Enregistrée","ok");render();
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+let _tt=null;
+function toast(msg,type){
+  const el=document.getElementById("toast");
+  el.textContent=msg;
+  el.className="show"+(type?" "+type:"");
+  if(_tt)clearTimeout(_tt);
+  _tt=setTimeout(()=>{el.classList.remove("show");},3200);
+}
+
+// ═══════════════════════════════════════════════════════
+// WEATHER
+// ═══════════════════════════════════════════════════════
+async function loadWx(){
+  try{
+    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude=45.695&longitude=4.944&current_weather=true&forecast_days=1",{signal:AbortSignal.timeout(6000)});
+    const d=await r.json();
+    const cw=d.current_weather;if(!cw)return;
+    const code=cw.weathercode;
+    const ico=code<=1?"☀️":code<=3?"⛅️":code<=50?"🌦":code<=70?"🌧":"❄️";
+    document.getElementById("hdr-wx").innerHTML=`${ico} ${Math.round(cw.temperature)}°`;
+  }catch(e){}
+}
 </script>
 </body>
 </html>
