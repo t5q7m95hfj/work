@@ -54,8 +54,8 @@ strong{font-weight:600;}
 .brand-name{font-weight:700;font-size:15px;letter-spacing:.2px;color:var(--t0);}
 .brand-sub{font-size:12px;color:var(--t2);margin-top:0px;}
 .hdr-r{display:flex;align-items:center;gap:8px;}
-.clock{font-family:var(--fm);font-size:18px;color:var(--t0);font-weight:400;letter-spacing:.02em;}
-.hdr-wx{font-size:12px;color:var(--t2);}
+.clock{font-size:17px;color:var(--t0);font-weight:600;letter-spacing:.01em;}
+.hdr-wx{font-size:13px;color:var(--t2);}
 .hbtn{width:32px;height:32px;border-radius:8px;background:var(--s2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t1);}
 
 /* ── NAV ── */
@@ -745,28 +745,32 @@ function rdSitBoard(){
 
   // Alerts
   if(alerts.length){
-    h+=`<div class="alerts">`+alerts.map(a=>`<div class="alert ${a.sev}" onclick="${a.action?"("+a.action.toString()+")()":""}">
-      <div class="alert-ico">${a.ico}</div>
-      <div class="alert-body">
-        <div class="alert-title">${a.title}</div>
-        ${a.sub?`<div class="alert-sub">${esc(a.sub)}</div>`:""}
-      </div>
-      ${a.action?'<div class="alert-arr">›</div>':""}
-    </div>`).join("")+`</div>`;
+    // Store actions in a map, trigger by index
+    window._alertActions=alerts.map(a=>a.action||null);
+    h+='<div class="alerts">'+alerts.map((a,i)=>{
+      const onclick=a.action?'onclick="_alertActions['+i+']&&_alertActions['+i+']()"':'';
+      const sub=a.sub?'<div class="alert-sub">'+esc(a.sub)+'</div>':"";
+      const arr=a.action?'<div class="alert-arr">›</div>':"";
+      return'<div class="alert '+a.sev+'" '+onclick+'>'
+        +'<div class="alert-ico">'+a.ico+'</div>'
+        +'<div class="alert-body"><div class="alert-title">'+a.title+'</div>'+sub+'</div>'
+        +arr+'</div>';
+    }).join("")+'</div>';
   }
 
-  // Earnings card + missions card
-  h+=`<div class="pulse-row">
-    <div class="pulse-card">
-      <div class="pulse-label">Net du mois</div>
-      <div class="pulse-val gold">${tN?tN.toFixed(0)+"€":"—"}</div>
-      <div class="pulse-sub">${tRec>0?tRec.toFixed(0)+"€ reçu":"En attente"}</div>
-      <div class="pulse-bar-wrap"><div class="pulse-bar" style="width:${tN&&tRec?Math.min(100,Math.round(tRec/tN*100)):0}%;background:var(--gold)"></div></div>
-    </div>
+  // Single missions card — active only, showing done progress
+  const donePct=mms.length?Math.round(doneCount/mms.length*100):0;
+  h+=`<div class="pulse-row" style="grid-template-columns:1fr 1fr;">
     <div class="pulse-card">
       <div class="pulse-label">Missions · ${MOL[now.getMonth()].slice(0,3)}</div>
       <div class="pulse-val">${mms.length}</div>
-      <div class="pulse-sub">${doneCount} terminée${doneCount>1?"s":""} · j${now.getDate()}/${daysInMonth}</div>
+      <div class="pulse-sub">${doneCount} terminée${doneCount>1?"s":""}</div>
+      <div class="pulse-bar-wrap"><div class="pulse-bar" style="width:${donePct}%;background:var(--grn)"></div></div>
+    </div>
+    <div class="pulse-card">
+      <div class="pulse-label">Jour</div>
+      <div class="pulse-val">${now.getDate()}<span style="font-size:15px;color:var(--t2);font-weight:400">/${daysInMonth}</span></div>
+      <div class="pulse-sub">${MOL[now.getMonth()]}</div>
       <div class="pulse-bar-wrap"><div class="pulse-bar" style="width:${dayPct}%;background:var(--blue)"></div></div>
     </div>
   </div>`;
@@ -815,7 +819,7 @@ function rdToday(){
   const t2=missions.filter(m=>m.date===tm&&!isCxl(m)&&!isEchg(m)).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
   const up=missions.filter(m=>m.date>tm&&!isCxl(m)&&!isEchg(m)).sort((a,b)=>a.date.localeCompare(b.date));
   if(t1.length) h+=`<div class="slbl">Aujourd'hui</div>`+t1.map(m=>mcard(m,false)).join("");
-  else if(!rdSitBoard().includes("tl-track")) h+=`<div class="empty"><div class="emico">☀️</div><div class="emtitle">Pas de mission aujourd'hui</div>${t2.length?`<div class="emsub">${t2.length} demain</div>`:""}</div>`;
+  else if(!rdSitBoard().includes("tl-track")) h+='<div class="empty"><div class="emico">☀️</div><div class="emtitle">Pas de mission aujourd\'hui</div>'+(t2.length?'<div class="emsub">'+t2.length+' demain</div>':"")+'</div>';
   if(t2.length) h+=`<div class="slbl">Demain · ${fds(tm).toUpperCase()}</div>`+t2.map(m=>mcard(m,true)).join("");
   if(up.length){
     h+=`<div class="slbl">À venir</div><div class="uplist">`;
@@ -884,108 +888,55 @@ function rdAdmin(){
   const tRec =mms.reduce((s,m)=>s+m.montant,0);
   const tOwed=Math.max(0,tN-tRec);
 
-  // Earnings by client
+  // Earnings by client — with mission list for collapsible
   const byClient={};
   mms.forEach(m=>{
     const k=getMeta(m.client);
-    if(!byClient[k.tag])byClient[k.tag]={val:0,hex:k.hex};
+    if(!byClient[k.tag])byClient[k.tag]={val:0,hex:k.hex,count:0,missions:[]};
     byClient[k.tag].val+=m.sousTotal;
+    byClient[k.tag].count++;
+    byClient[k.tag].missions.push(m);
   });
   const maxClient=Math.max(...Object.values(byClient).map(c=>c.val),1);
 
-  // Overdue / pending
-  const overduePayment=mms.filter(m=>{
-    if(!isDone(m)||m.montant>0.01)return false;
-    const d=new Date(m.date+"T12:00:00");
-    return(now-d)/(1000*86400)>7;
-  });
+  // Pending items (kept for alert dot logic, not displayed in admin)
   const pendingFac=mms.filter(m=>isDone(m)&&!m.facture&&(m.statut||"").toLowerCase()==="terminé");
   const toSend=mms.filter(m=>(m.statut||"").toLowerCase().includes("générée"));
 
   let h=`<div class="slbl">Finances · ${MOL[now.getMonth()].toUpperCase()}</div>`;
 
-  // Main finance card
+  // Main finance card — net at top, brut breakdown below, no reçu
   h+=`<div class="fin-sum">
     <div class="fin-top">
-      <div class="fin-label">Net perçu · ${MOL[now.getMonth()]}</div>
+      <div class="fin-label">Net estimé · ${MOL[now.getMonth()]}</div>
       <div class="fin-top-row">
         <div>
-          <div class="fin-net">${tRec>0?tRec.toFixed(0)+"€":"0€"}</div>
-          <div class="fin-net-sub">sur ${tN>0?tN.toFixed(0)+"€ net estimé":"—"}</div>
+          <div class="fin-net">${tN>0?tN.toFixed(0)+"€":"—"}</div>
         </div>
-        ${tN>0?`<div class="fin-month-pct">${Math.round(tRec/tN*100)}%<br><span style="font-size:10px;color:var(--t3)">perçu</span></div>`:""}
       </div>
     </div>
     <div class="fin-rows">
       <div class="frow"><span class="flab">Sous-total brut</span><span class="fval">${fmtE(tST)}</span></div>
       ${tDeb?`<div class="frow"><span class="flab" style="padding-left:10px;font-size:12px">dont débours</span><span class="fval dim">${fmtE(tDeb)}</span></div>`:""}
-      <div class="frow"><span class="flab b">Total net (feuille)</span><span class="fval g">${fmtE(tN)}</span></div>
-      <div class="frow"><span class="flab">Reçu</span><span class="fval ${tRec>=tN&&tN>0?"g":"a"}">${fmtE(tRec)}</span></div>
-      ${tOwed>0.01?`<div class="frow"><span class="flab b">Reste à recevoir</span><span class="fval a">${fmtE(tOwed)}</span></div>`:""}
     </div>
-    ${Object.keys(byClient).length?`<div style="padding:8px 15px 4px;border-top:1px solid var(--bdr)"><div style="font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Par client</div>
-    <div class="client-bars">${Object.entries(byClient).map(([tag,{val,hex}])=>`
-      <div class="cbar-row">
-        <div class="cbar-dot" style="background:${hex}"></div>
-        <div class="cbar-name">${tag}</div>
-        <div class="cbar-track"><div class="cbar-fill" style="width:${Math.round(val/maxClient*100)}%;background:${hex}"></div></div>
-        <div class="cbar-val">${val.toFixed(0)}€</div>
-      </div>`).join("")}</div></div>`:""}
   </div>`;
 
-  // Action items
-  if(overduePayment.length||pendingFac.length||toSend.length){
-    h+=`<div class="slbl">À faire</div>`;
-    if(overduePayment.length){
-      h+=`<div class="fcrd"><div class="ftitle" style="color:var(--red)">💸 Paiements en retard (${overduePayment.length})</div><div class="fbody">`;
-      overduePayment.forEach(m=>{
-        const age=Math.round((now-new Date(m.date+"T12:00:00"))/(1000*86400));
-        h+=`<div class="fmr" onclick="openD('${m.mid}')">
-          <div class="fmrl"><div class="fmrd">${getMeta(m.client).tag} · ${esc(m.type||"—")}</div><div class="fmrm">${fds(m.date)} · <span style="color:var(--red)">+${age}j</span></div></div>
-          <div class="fmrr"><div class="fmrb" style="color:var(--amb)">${fmtE(m.totalNet)}</div></div>
-        </div>`;
-      });
-      h+="</div></div>";
-    }
-    if(pendingFac.length){
-      h+=`<div class="fcrd"><div class="ftitle" style="color:var(--amb)">🧾 Factures à générer (${pendingFac.length})</div><div class="fbody">`;
-      pendingFac.forEach(m=>{
-        h+=`<div class="fmr" onclick="openD('${m.mid}');genFacture('${m.mid}')">
-          <div class="fmrl"><div class="fmrd">${getMeta(m.client).tag} · ${esc(m.type||"—")}</div><div class="fmrm">${fds(m.date)}</div></div>
-          <div class="fmrr"><div class="fmrb">${fmtE(m.sousTotal)}</div></div>
-        </div>`;
-      });
-      h+="</div></div>";
-    }
-    if(toSend.length){
-      h+=`<div class="fcrd"><div class="ftitle" style="color:var(--blue)">📤 À envoyer sur extranet (${toSend.length})</div><div class="fbody">`;
-      toSend.forEach(m=>{
-        h+=`<div class="fmr" onclick="saveF('${m.mid}','statut','Fac. envoyée')">
-          <div class="fmrl"><div class="fmrd">${getMeta(m.client).tag} · ${esc(m.type||"—")} ${esc(m.facture||"")}</div><div class="fmrm">${fds(m.date)}</div></div>
-          <div class="fmrr"><div class="fmrb">${fmtE(m.totalNet)}</div></div>
-        </div>`;
-      });
-      h+="</div></div>";
-    }
-  }
-
-  // Full mission list
-  if(mms.length){
-    h+=`<div class="fcrd"><div class="ftitle">Toutes les missions<span style="font-size:10px;color:var(--t3);font-weight:400">${mms.length} missions</span></div><div class="fbody">`;
-    mms.forEach(m=>{
-      const owed=m.totalNet>0.01&&m.montant<0.01&&isDone(m);
-      h+=`<div class="fmr" onclick="openD('${m.mid}')">
-        <div class="fmrl">
-          <div class="fmrd">${getMeta(m.client).tag} · ${esc(m.type||"—")}${m.extRef?` <span style="font-size:11px;color:var(--t3)">· ${esc(m.extRef)}</span>`:""}</div>
-          <div class="fmrm">${fds(m.date)} ${badge(m)} ${owed?'<span class="owed-tag">En attente</span>':""}</div>
-        </div>
-        <div class="fmrr">
-          <div class="fmrb">${m.sousTotal>0?m.sousTotal.toFixed(0)+"€":"—"}</div>
-          ${m.totalNet>0?`<div class="fmrn">net ${m.totalNet.toFixed(0)}€</div>`:""}
-        </div>
-      </div>`;
+  // Per-client collapsible breakdown — avoid nested backticks
+  if(Object.keys(byClient).length){
+    Object.entries(byClient).forEach(([tag,cl])=>{
+      const mrows=cl.missions.map(m=>{
+        const desc=esc(m.type||"—")+(m.sens&&m.sens!=="—"?" · "+esc(m.sens):"")+(m.extRef?" · "+esc(m.extRef):"");
+        const val=m.sousTotal>0?m.sousTotal.toFixed(0)+"€":"—";
+        const net=m.totalNet>0?'<div class="fmrn">net '+m.totalNet.toFixed(0)+'€</div>':"";
+        return'<div class="fmr" onclick="openD(\''+m.mid+'\')">'
+          +'<div class="fmrl"><div class="fmrd" style="font-size:13px">'+desc+'</div>'
+          +'<div class="fmrm">'+fds(m.date)+' '+badge(m)+'</div></div>'
+          +'<div class="fmrr"><div class="fmrb">'+val+'</div>'+net+'</div>'
+          +'</div>';
+      }).join("");
+      const body='<div style="padding:0">'+mrows+'</div>';
+      h+=mkColl("cl-"+tag,tag+" · "+cl.val.toFixed(0)+"€",cl.count+" mission"+(cl.count>1?"s":""),body);
     });
-    h+="</div></div>";
   }
 
   // Links & references
@@ -1077,6 +1028,15 @@ function tColl(id){
   const b=document.getElementById(id),c=document.getElementById("chev-"+id);
   if(!b)return;const o=b.classList.toggle("open");if(c)c.classList.toggle("open",o);
 }
+// Section card that is collapsible (open by default)
+function mkCollSec(id,title,body){
+  return`<div class="sec" style="margin-bottom:8px">
+    <div class="sectitle" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="tColl('cs-${id}')">
+      <span>${title}</span><span class="collchev open" id="chev-cs-${id}">▾</span>
+    </div>
+    <div class="collbody open" id="cs-${id}" style="padding:2px 14px 10px">${body}</div>
+  </div>`;
+}
 
 // ══ DETAIL ══
 function rdDetail(m){
@@ -1108,21 +1068,9 @@ function rdDetail(m){
     return s;
   });
 
-  // Contacts
-  const clist=[];
-  if(m.ops["Contact Client"])    clist.push({r:"Contact client",n:m.ops["Contact Client"],p:m.ops["Client Phone"]||""});
-  if(m.ops["Cruise Manager"])    clist.push({r:"Cruise Manager",n:m.ops["Cruise Manager"],p:m.ops["Cruise Phone"]||""});
-  if(m.ops["Chauffeur"])         clist.push({r:"Chauffeur",n:m.ops["Chauffeur"],p:m.ops["Tél Chauffeur"]||""});
-  if(m.ops["Colleague"])         clist.push({r:"Collègue"+(m.ops["Colleague Role"]?" · "+m.ops["Colleague Role"]:""),n:m.ops["Colleague"],p:m.ops["Colleague Phone"]||""});
-  if(m.ops["Emergency Contact"]) clist.push({r:"Urgence",n:m.ops["Emergency Contact"],p:""});
-  if(clist.length) h+=sec("Contacts",()=>clist.map(c=>`<div class="cb">
-    <div><div class="cbrole">${esc(c.r)}</div><div class="cbname">${esc(c.n)}</div>${c.p?`<div class="cbph" onclick="copyText('${esc(c.p)}')" style="cursor:pointer">${esc(c.p)}</div>`:""}</div>
-    ${c.p?`<a href="tel:${esc(c.p)}" class="callbtn" onclick="event.stopPropagation()">📞 Appeler</a>`:""}
-  </div>`).join(""));
-
-  // Pax
+  // Pax FIRST (before contacts)
   if(m.paxRaw||m.paxCount){
-    h+=sec(`Passagers${m.paxCount?" ("+esc(m.paxCount)+")":""}`,()=>{
+    const paxBody=()=>{
       if(!m.paxRaw)return`<div style="font-size:14px;color:var(--t2);padding:6px 0">${esc(m.paxCount)} pax — liste non disponible</div>`;
       const pl=m.paxRaw.split("\n").map(s=>s.trim()).filter(Boolean);
       const st=paxState[m.mid]||{};
@@ -1134,35 +1082,51 @@ function rdDetail(m){
         <div class="paxbox${on?" ck":""}" onclick="tPax('${m.mid}',${i},${!on})">${on?"✓":""}</div>
         <div class="paxname${on?" ck":""}">${esc(p)}</div>
       </div>`;}).join("")}</div>`;
-    });
+    };
+    h+=mkCollSec(`pax-${m.mid}`,`Passagers${m.paxCount?" ("+esc(m.paxCount)+")":""}`,paxBody());
   }
 
-  // Ops summary
-  if(m.opsSum) h+=sec("Résumé opérationnel",()=>`<div style="font-size:14px;color:var(--t1);line-height:1.7;padding:6px 0">${esc(m.opsSum)}</div>`);
-
-  // Financial snapshot on detail
-  if(m.sousTotal>0||m.totalNet>0){
-    h+=sec("Facturation",()=>{
-      let s="";
-      if(m.base)    s+=ir("Base HT",fmtE(m.base));
-      if(m.hs)      s+=ir("Heures sup.",fmtE(m.hs));
-      if(m.supp)    s+=ir("Supp.",fmtE(m.supp));
-      if(m.sousTotal) s+=ir("Sous-total",`<strong>${fmtE(m.sousTotal)}</strong>`);
-      if(m.debours) s+=ir("Débours",fmtE(m.debours));
-      if(m.totalNet) s+=ir("Net estimé",`<strong style="color:var(--grn)">${fmtE(m.totalNet)}</strong>`);
-      if(m.montant>0) s+=ir("Reçu",`<span style="color:var(--grn)">${fmtE(m.montant)}</span>`);
-      if(m.facture)  s+=ir("Facture",esc(m.facture));
-      // Invoice actions inline
-      const st=(m.statut||"").toLowerCase();
-      if(st==="terminé"&&!m.facture) s+=`<div style="padding:8px 0"><button class="invbtn" onclick="event.stopPropagation();genFacture('${m.mid}')"><span class="invico">🧾</span><span style="flex:1;font-weight:500">Générer la facture</span><span class="invr">PDF → Drive</span></button></div>`;
-      if(st.includes("générée")) s+=`<div style="padding:4px 0"><button class="invbtn" style="border-color:rgba(240,144,48,.3);color:var(--amb)" onclick="event.stopPropagation();saveF('${m.mid}','statut','Fac. envoyée')"><span class="invico">📤</span><span style="flex:1;font-weight:500">Marquer comme envoyée</span></button></div>`;
-      if(m.debours>0.01&&!m.ndb) s+=`<div style="padding:4px 0"><button class="invbtn" onclick="event.stopPropagation();genDebours('${m.mid}')"><span class="invico">📄</span><span style="flex:1;font-weight:500">Note de débours</span><span class="invr">${fmtE(m.debours)}</span></button></div>`;
-      return s;
-    });
+  // Contacts — Cruise Manager first, WhatsApp button, Urgence gets call button too
+  const clist=[];
+  if(m.ops["Cruise Manager"])    clist.push({r:"Cruise Manager",n:m.ops["Cruise Manager"],p:m.ops["Cruise Phone"]||"",wa:true});
+  if(m.ops["Contact Client"])    clist.push({r:"Contact client",n:m.ops["Contact Client"],p:m.ops["Client Phone"]||""});
+  if(m.ops["Chauffeur"])         clist.push({r:"Chauffeur",n:m.ops["Chauffeur"],p:m.ops["Tél Chauffeur"]||""});
+  if(m.ops["Colleague"])         clist.push({r:"Collègue"+(m.ops["Colleague Role"]?" · "+m.ops["Colleague Role"]:""),n:m.ops["Colleague"],p:m.ops["Colleague Phone"]||""});
+  if(m.ops["Emergency Contact"]) clist.push({r:"Urgence",n:m.ops["Emergency Contact"],p:""});
+  if(clist.length){
+    const contactBody=clist.map(c=>{
+      const rawPhone=c.p?c.p.replace(/\s/g,""):"";
+      // WhatsApp link: strip leading 00 or +, prepend +
+      const waNum=rawPhone.replace(/^00/,"+").replace(/^\+?/,"+");
+      const waLink=`https://wa.me/${waNum.replace(/\D/g,"")}`;
+      const callBtn=c.p?`<a href="tel:${esc(rawPhone)}" class="callbtn" onclick="event.stopPropagation()">📞</a>`:"";
+      const waBtn=c.wa&&c.p?`<a href="${waLink}" target="_blank" class="callbtn" style="background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.25);color:#25d366;margin-right:5px" onclick="event.stopPropagation()">💬</a>`:"";
+      // Urgence: show call button even without stored number (it's in the name field sometimes)
+      const urgCall=c.r==="Urgence"&&c.n?`<a href="tel:${esc(c.n.replace(/\s/g,""))}" class="callbtn" onclick="event.stopPropagation()">📞</a>`:"";
+      return`<div class="cb">
+        <div><div class="cbrole">${esc(c.r)}</div><div class="cbname">${esc(c.n)}</div>${c.p?`<div class="cbph" onclick="copyText('${esc(c.p)}')" style="cursor:pointer">${esc(c.p)}</div>`:""}</div>
+        <div style="display:flex;gap:5px;flex-shrink:0">${waBtn}${c.r==="Urgence"?urgCall:callBtn}</div>
+      </div>`;
+    }).join("");
+    h+=mkCollSec(`cont-${m.mid}`,"Contacts",contactBody);
   }
 
-  // SNCF
-  if((m.type||"").toLowerCase()==="gare"&&m.transRef) h+=rdSNCF(m);
+  // Transport tracker — SNCF for Gare, FlightAware link for plane refs, else just show ref
+  if(m.transRef){
+    const ttype=(m.type||"").toLowerCase();
+    if(ttype==="gare") h+=rdSNCF(m);
+    else if(ttype==="transfer"||ttype==="aéroport"){
+      // If ref looks like a flight (2 letters + digits)
+      const isFlight=/^[A-Z]{2}\d+$/i.test(m.transRef.replace(/\s/g,""));
+      if(isFlight){
+        h+=mkColl("trans-"+m.mid,"✈ Suivi vol","FlightAware",
+          `<div style="font-size:13px;color:var(--t1);margin-bottom:10px">Vol : <strong>${esc(m.transRef)}</strong></div>
+           <a href="https://www.flightaware.com/live/flight/${esc(m.transRef.replace(/\s/g,""))}" target="_blank" class="invbtn" onclick="event.stopPropagation()"><span class="invico">✈</span><span style="flex:1">Voir sur FlightAware</span><span class="invr">↗</span></a>
+           <a href="https://www.radarbox.com/flight/${esc(m.transRef.replace(/\s/g,""))}" target="_blank" class="invbtn" onclick="event.stopPropagation()"><span class="invico">📡</span><span style="flex:1">Voir sur RadarBox</span><span class="invr">↗</span></a>`
+        );
+      }
+    }
+  }
 
   // Edit
   h+=sec("Modifier",()=>{
@@ -1210,6 +1174,27 @@ function rdDetail(m){
     if(m.ops["Raw Notes"]) cx+=mkColl("n-"+m.mid,"Notes opérationnelles","",`<div style="font-size:13px;color:var(--t2);white-space:pre-wrap;line-height:1.6">${esc(m.ops["Raw Notes"])}</div>`);
     if(m.ops["Source Email Msg"]) cx+=mkColl("e-"+m.mid,"Email source",m.ops["Source Email"]||"",`<div style="font-size:11px;color:var(--t3);white-space:pre-wrap;line-height:1.6;font-family:var(--fm)">${esc(m.ops["Source Email Msg"].slice(0,1200))}</div>`);
     cx+="</div>";h+=cx;
+  }
+
+  // Facturation — LAST
+  if(m.sousTotal>0||m.totalNet>0){
+    const facBody=()=>{
+      let s="";
+      if(m.base)      s+=ir("Base HT",fmtE(m.base));
+      if(m.hs)        s+=ir("Heures sup.",fmtE(m.hs));
+      if(m.supp)      s+=ir("Supp.",fmtE(m.supp));
+      if(m.sousTotal) s+=ir("Sous-total",`<strong>${fmtE(m.sousTotal)}</strong>`);
+      if(m.debours)   s+=ir("Débours",fmtE(m.debours));
+      if(m.totalNet)  s+=ir("Net estimé",`<strong style="color:var(--grn)">${fmtE(m.totalNet)}</strong>`);
+      if(m.montant>0) s+=ir("Reçu",`<span style="color:var(--grn)">${fmtE(m.montant)}</span>`);
+      if(m.facture)   s+=ir("Facture",esc(m.facture));
+      const st2=(m.statut||"").toLowerCase();
+      if(st2==="terminé"&&!m.facture) s+=`<div style="padding:8px 0"><button class="invbtn" onclick="event.stopPropagation();genFacture('${m.mid}')"><span class="invico">🧾</span><span style="flex:1;font-weight:500">Générer la facture</span><span class="invr">PDF → Drive</span></button></div>`;
+      if(st2.includes("générée")) s+=`<div style="padding:4px 0"><button class="invbtn" style="border-color:rgba(240,144,48,.3);color:var(--amb)" onclick="event.stopPropagation();saveF('${m.mid}','statut','Fac. envoyée')"><span class="invico">📤</span><span style="flex:1;font-weight:500">Marquer comme envoyée</span></button></div>`;
+      if(m.debours>0.01&&!m.ndb) s+=`<div style="padding:4px 0"><button class="invbtn" onclick="event.stopPropagation();genDebours('${m.mid}')"><span class="invico">📄</span><span style="flex:1;font-weight:500">Note de débours</span><span class="invr">${fmtE(m.debours)}</span></button></div>`;
+      return s;
+    };
+    h+=mkCollSec(`fac-${m.mid}`,"Facturation",facBody());
   }
 
   h+=rdPMF(m);
@@ -1337,7 +1322,7 @@ function pmfH1(m){
 function pmfH2(m){
   const acts=pmf.rpt?`<div class="rptacts">
     <button class="rptact" onclick="genRpt('${m.mid}')">↻ Régénérer</button>
-    <button class="rptact" style="color:var(--grn)" onclick="schedRpt('${m.mid}')">📅 Planifier 9h</button>
+    <button class="rptact" style="color:var(--grn)" onclick="schedRpt('${m.mid}')">📅 Planifier 9h → Gmail</button>
   </div><textarea class="rptedit" id="rpt-ed-${m.mid}">${esc(pmf.rpt)}</textarea>
   <button class="pbtn" onclick="pmfGo(3)">Continuer →</button>`
   :`<button class="pbtn" onclick="genRpt('${m.mid}')">✨ Générer le rapport</button>`;
@@ -1345,10 +1330,12 @@ function pmfH2(m){
   <div class="tplrow">
     <button class="tplbtn${pmf.tpl==="RAS"?" on":""}" onclick="pmf.tpl='RAS';pmf.rpt='';render()">📝 RAS</button>
     <button class="tplbtn${pmf.tpl==="INCIDENT"?" on":""}" onclick="pmf.tpl='INCIDENT';pmf.rpt='';render()">⚠️ Incident</button>
-    <button class="tplbtn${pmf.tpl==="ANNULATION"?" on":""}" onclick="pmf.tpl='ANNULATION';pmf.rpt='';render()">🚫 Annulation</button>
   </div>
   ${pmf.rptLoading?'<div style="text-align:center;padding:16px;color:var(--t2)"><span class="spin">↻</span> Rédaction…</div>':pmf.rpt?`<div class="rptout">${esc(pmf.rpt)}</div>`+acts:acts}
-  <span class="pback" onclick="pmfStep=1;render()">← Retour</span>`;
+  <div style="display:flex;gap:8px;margin-top:4px">
+    <span class="pback" style="flex:1" onclick="pmfStep=1;render()">← Retour</span>
+    <span class="pback" style="flex:1;color:var(--t3)" onclick="pmf.rpt='IGNORE';pmfGo(3)">Ignorer le rapport</span>
+  </div>`;
 }
 function pmfH3(m){
   const mv=[1,2,3,4,5];
@@ -1372,6 +1359,7 @@ function pmfH4(){
 }
 function pmfGo(step){
   if(step===2){const s=document.getElementById("ps"),e=document.getElementById("pe");if(s)pmf.start=s.value;if(e)pmf.end=e.value;}
+  if(step===3&&pmf.rpt==="IGNORE"){pmfStep=3;render();return;}
   pmfStep=step;render();
 }
 function uDur(){
@@ -1382,9 +1370,37 @@ async function genRpt(mid){
   const m=missions.find(x=>x.mid===mid);if(!m)return;
   pmf.rptLoading=true;render();
   if(pmf.tpl==="RAS"){
-    pmf.rpt="Bonjour,\n\nVoici le récap du service "+(m.desc||m.mid)+". Rien à signaler, tout s'est bien déroulé.\n\nMerci et bonne journée,\nJoseph";
+    const desc=m.desc||m.type||m.mid;
+    const loc=m.endroit?m.endroit.split(/[,→]/)[0].trim():"";
+    pmf.rpt=`Bonjour,\n\nVoici le récap du service${desc?" "+desc:""}${loc?" — "+loc:""}.\n\nRien à signaler, tout s'est bien déroulé.\n\nMerci et bonne journée,\nJoseph`;
     pmf.rptLoading=false;render();return;
   }
+  if(pmf.tpl==="INCIDENT"){
+    // Use Anthropic API directly — avoids GAS/Gemini timeouts
+    try{
+      const ctx=[
+        m.type&&`Type: ${m.type}`,
+        m.sens&&`Sens: ${m.sens}`,
+        m.desc&&`Description: ${m.desc}`,
+        m.endroit&&`Lieu: ${m.endroit}`,
+        m.debut&&`Départ: ${m.debut}`,
+        pmf.start&&pmf.end&&`Heures réelles: ${pmf.start}–${pmf.end}`,
+        m.client&&`Client: ${m.client}`,
+        m.paxCount&&`Passagers: ${m.paxCount}`,
+        m.notes&&`Notes: ${m.notes}`,
+      ].filter(Boolean).join("\n");
+      const prompt=`Tu es Joseph Bonnet, guide touristique indépendant à Lyon. Rédige un e-mail de rapport d'incident professionnel en français pour la mission suivante. Décris l'incident de façon neutre et factuelle, propose des éléments de résolution si pertinent. Commence par "Bonjour," et termine par "Cordialement,\nJoseph".\n\nMission:\n${ctx}\n\nRédige uniquement le corps de l'e-mail, sans objet.`;
+      const resp=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:600,messages:[{role:"user",content:prompt}]})
+      });
+      const data=await resp.json();
+      pmf.rpt=data?.content?.[0]?.text||"Erreur de génération.";
+    }catch(e){pmf.rpt="Erreur: "+e.message;}
+    pmf.rptLoading=false;render();return;
+  }
+  // Fallback to GAS for other templates
   try{
     const r=await fetch(GAS+"?action=genRapport&id="+encodeURIComponent(mid)+"&template="+encodeURIComponent(pmf.tpl)+"&start="+encodeURIComponent(pmf.start)+"&end="+encodeURIComponent(pmf.end),{signal:AbortSignal.timeout(35000)});
     const d=await r.json();pmf.rpt=d?.text||"Erreur génération.";
@@ -1393,10 +1409,13 @@ async function genRpt(mid){
 }
 async function schedRpt(mid){
   const ed=document.getElementById("rpt-ed-"+mid);const rpt=ed?ed.value:pmf.rpt;
+  if(rpt==="IGNORE"||!rpt){toast("Rapport ignoré","");pmfGo(3);return;}
+  toast("⏳ Envoi vers Gmail planifié…","");
   try{
     const r=await fetch(GAS+"?action=scheduleRapport&id="+encodeURIComponent(mid)+"&rapport="+encodeURIComponent(rpt)+"&template="+encodeURIComponent(pmf.tpl),{signal:AbortSignal.timeout(25000)});
     const d=await r.json();
-    if(d?.ok)toast("📅 Rapport planifié 9h","ok");else toast("❌ "+(d?.msg||"Erreur"),"err");
+    if(d?.ok)toast("📅 Brouillon planifié pour 9h — visible dans Gmail Scheduled","ok");
+    else toast("❌ "+(d?.msg||"Erreur"),"err");
   }catch(e){toast("❌ "+e.message.slice(0,40),"err");}
 }
 async function pmfFin(mid){
