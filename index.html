@@ -599,19 +599,6 @@ function buildAlerts(){
   const alerts=[];
   const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm&&!isCxl(m)&&!isEchg(m));
 
-  // Overdue invoices: done > 7 days ago, no payment
-  const overduePayment=mms.filter(m=>{
-    if(!isDone(m)||m.montant>0.01)return false;
-    const d=new Date(m.date+"T12:00:00");
-    return(now-d)/(1000*86400)>7;
-  });
-  if(overduePayment.length)alerts.push({
-    sev:"danger",ico:"💸",
-    title:overduePayment.length+" paiement"+(overduePayment.length>1?"s":"")+" en retard",
-    sub:"Terminé depuis +7 jours, non payé",
-    action:()=>go('admin')
-  });
-
   // Pending invoice generation
   const pendingFac=mms.filter(m=>isDone(m)&&!m.facture&&(m.statut||"").toLowerCase()==="terminé");
   if(pendingFac.length)alerts.push({
@@ -733,14 +720,8 @@ function rdSitBoard(){
   const now=new Date(),cm=p2(now.getMonth()+1),t=tday();
   const alerts=buildAlerts();
   const mms=missions.filter(m=>m.date&&m.date.slice(5,7)===cm&&!isCxl(m)&&!isEchg(m));
-  const tN=mms.reduce((s,m)=>s+m.totalNet,0);
-  const tRec=mms.reduce((s,m)=>s+m.montant,0);
   const doneCount=mms.filter(isDone).length;
-
-  // Month day progress
   const daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
-  const dayPct=Math.round((now.getDate()/daysInMonth)*100);
-
   let h="";
 
   // Alerts
@@ -758,22 +739,14 @@ function rdSitBoard(){
     }).join("")+'</div>';
   }
 
-  // Single missions card — active only, showing done progress
+  // Single compact missions card
   const donePct=mms.length?Math.round(doneCount/mms.length*100):0;
-  h+=`<div class="pulse-row" style="grid-template-columns:1fr 1fr;">
-    <div class="pulse-card">
-      <div class="pulse-label">Missions · ${MOL[now.getMonth()].slice(0,3)}</div>
-      <div class="pulse-val">${mms.length}</div>
-      <div class="pulse-sub">${doneCount} terminée${doneCount>1?"s":""}</div>
-      <div class="pulse-bar-wrap"><div class="pulse-bar" style="width:${donePct}%;background:var(--grn)"></div></div>
-    </div>
-    <div class="pulse-card">
-      <div class="pulse-label">Jour</div>
-      <div class="pulse-val">${now.getDate()}<span style="font-size:15px;color:var(--t2);font-weight:400">/${daysInMonth}</span></div>
-      <div class="pulse-sub">${MOL[now.getMonth()]}</div>
-      <div class="pulse-bar-wrap"><div class="pulse-bar" style="width:${dayPct}%;background:var(--blue)"></div></div>
-    </div>
-  </div>`;
+  h+='<div class="pulse-card" style="margin-bottom:7px">'
+    +'<div class="pulse-label">'+MOL[now.getMonth()]+' · '+now.getFullYear()+'</div>'
+    +'<div class="pulse-val">'+doneCount+'<span style="font-size:15px;color:var(--t2);font-weight:400">/'+mms.length+'</span></div>'
+    +'<div class="pulse-sub">terminée'+(doneCount>1?"s":"")+(mms.length?" · j"+now.getDate()+"/"+daysInMonth:"")+'</div>'
+    +(mms.length?'<div class="pulse-bar-wrap"><div class="pulse-bar" style="width:'+donePct+'%;background:var(--grn)"></div></div>':"")
+    +'</div>';
 
   // Day timeline
   const todayMs=missions.filter(m=>m.date===t&&!isCxl(m)&&m.debut).sort((a,b)=>a.debut.localeCompare(b.debut));
@@ -819,7 +792,7 @@ function rdToday(){
   const t2=missions.filter(m=>m.date===tm&&!isCxl(m)&&!isEchg(m)).sort((a,b)=>(a.debut||"z").localeCompare(b.debut||"z"));
   const up=missions.filter(m=>m.date>tm&&!isCxl(m)&&!isEchg(m)).sort((a,b)=>a.date.localeCompare(b.date));
   if(t1.length) h+=`<div class="slbl">Aujourd'hui</div>`+t1.map(m=>mcard(m,false)).join("");
-  else if(!rdSitBoard().includes("tl-track")) h+='<div class="empty"><div class="emico">☀️</div><div class="emtitle">Pas de mission aujourd\'hui</div>'+(t2.length?'<div class="emsub">'+t2.length+' demain</div>':"")+'</div>';
+  else h+='<div class="empty"><div class="emico">☀️</div><div class="emtitle">Aucune mission aujourd\'hui, '+fdl(tday())+'</div>'+(t2.length?'<div class="emsub">'+t2.length+' demain</div>':"")+'</div>';
   if(t2.length) h+=`<div class="slbl">Demain · ${fds(tm).toUpperCase()}</div>`+t2.map(m=>mcard(m,true)).join("");
   if(up.length){
     h+=`<div class="slbl">À venir</div><div class="uplist">`;
@@ -935,7 +908,18 @@ function rdAdmin(){
           +'</div>';
       }).join("");
       const body='<div style="padding:0">'+mrows+'</div>';
-      h+=mkColl("cl-"+tag,tag+" · "+cl.val.toFixed(0)+"€",cl.count+" mission"+(cl.count>1?"s":""),body);
+      // Colored collapsible matching mission card style
+      const hex=cl.hex;
+      h+='<div class="coll" style="margin-top:7px;border-left:3px solid '+hex+'">'
+        +'<div class="collh" onclick="tColl(\'cl-'+tag+'\')" style="background:var(--s1)">'
+        +'<div>'
+        +'<div class="colltitle" style="color:'+hex+'">'+tag+' <span style="color:var(--t0);font-weight:400">· '+cl.val.toFixed(0)+'€</span></div>'
+        +'<div class="collsub">'+cl.count+' mission'+(cl.count>1?'s':'')+'</div>'
+        +'</div>'
+        +'<div class="collchev" id="chev-cl-'+tag+'">▾</div>'
+        +'</div>'
+        +'<div class="collbody" id="cl-'+tag+'" style="padding:0 0 4px">'+body+'</div>'
+        +'</div>';
     });
   }
 
@@ -1028,13 +1012,14 @@ function tColl(id){
   const b=document.getElementById(id),c=document.getElementById("chev-"+id);
   if(!b)return;const o=b.classList.toggle("open");if(c)c.classList.toggle("open",o);
 }
-// Section card that is collapsible (open by default)
-function mkCollSec(id,title,body){
+// Section card that is collapsible; open=true by default
+function mkCollSec(id,title,body,open=true){
+  const o=open?"open":"";
   return`<div class="sec" style="margin-bottom:8px">
     <div class="sectitle" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="tColl('cs-${id}')">
-      <span>${title}</span><span class="collchev open" id="chev-cs-${id}">▾</span>
+      <span>${title}</span><span class="collchev ${o}" id="chev-cs-${id}">▾</span>
     </div>
-    <div class="collbody open" id="cs-${id}" style="padding:2px 14px 10px">${body}</div>
+    <div class="collbody ${o}" id="cs-${id}" style="padding:2px 14px 10px">${body}</div>
   </div>`;
 }
 
@@ -1053,20 +1038,21 @@ function rdDetail(m){
   </div>`;
 
   // Mission — simplified: no "Début mission" redundancy
-  h+=sec("Mission",()=>{
-    let s="";
-    if(m.extRef)   s+=ir("Réf",esc(m.extRef),true);
-    if(m.debut)    s+=ir("Départ",esc(m.debut));
+  // Mission — collapsible, open by default
+  {
+    let ms="";
+    if(m.extRef)   ms+=ir("Réf",esc(m.extRef),true);
+    if(m.debut)    ms+=ir("Départ",esc(m.debut));
     const dur=m.ops["Mission Duration (h)"]||m.heures;
-    if(dur)        s+=ir("Durée",esc(dur)+"h");
-    if(m.endroit)  s+=ir("Endroit",esc(m.endroit));
-    if(m.meetPt)   s+=ir("RDV",esc(m.meetPt));
-    if(m.transRef) s+=ir("Réf transport",esc(m.transRef),true);
-    if(m.shipName) s+=ir("Navire",esc(m.shipName));
-    if(m.dock)     s+=ir("Quai",esc(m.dock));
-    if(m.ops["Vehicle Info"]) s+=ir("Véhicule",esc(m.ops["Vehicle Info"]));
-    return s;
-  });
+    if(dur)        ms+=ir("Durée",esc(dur)+"h");
+    if(m.endroit)  ms+=ir("Endroit",esc(m.endroit));
+    if(m.meetPt)   ms+=ir("RDV",esc(m.meetPt));
+    if(m.transRef) ms+=ir("Réf transport",esc(m.transRef),true);
+    if(m.shipName) ms+=ir("Navire",esc(m.shipName));
+    if(m.dock)     ms+=ir("Quai",esc(m.dock));
+    if(m.ops["Vehicle Info"]) ms+=ir("Véhicule",esc(m.ops["Vehicle Info"]));
+    if(ms) h+=mkCollSec("miss-"+m.mid,"Mission",ms,true);
+  }
 
   // Pax FIRST (before contacts)
   if(m.paxRaw||m.paxCount){
@@ -1117,7 +1103,7 @@ function rdDetail(m){
     if(ttype==="gare") h+=rdSNCF(m);
     else if(ttype==="transfer"||ttype==="aéroport"){
       // If ref looks like a flight (2 letters + digits)
-      const isFlight=/^[A-Z]{2}\d+$/i.test(m.transRef.replace(/\s/g,""));
+      const isFlight=/^[A-Z]{2,3}\d{3,4}$/i.test(m.transRef.replace(/\s/g,""));
       if(isFlight){
         h+=mkColl("trans-"+m.mid,"✈ Suivi vol","FlightAware",
           `<div style="font-size:13px;color:var(--t1);margin-bottom:10px">Vol : <strong>${esc(m.transRef)}</strong></div>
@@ -1129,36 +1115,28 @@ function rdDetail(m){
   }
 
   // Edit
-  h+=sec("Modifier",()=>{
+  // Modifier — collapsible, closed by default
+  {
     const opts=["Brouillon","Planifié","Confirmé","Terminé","Fac. générée","Fac. envoyée","Payé","Échangé","Annulé"];
-    return`
-    <div class="erow">
-      <div class="elbl">Statut</div>
-      <select class="esel" onchange="saveF('${m.mid}','statut',this.value)">
-        ${opts.map(o=>`<option${m.statut===o?" selected":""}>${o}</option>`).join("")}
-      </select>
-    </div>
-    <div class="erow">
-      <div class="elbl">Départ</div>
-      <input class="einp" type="time" id="ef-d-${m.mid}" value="${esc(m.debut||"")}"/>
-      <button class="savebtn" onclick="saveF('${m.mid}','debut',document.getElementById('ef-d-${m.mid}').value)">✓</button>
-    </div>
-    <div class="erow">
-      <div class="elbl">Heures</div>
-      <input class="einp" type="number" step="0.5" id="ef-h-${m.mid}" value="${esc(String(m.heures||""))}"/>
-      <button class="savebtn" onclick="saveF('${m.mid}','heures',document.getElementById('ef-h-${m.mid}').value)">✓</button>
-    </div>
-    <div class="erow">
-      <div class="elbl">Base HT</div>
-      <input class="einp" type="number" step="1" id="ef-b-${m.mid}" value="${esc(String(m.base||""))}"/>
-      <button class="savebtn" onclick="saveF('${m.mid}','base',document.getElementById('ef-b-${m.mid}').value)">✓</button>
-    </div>
-    <div style="padding:7px 0">
-      <div class="elbl" style="margin-bottom:4px">Notes</div>
-      <textarea class="notesta" id="ef-n-${m.mid}" rows="3">${esc(m.notes||"")}</textarea>
-      <div class="saverow"><button class="savebtn" onclick="saveF('${m.mid}','notes',document.getElementById('ef-n-${m.mid}').value)">Enregistrer</button></div>
-    </div>`;
-  });
+    const modBody=''
+      +'<div class="erow"><div class="elbl">Statut</div>'
+      +'<select class="esel" onchange="saveF(\''+m.mid+'\',\'statut\',this.value)">'
+      +opts.map(o=>'<option'+(m.statut===o?' selected':'')+'>'+o+'</option>').join("")
+      +'</select></div>'
+      +'<div class="erow"><div class="elbl">Départ</div>'
+      +'<input class="einp" type="time" id="ef-d-'+m.mid+'" value="'+esc(m.debut||"")+'"/>'
+      +'<button class="savebtn" onclick="saveF(\''+m.mid+'\',\'debut\',document.getElementById(\'ef-d-'+m.mid+'\').value)">✓</button></div>'
+      +'<div class="erow"><div class="elbl">Heures</div>'
+      +'<input class="einp" type="number" step="0.5" id="ef-h-'+m.mid+'" value="'+esc(String(m.heures||""))+'"/>'
+      +'<button class="savebtn" onclick="saveF(\''+m.mid+'\',\'heures\',document.getElementById(\'ef-h-'+m.mid+'\').value)">✓</button></div>'
+      +'<div class="erow"><div class="elbl">Base HT</div>'
+      +'<input class="einp" type="number" step="1" id="ef-b-'+m.mid+'" value="'+esc(String(m.base||""))+'"/>'
+      +'<button class="savebtn" onclick="saveF(\''+m.mid+'\',\'base\',document.getElementById(\'ef-b-'+m.mid+'\').value)">✓</button></div>'
+      +'<div style="padding:7px 0"><div class="elbl" style="margin-bottom:4px">Notes</div>'
+      +'<textarea class="notesta" id="ef-n-'+m.mid+'" rows="3">'+esc(m.notes||"")+'</textarea>'
+      +'<div class="saverow"><button class="savebtn" onclick="saveF(\''+m.mid+'\',\'notes\',document.getElementById(\'ef-n-'+m.mid+'\').value)">Enregistrer</button></div></div>';
+    h+=mkCollSec("mod-"+m.mid,"Modifier",modBody,false);
+  }
 
   // Docs
   if(m.docs||m.ops["Source PDF"]) h+=sec("Documents",()=>{
@@ -1194,7 +1172,7 @@ function rdDetail(m){
       if(m.debours>0.01&&!m.ndb) s+=`<div style="padding:4px 0"><button class="invbtn" onclick="event.stopPropagation();genDebours('${m.mid}')"><span class="invico">📄</span><span style="flex:1;font-weight:500">Note de débours</span><span class="invr">${fmtE(m.debours)}</span></button></div>`;
       return s;
     };
-    h+=mkCollSec(`fac-${m.mid}`,"Facturation",facBody());
+    h+=mkCollSec(`fac-${m.mid}`,"Facturation",facBody(),false);
   }
 
   h+=rdPMF(m);
