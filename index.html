@@ -1047,7 +1047,7 @@ function rdDetail(m){
     if(dur)        ms+=ir("Durée",esc(dur)+"h");
     if(m.endroit)  ms+=ir("Endroit",esc(m.endroit));
     if(m.meetPt)   ms+=ir("RDV",esc(m.meetPt));
-    if(m.transRef) ms+=ir("Réf transport",m.transRef.split(" / ").map(s=>`<div style="padding:2px 0;border-bottom:1px solid var(--b2);font-size:13px">${esc(s.trim())}</div>`).join(""),true);
+    if(m.transRef) ms+=ir("Réf transport",m.transRef.split(" / ").map(s=>`<div style="padding:2px 0;border-bottom:1px solid var(--b2);font-size:13px">${esc(s.trim())}</div>`).join(""),false);
     if(m.shipName) ms+=ir("Navire",esc(m.shipName));
     if(m.dock)     ms+=ir("Quai",esc(m.dock));
     if(m.ops["Vehicle Info"]) ms+=ir("Véhicule",esc(m.ops["Vehicle Info"]));
