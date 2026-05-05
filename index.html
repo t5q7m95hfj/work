@@ -241,7 +241,7 @@ strong{font-weight:600;}
 /* Collapsible */
 .coll{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-top:8px;}
 .collh{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:var(--s2);}
-.colltitle{font-size:13px;font-weight:600;color:var(--t1);}
+.colltitle{font-size:13px;font-weight:600;color:var(--t1);font-family:var(--f);}
 .collsub{font-size:10px;color:var(--t3);margin-top:1px;}
 .collchev{font-size:11px;color:var(--t3);transition:transform .18s;}
 .collbody{display:none;padding:11px 14px;border-top:1px solid var(--bdr);}
@@ -497,6 +497,41 @@ function loadTrState(){try{const r=localStorage.getItem("mc_tr");if(r)trState=JS
 function saveTrState(){try{localStorage.setItem("mc_tr",JSON.stringify(trState));}catch(e){}}
 function getTrFlight(mid,fid){if(!trState[mid])trState[mid]={flights:{}};if(!trState[mid].flights[fid])trState[mid].flights[fid]={departed:false,driver:"",phone:"",pax:{}};return trState[mid].flights[fid];}
 
+// ── FLIGHT STATUS ──
+const _flightCache={};
+async function fetchFlightStatus(mid,fid,flightCode,date){
+  const key=flightCode+"-"+date;
+  const el=document.getElementById("fst-"+mid+"-"+fid);
+  if(!el)return;
+  if(_flightCache[key]){renderFlightBadge(el,_flightCache[key]);return;}
+  el.innerHTML='<span style="font-size:9px;color:var(--t3)">↻</span>';
+  try{
+    // Use FlightAware AeroAPI via public endpoint — no key needed for basic status
+    const iata=flightCode.replace(/\s/g,"").toUpperCase();
+    const r=await fetch(`https://aeroapi.flightaware.com/aeroapi/flights/${iata}`,{signal:AbortSignal.timeout(8000)});
+    if(r.ok){
+      const d=await r.json();
+      const fl=(d.flights||[])[0];
+      if(fl){const status=fl.status||"";_flightCache[key]=status;renderFlightBadge(el,status);return;}
+    }
+    // Fallback: FlightAware public link only
+    el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue);text-decoration:none">↗ FA</a>';
+  }catch(e){
+    const iata=flightCode.replace(/\s/g,"").toUpperCase();
+    el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue);text-decoration:none">↗ FA</a>';
+  }
+}
+function renderFlightBadge(el,status){
+  const s=(status||"").toLowerCase();
+  let cls,label;
+  if(s.includes("land")||s.includes("arriv")){cls="color:var(--grn)";label="Atterri";}
+  else if(s.includes("delay")||s.includes("retard")){cls="color:var(--amb)";label="Retardé";}
+  else if(s.includes("cancel")||s.includes("annul")){cls="color:var(--red)";label="Annulé";}
+  else if(s.includes("air")||s.includes("enroute")||s.includes("depart")){cls="color:var(--blue)";label="En vol";}
+  else{cls="color:var(--t3)";label=status.slice(0,8)||"—";}
+  el.innerHTML='<span style="font-size:9px;font-weight:700;'+cls+'">'+label+'</span>';
+}
+
 // ══ INIT ══
 window.addEventListener("load",()=>{
   if(light)document.body.classList.add("light");
@@ -595,6 +630,7 @@ function norm(m){
   o.ops      = o.ops||{};
   o.paxRaw   = o.ops["Passenger Raw"]||"";
   o.paxCount = o.ops["Pax Count"]||"";
+  if(!o.paxCount&&o.ops["Transfers"]){try{const tr=JSON.parse(o.ops["Transfers"]);const tot=tr.reduce((s,f)=>s+(parseInt(f.pax)||0),0);if(tot>0)o.paxCount=String(tot);}catch(e){}}
   o.shipName = o.ops["Ship Name"]||"";
   o.extRef   = o.ops["External Ref"]||"";
   o.meetPt   = o.ops["Meeting Point"]||"";
@@ -1253,6 +1289,7 @@ function rdTransfers(m){
     h+='<div class="fc-flight">'+esc(f.flight)+'</div>';
     if(f.time)h+='<div class="fc-time">'+esc(f.time)+'</div>';
     if(f.origin)h+='<div class="fc-origin">'+esc(f.origin)+'</div>';
+    h+='<div id="fst-'+m.mid+'-'+fid+'" style="margin-left:4px"></div>';
     h+='<div class="fc-pcount">'+paxChecked+'/'+paxTotal+' pax'+(gone?' ✓':'')+'</div>';
     h+='<div style="font-size:11px;color:var(--t3);margin-left:6px" id="fchev-'+m.mid+'-'+fid+'">'+(gone?'▾':'▴')+'</div>';
     h+='</div>';
@@ -1271,19 +1308,23 @@ function rdTransfers(m){
     } else {
       h+='<div class="fc-driver">';
       h+='<div class="fc-driver-info">';
-      h+='<div class="fc-driver-role">Chauffeur</div>';
-      h+='<div class="fc-driver-name">'+(driver?esc(driver):'<span style="color:var(--t3)">Non assigné</span>')+'</div>';
-      if(phone)h+='<div class="fc-driver-ph">'+esc(normPhone(phone))+'</div>';
+      if(driver){
+        h+='<div class="fc-driver-role">Chauffeur</div>';
+        h+='<div class="fc-driver-name">'+esc(driver)+'</div>';
+        if(phone)h+='<div class="fc-driver-ph">'+esc(normPhone(phone))+'</div>';
+      }
       h+='</div>';
       const rawPh=phone.replace(/\s/g,"");
       if(phone)h+='<a href="tel:'+esc(rawPh)+'" class="callbtn" onclick="event.stopPropagation()" style="margin-right:4px">📞</a>';
-      h+='<button class="fc-driver-edit" onclick="event.stopPropagation();editFCDriver(\''+m.mid+'\',\''+fid+'\')">✏️</button>';
+      h+='<button class="fc-driver-edit" onclick="event.stopPropagation();editFCDriver(\''+m.mid+'\',\''+fid+'\')">'+(driver?'✏️':'+ Chauffeur')+'</button>';
       h+='</div>';
     }
     h+='<div class="fc-departed">'
       +'<button class="fc-dep-btn'+(gone?' done':'')+'" onclick="toggleDep(\''+m.mid+'\',\''+fid+'\')">'
       +(gone?'✅ Véhicule parti':'🚗 Marquer comme parti')
-      +'</button></div>';
+      +'</button>'
+      +'<button style="font-size:10px;color:var(--blue);background:none;border:none;padding:4px 8px;cursor:pointer" onclick="event.stopPropagation();fetchFlightStatus(\''+m.mid+'\',\''+fid+'\',\''+f.flight+'\',\''+m.date+'\')" title="Actualiser statut vol">↻ Vol</button>'
+      +'</div>';
     if(paxList.length){
       h+='<div class="fc-pax" id="fcpax-'+m.mid+'-'+fid+'">';
       paxList.forEach(function(p,i){
@@ -1302,6 +1343,13 @@ function rdTransfers(m){
     }
     h+='</div></div></div>';
   });
+  // Auto-fetch flight statuses after render
+  setTimeout(()=>{
+    flights.forEach(f=>{
+      const fid=f.id||("fl"+f.flight);
+      if(f.flight)fetchFlightStatus(m.mid,fid,f.flight,m.date);
+    });
+  },300);
   return h;
 }
 function tFC(mid,fid){
