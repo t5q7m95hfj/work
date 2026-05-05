@@ -1323,11 +1323,17 @@ function rdTransfers(m){
     } else {
       h+='<div class="fc-driver">';
       h+='<div class="fc-driver-info">';
-      if(driver){
-        h+='<div class="fc-driver-role">Chauffeur</div>';
-        h+='<div class="fc-driver-name">'+esc(driver)+'</div>';
-        if(phone)h+='<div class="fc-driver-ph">'+esc(normPhone(phone))+'</div>';
-      }
+     if(driver){
+  const names = driver.split(/\s+/);
+  const phones = phone.split(/\s+/);
+
+  h+='<div class="fc-driver-role">Chauffeurs</div>';
+
+  names.forEach((n,i)=>{
+    h+='<div class="fc-driver-name">'+esc(n)+'</div>';
+    if(phones[i]) h+='<div class="fc-driver-ph">'+esc(normPhone(phones[i]))+'</div>';
+  });
+}
       h+='</div>';
       const rawPh=phone.replace(/\s/g,"");
       if(phone)h+='<a href="tel:'+esc(rawPh)+'" class="callbtn" onclick="event.stopPropagation()" style="margin-right:4px">📞</a>';
