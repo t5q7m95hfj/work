@@ -452,7 +452,7 @@ strong{font-weight:600;}
   <div class="hdr">
     <div class="brand">
       <div class="brand-name">Mission Control</div>
-      <div class="brand-sub" id="hsub">Chargement…</div>
+      <div class="brand-sub" id="hsub">Chargement...</div>
     </div>
     <div class="hdr-r">
       <span class="hdr-wx" id="hwx"></span>
@@ -466,7 +466,7 @@ strong{font-weight:600;}
     <button class="nb"    id="nb-month"   onclick="go('month')">📅 <span id="mlbl">Mois</span></button>
     <button class="nb"    id="nb-admin"   onclick="go('admin')">⚙ Admin<span class="nb-dot" id="admin-dot" style="display:none"></span></button>
   </nav>
-  <div class="scroll"><div class="inner" id="ct"><div class="loader"><span class="spin">↻</span> Chargement…</div></div></div>
+  <div class="scroll"><div class="inner" id="ct"><div class="loader"><span class="spin">↻</span> Chargement...</div></div></div>
 </div>
 <div id="toast"></div>
 <script>
@@ -572,7 +572,7 @@ function afterLoad(){
 }
 async function hardRefresh(){
   localStorage.removeItem("mc_v5");missions=[];journal=[];
-  document.getElementById("ct").innerHTML='<div class="loader"><span class="spin">↻</span> Actualisation…</div>';
+  document.getElementById("ct").innerHTML='<div class="loader"><span class="spin">↻</span> Actualisation...</div>';
   await loadData(true);
 }
 function extractJournalFromLS(){
@@ -1074,7 +1074,7 @@ function rdJournal(){
         ${e.mood>0?`<span class="jscpill">${ME[e.mood-1]} ${e.mood}</span>`:""}
         ${e.energy>0?`<span class="jscpill">${EE[e.energy-1]} ${e.energy}</span>`:""}
       </div>
-      ${e.text?`<div class="jnote">${esc(e.text.slice(0,90))}${e.text.length>90?"…":""}</div>`:""}
+      ${e.text?`<div class="jnote">${esc(e.text.slice(0,90))}${e.text.length>90?"...":""}</div>`:""}
     </div>`).join(""));
   return h;
 }
@@ -1437,7 +1437,7 @@ async function saveF(mid,field,value){
 
 // ══ INVOICE ══
 async function genFacture(mid){
-  toast("⏳ Génération…","");
+  toast("⏳ Génération...","");
   try{
     const r=await fetch(GAS+"?action=genFacture&id="+encodeURIComponent(mid));
     const d=await r.json();
@@ -1446,7 +1446,7 @@ async function genFacture(mid){
   }catch(e){toast("❌ "+e.message.slice(0,40),"err");}
 }
 async function genDebours(mid){
-  toast("⏳ Débours…","");
+  toast("⏳ Débours...","");
   try{
     const r=await fetch(GAS+"?action=genDebours&id="+encodeURIComponent(mid));
     const d=await r.json();
@@ -1462,7 +1462,7 @@ function rdSNCF(m){
      <div id="sncf-d-${m.mid}" style="font-size:12px;color:var(--t2)">Appuie sur Actualiser.</div>`);
 }
 async function fetchSNCF(mid,ref){
-  const el=document.getElementById("sncf-d-"+mid);if(!el)return;el.textContent="Chargement…";
+  const el=document.getElementById("sncf-d-"+mid);if(!el)return;el.textContent="Chargement...";
   try{
     const r=await fetch(SNCF,{signal:AbortSignal.timeout(12000)});
     const d=await r.json();
@@ -1526,8 +1526,8 @@ function pmfH2(m){
     <button class="tplbtn${pmf.tpl==="RAS"?" on":""}" onclick="pmf.tpl='RAS';pmf.rpt='';render()">📝 RAS</button>
     <button class="tplbtn${pmf.tpl==="INCIDENT"?" on":""}" onclick="pmf.tpl='INCIDENT';pmf.rpt='';render()">⚠️ Incident</button>
   </div>
-  ${pmf.tpl==="INCIDENT"&&!pmf.rpt?`<div class="inc-hint">Décris ce qui s'est passé :</div><textarea class="inc-notes" id="inc-ctx-${m.mid}" placeholder="Ex: Vol annulé, pax redirigé…">${esc(pmf.incCtx||"")}</textarea>`:""}
-  ${pmf.rptLoading?'<div style="text-align:center;padding:16px;color:var(--t2)"><span class="spin">↻</span> Rédaction…</div>':pmf.rpt?`<div class="rptout">${esc(pmf.rpt)}</div>`+acts:acts}
+  ${pmf.tpl==="INCIDENT"&&!pmf.rpt?`<div class="inc-hint">Décris ce qui s'est passé :</div><textarea class="inc-notes" id="inc-ctx-${m.mid}" placeholder="Ex: Vol annulé, pax redirigé...">${esc(pmf.incCtx||"")}</textarea>`:""}
+  ${pmf.rptLoading?'<div style="text-align:center;padding:16px;color:var(--t2)"><span class="spin">↻</span> Rédaction...</div>':pmf.rpt?`<div class="rptout">${esc(pmf.rpt)}</div>`+acts:acts}
   <div style="display:flex;gap:8px;margin-top:4px">
     <span class="pback" style="flex:1" onclick="pmfStep=1;render()">← Retour</span>
     <span class="pback" style="flex:1;color:var(--t3)" onclick="pmf.rpt='IGNORE';pmfGo(3)">Ignorer le rapport</span>
@@ -1540,7 +1540,7 @@ function pmfH3(m){
   <div class="moodrow">${mv.map(v=>`<button class="moodbtn${pmf.dMood===v?" on":""}" onclick="pmf.dMood=${v};render()">${ME[v-1]}</button>`).join("")}</div>
   <div style="font-size:10px;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px">Énergie</div>
   <div class="moodrow">${mv.map(v=>`<button class="moodbtn${pmf.dEnergy===v?" on":""}" onclick="pmf.dEnergy=${v};render()">${EE[v-1]}</button>`).join("")}</div>
-  <textarea class="notesta" id="pmf-db" rows="3" placeholder="Note privée…">${esc(pmf.dNote||"")}</textarea>
+  <textarea class="notesta" id="pmf-db" rows="3" placeholder="Note privée...">${esc(pmf.dNote||"")}</textarea>
   <button class="pbtn" style="margin-top:9px" onclick="pmfFin('${m.mid}')">Clôturer</button>
   <span class="pback" onclick="pmfStep=2;render()">← Retour</span>`;
 }
@@ -1603,7 +1603,7 @@ async function genRpt(mid){
 async function schedRpt(mid){
   const ed=document.getElementById("rpt-ed-"+mid);const rpt=ed?ed.value:pmf.rpt;
   if(rpt==="IGNORE"||!rpt){toast("Rapport ignoré","");pmfGo(3);return;}
-  toast("⏳ Envoi vers Gmail planifié…","");
+  toast("⏳ Envoi vers Gmail planifié...","");
   try{
     const r=await fetch(GAS+"?action=scheduleRapport&id="+encodeURIComponent(mid)+"&rapport="+encodeURIComponent(rpt)+"&template="+encodeURIComponent(pmf.tpl),{signal:AbortSignal.timeout(25000)});
     const d=await r.json();
@@ -1648,7 +1648,7 @@ function goPause(){
     <div class="dcey">Décompression</div>
     <div class="dctitle">Pause rapide</div>
     <div class="dcsub">Un espace simple pour relâcher ce qui reste.</div>
-    <textarea class="dcta" id="dc-t" rows="6" placeholder="Écrire ici pour toi seulement…"></textarea>
+    <textarea class="dcta" id="dc-t" rows="6" placeholder="Écrire ici pour toi seulement..."></textarea>
     <div class="dcrow">
       <button class="dcsave" onclick="saveDC()">Enregistrer</button>
       <button class="dcback" onclick="render()">Retour</button>
