@@ -506,16 +506,15 @@ async function fetchFlightStatus(mid,fid,flightCode,date){
   if(_flightCache[key]){renderFlightBadge(el,_flightCache[key]);return;}
   el.innerHTML='<span style="font-size:9px;color:var(--t3)">↻</span>';
   try{
-    // Use FlightAware AeroAPI via public endpoint — no key needed for basic status
     const iata=flightCode.replace(/\s/g,"").toUpperCase();
-    const r=await fetch(`https://aeroapi.flightaware.com/aeroapi/flights/${iata}`,{signal:AbortSignal.timeout(8000)});
-    if(r.ok){
-      const d=await r.json();
-      const fl=(d.flights||[])[0];
-      if(fl){const status=fl.status||"";_flightCache[key]=status;renderFlightBadge(el,status);return;}
+    const r=await fetch(GAS+"?action=flightStatus&flight="+encodeURIComponent(iata),{signal:AbortSignal.timeout(12000)});
+    const d=await r.json();
+    if(d&&d.ok&&d.status){
+      _flightCache[key]=d.status;
+      renderFlightBadge(el,d.status);
+    } else {
+      el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue);text-decoration:none">↗ FA</a>';
     }
-    // Fallback: FlightAware public link only
-    el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue);text-decoration:none">↗ FA</a>';
   }catch(e){
     const iata=flightCode.replace(/\s/g,"").toUpperCase();
     el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue);text-decoration:none">↗ FA</a>';
@@ -1240,19 +1239,8 @@ function ir(l,v,canCopy=false){
 // ══ TRANSFERS ══
 function parseTr(m){
   const raw=m.ops["Transfers"]||m.ops["transfers"]||"";
-  if(raw&&raw.trim().startsWith("[")){try{return JSON.parse(raw);}catch(e){}}
-  if(!m.transRef)return[];
-  return m.transRef.split("\n").filter(s=>s.trim()).map((line,i)=>{
-    const parts=line.split(/\s*-\s*/);
-    const flight=parts[0]||("FL"+i);
-    const time=parts[1]||"";
-    const paxN=parseInt(parts[2])||0;
-    const driverRaw=parts.slice(3).join(" ").trim();
-    const phMatch=driverRaw.match(/([\d\s\.+]{7,})/);
-    const phone=phMatch?phMatch[0].trim():"";
-    const driver=driverRaw.replace(phone,"").trim();
-    return{id:"fl"+i,flight,time,origin:"",pax:paxN,vehicle:"",driver,phone,passengers:[]};
-  });
+  if(raw&&raw.trim().startsWith("[")){try{const t=JSON.parse(raw);if(t.length)return t;}catch(e){}}
+  return[];
 }
 function normPhone(p){
   if(!p)return"";
