@@ -1238,9 +1238,44 @@ function ir(l,v,canCopy=false){
 
 // ══ TRANSFERS ══
 function parseTr(m){
-  const raw=m.ops["Transfers"]||m.ops["transfers"]||"";
-  if(raw&&raw.trim().startsWith("[")){try{const t=JSON.parse(raw);if(t.length)return t;}catch(e){}}
-  return[];
+  const raw = m.ops["Passenger Raw"] || "";
+  const notes = m.ops["Raw Notes"] || "";
+  if (!raw) return [];
+
+  const drivers = {};
+  notes.split("\n").forEach(line=>{
+    const m = line.match(/(\d{2}:\d{2})\s+([A-Z0-9]+).*?-\s+([A-ZÉÈÊËÀÂÎÏÔÛÙÇ\s+]+)\s+-\s+(\d+)/i);
+    if (m) drivers[m[2]] = {time:m[1], driver:m[3].trim(), pax:parseInt(m[4])||0};
+  });
+
+  const groups = {};
+  raw.split("\n").forEach(line=>{
+    const m = line.match(/^(.+?)\s+(\S+)\s+(\d{2}:\d{2})\s+LYS-([A-Z0-9]+)\s+\(Org City:\s*([A-Z]{3})\)/);
+    if (!m) return;
+
+    const name = m[1].trim();
+    const cabin = m[2];
+    const time = m[3];
+    const flight = m[4];
+    const origin = m[5];
+
+    if (!groups[flight]) {
+      groups[flight] = {
+        id: "fl" + Object.keys(groups).length,
+        flight,
+        time,
+        origin,
+        driver: drivers[flight]?.driver || m.ops?.["Chauffeur"] || "",
+        phone: m.ops?.["Tél Chauffeur"] || "",
+        pax: drivers[flight]?.pax || 0,
+        passengers: []
+      };
+    }
+
+    groups[flight].passengers.push({name, cabin});
+  });
+
+  return Object.values(groups);
 }
 function normPhone(p){
   if(!p)return"";
