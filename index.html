@@ -1353,7 +1353,7 @@ function rdTransfers(m){
         const name=typeof p==="object"?(p.name||""):String(p);
         const cabin=typeof p==="object"?p.cabin||"":"";
         h+='<div class="fc-prow">'
-          +'<div class="fc-pbox'+(on?' ck':'')+'" onclick="tFCPax(\''+m.mid+'\',\''+fid+'\','+i+','+(on?'false':'true')+')">'+(on?'✓':'')+'</div>'
+          +'<div class="fc-pbox'+(on?' ck':'')+'" onclick="tFCPax(this,\''+m.mid+'\',\''+fid+'\','+i+','+(on?'false':'true')+')">'+(on?'✓':'')+'</div>'
           +'<div style="flex:1"><div class="fc-pname'+(on?' ck':'')+'">'+esc(name)+'</div>'
           +(cabin?'<div class="fc-pcabin">Cabine '+esc(cabin)+'</div>':"")
           +'</div></div>';
@@ -1381,15 +1381,19 @@ function tFC(mid,fid){
   b.style.display=open?"block":"none";
   if(chev)chev.textContent=open?'▴':'▾';
 }
-function tFCPax(mid,fid,idx,on){
+function tFCPax(el,mid,fid,idx,on){
   const fst=getTrFlight(mid,fid);
   if(!fst.pax)fst.pax={};
   fst.pax[idx]=on;
   saveTrState();
-  const box=document.querySelector('[onclick="tFCPax(\''+mid+'\',\''+fid+'\','+idx+','+(on?'false':'true')+')"]');
-  const nm=box&&box.parentElement&&box.parentElement.querySelector('.fc-pname');
-  if(box){box.classList.toggle('ck',on);box.textContent=on?'✓':'';box.setAttribute('onclick','tFCPax(\''+mid+'\',\''+fid+'\','+idx+','+(on?'false':'true')+')');}
+
+  el.classList.toggle('ck',on);
+  el.textContent=on?'✓':'';
+  el.setAttribute('onclick',"tFCPax(this,'"+mid+"','"+fid+"',"+idx+","+(on?'false':'true')+")");
+
+  const nm=el.parentElement.querySelector('.fc-pname');
   if(nm)nm.classList.toggle('ck',on);
+
   updateTrProgress(mid);
 }
 function toggleDep(mid,fid){
