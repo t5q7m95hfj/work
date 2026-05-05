@@ -1239,40 +1239,40 @@ function ir(l,v,canCopy=false){
 // ══ TRANSFERS ══
 function parseTr(m){
   const raw = m.ops["Passenger Raw"] || "";
-  const notes = m.ops["Raw Notes"] || "";
+  const refs = m.ops["Transport Ref"] || "";
   if (!raw) return [];
 
   const drivers = {};
-  notes.split("\n").forEach(line=>{
-    const m = line.match(/(\d{2}:\d{2})\s+([A-Z0-9]+).*?-\s+([A-ZÉÈÊËÀÂÎÏÔÛÙÇ\s+]+)\s+-\s+(\d+)/i);
-    if (m) drivers[m[2]] = {time:m[1], driver:m[3].trim(), pax:parseInt(m[4])||0};
+  refs.split("\n").forEach(line=>{
+    const x = line.match(/(\d{2}:\d{2})\s+([A-Z0-9]+)\s+\(([A-Z]{3})\)\s*-\s*(.+?)\s*-\s*(\d+)/i);
+    if (x) drivers[x[2]] = {
+      time:x[1],
+      origin:x[3],
+      driver:x[4].trim(),
+      pax:parseInt(x[5])||0
+    };
   });
 
   const groups = {};
   raw.split("\n").forEach(line=>{
-    const m = line.match(/^(.+?)\s+(\S+)\s+(\d{2}:\d{2})\s+LYS-([A-Z0-9]+)\s+\(Org City:\s*([A-Z]{3})\)/);
-    if (!m) return;
+    const x = line.match(/^(.+?)\s+(\S+)\s+(\d{2}:\d{2})\s+LYS-([A-Z0-9]+)\s+\(Org City:\s*([A-Z]{3})\)/);
+    if (!x) return;
 
-    const name = m[1].trim();
-    const cabin = m[2];
-    const time = m[3];
-    const flight = m[4];
-    const origin = m[5];
-
+    const flight = x[4];
     if (!groups[flight]) {
       groups[flight] = {
-        id: "fl" + Object.keys(groups).length,
+        id:"fl"+Object.keys(groups).length,
         flight,
-        time,
-        origin,
-        driver: drivers[flight]?.driver || m.ops?.["Chauffeur"] || "",
-        phone: m.ops?.["Tél Chauffeur"] || "",
-        pax: drivers[flight]?.pax || 0,
-        passengers: []
+        time:x[3],
+        origin:x[5],
+        driver:drivers[flight]?.driver || "",
+        phone:m.ops["Tél Chauffeur"] || "",
+        pax:drivers[flight]?.pax || 0,
+        passengers:[]
       };
     }
 
-    groups[flight].passengers.push({name, cabin});
+    groups[flight].passengers.push({name:x[1].trim(), cabin:x[2]});
   });
 
   return Object.values(groups);
