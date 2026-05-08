@@ -241,7 +241,7 @@ strong{font-weight:600;}
 /* Collapsible */
 .coll{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-top:8px;}
 .collh{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:var(--s2);}
-.colltitle{font-size:13px;font-weight:600;color:var(--t1);font-family:var(--f);}
+.colltitle{font-size:13px;font-weight:600;color:var(--t1);}
 .collsub{font-size:10px;color:var(--t3);margin-top:1px;}
 .collchev{font-size:11px;color:var(--t3);transition:transform .18s;}
 .collbody{display:none;padding:11px 14px;border-top:1px solid var(--bdr);}
@@ -403,48 +403,6 @@ strong{font-weight:600;}
 #toast.show{opacity:1;}
 #toast.ok{background:rgba(72,204,120,.18);border-color:var(--grn);color:var(--grn);}
 #toast.err{background:rgba(224,80,80,.18);border-color:var(--red);color:var(--red);}
-
-/* ── FLIGHT CARDS ── */
-.fc{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:8px;overflow:hidden;}
-.fc-hdr{display:flex;align-items:center;gap:10px;padding:11px 13px;cursor:pointer;background:var(--s2);}
-.fc-hdr:active{background:var(--s3);}
-.fc-flight{font-family:var(--fm);font-size:15px;font-weight:700;color:var(--t0);}
-.fc-time{font-family:var(--fm);font-size:13px;color:var(--gold);}
-.fc-origin{font-size:11px;color:var(--t3);background:var(--s3);border-radius:3px;padding:2px 6px;font-weight:600;}
-.fc-pcount{font-size:11px;color:var(--t2);margin-left:auto;}
-.fc-gone{background:rgba(72,204,120,.06);border-color:rgba(72,204,120,.2);}
-.fc-gone .fc-flight{color:var(--grn);}
-.fc-body{padding:10px 13px;border-top:1px solid var(--bdr);}
-.fc-driver{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bdr);margin-bottom:6px;}
-.fc-driver-info{flex:1;min-width:0;}
-.fc-driver-role{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;font-weight:600;}
-.fc-driver-name{font-size:14px;font-weight:600;color:var(--t0);}
-.fc-driver-ph{font-size:12px;color:var(--t2);font-family:var(--fm);}
-.fc-driver-edit{font-size:11px;color:var(--blue);padding:4px 8px;background:var(--blued);border-radius:4px;cursor:pointer;}
-.fc-departed{display:flex;align-items:center;gap:6px;padding:8px 0 4px;}
-.fc-dep-btn{flex:1;padding:9px;border-radius:var(--rsm);font-size:12px;font-weight:700;background:var(--s2);border:1px solid var(--bdr);color:var(--t2);transition:all .15s;}
-.fc-dep-btn.done{background:rgba(72,204,120,.12);border-color:var(--grn);color:var(--grn);}
-.fc-pax{margin-top:2px;}
-.fc-prow{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px solid var(--bdr);}
-.fc-prow:last-child{border-bottom:none;}
-.fc-pbox{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--bdr2);background:var(--s2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;transition:all .1s;margin-top:1px;}
-.fc-pbox.ck{background:var(--grn);border-color:var(--grn);color:#fff;}
-.fc-pname{font-size:13px;color:var(--t0);flex:1;line-height:1.4;}
-.fc-pname.ck{color:var(--t3);text-decoration:line-through;}
-.fc-pcabin{font-size:10px;color:var(--t3);margin-top:1px;}
-.fc-dedit{background:var(--s2);border:1px solid var(--bdr2);border-radius:var(--rsm);padding:10px 12px;margin:8px 0;}
-.fc-dedit input{width:100%;background:var(--s3);border:1px solid var(--bdr2);border-radius:5px;padding:7px 9px;font-size:13px;color:var(--t0);outline:none;margin-bottom:6px;font-family:inherit;}
-.fc-dedit input:focus{border-color:var(--gold);}
-.fc-dedit-row{display:flex;gap:6px;}
-.fc-dedit-save{flex:1;padding:8px;border-radius:5px;background:var(--gold);color:#000;font-size:12px;font-weight:700;}
-.fc-dedit-cancel{padding:8px 12px;border-radius:5px;background:var(--s3);border:1px solid var(--bdr);font-size:12px;color:var(--t2);}
-.tr-prog{height:3px;background:var(--s3);border-radius:2px;margin:0 0 10px;}
-.tr-fill{height:100%;background:var(--grn);border-radius:2px;transition:width .3s;}
-.tr-summary{font-size:11px;color:var(--t2);margin-bottom:10px;}
-.inc-notes{width:100%;background:var(--s2);border:1px solid var(--bdr2);border-radius:var(--rsm);padding:9px 11px;font-size:13px;color:var(--t0);resize:vertical;min-height:80px;outline:none;line-height:1.6;transition:border-color .15s;margin:8px 0 4px;font-family:inherit;}
-.inc-notes:focus{border-color:var(--amb);}
-.inc-hint{font-size:11px;color:var(--t3);margin-bottom:4px;}
-
 </style>
 </head>
 <body>
@@ -473,6 +431,7 @@ strong{font-weight:600;}
 // ══ CONFIG ══
 const GAS  = "https://script.google.com/macros/s/AKfycbwACs6qIEu24xMe3KtSjLMbcs3A6iXqCaZEodXBuTx2au1ol5UXeUqZKM6W_NJO9qSErg/exec";
 const SNCF = "https://fragrant-hall-c33b.t5q7m95hfj.workers.dev/";
+const FLIGHT_WORKER = "https://fragrant-hall-c33b.t5q7m95hfj.workers.dev/flight";
 
 const DAYS = ["dim","lun","mar","mer","jeu","ven","sam"];
 const MOL  = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
@@ -488,47 +447,93 @@ const META = {
 };
 
 // ══ STATE ══
-let missions=[], journal=[];
+let missions=[], journal=[], contacts=[];
 let tab="today", sv="today", detail=null, pmf=null, pmfStep=0;
 let light=localStorage.getItem("mc_light")==="1";
 let paxState={};
-let trState={};
-function loadTrState(){try{const r=localStorage.getItem("mc_tr");if(r)trState=JSON.parse(r);}catch(e){}}
-function saveTrState(){try{localStorage.setItem("mc_tr",JSON.stringify(trState));}catch(e){}}
-function getTrFlight(mid,fid){if(!trState[mid])trState[mid]={flights:{}};if(!trState[mid].flights[fid])trState[mid].flights[fid]={departed:false,driver:"",phone:"",pax:{}};return trState[mid].flights[fid];}
 
-// ── FLIGHT STATUS ──
+// ══ FLIGHT STATUS ══
 const _flightCache={};
 async function fetchFlightStatus(mid,fid,flightCode,date){
-  const key=flightCode+"-"+date;
+  const key=flightCode+"-"+(date||"");
   const el=document.getElementById("fst-"+mid+"-"+fid);
   if(!el)return;
   if(_flightCache[key]){renderFlightBadge(el,_flightCache[key]);return;}
   el.innerHTML='<span style="font-size:9px;color:var(--t3)">↻</span>';
   try{
     const iata=flightCode.replace(/\s/g,"").toUpperCase();
-    const r=await fetch(GAS+"?action=flightStatus&flight="+encodeURIComponent(iata),{signal:AbortSignal.timeout(12000)});
+    const r=await fetch(FLIGHT_WORKER+"?flight="+encodeURIComponent(iata),{signal:AbortSignal.timeout(12000)});
     const d=await r.json();
-    if(d&&d.ok&&d.status){
-      _flightCache[key]=d.status;
-      renderFlightBadge(el,d.status);
-    } else {
-      el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue);text-decoration:none">↗ FA</a>';
-    }
+    if(d&&d.status&&d.status!=="unknown"){_flightCache[key]=d;renderFlightBadge(el,d);}
+    else el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue)">↗ FA</a>';
   }catch(e){
     const iata=flightCode.replace(/\s/g,"").toUpperCase();
-    el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue);text-decoration:none">↗ FA</a>';
+    el.innerHTML='<a href="https://www.flightaware.com/live/flight/'+encodeURIComponent(iata)+'" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:var(--blue)">↗ FA</a>';
   }
 }
-function renderFlightBadge(el,status){
-  const s=(status||"").toLowerCase();
+function renderFlightBadge(el,d){
+  const s=(d.status||"").toLowerCase();
+  const delay=d.delay||0;
+  const eta=d.eta||"";
   let cls,label;
-  if(s.includes("land")||s.includes("arriv")){cls="color:var(--grn)";label="Atterri";}
-  else if(s.includes("delay")||s.includes("retard")){cls="color:var(--amb)";label="Retardé";}
-  else if(s.includes("cancel")||s.includes("annul")){cls="color:var(--red)";label="Annulé";}
-  else if(s.includes("air")||s.includes("enroute")||s.includes("depart")){cls="color:var(--blue)";label="En vol";}
-  else{cls="color:var(--t3)";label=status.slice(0,8)||"—";}
-  el.innerHTML='<span style="font-size:9px;font-weight:700;'+cls+'">'+label+'</span>';
+  if(s.includes("land")||s.includes("arriv")){cls="color:var(--grn)";label="Atterri"+(eta?" "+eta.slice(11,16):"");}
+  else if(s.includes("cancel")){cls="color:var(--red)";label="Annulé";}
+  else if(s.includes("delay")||delay>0){cls="color:var(--amb)";label="+"+delay+"min";}
+  else if(s.includes("active")||s.includes("enroute")){cls="color:var(--blue)";label="En vol"+(eta?" →"+eta.slice(11,16):"");}
+  else if(s.includes("sched")){cls="color:var(--t3)";label="Prévu";}
+  else{cls="color:var(--t3)";label=s.slice(0,8)||"—";}
+  el.innerHTML='<span style="font-size:9px;font-weight:700;letter-spacing:.2px;'+cls+'">'+label+'</span>';
+}
+
+// ══ CONTACTS PANEL (from Client_Contacts tab) ══
+function rdContactsPanel(m){
+  if(!contacts||!contacts.length)return"";
+  const client=m.client||"";
+  const mid=m.mid||"";
+  const ship=m.shipName||"";
+  // Filter relevant contacts: match by client code + mission ref or ship name
+  const cc=getMeta(client).tag;
+  const relevant=contacts.filter(c=>{
+    const cClient=(c["Client"]||"").toUpperCase();
+    const cMission=(c["Source Mission"]||"");
+    const cShip=(c["Ships / Vessels"]||"");
+    const cType=(c["Type"]||"");
+    // Always include agency ops contacts for this client
+    if(cClient===cc&&(cType==="Agency Contact"||cType==="Agency Reference"))return true;
+    // Include contacts from this specific mission
+    if(cMission===mid)return true;
+    // Include ship contacts that match
+    if(ship&&cShip&&cShip.toLowerCase().includes(ship.toLowerCase()))return true;
+    return false;
+  });
+  if(!relevant.length)return"";
+  const rows=relevant.map(c=>{
+    const type=c["Type"]||"";
+    const name=c["Name"]||c["Contact Name"]||"";
+    const phone=(c["Phone"]||"").toString().replace(/\s/g,"");
+    const phone2=(c["Phone 2"]||"").toString().replace(/\s/g,"");
+    const email=c["Email"]||c["Contact Email"]||"";
+    const role=c["Role"]||type;
+    // Normalise phone
+    let ph=phone;
+    if(ph.startsWith("00"))ph="+"+ph.slice(2);
+    else if((ph.startsWith("06")||ph.startsWith("07"))&&!ph.startsWith("+"))ph="+33"+ph.slice(1);
+    const isWA=ph.startsWith("+49")||ph.startsWith("+44")||ph.startsWith("+40")||ph.startsWith("+1");
+    const waLink="https://wa.me/"+ph.replace(/[^\d]/g,"");
+    return'<div class="cb">'
+      +'<div>'
+        +'<div class="cbrole">'+esc(role)+'</div>'
+        +'<div class="cbname">'+esc(name||ph)+'</div>'
+        +(ph?'<div class="cbph">'+esc(ph)+'</div>':"")
+        +(email?'<div class="cbph" style="font-size:11px">'+esc(email)+'</div>':"")
+      +'</div>'
+      +'<div style="display:flex;gap:5px;flex-shrink:0">'
+        +(isWA&&ph?'<a href="'+waLink+'" target="_blank" class="callbtn" style="background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.25);color:#25d366" onclick="event.stopPropagation()">💬</a>':"")
+        +(ph?'<a href="tel:'+esc(ph)+'" class="callbtn" onclick="event.stopPropagation()">📞</a>':"")
+      +'</div>'
+    +'</div>';
+  }).join("");
+  return mkCollSec("ccp-"+m.mid,"Contacts mission",rows,true);
 }
 
 // ══ INIT ══
@@ -536,7 +541,7 @@ window.addEventListener("load",()=>{
   if(light)document.body.classList.add("light");
   updateTbtn(); tick(); setInterval(tick,30000);
   document.getElementById("mlbl").textContent = MOL[new Date().getMonth()];
-  loadTrState(); loadPaxState(); loadData(); loadWx();
+  loadData(); loadWx();
 });
 function tick(){const d=new Date();document.getElementById("clock").textContent=p2(d.getHours())+":"+p2(d.getMinutes());}
 function toggleLight(){light=!light;document.body.classList.toggle("light",light);localStorage.setItem("mc_light",light?"1":"0");updateTbtn();}
@@ -546,7 +551,7 @@ function updateTbtn(){document.getElementById("tbtn").textContent=light?"🌙":"
 async function loadData(force){
   if(!force){
     const c=localStorage.getItem("mc_v5");
-    if(c){try{const d=JSON.parse(c);missions=d.m.map(norm);journal=d.j||[];afterLoad();}catch(e){}}
+    if(c){try{const d=JSON.parse(c);missions=d.m.map(norm);journal=d.j||[];contacts=d.c||[];afterLoad();}catch(e){}}
   }
   try{
     const r=await fetch(GAS+"?action=all",{signal:AbortSignal.timeout(28000)});
@@ -554,7 +559,8 @@ async function loadData(force){
     if(d&&d.missions){
       missions=d.missions.map(norm);
       journal=d.journal||extractJournalFromLS();
-      localStorage.setItem("mc_v5",JSON.stringify({m:d.missions,j:journal}));
+      contacts=d.contacts||[];
+      localStorage.setItem("mc_v5",JSON.stringify({m:d.missions,j:journal,c:contacts}));
       afterLoad(); render();
     }
   }catch(e){if(!missions.length)render();}
@@ -629,7 +635,6 @@ function norm(m){
   o.ops      = o.ops||{};
   o.paxRaw   = o.ops["Passenger Raw"]||"";
   o.paxCount = o.ops["Pax Count"]||"";
-  if(!o.paxCount&&o.ops["Transfers"]){try{const tr=JSON.parse(o.ops["Transfers"]);const tot=tr.reduce((s,f)=>s+(parseInt(f.pax)||0),0);if(tot>0)o.paxCount=String(tot);}catch(e){}}
   o.shipName = o.ops["Ship Name"]||"";
   o.extRef   = o.ops["External Ref"]||"";
   o.meetPt   = o.ops["Meeting Point"]||"";
@@ -1107,125 +1112,159 @@ function mkCollSec(id,title,body,open=true){
 // ══ DETAIL ══
 function rdDetail(m){
   const mt=getMeta(m.client);
-  let h='<div class="back" onclick="closeD()">← Retour</div>'
-    +'<div class="hero">'
-    +'<div class="herotop" style="background:'+mt.hex+'"></div>'
-    +'<div class="herobody">'
-    +'<div class="herocl" style="color:'+mt.hex+'">'+esc(m.client||"—")+'</div>'
-    +'<div class="herotitle">'+esc(m.type||"—")+(m.sens&&m.sens!=="—"?" · "+esc(m.sens):"")+'</div>'
-    +'<div class="herosub">'+fdl(m.date)+(m.debut?" · "+esc(m.debut):"")+(m.endroit?" · "+esc(m.endroit.split(/[,→]/)[0]):"")+'</div>'
-    +'<div class="heropills">'+badge(m)+'</div>'
-    +'</div></div>';
+  let h=`<div class="back" onclick="closeD()">← Retour</div>
+  <div class="hero">
+    <div class="herotop" style="background:${mt.hex}"></div>
+    <div class="herobody">
+      <div class="herocl" style="color:${mt.hex}">${esc(m.client||"—")}</div>
+      <div class="herotitle">${esc(m.type||"—")}${m.sens&&m.sens!=="—"?" · "+esc(m.sens):""}</div>
+      <div class="herosub">${fdl(m.date)}${m.debut?" · "+esc(m.debut):""}${m.endroit?" · "+esc(m.endroit.split(/[,→]/)[0]):""}</div>
+      <div class="heropills">${badge(m)}${m.cmp&&typeof m.cmp==="object"?`<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--amb)">${cmpDot(m)} ${m.cmp.score}%</div>`:""}</div>
+    </div>
+  </div>`;
 
-  // 1. INFO (closed by default)
+  // Mission — simplified: no "Début mission" redundancy
+  // Mission — collapsible, open by default
   {
     let ms="";
-    ms+=ir("Mission ID",'<span style="font-family:var(--fm);font-size:13px">'+esc(m.mid)+'</span>');
     if(m.extRef)   ms+=ir("Réf",esc(m.extRef),true);
     if(m.debut)    ms+=ir("Départ",esc(m.debut));
     const dur=m.ops["Mission Duration (h)"]||m.heures;
-    if(dur)        ms+=ir("Durée",esc(String(dur))+"h");
+    if(dur)        ms+=ir("Durée",esc(dur)+"h");
     if(m.endroit)  ms+=ir("Endroit",esc(m.endroit));
     if(m.meetPt)   ms+=ir("RDV",esc(m.meetPt));
+    if(m.transRef) ms+=ir("Réf transport",m.transRef.split(" / ").map(s=>`<div style="padding:2px 0;border-bottom:1px solid var(--b2);font-size:13px">${esc(s.trim())}</div>`).join(""),true);
     if(m.shipName) ms+=ir("Navire",esc(m.shipName));
     if(m.dock)     ms+=ir("Quai",esc(m.dock));
     if(m.ops["Vehicle Info"]) ms+=ir("Véhicule",esc(m.ops["Vehicle Info"]));
-    if(m.ops["Raw Notes"])    ms+=ir("Notes ops",'<div style="white-space:pre-wrap;font-size:12px;color:var(--t2)">'+esc(m.ops["Raw Notes"])+'</div>');
-    if(m.ops["Source Email Msg"]) ms+=ir("Email source",'<div style="white-space:pre-wrap;font-size:11px;color:var(--t3);font-family:var(--fm)">'+esc(m.ops["Source Email Msg"].slice(0,800))+'</div>');
-    if(ms) h+=mkCollSec("info-"+m.mid,"Info",ms,false);
+    if(ms) h+=mkCollSec("miss-"+m.mid,"Mission",ms,true);
   }
 
-  // 2. TRANSFERS / PAX (open by default)
-  const trf=parseTr(m);
-  if(trf.length){
-    h+=mkCollSec("tr-"+m.mid,"Transferts · "+trf.length+" vol"+(trf.length>1?"s":""),rdTransfers(m),true);
-  } else if(m.paxRaw||m.paxCount){
-    const paxBody=(function(){
-      if(!m.paxRaw)return'<div style="font-size:14px;color:var(--t2);padding:6px 0">'+esc(m.paxCount)+' pax — liste non disponible</div>';
-      const pl=m.paxRaw.split("\n").map(function(s){return s.trim();}).filter(Boolean);
+  // Pax FIRST (before contacts)
+  if(m.paxRaw||m.paxCount){
+    const paxBody=()=>{
+      if(!m.paxRaw)return`<div style="font-size:14px;color:var(--t2);padding:6px 0">${esc(m.paxCount)} pax — liste non disponible</div>`;
+      const pl=m.paxRaw.split("\n").map(s=>s.trim()).filter(Boolean);
       const st=paxState[m.mid]||{};
       const ck=Object.values(st).filter(Boolean).length;
       const pct=pl.length?Math.round(ck/pl.length*100):0;
-      return'<div class="paxcount">'+ck+'/'+pl.length+' embarqués</div>'
-        +'<div class="paxprog"><div class="paxfill" id="pp-'+m.mid+'" style="width:'+pct+'%"></div></div>'
-        +'<div class="paxlist" style="max-height:420px">'+pl.map(function(p,i){const on=!!st[i];return'<div class="paxrow"><div class="paxbox'+(on?' ck':'')+'" onclick="tPax(\''+m.mid+'\','+i+','+(on?'false':'true')+')">'+(on?'✓':'')+'</div><div class="paxname'+(on?' ck':'')+'">'+esc(p)+'</div></div>';}).join('')+'</div>';
-    })();
-    h+=mkCollSec('pax-'+m.mid,'Passagers'+(m.paxCount?' ('+esc(m.paxCount)+')':''),paxBody,true);
+      return`<div class="paxcount">${ck}/${pl.length} embarqués</div>
+      <div class="paxprog"><div class="paxfill" id="pp-${m.mid}" style="width:${pct}%"></div></div>
+      <div class="paxlist">${pl.map((p,i)=>{const on=!!st[i];return`<div class="paxrow">
+        <div class="paxbox${on?" ck":""}" onclick="tPax('${m.mid}',${i},${!on})">${on?"✓":""}</div>
+        <div class="paxname${on?" ck":""}">${esc(p)}</div>
+      </div>`;}).join("")}</div>`;
+    };
+    h+=mkCollSec(`pax-${m.mid}`,`Passagers${m.paxCount?" ("+esc(m.paxCount)+")":""}`,paxBody());
   }
 
-  // 3. CONTACTS (open by default)
+  // Contacts — Cruise Manager first, WhatsApp button, Urgence gets call button too
   const clist=[];
   if(m.ops["Cruise Manager"])    clist.push({r:"Cruise Manager",n:m.ops["Cruise Manager"],p:m.ops["Cruise Phone"]||"",wa:true});
   if(m.ops["Contact Client"])    clist.push({r:"Contact client",n:m.ops["Contact Client"],p:m.ops["Client Phone"]||""});
   if(m.ops["Chauffeur"])         clist.push({r:"Chauffeur",n:m.ops["Chauffeur"],p:m.ops["Tél Chauffeur"]||""});
-  if(m.ops["Colleague"])         clist.push({r:"Collègue",n:m.ops["Colleague"],p:m.ops["Colleague Phone"]||""});
+  if(m.ops["Colleague"])         clist.push({r:"Collègue"+(m.ops["Colleague Role"]?" · "+m.ops["Colleague Role"]:""),n:m.ops["Colleague"],p:m.ops["Colleague Phone"]||""});
   if(m.ops["Emergency Contact"]) clist.push({r:"Urgence",n:m.ops["Emergency Contact"],p:""});
   if(clist.length){
-    const contactBody=clist.map(function(c){
+    const contactBody=clist.map(c=>{
       const rawPhone=c.p?c.p.replace(/\s/g,""):"";
+      // WhatsApp link: strip leading 00 or +, prepend +
       const waNum=rawPhone.replace(/^00/,"+").replace(/^\+?/,"+");
-      const waLink="https://wa.me/"+waNum.replace(/\D/g,"");
-      const callBtn=c.p?'<a href="tel:'+esc(rawPhone)+'" class="callbtn" onclick="event.stopPropagation()">📞</a>':"";
-      const waBtn=c.wa&&c.p?'<a href="'+waLink+'" target="_blank" class="callbtn" style="background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.25);color:#25d366;margin-right:5px" onclick="event.stopPropagation()">💬</a>':"";
-      const urgCall=c.r==="Urgence"&&c.n?'<a href="tel:'+esc(c.n.replace(/\s/g,""))+'" class="callbtn" onclick="event.stopPropagation()">📞</a>':"";
-      return'<div class="cb"><div><div class="cbrole">'+esc(c.r)+'</div><div class="cbname">'+esc(c.n)+'</div>'+(c.p?'<div class="cbph" onclick="copyText(\''+esc(c.p)+'\')" style="cursor:pointer">'+esc(normPhone(c.p))+'</div>':"")+'</div><div style="display:flex;gap:5px;flex-shrink:0">'+waBtn+(c.r==="Urgence"?urgCall:callBtn)+'</div></div>';
+      const waLink=`https://wa.me/${waNum.replace(/\D/g,"")}`;
+      const callBtn=c.p?`<a href="tel:${esc(rawPhone)}" class="callbtn" onclick="event.stopPropagation()">📞</a>`:"";
+      const waBtn=c.wa&&c.p?`<a href="${waLink}" target="_blank" class="callbtn" style="background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.25);color:#25d366;margin-right:5px" onclick="event.stopPropagation()">💬</a>`:"";
+      // Urgence: show call button even without stored number (it's in the name field sometimes)
+      const urgCall=c.r==="Urgence"&&c.n?`<a href="tel:${esc(c.n.replace(/\s/g,""))}" class="callbtn" onclick="event.stopPropagation()">📞</a>`:"";
+      return`<div class="cb">
+        <div><div class="cbrole">${esc(c.r)}</div><div class="cbname">${esc(c.n)}</div>${c.p?`<div class="cbph" onclick="copyText('${esc(c.p)}')" style="cursor:pointer">${esc(c.p)}</div>`:""}</div>
+        <div style="display:flex;gap:5px;flex-shrink:0">${waBtn}${c.r==="Urgence"?urgCall:callBtn}</div>
+      </div>`;
     }).join("");
-    h+=mkCollSec('cont-'+m.mid,"Contacts",contactBody,true);
+    h+=mkCollSec(`cont-${m.mid}`,"Contacts",contactBody);
   }
 
-  // 4. DOCUMENTS (closed)
-  if(m.docs||m.ops["Source PDF"]){
-    let ds="";
-    if(m.docs) ds+='<a href="'+esc(m.docs)+'" target="_blank" class="invbtn" onclick="event.stopPropagation()"><span class="invico">📁</span><span style="flex:1">Dossier Drive</span><span class="invr">↗</span></a>';
-    if(m.ops["Source PDF"]) ds+='<a href="'+esc(m.ops["Source PDF"])+'" target="_blank" class="invbtn" onclick="event.stopPropagation()"><span class="invico">📄</span><span style="flex:1">Manifeste PDF</span><span class="invr">↗</span></a>';
-    h+=mkCollSec("doc-"+m.mid,"Documents",ds,false);
+  // Client_Contacts panel
+  h+=rdContactsPanel(m);
+
+  // Transport tracker — SNCF for Gare, FlightAware link for plane refs, else just show ref
+  if(m.transRef){
+    const ttype=(m.type||"").toLowerCase();
+    if(ttype==="gare") h+=rdSNCF(m);
+    else if(ttype==="transfer"||ttype==="aéroport"){
+      // If ref looks like a flight (2 letters + digits)
+      const isFlight=/^[A-Z]{2,3}\d{3,4}$/i.test(m.transRef.replace(/\s/g,""));
+      if(isFlight){
+        h+=mkColl("trans-"+m.mid,"✈ Suivi vol","FlightAware",
+          `<div style="font-size:13px;color:var(--t1);margin-bottom:10px">Vol : <strong>${esc(m.transRef)}</strong></div>
+           <a href="https://www.flightaware.com/live/flight/${esc(m.transRef.replace(/\s/g,""))}" target="_blank" class="invbtn" onclick="event.stopPropagation()"><span class="invico">✈</span><span style="flex:1">Voir sur FlightAware</span><span class="invr">↗</span></a>
+           <a href="https://www.radarbox.com/flight/${esc(m.transRef.replace(/\s/g,""))}" target="_blank" class="invbtn" onclick="event.stopPropagation()"><span class="invico">📡</span><span style="flex:1">Voir sur RadarBox</span><span class="invr">↗</span></a>`
+        );
+      }
+    }
   }
 
-  // 5. MODIFIER (closed)
+  // Edit
+  // Modifier — collapsible, closed by default
   {
     const opts=["Brouillon","Planifié","Confirmé","Terminé","Fac. générée","Fac. envoyée","Payé","Échangé","Annulé"];
-    const eid=m.mid;
     const modBody=''
       +'<div class="erow"><div class="elbl">Statut</div>'
-      +'<select class="esel" onchange="saveF(\''+eid+'\',\'statut\',this.value)">'
-      +opts.map(function(o){return'<option'+(m.statut===o?' selected':'')+'>'+o+'</option>';}).join("")
+      +'<select class="esel" onchange="saveF(\''+m.mid+'\',\'statut\',this.value)">'
+      +opts.map(o=>'<option'+(m.statut===o?' selected':'')+'>'+o+'</option>').join("")
       +'</select></div>'
       +'<div class="erow"><div class="elbl">Départ</div>'
-      +'<input class="einp" type="time" id="ef-d-'+eid+'" value="'+esc(m.debut||"")+'"/>'
-      +'<button class="savebtn" onclick="saveF(\''+eid+'\',\'debut\',document.getElementById(\'ef-d-'+eid+'\').value)">✓</button></div>'
+      +'<input class="einp" type="time" id="ef-d-'+m.mid+'" value="'+esc(m.debut||"")+'"/>'
+      +'<button class="savebtn" onclick="saveF(\''+m.mid+'\',\'debut\',document.getElementById(\'ef-d-'+m.mid+'\').value)">✓</button></div>'
       +'<div class="erow"><div class="elbl">Heures</div>'
-      +'<input class="einp" type="number" step="0.5" id="ef-h-'+eid+'" value="'+esc(String(m.heures||""))+'"/>'
-      +'<button class="savebtn" onclick="saveF(\''+eid+'\',\'heures\',document.getElementById(\'ef-h-'+eid+'\').value)">✓</button></div>'
+      +'<input class="einp" type="number" step="0.5" id="ef-h-'+m.mid+'" value="'+esc(String(m.heures||""))+'"/>'
+      +'<button class="savebtn" onclick="saveF(\''+m.mid+'\',\'heures\',document.getElementById(\'ef-h-'+m.mid+'\').value)">✓</button></div>'
       +'<div class="erow"><div class="elbl">Base HT</div>'
-      +'<input class="einp" type="number" step="1" id="ef-b-'+eid+'" value="'+esc(String(m.base||""))+'"/>'
-      +'<button class="savebtn" onclick="saveF(\''+eid+'\',\'base\',document.getElementById(\'ef-b-'+eid+'\').value)">✓</button></div>'
+      +'<input class="einp" type="number" step="1" id="ef-b-'+m.mid+'" value="'+esc(String(m.base||""))+'"/>'
+      +'<button class="savebtn" onclick="saveF(\''+m.mid+'\',\'base\',document.getElementById(\'ef-b-'+m.mid+'\').value)">✓</button></div>'
       +'<div style="padding:7px 0"><div class="elbl" style="margin-bottom:4px">Notes</div>'
-      +'<textarea class="notesta" id="ef-n-'+eid+'" rows="3">'+esc(m.notes||"")+'</textarea>'
-      +'<div class="saverow"><button class="savebtn" onclick="saveF(\''+eid+'\',\'notes\',document.getElementById(\'ef-n-'+eid+'\').value)">Enregistrer</button></div></div>';
+      +'<textarea class="notesta" id="ef-n-'+m.mid+'" rows="3">'+esc(m.notes||"")+'</textarea>'
+      +'<div class="saverow"><button class="savebtn" onclick="saveF(\''+m.mid+'\',\'notes\',document.getElementById(\'ef-n-'+m.mid+'\').value)">Enregistrer</button></div></div>';
     h+=mkCollSec("mod-"+m.mid,"Modifier",modBody,false);
   }
 
-  // 6. FACTURATION (closed)
-  if(m.sousTotal>0||m.totalNet>0){
-    let fs="";
-    if(m.base)      fs+=ir("Base HT",fmtE(m.base));
-    if(m.hs)        fs+=ir("Heures sup.",fmtE(m.hs));
-    if(m.supp)      fs+=ir("Supp.",fmtE(m.supp));
-    if(m.sousTotal) fs+=ir("Sous-total","<strong>"+fmtE(m.sousTotal)+"</strong>");
-    if(m.debours)   fs+=ir("Débours",fmtE(m.debours));
-    if(m.totalNet)  fs+=ir("Net estimé",'<strong style="color:var(--grn)">'+fmtE(m.totalNet)+"</strong>");
-    if(m.montant>0) fs+=ir("Reçu",'<span style="color:var(--grn)">'+fmtE(m.montant)+"</span>");
-    if(m.facture)   fs+=ir("Facture",esc(m.facture));
-    const st2=(m.statut||"").toLowerCase();
-    if(st2==="terminé"&&!m.facture) fs+='<div style="padding:8px 0"><button class="invbtn" onclick="event.stopPropagation();genFacture(\''+m.mid+'\')">' + '<span class="invico">🧾</span><span style="flex:1;font-weight:500">Générer la facture</span><span class="invr">PDF → Drive</span></button></div>';
-    if(st2.includes("générée")) fs+='<div style="padding:4px 0"><button class="invbtn" style="border-color:rgba(240,144,48,.3);color:var(--amb)" onclick="event.stopPropagation();saveF(\''+m.mid+'\',\'statut\',\'Fac. envoyée\')">' + '<span class="invico">📤</span><span style="flex:1;font-weight:500">Marquer comme envoyée</span></button></div>';
-    if(m.debours>0.01&&!m.ndb) fs+='<div style="padding:4px 0"><button class="invbtn" onclick="event.stopPropagation();genDebours(\''+m.mid+'\')">' + '<span class="invico">📄</span><span style="flex:1;font-weight:500">Note de débours</span><span class="invr">'+fmtE(m.debours)+'</span></button></div>';
-    h+=mkCollSec("fac-"+m.mid,"Facturation",fs,false);
+  // Docs
+  if(m.docs||m.ops["Source PDF"]) h+=sec("Documents",()=>{
+    let s="";
+    if(m.docs) s+=`<a href="${esc(m.docs)}" target="_blank" class="invbtn" onclick="event.stopPropagation()"><span class="invico">📁</span><span style="flex:1">Dossier Drive</span><span class="invr">↗</span></a>`;
+    if(m.ops["Source PDF"]) s+=`<a href="${esc(m.ops["Source PDF"])}" target="_blank" class="invbtn" onclick="event.stopPropagation()"><span class="invico">📄</span><span style="flex:1">Manifeste PDF</span><span class="invr">↗</span></a>`;
+    return s;
+  });
+
+  // Collapsibles
+  if(m.ops["Raw Notes"]||m.ops["Source Email Msg"]){
+    let cx="<div style='margin-bottom:8px'>";
+    if(m.ops["Raw Notes"]) cx+=mkColl("n-"+m.mid,"Notes opérationnelles","",`<div style="font-size:13px;color:var(--t2);white-space:pre-wrap;line-height:1.6">${esc(m.ops["Raw Notes"])}</div>`);
+    if(m.ops["Source Email Msg"]) cx+=mkColl("e-"+m.mid,"Email source",m.ops["Source Email"]||"",`<div style="font-size:11px;color:var(--t3);white-space:pre-wrap;line-height:1.6;font-family:var(--fm)">${esc(m.ops["Source Email Msg"].slice(0,1200))}</div>`);
+    cx+="</div>";h+=cx;
   }
 
-  // 7. CLÔTURER (closed)
-  h+=mkCollSec("clt-"+m.mid,"Clôturer la mission",rdPMFinline(m),false);
+  // Facturation — LAST
+  if(m.sousTotal>0||m.totalNet>0){
+    const facBody=()=>{
+      let s="";
+      if(m.base)      s+=ir("Base HT",fmtE(m.base));
+      if(m.hs)        s+=ir("Heures sup.",fmtE(m.hs));
+      if(m.supp)      s+=ir("Supp.",fmtE(m.supp));
+      if(m.sousTotal) s+=ir("Sous-total",`<strong>${fmtE(m.sousTotal)}</strong>`);
+      if(m.debours)   s+=ir("Débours",fmtE(m.debours));
+      if(m.totalNet)  s+=ir("Net estimé",`<strong style="color:var(--grn)">${fmtE(m.totalNet)}</strong>`);
+      if(m.montant>0) s+=ir("Reçu",`<span style="color:var(--grn)">${fmtE(m.montant)}</span>`);
+      if(m.facture)   s+=ir("Facture",esc(m.facture));
+      const st2=(m.statut||"").toLowerCase();
+      if(st2==="terminé"&&!m.facture) s+=`<div style="padding:8px 0"><button class="invbtn" onclick="event.stopPropagation();genFacture('${m.mid}')"><span class="invico">🧾</span><span style="flex:1;font-weight:500">Générer la facture</span><span class="invr">PDF → Drive</span></button></div>`;
+      if(st2.includes("générée")) s+=`<div style="padding:4px 0"><button class="invbtn" style="border-color:rgba(240,144,48,.3);color:var(--amb)" onclick="event.stopPropagation();saveF('${m.mid}','statut','Fac. envoyée')"><span class="invico">📤</span><span style="flex:1;font-weight:500">Marquer comme envoyée</span></button></div>`;
+      if(m.debours>0.01&&!m.ndb) s+=`<div style="padding:4px 0"><button class="invbtn" onclick="event.stopPropagation();genDebours('${m.mid}')"><span class="invico">📄</span><span style="flex:1;font-weight:500">Note de débours</span><span class="invr">${fmtE(m.debours)}</span></button></div>`;
+      return s;
+    };
+    h+=mkCollSec(`fac-${m.mid}`,"Facturation",facBody(),false);
+  }
 
+  h+=rdPMF(m);
   return h;
 }
 
@@ -1235,214 +1274,12 @@ function ir(l,v,canCopy=false){
   return`<div class="ir"><div class="irl">${l}</div><div${copyAttr}>${v}</div></div>`;
 }
 
-
-// ══ TRANSFERS ══
-function parseTr(m){
-  const raw = (m.ops && m.ops["Passenger Raw"]) || "";
-  const refs = (m.ops && m.ops["Transport Ref"]) || "";
-  if (!raw) return [];
-
-  const drivers = {};
-  refs.split("\n").forEach(line=>{
-    const x = line.match(/(\d{2}:\d{2})\s+([A-Z0-9]+)\s*\(([A-Z]{3})\)\s*-\s*(.+?)\s*-\s*(\d+)/i);
-    if (x) drivers[x[2]] = {driver:x[4].trim(), pax:parseInt(x[5])||0};
-  });
-
-  const groups = {};
-  raw.split("\n").forEach(line=>{
-    const x = line.match(/^(.+?)\s+(\S+)\s+(\d{2}:\d{2})\s+LYS-([A-Z0-9]+)\s+\(Org City:\s*([A-Z]{3})\)/);
-    if (!x) return;
-    const flight = x[4];
-    const d = drivers[flight] || {};
-    if (!groups[flight]) groups[flight] = {
-      id:"fl"+Object.keys(groups).length,
-      flight:flight,
-      time:x[3],
-      origin:x[5],
-      driver:d.driver || "",
-      phone:(m.ops && m.ops["Tél Chauffeur"]) || "",
-      pax:d.pax || 0,
-      passengers:[]
-    };
-    groups[flight].passengers.push({name:x[1].trim(), cabin:x[2]});
-  });
-
-  return Object.values(groups);
-}
-function normPhone(p){
-  if(!p)return"";
-  let s=String(p).replace(/[^\d+]/g,"");
-  if(s.startsWith("00"))s="+"+s.slice(2);
-  if(s.startsWith("06")||s.startsWith("07"))s="+33"+s.slice(1);
-  if(s.startsWith("33")&&!s.startsWith("+"))s="+"+s;
-  const m=s.match(/^\+33(\d)(\d{2})(\d{2})(\d{2})(\d{2})$/);
-  if(m)return"+33 "+m[1]+" "+m[2]+" "+m[3]+" "+m[4]+" "+m[5];
-  return p;
-}
-function rdTransfers(m){
-  const flights=parseTr(m);
-  if(!flights.length)return"";
-  const mst=trState[m.mid]||{flights:{}};
-  const totalPax=flights.reduce((s,f)=>s+(f.passengers?f.passengers.length:f.pax||0),0);
-  const checkedPax=flights.reduce((s,f)=>{const fst=mst.flights&&mst.flights[f.id]||{};return s+Object.values(fst.pax||{}).filter(Boolean).length;},0);
-  const departedCount=flights.filter(f=>(mst.flights&&mst.flights[f.id]||{}).departed).length;
-  const pct=totalPax?Math.round(checkedPax/totalPax*100):0;
-  let h='<div class="tr-prog"><div class="tr-fill" id="trp-'+m.mid+'" style="width:'+pct+'%"></div></div>';
-  h+='<div class="tr-summary" id="trs-'+m.mid+'">'+checkedPax+'/'+totalPax+' pax · '+departedCount+'/'+flights.length+' véhicules partis</div>';
-  flights.forEach(f=>{
-    const fid=f.id||("fl"+f.flight);
-    const fst=getTrFlight(m.mid,fid);
-    const driver=fst.driver||f.driver||"";
-    const phone=fst.phone||f.phone||"";
-    const gone=fst.departed;
-    const paxList=f.passengers||[];
-    const paxChecked=Object.values(fst.pax||{}).filter(Boolean).length;
-    const paxTotal=paxList.length||f.pax||0;
-    const editing=fst._editing||false;
-    h+='<div class="fc'+(gone?" fc-gone":"")+'" id="fc-'+m.mid+'-'+fid+'">';
-    h+='<div class="fc-hdr" onclick="tFC(\''+m.mid+'\',\''+fid+'\')">';
-    h+='<div class="fc-flight">'+esc(f.flight)+'</div>';
-    if(f.time)h+='<div class="fc-time">'+esc(f.time)+'</div>';
-    if(f.origin)h+='<div class="fc-origin">'+esc(f.origin)+'</div>';
-    h+='<div id="fst-'+m.mid+'-'+fid+'" style="margin-left:4px"></div>';
-    h+='<div class="fc-pcount">'+paxChecked+'/'+paxTotal+' pax'+(gone?' ✓':'')+'</div>';
-    h+='<div style="font-size:11px;color:var(--t3);margin-left:6px" id="fchev-'+m.mid+'-'+fid+'">'+(gone?'▾':'▴')+'</div>';
-    h+='</div>';
-    const bodyOpen=!gone;
-    h+='<div id="fcb-'+m.mid+'-'+fid+'" style="display:'+(bodyOpen?'block':'none')+'">';
-    h+='<div class="fc-body">';
-    if(editing){
-      h+='<div class="fc-dedit">'
-        +'<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Modifier chauffeur</div>'
-        +'<input id="fcdn-'+m.mid+'-'+fid+'" placeholder="Nom" value="'+esc(driver)+'"/>'
-        +'<input id="fcdp-'+m.mid+'-'+fid+'" placeholder="Téléphone" value="'+esc(phone)+'" type="tel"/>'
-        +'<div class="fc-dedit-row">'
-        +'<button class="fc-dedit-save" onclick="saveFCDriver(\''+m.mid+'\',\''+fid+'\')">✓ Enregistrer</button>'
-        +'<button class="fc-dedit-cancel" onclick="cancelFCDriver(\''+m.mid+'\',\''+fid+'\')">Annuler</button>'
-        +'</div></div>';
-    } else {
-      h+='<div class="fc-driver">';
-      h+='<div class="fc-driver-info">';
-     if(driver){
-  const names = driver.split(/\s+/);
-  const phones = phone.split(/\s+/);
-
-  h+='<div class="fc-driver-role">Chauffeurs</div>';
-
-  names.forEach((n,i)=>{
-    h+='<div class="fc-driver-name">'+esc(n)+'</div>';
-    if(phones[i]) h+='<div class="fc-driver-ph">'+esc(normPhone(phones[i]))+'</div>';
-  });
-}
-      h+='</div>';
-      const rawPh=phone.replace(/\s/g,"");
-      if(phone)h+='<a href="tel:'+esc(rawPh)+'" class="callbtn" onclick="event.stopPropagation()" style="margin-right:4px">📞</a>';
-      h+='<button class="fc-driver-edit" onclick="event.stopPropagation();editFCDriver(\''+m.mid+'\',\''+fid+'\')">'+(driver?'✏️':'+ Chauffeur')+'</button>';
-      h+='</div>';
-    }
-    h+='<div class="fc-departed">'
-      +'<button class="fc-dep-btn'+(gone?' done':'')+'" onclick="toggleDep(\''+m.mid+'\',\''+fid+'\')">'
-      +(gone?'✅ Véhicule parti':'🚗 Marquer comme parti')
-      +'</button>'
-      +'<button style="font-size:10px;color:var(--blue);background:none;border:none;padding:4px 8px;cursor:pointer" onclick="event.stopPropagation();fetchFlightStatus(\''+m.mid+'\',\''+fid+'\',\''+f.flight+'\',\''+m.date+'\')" title="Actualiser statut vol">↻ Vol</button>'
-      +'</div>';
-    if(paxList.length){
-      h+='<div class="fc-pax" id="fcpax-'+m.mid+'-'+fid+'">';
-      paxList.forEach(function(p,i){
-        const on=!!(fst.pax||{})[i];
-        const name=typeof p==="object"?(p.name||""):String(p);
-        const cabin=typeof p==="object"?p.cabin||"":"";
-        h+='<div class="fc-prow">'
-          +'<div class="fc-pbox'+(on?' ck':'')+'" onclick="tFCPax(this,\''+m.mid+'\',\''+fid+'\','+i+','+(on?'false':'true')+')">'+(on?'✓':'')+'</div>'
-          +'<div style="flex:1"><div class="fc-pname'+(on?' ck':'')+'">'+esc(name)+'</div>'
-          +(cabin?'<div class="fc-pcabin">Cabine '+esc(cabin)+'</div>':"")
-          +'</div></div>';
-      });
-      h+='</div>';
-    } else if(f.pax>0){
-      h+='<div style="font-size:12px;color:var(--t3);padding:6px 0">'+f.pax+' pax — liste non disponible</div>';
-    }
-    h+='</div></div></div>';
-  });
-  // Auto-fetch flight statuses after render
-  setTimeout(()=>{
-    flights.forEach(f=>{
-      const fid=f.id||("fl"+f.flight);
-      if(f.flight)fetchFlightStatus(m.mid,fid,f.flight,m.date);
-    });
-  },300);
-  return h;
-}
-function tFC(mid,fid){
-  const b=document.getElementById('fcb-'+mid+'-'+fid);
-  const chev=document.getElementById('fchev-'+mid+'-'+fid);
-  if(!b)return;
-  const open=b.style.display==="none";
-  b.style.display=open?"block":"none";
-  if(chev)chev.textContent=open?'▴':'▾';
-}
-function tFCPax(el,mid,fid,idx,on){
-  const fst=getTrFlight(mid,fid);
-  if(!fst.pax)fst.pax={};
-  fst.pax[idx]=on;
-  saveTrState();
-
-  el.classList.toggle('ck',on);
-  el.textContent=on?'✓':'';
-  el.setAttribute('onclick',"tFCPax(this,'"+mid+"','"+fid+"',"+idx+","+(on?'false':'true')+")");
-
-  const nm=el.parentElement.querySelector('.fc-pname');
-  if(nm)nm.classList.toggle('ck',on);
-
-  updateTrProgress(mid);
-}
-function toggleDep(mid,fid){
-  const fst=getTrFlight(mid,fid);
-  fst.departed=!fst.departed;
-  saveTrState();
-  if(detail&&detail.mid===mid)render();
-}
-function editFCDriver(mid,fid){getTrFlight(mid,fid)._editing=true;if(detail&&detail.mid===mid)render();}
-function cancelFCDriver(mid,fid){getTrFlight(mid,fid)._editing=false;if(detail&&detail.mid===mid)render();}
-async function saveFCDriver(mid,fid){
-  const n=document.getElementById('fcdn-'+mid+'-'+fid);
-  const p=document.getElementById('fcdp-'+mid+'-'+fid);
-  const fst=getTrFlight(mid,fid);
-  fst.driver=n?n.value:"";fst.phone=p?p.value:"";fst._editing=false;
-  saveTrState();
-  try{
-    const m=missions.find(x=>x.mid===mid);
-    if(m){
-      const flights=parseTr(m);
-      const fl=flights.find(f=>f.id===fid);
-      if(fl){fl.driver=fst.driver;fl.phone=fst.phone;}
-      await callAPI("update","id="+encodeURIComponent(mid)+"&field=transfers&value="+encodeURIComponent(JSON.stringify(flights)));
-    }
-  }catch(e){}
-  toast("✓ Chauffeur mis à jour","ok");
-  if(detail&&detail.mid===mid)render();
-}
-function updateTrProgress(mid){
-  const m=missions.find(x=>x.mid===mid);if(!m)return;
-  const flights=parseTr(m);
-  const mst=trState[mid]||{flights:{}};
-  const totalPax=flights.reduce((s,f)=>s+(f.passengers?f.passengers.length:f.pax||0),0);
-  const checkedPax=flights.reduce((s,f)=>{const fst=mst.flights&&mst.flights[f.id]||{};return s+Object.values(fst.pax||{}).filter(Boolean).length;},0);
-  const departedCount=flights.filter(f=>(mst.flights&&mst.flights[f.id]||{}).departed).length;
-  const pct=totalPax?Math.round(checkedPax/totalPax*100):0;
-  const pp=document.getElementById("trp-"+mid);if(pp)pp.style.width=pct+"%";
-  const ps=document.getElementById("trs-"+mid);if(ps)ps.textContent=checkedPax+"/"+totalPax+" pax · "+departedCount+"/"+flights.length+" véhicules partis";
-}
-
 // ══ PAX ══
-function loadPaxState(){try{const r=localStorage.getItem("mc_pax");if(r)paxState=JSON.parse(r);}catch(e){}}
-function savePaxState(){try{localStorage.setItem("mc_pax",JSON.stringify(paxState));}catch(e){}}
 function tPax(mid,idx,on){
   if(!paxState[mid])paxState[mid]={};paxState[mid][idx]=on;
-  savePaxState();
   const box=document.querySelector(`[onclick="tPax('${mid}',${idx},${!on})"]`);
   const nm=box?.nextElementSibling;
-  if(box){box.classList.toggle("ck",on);box.textContent=on?"✓":"";box.setAttribute("onclick",`tPax('${mid}',${idx},${!on})`)}
+  if(box){box.classList.toggle("ck",on);box.textContent=on?"✓":"";box.setAttribute("onclick",`tPax('${mid}',${idx},${!on})`);}
   if(nm)nm.classList.toggle("ck",on);
   const st=paxState[mid];
   const m=missions.find(x=>x.mid===mid);
@@ -1468,7 +1305,15 @@ async function saveF(mid,field,value){
       else if(field==="debut")m.debut=value;
     }
     if(detail?.mid===mid)detail=m;
-    toast("✓ Mis à jour","ok"); afterLoad();
+    toast("✓ Mis à jour","ok");
+    // Only full re-render if NOT in detail view — prevents collapsing open sections
+    if(detail&&detail.mid===mid){
+      // Targeted badge refresh only
+      const bdgEl=document.querySelector('.heropills');
+      if(bdgEl)bdgEl.innerHTML=badge(detail)+(detail.cmp&&typeof detail.cmp==="object"?'<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--amb)">'+cmpDot(detail)+' '+detail.cmp.score+'%</div>':"");
+      const hdrel=document.querySelector('.brand-sub');
+      if(hdrel){const tm2=missions.filter(x=>x.date===tday()&&!isCxl(x)&&!isEchg(x));hdrel.textContent=tm2.length?tm2.length+' mission'+(tm2.length>1?'s':'')+" aujourd'hui":"Aucune mission aujourd'hui";}
+    } else { afterLoad(); }
   }catch(e){toast("❌ "+e.message.slice(0,40),"err");}
 }
 
@@ -1519,23 +1364,21 @@ async function fetchSNCF(mid,ref){
 }
 
 // ══ PMF ══
-function rdPMF(m){return rdPMFinline(m);}
-function rdPMFinline(m){
-  if(isDone(m))return'<div style="text-align:center;padding:12px 0">'
-    +'<div style="font-size:14px;color:var(--grn);font-weight:600;margin-bottom:10px">✓ Mission clôturée</div>'
-    +'<button class="dclink" onclick="goPause()">🌿 Décompresser</button>'
-    +'</div>';
-  if(!pmf||pmf.mid!==m.mid){
-    const _mid=m.mid;
-    return'<div style="padding:8px 0"><button class="pbtn" onclick="sPMF(this.dataset.mid)" data-mid="'+_mid+'">✅ Clôturer la mission</button></div>';
-  }
-  return'<div class="pmf">'+pmfHTML(m)+'</div>';
+function rdPMF(m){
+  if(isDone(m))return`<div class="sec"><div class="secbody" style="text-align:center;padding:12px 0">
+    <div style="font-size:14px;color:var(--grn);font-weight:600;margin-bottom:10px">✓ Mission clôturée</div>
+    <button class="dclink" onclick="goPause()">🌿 Décompresser</button>
+  </div></div>`;
+  if(!pmf||pmf.mid!==m.mid)return`<div class="sec"><div class="secbody" style="padding:8px 0">
+    <button class="pbtn" onclick="sPMF('${m.mid}')">✅ Clôturer la mission</button>
+  </div></div>`;
+  return`<div class="sec"><div class="secbody"><div class="pmf">${pmfHTML(m)}</div></div></div>`;
 }
 function sPMF(mid){
   const m=missions.find(x=>x.mid===mid)||{};
   let end=nowt();
   if(m.debut&&m.heures){const ph=parseFloat(m.heures);if(ph>0){const[h,mn]=m.debut.split(":").map(Number);const em=h*60+mn+Math.round(ph*60);if(Math.floor(em/60)<24)end=p2(Math.floor(em/60))+":"+p2(em%60);}}
-  pmf={mid,start:m.debut||"",end,tpl:"RAS",rpt:"",rptLoading:false,dMood:0,dEnergy:0,dNote:"",incCtx:""};
+  pmf={mid,start:m.debut||"",end,tpl:"RAS",rpt:"",rptLoading:false,dMood:0,dEnergy:0,dNote:""};
   pmfStep=1;render();
 }
 function pmfHTML(m){return pmfStep===1?pmfH1(m):pmfStep===2?pmfH2(m):pmfStep===3?pmfH3(m):pmfStep===4?pmfH4():"";}
@@ -1563,7 +1406,6 @@ function pmfH2(m){
     <button class="tplbtn${pmf.tpl==="RAS"?" on":""}" onclick="pmf.tpl='RAS';pmf.rpt='';render()">📝 RAS</button>
     <button class="tplbtn${pmf.tpl==="INCIDENT"?" on":""}" onclick="pmf.tpl='INCIDENT';pmf.rpt='';render()">⚠️ Incident</button>
   </div>
-  ${pmf.tpl==="INCIDENT"&&!pmf.rpt?`<div class="inc-hint">Décris ce qui s'est passé :</div><textarea class="inc-notes" id="inc-ctx-${m.mid}" placeholder="Ex: Vol annulé, pax redirigé...">${esc(pmf.incCtx||"")}</textarea>`:""}
   ${pmf.rptLoading?'<div style="text-align:center;padding:16px;color:var(--t2)"><span class="spin">↻</span> Rédaction...</div>':pmf.rpt?`<div class="rptout">${esc(pmf.rpt)}</div>`+acts:acts}
   <div style="display:flex;gap:8px;margin-top:4px">
     <span class="pback" style="flex:1" onclick="pmfStep=1;render()">← Retour</span>
@@ -1609,24 +1451,27 @@ async function genRpt(mid){
     pmf.rptLoading=false;render();return;
   }
   if(pmf.tpl==="INCIDENT"){
-    const ctxEl=document.getElementById("inc-ctx-"+mid);
-    if(ctxEl)pmf.incCtx=ctxEl.value;
+    // Use Anthropic API directly — avoids GAS/Gemini timeouts
     try{
       const ctx=[
-        m.type&&("Type: "+m.type),
-        m.endroit&&("Lieu: "+m.endroit),
-        m.debut&&("Départ: "+m.debut),
-        pmf.start&&pmf.end&&("Heures réelles: "+pmf.start+"–"+pmf.end),
-        m.client&&("Client: "+m.client),
-        m.paxCount&&("Passagers: "+m.paxCount),
-        pmf.incCtx&&("Contexte: "+pmf.incCtx),
+        m.type&&`Type: ${m.type}`,
+        m.sens&&`Sens: ${m.sens}`,
+        m.desc&&`Description: ${m.desc}`,
+        m.endroit&&`Lieu: ${m.endroit}`,
+        m.debut&&`Départ: ${m.debut}`,
+        pmf.start&&pmf.end&&`Heures réelles: ${pmf.start}–${pmf.end}`,
+        m.client&&`Client: ${m.client}`,
+        m.paxCount&&`Passagers: ${m.paxCount}`,
+        m.notes&&`Notes: ${m.notes}`,
       ].filter(Boolean).join("\n");
-      const r=await fetch(GAS+"?action=genRapport&id="+encodeURIComponent(mid)
-        +"&template=INCIDENT&start="+encodeURIComponent(pmf.start||"")
-        +"&end="+encodeURIComponent(pmf.end||"")
-        +"&context="+encodeURIComponent(ctx),{signal:AbortSignal.timeout(40000)});
-      const d=await r.json();
-      pmf.rpt=d&&d.text?d.text:"Erreur génération.";
+      const prompt=`Tu es Joseph Bonnet, guide touristique indépendant à Lyon. Rédige un e-mail de rapport d'incident professionnel en français pour la mission suivante. Décris l'incident de façon neutre et factuelle, propose des éléments de résolution si pertinent. Commence par "Bonjour," et termine par "Cordialement,\nJoseph".\n\nMission:\n${ctx}\n\nRédige uniquement le corps de l'e-mail, sans objet.`;
+      const resp=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:600,messages:[{role:"user",content:prompt}]})
+      });
+      const data=await resp.json();
+      pmf.rpt=data?.content?.[0]?.text||"Erreur de génération.";
     }catch(e){pmf.rpt="Erreur: "+e.message;}
     pmf.rptLoading=false;render();return;
   }
